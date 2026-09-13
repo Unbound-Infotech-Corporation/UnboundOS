@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Software — Unbound Infotech Corporation</title>
+<meta name="description" content="Software built by Unbound Infotech Corporation. UnboundOS — the Windows 11 gaming session shell. Plus Heirloom Unbound, InsureVault, and operations tooling." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   UNBOUND INFOTECH — /software presentation page
+   Brand tokens (match unboundinfotech.com):
+     --bg      : hsl(220 30% 2%)   near-black
+     --primary : hsl(186 100% 50%) neon turquoise / cyan
+     Fonts     : Inter (UI) + JetBrains Mono (data/labels)
+   ============================================================ */
+:root{
+  --bg:            hsl(220 30% 2%);
+  --bg-raise:      hsl(220 28% 5%);
+  --bg-panel:      hsl(219 26% 7%);
+  --line:          hsl(200 40% 50% / .14);
+  --line-strong:   hsl(186 80% 60% / .35);
+  --primary:       hsl(186 100% 50%);
+  --primary-deep:  hsl(186 100% 38%);
+  --primary-dim:   hsl(186 60% 45% / .16);
+  --ink:           hsl(210 30% 96%);
+  --ink-mid:       hsl(212 18% 72%);
+  --ink-low:       hsl(214 14% 52%);
+  --warn:          hsl(38 95% 58%);
+  --ok:            hsl(150 80% 55%);
+  --font-ui:  "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  --max: 1180px;
+  --cut: 14px; /* corner-cut size for panels */
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-ui);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{ background:hsl(186 100% 50% / .28); color:#fff; }
+
+a{ color:inherit; text-decoration:none; }
+img,svg{ display:block; }
+.mono{ font-family:var(--font-mono); }
+
+.wrap{ width:min(var(--max), 100% - 3rem); margin-inline:auto; }
+
+/* ---------- accessibility ---------- */
+.skip-link{
+  position:absolute; left:-999px; top:0; z-index:100;
+  background:var(--primary); color:hsl(220 30% 4%);
+  padding:.6rem 1rem; font-weight:700;
+}
+.skip-link:focus{ left:0; }
+:focus-visible{ outline:2px solid var(--primary); outline-offset:3px; }
+
+/* ---------- header ---------- */
+.site-header{
+  position:sticky; top:0; z-index:50;
+  background:hsl(220 30% 2% / .82);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.site-header .wrap{
+  display:flex; align-items:center; justify-content:space-between;
+  height:64px; gap:1.5rem;
+}
+.brand{ display:flex; align-items:center; gap:.7rem; }
+.brand-mark{ width:30px; height:30px; flex:none; }
+.brand-name{
+  font-weight:700; letter-spacing:.02em; font-size:.95rem; white-space:nowrap;
+}
+.brand-name span{ color:var(--ink-low); font-weight:500; }
+.nav{ display:flex; align-items:center; gap:1.6rem; font-size:.85rem; }
+.nav a{ color:var(--ink-mid); transition:color .15s; }
+.nav a:hover{ color:var(--primary); }
+.nav .btn{ color:inherit; }
+@media (max-width:720px){ .nav a:not(.btn){ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
+  font-family:var(--font-mono); font-size:.82rem; font-weight:700;
+  letter-spacing:.06em; text-transform:uppercase;
+  padding:.85rem 1.5rem; border:1px solid var(--line-strong);
+  color:var(--primary); background:transparent;
+  clip-path:polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  transition:background .18s, color .18s, border-color .18s;
+  cursor:pointer;
+}
+.btn:hover{ background:var(--primary-dim); border-color:var(--primary); }
+.btn-solid{
+  background:var(--primary); color:hsl(220 30% 4%); border-color:var(--primary);
+}
+.btn-solid:hover{ background:hsl(186 100% 62%); color:hsl(220 30% 4%); }
+.btn-sm{ padding:.55rem 1.05rem; font-size:.72rem; }
+
+/* ---------- kicker / section labels ---------- */
+.kicker{
+  font-family:var(--font-mono); font-size:.72rem; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--primary);
+  display:flex; align-items:center; gap:.8rem;
+}
+.kicker::before{ content:""; width:26px; height:1px; background:var(--primary); }
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;
+  min-height:calc(100svh - 64px);
+  display:flex; align-items:center;
+  padding:4.5rem 0 5rem;
+  overflow:hidden;
+}
+/* Motion 1 of 3: slow-drift blueprint grid behind hero */
+.hero-grid{
+  position:absolute; inset:-60px; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(hsl(186 80% 50% / .05) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(186 80% 50% / .05) 1px, transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 90% 80% at 60% 40%, #000 30%, transparent 75%);
+  animation:grid-drift 34s linear infinite;
+}
+@keyframes grid-drift{ to{ transform:translate(56px, 56px); } }
+.hero-glow{
+  position:absolute; z-index:0; pointer-events:none;
+  width:720px; height:720px; right:-200px; top:-220px;
+  background:radial-gradient(circle, hsl(186 100% 50% / .09), transparent 62%);
+}
+.hero .wrap{
+  position:relative; z-index:1;
+  display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  gap:4rem; align-items:center;
+}
+@media (max-width:960px){
+  .hero .wrap{ grid-template-columns:1fr; gap:3rem; }
+  .hero{ min-height:0; }
+}
+.hero h1{
+  font-size:clamp(2.6rem, 5.2vw, 4.1rem);
+  font-weight:800; line-height:1.04; letter-spacing:-.025em;
+  margin:1.2rem 0 1.3rem;
+}
+.hero h1 em{
+  font-style:normal; color:var(--primary);
+  text-shadow:0 0 32px hsl(186 100% 50% / .35);
+}
+.hero-sub{
+  color:var(--ink-mid); font-size:1.08rem; max-width:34rem; margin-bottom:2.2rem;
+}
+.hero-ctas{ display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:2.6rem; }
+.hero-meta{
+  display:flex; flex-wrap:wrap; gap:1.8rem;
+  font-family:var(--font-mono); font-size:.72rem; letter-spacing:.08em;
+  color:var(--ink-low); text-transform:uppercase;
+}
+.hero-meta b{ color:var(--ink); font-weight:700; display:block; font-size:.95rem; letter-spacing:.02em; }
+
+/* ---------- shell mock (hero visual) ---------- */
+.shell{
+  position:relative;
+  background:linear-gradient(160deg, var(--bg-panel), hsl(220 28% 4%));
+  border:1px solid var(--line-strong);
+  clip-path:polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  padding:1.1rem 1.2rem 1.3rem;
+  font-family:var(--font-mono); font-size:.78rem;
+  box-shadow:0 30px 80px hsl(220 30% 1% / .8);
+}
+.shell-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:.85rem; margin-bottom:.95rem;
+  border-bottom:1px solid var(--line);
+  color:var(--ink-low); letter-spacing:.1em; font-size:.68rem; text-transform:uppercase;
+}
+.shell-head .live{ color:var(--ok); display:flex; align-items:center; gap:.45rem; }
+/* Motion 2 of 3: session-live pulse dot */
+.pulse{
+  width:7px; height:7px; border-radius:50%; background:var(--ok);
+  animation:pulse 2.2s ease-in-out infinite;
+}
+@keyframes pulse{ 0%,100%{ box-shadow:0 0 0 0 hsl(150 80% 55% / .5);} 50%{ box-shadow:0 0 0 6px hsl(150 80% 55% / 0);} }
+.shell-rows{ display:grid; gap:.55rem; margin-bottom:1.1rem; }
+.shell-row{
+  display:grid; grid-template-columns:9.5rem 1fr auto; gap:.9rem; align-items:center;
+  color:var(--ink-mid);
+}
+.shell-row .lbl{ color:var(--ink-low); font-size:.7rem; letter-spacing:.06em; }
+.shell-row .val{ color:var(--ink); }
+.shell-row .tag{ color:var(--primary); font-size:.68rem; }
+.shell-row .tag.warn{ color:var(--warn); }
+.bar{
+  height:4px; background:hsl(214 20% 16%); position:relative; overflow:hidden;
+}
+.bar i{
+  position:absolute; inset:0; right:auto; background:var(--primary);
+  box-shadow:0 0 10px hsl(186 100% 50% / .5);
+}
+/* ultrawide crop diagram */
+.crop{
+  border:1px solid var(--line); padding:.9rem; margin-top:.2rem;
+}
+.crop-title{
+  font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-low); margin-bottom:.7rem; display:flex; justify-content:space-between;
+}
+.crop-title span:last-child{ color:var(--primary); }
+.crop-stage{
+  position:relative; aspect-ratio:5110/1400;
+  border:1px dashed hsl(186 80% 60% / .45);
+  background:
+    repeating-linear-gradient(45deg, hsl(186 60% 50% / .05) 0 8px, transparent 8px 16px);
+}
+.crop-center{
+  position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%);
+  aspect-ratio:16/9; height:100%;
+  border:1px solid var(--primary);
+  background:hsl(186 100% 50% / .1);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--primary); font-size:.62rem; letter-spacing:.12em;
+}
+.crop-labels{
+  display:flex; justify-content:space-between; margin-top:.55rem;
+  font-size:.62rem; color:var(--ink-low); letter-spacing:.08em;
+}
+
+/* ---------- generic section ---------- */
+section{ padding:5.5rem 0; position:relative; }
+.section-head{ max-width:44rem; margin-bottom:3rem; }
+.section-head h2{
+  font-size:clamp(1.7rem, 3vw, 2.4rem); font-weight:800; letter-spacing:-.02em;
+  margin-top:1rem;
+}
+.section-head p{ color:var(--ink-mid); margin-top:.8rem; }
+.hr-line{ border:none; border-top:1px solid var(--line); }
+
+/* ---------- flagship: UnboundOS ---------- */
+#unboundos{ background:linear-gradient(180deg, transparent, hsl(220 28% 3.5%) 20%, hsl(220 28% 3.5%) 80%, transparent); }
+.feature-grid{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(245px, 1fr));
+  gap:1px; background:var(--line); border:1px solid var(--line);
+}
+.feature{
+  background:var(--bg); padding:1.7rem 1.6rem 1.9rem;
+  transition:background .2s;
+}
+.feature:hover{ background:var(--bg-raise); }
+.feature .idx{
+  font-family:var(--font-mono); font-size:.68rem; color:var(--primary);
+  letter-spacing:.18em; display:block; margin-bottom:1rem;
+}
+.feature h3{ font-size:1.02rem; font-weight:700; margin-bottom:.55rem; }
+.feature p{ color:var(--ink-mid); font-size:.9rem; }
+.feature p code{
+  font-family:var(--font-mono); font-size:.78em; color:var(--primary);
+  background:var(--primary-dim); padding:.1em .4em;
+}
+.flagship-ctas{
+  display:flex; flex-wrap:wrap; align-items:center; gap:1.1rem; margin-top:2.6rem;
+}
+.price-note{
+  font-family:var(--font-mono); font-size:.72rem; color:var(--ink-low);
+  letter-spacing:.06em;
+}
+.price-note b{ color:var(--ink); }
+
+/* ---------- app cards ---------- */
+.cards{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+  gap:1.4rem;
+}
+.card{
+  position:relative;
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  clip-path:polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  padding:1.9rem 1.8rem 1.8rem;
+  display:flex; flex-direction:column; gap:1rem;
+  transition:transform .22s ease, border-color .22s ease;
+}
+.card:hover{ transform:translateY(-4px); border-color:var(--line-strong); }
+.card-top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.card h3{ font-size:1.2rem; font-weight:700; letter-spacing:-.01em; }
+.status{
+  font-family:var(--font-mono); font-size:.62rem; font-weight:700;
+  letter-spacing:.16em; text-transform:uppercase;
+  padding:.32em .7em; border:1px solid currentColor; white-space:nowrap;
+}
+.status.live{ color:var(--ok); }
+.status.flagship{ color:var(--primary); }
+.status.soon{ color:var(--warn); }
+.status.dev{ color:var(--ink-low); }
+.card p{ color:var(--ink-mid); font-size:.92rem; flex:1; }
+.card .tags{
+  display:flex; flex-wrap:wrap; gap:.45rem;
+  font-family:var(--font-mono); font-size:.64rem; color:var(--ink-low);
+  letter-spacing:.08em; text-transform:uppercase;
+}
+.card .tags span{ border:1px solid var(--line); padding:.28em .6em; }
+.card-actions{ display:flex; gap:.8rem; margin-top:.4rem; }
+.card-link{
+  font-family:var(--font-mono); font-size:.74rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--primary);
+  display:inline-flex; align-items:center; gap:.4rem;
+}
+.card-link:hover{ text-decoration:underline; text-underline-offset:4px; }
+
+/* ---------- CTA band ---------- */
+.cta-band{
+  border-block:1px solid var(--line);
+  background:
+    radial-gradient(ellipse 60% 120% at 50% 120%, hsl(186 100% 50% / .1), transparent),
+    var(--bg-raise);
+  text-align:center;
+}
+.cta-band h2{ font-size:clamp(1.8rem, 3.4vw, 2.6rem); font-weight:800; letter-spacing:-.02em; }
+.cta-band p{ color:var(--ink-mid); margin:1rem auto 2.2rem; max-width:36rem; }
+.cta-band .hero-ctas{ justify-content:center; margin-bottom:0; }
+
+/* ---------- footer ---------- */
+.site-footer{
+  border-top:1px solid var(--line);
+  padding:2.6rem 0;
+}
+.site-footer .wrap{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1.4rem;
+}
+.site-footer p{
+  font-family:var(--font-mono); font-size:.72rem; color:var(--ink-low); letter-spacing:.06em;
+}
+.footer-links{ display:flex; gap:1.6rem; font-size:.82rem; }
+.footer-links a{ color:var(--ink-mid); }
+.footer-links a:hover{ color:var(--primary); }
+
+/* ---------- Motion 3 of 3: scroll reveal ---------- */
+.reveal{ opacity:0; transform:translateY(22px); transition:opacity .6s ease, transform .6s ease; }
+.reveal.in{ opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce){
+  .hero-grid{ animation:none; }
+  .pulse{ animation:none; }
+  .reveal{ opacity:1; transform:none; transition:none; }
+  html{ scroll-behavior:auto; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="https://unboundinfotech.com/" aria-label="Unbound Infotech Corporation home">
+      <!-- Geometric "U" mark -->
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M6 3v17l10 9 10-9V3h-6v14.5L16 22l-4-4.5V3H6z" fill="hsl(186 100% 50%)"/>
+        <path d="M13 3h6v11l-3 3-3-3V3z" fill="hsl(220 30% 2%)"/>
+        <path d="M14.5 3h3v10l-1.5 1.5L14.5 13V3z" fill="hsl(186 100% 50%)" opacity=".55"/>
+      </svg>
+      <span class="brand-name">UNBOUND INFOTECH <span>/ SOFTWARE</span></span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#unboundos">UnboundOS</a>
+      <a href="#apps">All Apps</a>
+      <a href="https://unboundinfotech.com/">Main Site</a>
+      <a class="btn btn-solid btn-sm" href="https://buy.stripe.com/9B6aEXafQ6ym9Kg3R3dQQ01">Buy Pro — $14.99</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="wrap">
+      <div>
+        <p class="kicker">Unbound Infotech // Product Line</p>
+        <h1 id="hero-title">Cut the noise.<br /><em>Own the frame.</em></h1>
+        <p class="hero-sub">
+          Purpose-built Windows software from Unbound Infotech Corporation.
+          Flagship: <strong>UnboundOS</strong> — a gaming session shell that puts
+          Windows 11 into a focused gaming &amp; streaming posture, then restores
+          your desktop when you exit.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn btn-solid" href="https://buy.stripe.com/9B6aEXafQ6ym9Kg3R3dQQ01">Buy Pro — $14.99</a>
+          <a class="btn" href="#unboundos">Free core · See what it does</a>
+        </div>
+        <div class="hero-meta" role="list">
+          <div role="listitem"><b>Win 11</b>native shell</div>
+          <div role="listitem"><b>Dual-NIC</b>traffic split</div>
+          <div role="listitem"><b>5110×1400</b>→ 1080p60 crop</div>
+          <div role="listitem"><b>0</b>Steam credentials read</div>
+        </div>
+      </div>
+
+      <!-- Stylized UnboundOS session shell -->
+      <div class="shell" role="img" aria-label="Stylized preview of the UnboundOS session shell showing live telemetry, network split, and the ultrawide stream crop plan.">
+        <div class="shell-head">
+          <span>UNBOUNDOS // SESSION</span>
+          <span class="live"><span class="pulse"></span>STREAMER SPLIT — ACTIVE</span>
+        </div>
+        <div class="shell-rows">
+          <div class="shell-row">
+            <span class="lbl">SESSION ENGINE</span>
+            <span class="val">14 background apps parked · anticheat protected</span>
+            <span class="tag">CLEAN</span>
+          </div>
+          <div class="shell-row">
+            <span class="lbl">NIC-1 / GAME</span>
+            <span class="bar" aria-hidden="true"><i style="width:22%"></i></span>
+            <span class="tag">METRIC 5 · LOW</span>
+          </div>
+          <div class="shell-row">
+            <span class="lbl">NIC-2 / STREAM</span>
+            <span class="bar" aria-hidden="true"><i style="width:64%"></i></span>
+            <span class="tag warn">BULK + OBS</span>
+          </div>
+          <div class="shell-row">
+            <span class="lbl">MODS + WORKSHOP</span>
+            <span class="val">3 profiles · transactional apply / auto-restore</span>
+            <span class="tag">SAFE</span>
+          </div>
+        </div>
+        <div class="crop">
+          <div class="crop-title"><span>STREAM CANVAS</span><span>CROP PLAN</span></div>
+          <div class="crop-stage">
+            <div class="crop-center">16:9 → 1080p60</div>
+          </div>
+          <div class="crop-labels">
+            <span>ULTRAWIDE 5110×1400</span>
+            <span>MONITOR RES UNTOUCHED</span>
+            <span>TWITCH-READY</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= UNBOUNDOS FLAGSHIP ================= -->
+  <section id="unboundos" aria-labelledby="unboundos-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="kicker">Flagship</p>
+        <h2 id="unboundos-title">UnboundOS — the gaming session shell for Windows 11</h2>
+        <p>
+          UnboundOS doesn't replace Windows. It snapshots your machine, strips the
+          noise for the session, and hands your desktop back exactly as it was.
+        </p>
+      </div>
+
+      <div class="feature-grid reveal">
+        <article class="feature">
+          <span class="idx">01 / SESSION ENGINE</span>
+          <h3>Enter a posture, not a mess</h3>
+          <p>One click enters a profile: NIC metrics are snapshotted, denylisted background apps are terminated, and games plus anticheat are hard-protected. Exit restores everything.</p>
+        </article>
+        <article class="feature">
+          <span class="idx">02 / NETWORK DIRECTOR</span>
+          <h3>Dual-NIC streamer split</h3>
+          <p>Prefer a dedicated game NIC with a low metric while stream and bulk traffic ride a second NIC. Your hits register; your bitrate doesn't fight them.</p>
+        </article>
+        <article class="feature">
+          <span class="idx">03 / STREAM CANVAS</span>
+          <h3>Ultrawide → Twitch, no compromise</h3>
+          <p>Exact crop math from ultrawide (default <code>5110×1400</code>) to a centered 16:9 → 1080p60 Twitch canvas, with an OBS filter guide. It never asks you to lower your monitor resolution.</p>
+        </article>
+        <article class="feature">
+          <span class="idx">04 / MODS + WORKSHOP</span>
+          <h3>Local Workshop, handled safely</h3>
+          <p>Discovers installed Steam Workshop content without touching your credentials. Per-game mod profiles with transactional, backed-up apply — and automatic restore if anything fails.</p>
+        </article>
+        <article class="feature">
+          <span class="idx">05 / PROFILES</span>
+          <h3>Competitive · Streamer · Living Room</h3>
+          <p>Ships with three tuned JSON profiles — aggressive competitive cleanup, streamer split with the full crop plan, and a calm big-picture living-room shell.</p>
+        </article>
+        <article class="feature">
+          <span class="idx">06 / TELEMETRY</span>
+          <h3>Live signal in the header</h3>
+          <p>CPU, memory, process, and suspect counts stream live in the shell header, so you always know what the session is holding back.</p>
+        </article>
+      </div>
+
+      <div class="flagship-ctas reveal">
+        <a class="btn btn-solid" href="https://buy.stripe.com/9B6aEXafQ6ym9Kg3R3dQQ01">Unlock Pro — $14.99 lifetime</a>
+        <a class="btn" href="https://unboundinfotech.com/" rel="noopener">Free core available</a>
+        <span class="price-note">Windows 11 · x64 · <b>Free core</b> · Pro unlocks streamer + workshop tools</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ALL APPS ================= -->
+  <section id="apps" aria-labelledby="apps-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="kicker">Product Line</p>
+        <h2 id="apps-title">Every app we ship</h2>
+        <p>Focused tools, one brand language. Built and maintained by Unbound Infotech Corporation.</p>
+      </div>
+
+      <div class="cards reveal">
+        <article class="card">
+          <div class="card-top">
+            <h3>UnboundOS</h3>
+            <span class="status flagship">Flagship</span>
+          </div>
+          <p>The Windows 11 gaming session shell. Session cleanup, dual-NIC streamer split, ultrawide Twitch crop math, and safe Steam Workshop mod profiles.</p>
+          <div class="tags"><span>Windows 11</span><span>WinUI 3</span><span>Gaming</span><span>Streaming</span></div>
+          <div class="card-actions">
+            <a class="btn btn-solid btn-sm" href="https://buy.stripe.com/9B6aEXafQ6ym9Kg3R3dQQ01">Buy Pro — $14.99</a>
+            <a class="card-link" href="#unboundos">Details ↗</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <h3>Heirloom Unbound</h3>
+            <span class="status live">Live</span>
+          </div>
+          <p>Preserve family stories, recipes, and artifacts in a private digital vault built to outlive the shoebox. Heirloom has its own home — visit its page.</p>
+          <div class="tags"><span>Family Legacy</span><span>Private Vault</span><span>Web</span></div>
+          <div class="card-actions">
+            <!-- Update href to the Heirloom Unbound page URL -->
+            <a class="card-link" href="https://unboundinfotech.com/">Visit Heirloom Unbound ↗</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <h3>InsureVault</h3>
+            <span class="status soon">Coming Soon</span>
+          </div>
+          <p>Policy documents, coverage timelines, and claim evidence in one encrypted place — so the paperwork is ready before you ever need it.</p>
+          <div class="tags"><span>Insurance</span><span>Documents</span><span>Encrypted</span></div>
+          <div class="card-actions">
+            <!-- STRIPE_PAYMENT_LINK: optional waitlist / preorder Payment Link -->
+            <a class="card-link" href="#stripe-payment-link-insurevault">Join the waitlist ↗</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <h3>Unbound Ops Tools</h3>
+            <span class="status dev">In Development</span>
+          </div>
+          <p>Internal-grade operations utilities — network posture checks, session automation, and diagnostics — being hardened for public release.</p>
+          <div class="tags"><span>Ops</span><span>Network</span><span>Automation</span></div>
+          <div class="card-actions">
+            <a class="card-link" href="https://unboundinfotech.com/">Get notified ↗</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA BAND ================= -->
+  <section class="cta-band" aria-labelledby="cta-title">
+    <div class="wrap reveal">
+      <p class="kicker" style="justify-content:center;">Ready when you are</p>
+      <h2 id="cta-title" style="margin-top:1rem;">Your desktop, back the way you left it.</h2>
+      <p>Enter the session. Play or stream at full signal. Exit clean. UnboundOS handles the posture so you can hold the frame.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-solid" href="https://buy.stripe.com/9B6aEXafQ6ym9Kg3R3dQQ01">Buy Pro — $14.99</a>
+        <a class="btn" href="mailto:hello@unboundinfotech.com">Talk to us</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© 2026 UNBOUND INFOTECH CORPORATION — ALL SIGNAL, NO NOISE.</p>
+    <nav class="footer-links" aria-label="Footer">
+      <a href="https://unboundinfotech.com/">unboundinfotech.com</a>
+      <a href="#unboundos">UnboundOS</a>
+      <a href="#apps">Apps</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+// Scroll-reveal (respects prefers-reduced-motion via CSS override)
+const io = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+  }
+}, { threshold: 0.12 });
+document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+</script>
+</body>
+</html>

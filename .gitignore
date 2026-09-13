@@ -1,0 +1,32 @@
+## Build
+**/bin/
+**/obj/
+**/AppPackages/
+**/BundleArtifacts/
+**/*.user
+**/*.suo
+**/.vs/
+**/TestResults/
+*.log
+
+## NuGet
+**/packages/
+project.lock.json
+project.fragment.lock.json
+
+## OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+## Local UnboundOS data (generated at runtime)
+# Profiles live under %LocalAppData%\Unbound Infotech Corporation\UnboundOS\
+
+## Secrets — never commit
+.env
+**/.env
+**/appsettings.*.local.json
+
+## Editor / agent (local only)
+.cursor/
+AGENTS.md

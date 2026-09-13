@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="UnboundOS.App.Views.StreamPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="Transparent">
+
+    <ScrollViewer Padding="8">
+        <StackPanel Spacing="20" MaxWidth="1100">
+            <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource SectionTitleText}" Text="Ultrawide Stream Canvas" />
+                <TextBlock Style="{StaticResource BodyMutedText}" Text="Play native. Crop center 16:9. Downscale once. Never lower your monitor resolution for Twitch." />
+            </StackPanel>
+
+            <!-- Visual crop preview -->
+            <Border Style="{StaticResource PanelBorderStyle}" Padding="24">
+                <StackPanel Spacing="12">
+                    <TextBlock FontFamily="Bahnschrift" Foreground="{StaticResource SignalLimeBrush}" Text="VIEWER SAFE ZONE" CharacterSpacing="80" />
+                    <Grid Height="120">
+                        <Border Background="#0B1018" BorderBrush="#33FFFFFF" BorderThickness="1" CornerRadius="4">
+                            <Grid>
+                                <Rectangle Fill="#14C8F531" HorizontalAlignment="Stretch" />
+                                <Border
+                                    Background="#33000000"
+                                    BorderBrush="{StaticResource SignalLimeBrush}"
+                                    BorderThickness="2"
+                                    HorizontalAlignment="Center"
+                                    Width="{x:Bind ViewModel.PreviewBarCropWidth, Mode=OneWay}"
+                                    CornerRadius="2">
+                                    <TextBlock
+                                        Text="16:9 TWITCH"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Bahnschrift"
+                                        Foreground="{StaticResource SignalLimeBrush}" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <TextBlock Text="{x:Bind ViewModel.Summary, Mode=OneWay}" FontFamily="Cascadia Mono" Foreground="{StaticResource IceTelemetryBrush}" />
+                    <TextBlock Text="{x:Bind ViewModel.DiscardText, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
+                    <TextBlock Text="{x:Bind ViewModel.Guidance, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
+                </StackPanel>
+            </Border>
+
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="1.2*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="0">
+                    <StackPanel Spacing="10">
+                        <TextBlock FontFamily="Bahnschrift" Text="SOURCE / OUTPUT" Foreground="{StaticResource WarmPaperBrush}" />
+                        <NumberBox Header="Source width" Value="{x:Bind ViewModel.SourceWidth, Mode=TwoWay}" Minimum="640" Maximum="7680" SpinButtonPlacementMode="Compact" />
+                        <NumberBox Header="Source height" Value="{x:Bind ViewModel.SourceHeight, Mode=TwoWay}" Minimum="480" Maximum="4320" SpinButtonPlacementMode="Compact" />
+                        <NumberBox Header="Output width" Value="{x:Bind ViewModel.OutputWidth, Mode=TwoWay}" Minimum="640" Maximum="3840" SpinButtonPlacementMode="Compact" />
+                        <NumberBox Header="Output height" Value="{x:Bind ViewModel.OutputHeight, Mode=TwoWay}" Minimum="360" Maximum="2160" SpinButtonPlacementMode="Compact" />
+                        <NumberBox Header="Bitrate Kbps" Value="{x:Bind ViewModel.BitrateKbps, Mode=TwoWay}" Minimum="2500" Maximum="12000" SpinButtonPlacementMode="Compact" />
+                        <Slider Header="Sharpen after downscale" Minimum="0" Maximum="1" StepFrequency="0.05" Value="{x:Bind ViewModel.Sharpen, Mode=TwoWay}" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button Style="{StaticResource SignalButtonStyle}" Content="REBUILD" Command="{x:Bind ViewModel.RebuildCommand}" />
+                            <Button Style="{StaticResource GhostButtonStyle}" Content="COPY OBS JSON" Command="{x:Bind ViewModel.CopyObsJsonCommand}" />
+                            <Button Style="{StaticResource GhostButtonStyle}" Content="COPY GUIDE" Command="{x:Bind ViewModel.CopyInstructionsCommand}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="1">
+                    <ScrollViewer MaxHeight="520">
+                        <TextBlock
+                            Text="{x:Bind ViewModel.Instructions, Mode=OneWay}"
+                            FontFamily="Cascadia Mono"
+                            FontSize="12"
+                            Foreground="{StaticResource MutedSteelBrush}"
+                            TextWrapping="Wrap" />
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <Company>Unbound Infotech Corporation</Company>
+    <Product>UnboundOS</Product>
+    <Authors>Unbound Infotech Corporation</Authors>
+    <Copyright>Copyright © Unbound Infotech Corporation</Copyright>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+</Project>

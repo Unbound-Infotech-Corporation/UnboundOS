@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="UnboundOS.App.Views.NetworkPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:UnboundOS.Core.Models"
+    Background="Transparent">
+
+    <ScrollViewer Padding="8">
+        <StackPanel Spacing="20" MaxWidth="1100">
+            <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource SectionTitleText}" Text="Network Director" />
+                <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.PlanSummary, Mode=OneWay}" />
+            </StackPanel>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{x:Bind ViewModel.StreamerTip, Mode=OneWay}" Style="{StaticResource BodyMutedText}" Foreground="{StaticResource IceTelemetryBrush}" />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Style="{StaticResource SignalButtonStyle}" Content="APPLY SPLIT" Command="{x:Bind ViewModel.ApplySeparationCommand}" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="REFRESH" Command="{x:Bind ViewModel.RefreshCommand}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <ItemsRepeater ItemsSource="{x:Bind ViewModel.Adapters, Mode=OneWay}">
+                <ItemsRepeater.Layout>
+                    <UniformGridLayout MinItemWidth="280" MinColumnSpacing="12" MinRowSpacing="12" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="models:NetworkAdapterInfo">
+                        <Border Style="{StaticResource PanelBorderStyle}" MinHeight="160">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="{x:Bind RoleHint}" FontFamily="Bahnschrift" Foreground="{StaticResource SignalLimeBrush}" FontSize="12" CharacterSpacing="60" />
+                                <TextBlock Text="{x:Bind Name}" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WarmPaperBrush}" />
+                                <TextBlock Text="{x:Bind Description}" Style="{StaticResource BodyMutedText}" />
+                                <TextBlock FontFamily="Cascadia Mono" FontSize="12" Foreground="{StaticResource MutedSteelBrush}">
+                                    <Run Text="{x:Bind IPv4Address}" />
+                                    <Run Text=" · " />
+                                    <Run Text="{x:Bind SpeedMbps}" />
+                                    <Run Text=" Mbps · metric " />
+                                    <Run Text="{x:Bind InterfaceMetric}" />
+                                </TextBlock>
+                                <TextBlock FontSize="12" Foreground="{StaticResource AlertAmberBrush}">
+                                    <Run Text="Link: " />
+                                    <Run Text="{x:Bind IsUp}" />
+                                    <Run Text=" · Wireless: " />
+                                    <Run Text="{x:Bind IsWireless}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

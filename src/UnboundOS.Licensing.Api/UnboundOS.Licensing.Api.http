@@ -1,0 +1,12 @@
+@*
+  UnboundOS Licensing API — smoke tests
+  Replace BASE and KEY before running.
+*@
+$Base = "http://localhost:5080"
+# Invoke-RestMethod "$Base/health"
+# Invoke-RestMethod -Method Post "$Base/v1/activate" -ContentType "application/json" -Body (@{
+#   licenseKey = "UBOS-XXXX-XXXX-XXXX-XXXX-XXXX"
+#   machineFingerprint = "dev-machine-1"
+#   machineLabel = "Dev PC"
+#   appVersion = "0.1.0"
+# } | ConvertTo-Json)

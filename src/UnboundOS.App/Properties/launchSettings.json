@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "UnboundOS.App (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "UnboundOS.App (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

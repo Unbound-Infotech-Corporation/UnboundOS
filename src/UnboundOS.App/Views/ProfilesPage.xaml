@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="UnboundOS.App.Views.ProfilesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:UnboundOS.Core.Models"
+    Background="Transparent">
+
+    <ScrollViewer Padding="8">
+        <StackPanel Spacing="20" MaxWidth="1100">
+            <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource SectionTitleText}" Text="Profiles" />
+                <TextBlock Style="{StaticResource BodyMutedText}" Text="JSON-backed profiles in your LocalAppData. Tune denylists per game later — defaults ship ready." />
+            </StackPanel>
+
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.9*" />
+                    <ColumnDefinition Width="1.2*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="0">
+                    <StackPanel Spacing="12">
+                        <ListView
+                            ItemsSource="{x:Bind ViewModel.Profiles, Mode=OneWay}"
+                            SelectedItem="{x:Bind ViewModel.SelectedProfile, Mode=TwoWay}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:SessionProfile">
+                                    <StackPanel Margin="0,6" Spacing="2">
+                                        <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{StaticResource WarmPaperBrush}" />
+                                        <TextBlock Text="{x:Bind Kind}" FontSize="12" Foreground="{StaticResource SignalLimeBrush}" />
+                                        <TextBlock Text="{x:Bind Description}" Style="{StaticResource BodyMutedText}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="RESET DEFAULTS" Command="{x:Bind ViewModel.ResetDefaultsCommand}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="1">
+                    <StackPanel Spacing="12">
+                        <TextBlock FontFamily="Bahnschrift" Text="TERMINATE" Foreground="{StaticResource AlertAmberBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.DenylistPreview, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
+                        <TextBlock FontFamily="Bahnschrift" Text="PROTECT" Foreground="{StaticResource SignalLimeBrush}" Margin="0,12,0,0" />
+                        <TextBlock Text="{x:Bind ViewModel.ProtectPreview, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

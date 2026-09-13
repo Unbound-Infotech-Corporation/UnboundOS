@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="UnboundOS.App.Views.ModsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:UnboundOS.Core.Models"
+    Background="Transparent">
+
+    <ScrollViewer Padding="8">
+        <StackPanel MaxWidth="1180" Spacing="18">
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Spacing="5">
+                    <TextBlock Style="{StaticResource SectionTitleText}" Text="Mods + Workshop" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="Discover local Workshop content, build per-game profiles, and hand subscriptions back to Steam." />
+                </StackPanel>
+                <Button
+                    Grid.Column="1"
+                    Style="{StaticResource GhostButtonStyle}"
+                    Content="REFRESH LIBRARIES"
+                    Command="{x:Bind ViewModel.RefreshCommand}"
+                    AutomationProperties.Name="Refresh Steam Workshop libraries" />
+            </Grid>
+
+            <InfoBar
+                IsOpen="True"
+                IsClosable="False"
+                Severity="Informational"
+                Title="Safe by design"
+                Message="{x:Bind ViewModel.CapabilitySummary, Mode=OneWay}" />
+
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="330" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource PanelBorderStyle}">
+                    <StackPanel Spacing="12">
+                        <TextBlock
+                            FontFamily="Bahnschrift"
+                            Foreground="{StaticResource SignalLimeBrush}"
+                            Text="MODDED GAMES"
+                            CharacterSpacing="80" />
+                        <ListView
+                            MinHeight="220"
+                            ItemsSource="{x:Bind ViewModel.Games, Mode=OneWay}"
+                            SelectedItem="{x:Bind ViewModel.SelectedGame, Mode=TwoWay}"
+                            SelectionMode="Single"
+                            IsItemClickEnabled="True"
+                            XYFocusKeyboardNavigation="Enabled"
+                            AutomationProperties.Name="Games with mod content">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:ModGame">
+                                    <StackPanel Margin="0,7" Spacing="3">
+                                        <TextBlock
+                                            FontSize="17"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource WarmPaperBrush}"
+                                            Text="{x:Bind DisplayName}" />
+                                        <TextBlock
+                                            FontFamily="Cascadia Mono"
+                                            FontSize="11"
+                                            Foreground="{StaticResource IceTelemetryBrush}">
+                                            <Run Text="{x:Bind Provider}" />
+                                            <Run Text=" • " />
+                                            <Run Text="{x:Bind Mods.Count}" />
+                                            <Run Text=" items" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <Button
+                            Style="{StaticResource SignalButtonStyle}"
+                            Content="OPEN IN STEAM"
+                            Command="{x:Bind ViewModel.OpenWorkshopCommand}"
+                            IsEnabled="{x:Bind ViewModel.CanOpenWorkshop, Mode=OneWay}"
+                            AutomationProperties.HelpText="Opens the supported Steam Workshop page; UnboundOS does not subscribe on your behalf." />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Style="{StaticResource PanelBorderStyle}">
+                    <StackPanel Spacing="12">
+                        <Grid ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                FontFamily="Bahnschrift"
+                                Foreground="{StaticResource WarmPaperBrush}"
+                                Text="INSTALLED CONTENT"
+                                CharacterSpacing="60" />
+                            <ProgressRing
+                                Grid.Column="1"
+                                Width="22"
+                                Height="22"
+                                IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}" />
+                        </Grid>
+
+                        <ListView
+                            MinHeight="300"
+                            MaxHeight="430"
+                            ItemsSource="{x:Bind ViewModel.Mods, Mode=OneWay}"
+                            SelectedItem="{x:Bind ViewModel.SelectedMod, Mode=TwoWay}"
+                            SelectionMode="Single"
+                            XYFocusKeyboardNavigation="Enabled"
+                            AutomationProperties.Name="Installed mods and Workshop items">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:InstalledMod">
+                                    <Grid Margin="0,7" ColumnSpacing="12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="34" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            FontFamily="Cascadia Mono"
+                                            Foreground="{StaticResource MutedSteelBrush}"
+                                            Text="{x:Bind LoadOrder}" />
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <TextBlock
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource WarmPaperBrush}"
+                                                Text="{x:Bind DisplayName}" />
+                                            <TextBlock
+                                                FontFamily="Cascadia Mono"
+                                                FontSize="11"
+                                                Foreground="{StaticResource MutedSteelBrush}">
+                                                <Run Text="{x:Bind Provider}" />
+                                                <Run Text=" • " />
+                                                <Run Text="{x:Bind Id}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                            <TextBlock
+                                                FontSize="11"
+                                                Foreground="{StaticResource IceTelemetryBrush}"
+                                                Text="{x:Bind UpdateState}" />
+                                            <TextBlock
+                                                FontSize="11"
+                                                Foreground="{StaticResource SignalLimeBrush}">
+                                                <Run Text="Enabled: " />
+                                                <Run Text="{x:Bind IsEnabled}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button
+                                Style="{StaticResource GhostButtonStyle}"
+                                Content="TOGGLE DRAFT"
+                                Command="{x:Bind ViewModel.ToggleSelectedCommand}"
+                                AutomationProperties.Name="Toggle selected mod in profile draft" />
+                            <Button
+                                Style="{StaticResource GhostButtonStyle}"
+                                Content="MOVE UP"
+                                Command="{x:Bind ViewModel.MoveUpCommand}" />
+                            <Button
+                                Style="{StaticResource GhostButtonStyle}"
+                                Content="MOVE DOWN"
+                                Command="{x:Bind ViewModel.MoveDownCommand}" />
+                            <Button
+                                Style="{StaticResource GhostButtonStyle}"
+                                Content="VIEW ITEM"
+                                Command="{x:Bind ViewModel.OpenSelectedItemCommand}"
+                                AutomationProperties.HelpText="Opens this item in Steam." />
+                        </StackPanel>
+
+                        <TextBlock
+                            FontFamily="Cascadia Mono"
+                            FontSize="12"
+                            Foreground="{StaticResource MutedSteelBrush}"
+                            Text="{x:Bind ViewModel.ModDetails, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Spacing="10">
+                        <TextBlock
+                            FontFamily="Bahnschrift"
+                            Foreground="{StaticResource SignalLimeBrush}"
+                            Text="PROFILE LAB"
+                            CharacterSpacing="80" />
+                        <TextBox
+                            Header="New profile name"
+                            Text="{x:Bind ViewModel.ProfileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            AutomationProperties.Name="New mod profile name" />
+                        <Button
+                            Style="{StaticResource SignalButtonStyle}"
+                            HorizontalAlignment="Left"
+                            Content="SAVE CURRENT DRAFT"
+                            Command="{x:Bind ViewModel.SaveProfileCommand}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Spacing="10">
+                        <ComboBox
+                            Header="Saved profile"
+                            ItemsSource="{x:Bind ViewModel.Profiles, Mode=OneWay}"
+                            SelectedItem="{x:Bind ViewModel.SelectedProfile, Mode=TwoWay}"
+                            DisplayMemberPath="Name"
+                            HorizontalAlignment="Stretch"
+                            AutomationProperties.Name="Saved mod profiles" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button
+                                Style="{StaticResource SignalButtonStyle}"
+                                Content="APPLY SAFELY"
+                                Command="{x:Bind ViewModel.ApplyProfileCommand}"
+                                IsEnabled="{x:Bind ViewModel.CanApplyProfile, Mode=OneWay}"
+                                AutomationProperties.HelpText="Available only when a game-specific adapter can create a backup and apply this profile." />
+                            <Button
+                                Style="{StaticResource GhostButtonStyle}"
+                                Content="RESTORE LATEST"
+                                Command="{x:Bind ViewModel.RestoreLatestCommand}" />
+                        </StackPanel>
+                        <TextBlock
+                            Foreground="{StaticResource AlertAmberBrush}"
+                            Text="{x:Bind ViewModel.Status, Mode=OneWay}"
+                            TextWrapping="Wrap"
+                            AutomationProperties.LiveSetting="Polite" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
