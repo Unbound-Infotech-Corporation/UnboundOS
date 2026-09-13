@@ -18,6 +18,7 @@ public static class AppServices
         services.AddTransient<StreamViewModel>();
         services.AddTransient<ProfilesViewModel>();
         services.AddTransient<ModsViewModel>();
+        services.AddTransient<OverlayViewModel>();
         Services = services.BuildServiceProvider();
     }
 

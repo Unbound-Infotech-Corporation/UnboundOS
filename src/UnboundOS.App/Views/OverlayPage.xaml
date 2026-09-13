@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="UnboundOS.App.Views.OverlayPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:overlay="using:UnboundOS.Core.Overlay"
+    Background="Transparent">
+
+    <ScrollViewer Padding="8" AutomationProperties.Name="Desktop overlay addon">
+        <StackPanel Spacing="20" MaxWidth="1100">
+            <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource KickerText}" Text="OPTIONAL ADDON" />
+                <TextBlock Style="{StaticResource SectionTitleText}" Text="{x:Bind ViewModel.Headline}" />
+                <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.Detail}" />
+            </StackPanel>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="HOST" />
+                    <TextBlock
+                        FontFamily="{StaticResource MonoFontFamily}"
+                        Foreground="{StaticResource PaperBrush}"
+                        Text="{x:Bind ViewModel.DisplayName}" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="Register IDesktopOverlayHost before AddUnboundOs() to enable skins. See docs/overlay-addon.md. Session enter/exit does not start this host." />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="WIDGETS" />
+                    <TextBlock
+                        x:Name="EmptyWidgets"
+                        Style="{StaticResource BodyMutedText}"
+                        Text="No widgets registered. An addon can publish OverlayWidgetDescriptor entries without touching SessionEngine." />
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Widgets}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="overlay:OverlayWidgetDescriptor">
+                                <StackPanel Margin="0,0,0,10" Spacing="2">
+                                    <TextBlock FontFamily="{StaticResource UiFontSemiboldFamily}" Foreground="{StaticResource PaperBrush}" Text="{x:Bind Title}" />
+                                    <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{StaticResource MutedTextBrush}">
+                                        <Run Text="{x:Bind Kind}" />
+                                        <Run Text=" · " />
+                                        <Run Text="{x:Bind Id}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

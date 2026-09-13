@@ -6,9 +6,10 @@
     xmlns:models="using:UnboundOS.Core.Models"
     Background="Transparent">
 
-    <ScrollViewer Padding="8">
+    <ScrollViewer Padding="8" AutomationProperties.Name="Session profiles">
         <StackPanel Spacing="20" MaxWidth="1100">
             <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource KickerText}" Text="LOCAL JSON" />
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="Profiles" />
                 <TextBlock Style="{StaticResource BodyMutedText}" Text="JSON-backed profiles in your LocalAppData. Tune denylists per game later — defaults ship ready." />
             </StackPanel>
@@ -23,26 +24,27 @@
                     <StackPanel Spacing="12">
                         <ListView
                             ItemsSource="{x:Bind ViewModel.Profiles, Mode=OneWay}"
-                            SelectedItem="{x:Bind ViewModel.SelectedProfile, Mode=TwoWay}">
+                            SelectedItem="{x:Bind ViewModel.SelectedProfile, Mode=TwoWay}"
+                            AutomationProperties.Name="Saved session profiles">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:SessionProfile">
                                     <StackPanel Margin="0,6" Spacing="2">
-                                        <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{StaticResource WarmPaperBrush}" />
-                                        <TextBlock Text="{x:Bind Kind}" FontSize="12" Foreground="{StaticResource SignalLimeBrush}" />
+                                        <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{StaticResource PaperBrush}" />
+                                        <TextBlock Text="{x:Bind Kind}" FontSize="12" FontFamily="{StaticResource MonoFontFamily}" Foreground="{StaticResource CyanPulseBrush}" />
                                         <TextBlock Text="{x:Bind Description}" Style="{StaticResource BodyMutedText}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        <Button Style="{StaticResource GhostButtonStyle}" Content="RESET DEFAULTS" Command="{x:Bind ViewModel.ResetDefaultsCommand}" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="RESET DEFAULTS" Command="{x:Bind ViewModel.ResetDefaultsCommand}" AutomationProperties.Name="Reset default profiles" />
                     </StackPanel>
                 </Border>
 
                 <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="1">
                     <StackPanel Spacing="12">
-                        <TextBlock FontFamily="Bahnschrift" Text="TERMINATE" Foreground="{StaticResource AlertAmberBrush}" />
+                        <TextBlock Style="{StaticResource PanelLabelText}" Foreground="{StaticResource AlertAmberBrush}" Text="TERMINATE" />
                         <TextBlock Text="{x:Bind ViewModel.DenylistPreview, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
-                        <TextBlock FontFamily="Bahnschrift" Text="PROTECT" Foreground="{StaticResource SignalLimeBrush}" Margin="0,12,0,0" />
+                        <TextBlock Style="{StaticResource PanelLabelText}" Text="PROTECT" Margin="0,12,0,0" />
                         <TextBlock Text="{x:Bind ViewModel.ProtectPreview, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
                     </StackPanel>
                 </Border>

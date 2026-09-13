@@ -6,7 +6,7 @@
     xmlns:models="using:UnboundOS.Core.Models"
     Background="Transparent">
 
-    <ScrollViewer Padding="8">
+    <ScrollViewer Padding="8" AutomationProperties.Name="Mods and Steam Workshop">
         <StackPanel MaxWidth="1180" Spacing="18">
             <Grid ColumnSpacing="16">
                 <Grid.ColumnDefinitions>
@@ -14,6 +14,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Spacing="5">
+                    <TextBlock Style="{StaticResource KickerText}" Text="LOCAL DISCOVERY" />
                     <TextBlock Style="{StaticResource SectionTitleText}" Text="Mods + Workshop" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
@@ -42,11 +43,7 @@
 
                 <Border Grid.Column="0" Style="{StaticResource PanelBorderStyle}">
                     <StackPanel Spacing="12">
-                        <TextBlock
-                            FontFamily="Bahnschrift"
-                            Foreground="{StaticResource SignalLimeBrush}"
-                            Text="MODDED GAMES"
-                            CharacterSpacing="80" />
+                        <TextBlock Style="{StaticResource PanelLabelText}" Text="MODDED GAMES" />
                         <ListView
                             MinHeight="220"
                             ItemsSource="{x:Bind ViewModel.Games, Mode=OneWay}"
@@ -60,13 +57,13 @@
                                     <StackPanel Margin="0,7" Spacing="3">
                                         <TextBlock
                                             FontSize="17"
-                                            FontWeight="SemiBold"
-                                            Foreground="{StaticResource WarmPaperBrush}"
+                                            FontFamily="{StaticResource UiFontSemiboldFamily}"
+                                            Foreground="{StaticResource PaperBrush}"
                                             Text="{x:Bind DisplayName}" />
                                         <TextBlock
-                                            FontFamily="Cascadia Mono"
+                                            FontFamily="{StaticResource MonoFontFamily}"
                                             FontSize="11"
-                                            Foreground="{StaticResource IceTelemetryBrush}">
+                                            Foreground="{StaticResource CyanPulseBrush}">
                                             <Run Text="{x:Bind Provider}" />
                                             <Run Text=" • " />
                                             <Run Text="{x:Bind Mods.Count}" />
@@ -81,6 +78,7 @@
                             Content="OPEN IN STEAM"
                             Command="{x:Bind ViewModel.OpenWorkshopCommand}"
                             IsEnabled="{x:Bind ViewModel.CanOpenWorkshop, Mode=OneWay}"
+                            AutomationProperties.Name="Open game Workshop in Steam"
                             AutomationProperties.HelpText="Opens the supported Steam Workshop page; UnboundOS does not subscribe on your behalf." />
                     </StackPanel>
                 </Border>
@@ -92,16 +90,13 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock
-                                FontFamily="Bahnschrift"
-                                Foreground="{StaticResource WarmPaperBrush}"
-                                Text="INSTALLED CONTENT"
-                                CharacterSpacing="60" />
+                            <TextBlock Style="{StaticResource PanelLabelText}" Foreground="{StaticResource PaperBrush}" Text="INSTALLED CONTENT" />
                             <ProgressRing
                                 Grid.Column="1"
                                 Width="22"
                                 Height="22"
-                                IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}" />
+                                IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
+                                AutomationProperties.Name="Workshop scan in progress" />
                         </Grid>
 
                         <ListView
@@ -123,18 +118,18 @@
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
-                                            FontFamily="Cascadia Mono"
-                                            Foreground="{StaticResource MutedSteelBrush}"
+                                            FontFamily="{StaticResource MonoFontFamily}"
+                                            Foreground="{StaticResource MutedTextBrush}"
                                             Text="{x:Bind LoadOrder}" />
                                         <StackPanel Grid.Column="1" Spacing="2">
                                             <TextBlock
-                                                FontWeight="SemiBold"
-                                                Foreground="{StaticResource WarmPaperBrush}"
+                                                FontFamily="{StaticResource UiFontSemiboldFamily}"
+                                                Foreground="{StaticResource PaperBrush}"
                                                 Text="{x:Bind DisplayName}" />
                                             <TextBlock
-                                                FontFamily="Cascadia Mono"
+                                                FontFamily="{StaticResource MonoFontFamily}"
                                                 FontSize="11"
-                                                Foreground="{StaticResource MutedSteelBrush}">
+                                                Foreground="{StaticResource MutedTextBrush}">
                                                 <Run Text="{x:Bind Provider}" />
                                                 <Run Text=" • " />
                                                 <Run Text="{x:Bind Id}" />
@@ -143,11 +138,13 @@
                                         <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                             <TextBlock
                                                 FontSize="11"
-                                                Foreground="{StaticResource IceTelemetryBrush}"
+                                                FontFamily="{StaticResource MonoFontFamily}"
+                                                Foreground="{StaticResource CyanPulseBrush}"
                                                 Text="{x:Bind UpdateState}" />
                                             <TextBlock
                                                 FontSize="11"
-                                                Foreground="{StaticResource SignalLimeBrush}">
+                                                FontFamily="{StaticResource MonoFontFamily}"
+                                                Foreground="{StaticResource PaperBrush}">
                                                 <Run Text="Enabled: " />
                                                 <Run Text="{x:Bind IsEnabled}" />
                                             </TextBlock>
@@ -166,22 +163,25 @@
                             <Button
                                 Style="{StaticResource GhostButtonStyle}"
                                 Content="MOVE UP"
-                                Command="{x:Bind ViewModel.MoveUpCommand}" />
+                                Command="{x:Bind ViewModel.MoveUpCommand}"
+                                AutomationProperties.Name="Move selected mod up" />
                             <Button
                                 Style="{StaticResource GhostButtonStyle}"
                                 Content="MOVE DOWN"
-                                Command="{x:Bind ViewModel.MoveDownCommand}" />
+                                Command="{x:Bind ViewModel.MoveDownCommand}"
+                                AutomationProperties.Name="Move selected mod down" />
                             <Button
                                 Style="{StaticResource GhostButtonStyle}"
                                 Content="VIEW ITEM"
                                 Command="{x:Bind ViewModel.OpenSelectedItemCommand}"
+                                AutomationProperties.Name="View Workshop item in Steam"
                                 AutomationProperties.HelpText="Opens this item in Steam." />
                         </StackPanel>
 
                         <TextBlock
-                            FontFamily="Cascadia Mono"
+                            FontFamily="{StaticResource MonoFontFamily}"
                             FontSize="12"
-                            Foreground="{StaticResource MutedSteelBrush}"
+                            Foreground="{StaticResource MutedTextBrush}"
                             Text="{x:Bind ViewModel.ModDetails, Mode=OneWay}"
                             TextWrapping="Wrap" />
                     </StackPanel>
@@ -195,11 +195,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <StackPanel Spacing="10">
-                        <TextBlock
-                            FontFamily="Bahnschrift"
-                            Foreground="{StaticResource SignalLimeBrush}"
-                            Text="PROFILE LAB"
-                            CharacterSpacing="80" />
+                        <TextBlock Style="{StaticResource PanelLabelText}" Text="PROFILE LAB" />
                         <TextBox
                             Header="New profile name"
                             Text="{x:Bind ViewModel.ProfileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -208,7 +204,8 @@
                             Style="{StaticResource SignalButtonStyle}"
                             HorizontalAlignment="Left"
                             Content="SAVE CURRENT DRAFT"
-                            Command="{x:Bind ViewModel.SaveProfileCommand}" />
+                            Command="{x:Bind ViewModel.SaveProfileCommand}"
+                            AutomationProperties.Name="Save current mod profile draft" />
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Spacing="10">
@@ -225,11 +222,13 @@
                                 Content="APPLY SAFELY"
                                 Command="{x:Bind ViewModel.ApplyProfileCommand}"
                                 IsEnabled="{x:Bind ViewModel.CanApplyProfile, Mode=OneWay}"
+                                AutomationProperties.Name="Apply mod profile safely"
                                 AutomationProperties.HelpText="Available only when a game-specific adapter can create a backup and apply this profile." />
                             <Button
                                 Style="{StaticResource GhostButtonStyle}"
                                 Content="RESTORE LATEST"
-                                Command="{x:Bind ViewModel.RestoreLatestCommand}" />
+                                Command="{x:Bind ViewModel.RestoreLatestCommand}"
+                                AutomationProperties.Name="Restore latest mod configuration backup" />
                         </StackPanel>
                         <TextBlock
                             Foreground="{StaticResource AlertAmberBrush}"

@@ -2,9 +2,15 @@
 
 **Cut the noise. Own the frame.**
 
-A Windows 11 gaming session shell by **Unbound Infotech Corporation**.
+A public Windows 11 gaming session shell by **[Unbound Infotech Corporation](https://unboundinfotech.com)**.
 
-UnboundOS does not replace Windows. It puts Windows into a focused gaming / streaming posture — then restores your desktop when you exit.
+UnboundOS does **not** replace Windows. It applies a focused gaming / streaming posture — snapshot NICs, clear denylist junk, protect games and anticheat — then restores the desktop when you exit.
+
+**Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (obsidian `#05070A`, steel `#0B121D`, cyan pulse `#00F0FF`). See [docs/screenshots/README.md](docs/screenshots/README.md).
+
+## What it is
+
+A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic stay in the existing engines. A later Rainmeter-style desktop overlay can plug in without forking those engines — see [docs/overlay-addon.md](docs/overlay-addon.md). The overlay is **optional and off**.
 
 ## What it does
 
@@ -32,13 +38,13 @@ UnboundOS.sln
 - Windows 11 (or Windows 10 1809+)
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - Windows App SDK runtime (pulled via NuGet on build)
+- Treat **x64** as the WinUI platform
 
 ## Build & run
 
 ```powershell
-cd C:\Users\akind\gAMEos\gAMEos
-$env:Path = "C:\Program Files\dotnet;" + $env:Path
 dotnet build UnboundOS.sln -c Debug -p:Platform=x64
+dotnet test UnboundOS.sln
 dotnet run --project src\UnboundOS.App\UnboundOS.App.csproj -c Debug -p:Platform=x64
 ```
 
@@ -50,9 +56,9 @@ Created on first launch at:
 
 `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\profiles.json`
 
-1. **Competitive Edge** — aggressive denylist, anticheat protect list  
-2. **Streamer Split** — gentler cleanup + 5110×1400 → 1920×1080 stream plan  
-3. **Living Room Shell** — calm big-picture focus  
+1. **Competitive Edge** — aggressive denylist, anticheat protect list
+2. **Streamer Split** — gentler cleanup + 5110×1400 → 1920×1080 stream plan
+3. **Living Room Shell** — calm big-picture focus
 
 ## Mods + Steam Workshop
 
@@ -100,15 +106,31 @@ Implement `IGameModAdapter` in `UnboundOS.Infrastructure`:
 
 `SteamWorkshopReadOnlyAdapter` is the safe fallback for every game without a dedicated adapter.
 
+## Brand
+
+Shell UI matches [unboundinfotech.com](https://unboundinfotech.com):
+
+| Token | Value |
+|-------|--------|
+| Obsidian background | `#05070A` |
+| Steel panels | `#0B121D` |
+| Cyan pulse (primary) | `#00F0FF` |
+| Cobalt | `#1E40AF` |
+| UI type | Inter (bundled Latin subset) |
+| Telemetry type | JetBrains Mono (bundled Latin subset) |
+
+Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a file fails to load, Windows falls back to Segoe UI Variable / Cascadia Mono. See `Assets/Fonts/README.md`.
+
 ## Design notes
 
-- Brand-first shell UI (signal lime on ink — not generic purple)
 - CommunityToolkit.Mvvm + Microsoft.Extensions.DependencyInjection
 - Safe process guardian with hard-protect for critical Windows processes
 - Stream pipeline never asks you to lower monitor resolution
+- No ads. Overlay / skins stay a later optional layer
 
 ## Roadmap (next)
 
+- Optional desktop overlay / skins addon (contract only today)
 - Custom shell / Assigned Access gaming user switch
 - Per-game profile editor UI
 - Virtual 16:9 capture output
@@ -118,4 +140,4 @@ Implement `IGameModAdapter` in `UnboundOS.Infrastructure`:
 
 ---
 
-© Unbound Infotech Corporation
+© Unbound Infotech Corporation · [unboundinfotech.com](https://unboundinfotech.com)

@@ -1,7 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Overlay;
 using UnboundOS.Infrastructure.Network;
 using UnboundOS.Infrastructure.Mods;
+using UnboundOS.Infrastructure.Overlay;
 using UnboundOS.Infrastructure.Power;
 using UnboundOS.Infrastructure.Process;
 using UnboundOS.Infrastructure.Profiles;
@@ -29,6 +32,8 @@ public static class DependencyInjection
         services.AddSingleton<IGameModAdapter, SteamWorkshopReadOnlyAdapter>();
         services.AddSingleton<IModProfileManager, ModProfileManager>();
         services.AddSingleton<IExternalModHandoff, SteamExternalModHandoff>();
+        // Overlay is optional and off. Register IDesktopOverlayHost before AddUnboundOs() to replace this.
+        services.TryAddSingleton<IDesktopOverlayHost, DisabledDesktopOverlayHost>();
         return services;
     }
 }

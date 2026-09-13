@@ -6,9 +6,10 @@
     xmlns:models="using:UnboundOS.Core.Models"
     Background="Transparent">
 
-    <ScrollViewer Padding="8">
+    <ScrollViewer Padding="8" AutomationProperties.Name="Session engine">
         <StackPanel Spacing="20" MaxWidth="1100">
             <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource KickerText}" Text="SESSION ENGINE" />
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="{x:Bind ViewModel.Headline, Mode=OneWay}" />
                 <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.Detail, Mode=OneWay}" />
             </StackPanel>
@@ -21,11 +22,12 @@
 
                 <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="0">
                     <StackPanel Spacing="14">
-                        <TextBlock FontFamily="Bahnschrift" FontSize="16" Foreground="{StaticResource SignalLimeBrush}" Text="PROFILE" />
+                        <TextBlock Style="{StaticResource PanelLabelText}" Text="PROFILE" />
                         <ComboBox
                             ItemsSource="{x:Bind ViewModel.Profiles, Mode=OneWay}"
                             SelectedItem="{x:Bind ViewModel.SelectedProfile, Mode=TwoWay}"
-                            HorizontalAlignment="Stretch">
+                            HorizontalAlignment="Stretch"
+                            AutomationProperties.Name="Session profile">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate x:DataType="models:SessionProfile">
                                     <StackPanel>
@@ -41,34 +43,44 @@
                                 Style="{StaticResource SignalButtonStyle}"
                                 Content="ENTER SESSION"
                                 Command="{x:Bind ViewModel.EnterSessionCommand}"
-                                IsEnabled="{x:Bind ViewModel.CanEnter, Mode=OneWay}" />
+                                IsEnabled="{x:Bind ViewModel.CanEnter, Mode=OneWay}"
+                                AutomationProperties.Name="Enter session" />
                             <Button
                                 Style="{StaticResource GhostButtonStyle}"
                                 Content="EXIT / RESTORE"
                                 Command="{x:Bind ViewModel.ExitSessionCommand}"
-                                IsEnabled="{x:Bind ViewModel.CanExit, Mode=OneWay}" />
+                                IsEnabled="{x:Bind ViewModel.CanExit, Mode=OneWay}"
+                                AutomationProperties.Name="Exit session and restore desktop" />
                             <Button
                                 Style="{StaticResource GhostButtonStyle}"
                                 Content="SCAN"
-                                Command="{x:Bind ViewModel.RefreshSuspectsCommand}" />
+                                Command="{x:Bind ViewModel.RefreshSuspectsCommand}"
+                                AutomationProperties.Name="Scan denylist suspects" />
                         </StackPanel>
 
-                        <TextBlock Style="{StaticResource BodyMutedText}" Text="Enter Session switches the Windows power plan and NIC metrics (UAC may prompt). Critical processes stay protected." />
+                        <TextBlock Style="{StaticResource BodyMutedText}" Text="Enter Session switches the Windows power plan and NIC metrics (UAC may prompt). Critical processes stay protected. This does not replace the Windows desktop." />
                     </StackPanel>
                 </Border>
 
                 <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="1">
                     <StackPanel Spacing="10">
-                        <TextBlock FontFamily="Bahnschrift" FontSize="16" Foreground="{StaticResource IceTelemetryBrush}" Text="LIVE DENYLIST HITS" />
-                        <ListView ItemsSource="{x:Bind ViewModel.RunningSuspects, Mode=OneWay}" MinHeight="120" />
+                        <TextBlock Style="{StaticResource PanelLabelText}" Text="LIVE DENYLIST HITS" />
+                        <ListView
+                            ItemsSource="{x:Bind ViewModel.RunningSuspects, Mode=OneWay}"
+                            MinHeight="120"
+                            AutomationProperties.Name="Running denylist processes" />
                     </StackPanel>
                 </Border>
             </Grid>
 
             <Border Style="{StaticResource PanelBorderStyle}">
                 <StackPanel Spacing="8">
-                    <TextBlock FontFamily="Bahnschrift" FontSize="16" Foreground="{StaticResource WarmPaperBrush}" Text="SESSION LOG" />
-                    <ItemsControl ItemsSource="{x:Bind ViewModel.ActionLog, Mode=OneWay}" FontFamily="Cascadia Mono" FontSize="12" Foreground="{StaticResource MutedSteelBrush}" />
+                    <TextBlock Style="{StaticResource PanelLabelText}" Foreground="{StaticResource PaperBrush}" Text="SESSION LOG" />
+                    <ItemsControl
+                        ItemsSource="{x:Bind ViewModel.ActionLog, Mode=OneWay}"
+                        FontFamily="{StaticResource MonoFontFamily}"
+                        FontSize="12"
+                        Foreground="{StaticResource MutedTextBrush}" />
                 </StackPanel>
             </Border>
         </StackPanel>

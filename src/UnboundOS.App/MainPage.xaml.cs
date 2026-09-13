@@ -13,6 +13,9 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         InitializeComponent();
+        OverlayNav.Visibility = ViewModel.OverlayNavVisible
+            ? Visibility.Visible
+            : Visibility.Collapsed;
         Loaded += OnLoaded;
     }
 
@@ -20,6 +23,7 @@ public sealed partial class MainPage : Page
     {
         await ViewModel.InitializeAsync();
         ViewModel.StatusLine = "Shell online. Pick a lane.";
+        ApplyNavState(ViewModel.SelectedNav);
     }
 
     private void Nav_Click(object sender, RoutedEventArgs e)
@@ -43,13 +47,16 @@ public sealed partial class MainPage : Page
         ViewModel.StatusLine = tag switch
         {
             "Home" => "Shell online. Pick a lane.",
-            "Session" => "Session engine armed.",
+            "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
             "Stream" => "Ultrawide canvas ready.",
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
+            "Overlay" => "Overlay addon hook — optional and off unless a host is registered.",
             _ => ViewModel.StatusLine
         };
+
+        ApplyNavState(tag);
 
         if (tag == "Home")
         {
@@ -68,9 +75,15 @@ public sealed partial class MainPage : Page
             "Stream" => typeof(StreamPage),
             "Mods" => typeof(ModsPage),
             "Profiles" => typeof(ProfilesPage),
+            "Overlay" => typeof(OverlayPage),
             _ => typeof(SessionPage)
         };
 
         ContentFrame.Navigate(pageType);
+    }
+
+    private void ApplyNavState(string tag)
+    {
+        VisualStateManager.GoToState(this, tag, useTransitions: false);
     }
 }
