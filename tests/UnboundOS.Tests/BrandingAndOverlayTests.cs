@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using UnboundOS.Core;
+using UnboundOS.Core.Models;
 using UnboundOS.Core.Overlay;
 using UnboundOS.Infrastructure;
 using UnboundOS.Infrastructure.Overlay;
@@ -18,6 +19,25 @@ public sealed class BrandingAndOverlayTests
         Assert.Equal("#00F0FF", Branding.Palette.CyanPulse);
         Assert.Equal("#1E40AF", Branding.Palette.Cobalt);
         Assert.DoesNotContain("lime", Branding.Tagline, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ApplyTo_MergesStoreProtectionsAndDropsConflictsFromDenylist()
+    {
+        var profile = new SessionProfile
+        {
+            Id = "test",
+            Name = "Test",
+            TerminateProcessNames = ["Steam", "Discord"],
+            ProtectProcessNames = ["game"]
+        };
+
+        var updated = PlatformLaunchProtections.ApplyTo(profile, GameStore.Steam);
+
+        Assert.Contains("Steam", updated.ProtectProcessNames);
+        Assert.DoesNotContain("Steam", updated.TerminateProcessNames);
+        Assert.Contains("Discord", updated.TerminateProcessNames);
+        Assert.Contains("game", updated.ProtectProcessNames);
     }
 
     [Fact]

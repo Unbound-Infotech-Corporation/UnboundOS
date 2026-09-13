@@ -15,6 +15,26 @@ public sealed class SessionProfile
     public StreamPreferences Stream { get; init; } = new();
     public bool EnableHighPerformancePowerHint { get; init; } = true;
     public bool PauseWindowsUpdateOrchestrator { get; init; }
+
+    public SessionProfile WithProcessLists(
+        IReadOnlyList<string> terminateProcessNames,
+        IReadOnlyList<string> protectProcessNames) =>
+        new()
+        {
+            Id = Id,
+            Name = Name,
+            Description = Description,
+            Kind = Kind,
+            TerminateProcessNames = terminateProcessNames,
+            ProtectProcessNames = protectProcessNames,
+            PreferredGameAdapterId = PreferredGameAdapterId,
+            PreferredStreamAdapterId = PreferredStreamAdapterId,
+            GameProcessHints = GameProcessHints,
+            StreamProcessHints = StreamProcessHints,
+            Stream = Stream,
+            EnableHighPerformancePowerHint = EnableHighPerformancePowerHint,
+            PauseWindowsUpdateOrchestrator = PauseWindowsUpdateOrchestrator
+        };
 }
 
 public sealed class StreamPreferences
