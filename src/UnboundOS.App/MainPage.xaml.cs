@@ -37,7 +37,7 @@ public sealed partial class MainPage : Page
     }
 
     private void GoSession_Click(object sender, RoutedEventArgs e) => Navigate("Session");
-    private void GoStream_Click(object sender, RoutedEventArgs e) => Navigate("Stream");
+    private void GoTools_Click(object sender, RoutedEventArgs e) => Navigate("Tools");
     private void GoNetwork_Click(object sender, RoutedEventArgs e) => Navigate("Network");
     private void GoMods_Click(object sender, RoutedEventArgs e) => Navigate("Mods");
 
@@ -49,7 +49,7 @@ public sealed partial class MainPage : Page
             "Home" => "Shell online. Pick a lane.",
             "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
-            "Stream" => "Ultrawide canvas ready.",
+            "Tools" => "Tools marketplace ready.",
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
             "Overlay" => "Overlay addon hook — optional and off unless a host is registered.",
@@ -72,7 +72,7 @@ public sealed partial class MainPage : Page
         {
             "Session" => typeof(SessionPage),
             "Network" => typeof(NetworkPage),
-            "Stream" => typeof(StreamPage),
+            "Tools" => typeof(ToolsPage),
             "Mods" => typeof(ModsPage),
             "Profiles" => typeof(ProfilesPage),
             "Overlay" => typeof(OverlayPage),

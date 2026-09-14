@@ -19,9 +19,9 @@
                         <Setter Target="NetworkAccent.Opacity" Value="0" />
                         <Setter Target="NetworkNav.Background" Value="Transparent" />
                         <Setter Target="NetworkNav.Foreground" Value="{StaticResource MutedTextBrush}" />
-                        <Setter Target="StreamAccent.Opacity" Value="0" />
-                        <Setter Target="StreamNav.Background" Value="Transparent" />
-                        <Setter Target="StreamNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="ToolsAccent.Opacity" Value="0" />
+                        <Setter Target="ToolsNav.Background" Value="Transparent" />
+                        <Setter Target="ToolsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="ModsAccent.Opacity" Value="0" />
                         <Setter Target="ModsNav.Background" Value="Transparent" />
                         <Setter Target="ModsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -44,9 +44,9 @@
                         <Setter Target="NetworkAccent.Opacity" Value="0" />
                         <Setter Target="NetworkNav.Background" Value="Transparent" />
                         <Setter Target="NetworkNav.Foreground" Value="{StaticResource MutedTextBrush}" />
-                        <Setter Target="StreamAccent.Opacity" Value="0" />
-                        <Setter Target="StreamNav.Background" Value="Transparent" />
-                        <Setter Target="StreamNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="ToolsAccent.Opacity" Value="0" />
+                        <Setter Target="ToolsNav.Background" Value="Transparent" />
+                        <Setter Target="ToolsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="ModsAccent.Opacity" Value="0" />
                         <Setter Target="ModsNav.Background" Value="Transparent" />
                         <Setter Target="ModsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -69,9 +69,9 @@
                         <Setter Target="NetworkAccent.Opacity" Value="1" />
                         <Setter Target="NetworkNav.Background" Value="{StaticResource CyanDimFillBrush}" />
                         <Setter Target="NetworkNav.Foreground" Value="{StaticResource CyanPulseBrush}" />
-                        <Setter Target="StreamAccent.Opacity" Value="0" />
-                        <Setter Target="StreamNav.Background" Value="Transparent" />
-                        <Setter Target="StreamNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="ToolsAccent.Opacity" Value="0" />
+                        <Setter Target="ToolsNav.Background" Value="Transparent" />
+                        <Setter Target="ToolsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="ModsAccent.Opacity" Value="0" />
                         <Setter Target="ModsNav.Background" Value="Transparent" />
                         <Setter Target="ModsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -83,7 +83,7 @@
                         <Setter Target="OverlayNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                     </VisualState.Setters>
                 </VisualState>
-                <VisualState x:Name="Stream">
+                <VisualState x:Name="Tools">
                     <VisualState.Setters>
                         <Setter Target="HomeAccent.Opacity" Value="0" />
                         <Setter Target="HomeNav.Background" Value="Transparent" />
@@ -94,9 +94,9 @@
                         <Setter Target="NetworkAccent.Opacity" Value="0" />
                         <Setter Target="NetworkNav.Background" Value="Transparent" />
                         <Setter Target="NetworkNav.Foreground" Value="{StaticResource MutedTextBrush}" />
-                        <Setter Target="StreamAccent.Opacity" Value="1" />
-                        <Setter Target="StreamNav.Background" Value="{StaticResource CyanDimFillBrush}" />
-                        <Setter Target="StreamNav.Foreground" Value="{StaticResource CyanPulseBrush}" />
+                        <Setter Target="ToolsAccent.Opacity" Value="1" />
+                        <Setter Target="ToolsNav.Background" Value="{StaticResource CyanDimFillBrush}" />
+                        <Setter Target="ToolsNav.Foreground" Value="{StaticResource CyanPulseBrush}" />
                         <Setter Target="ModsAccent.Opacity" Value="0" />
                         <Setter Target="ModsNav.Background" Value="Transparent" />
                         <Setter Target="ModsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -119,9 +119,9 @@
                         <Setter Target="NetworkAccent.Opacity" Value="0" />
                         <Setter Target="NetworkNav.Background" Value="Transparent" />
                         <Setter Target="NetworkNav.Foreground" Value="{StaticResource MutedTextBrush}" />
-                        <Setter Target="StreamAccent.Opacity" Value="0" />
-                        <Setter Target="StreamNav.Background" Value="Transparent" />
-                        <Setter Target="StreamNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="ToolsAccent.Opacity" Value="0" />
+                        <Setter Target="ToolsNav.Background" Value="Transparent" />
+                        <Setter Target="ToolsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="ModsAccent.Opacity" Value="1" />
                         <Setter Target="ModsNav.Background" Value="{StaticResource CyanDimFillBrush}" />
                         <Setter Target="ModsNav.Foreground" Value="{StaticResource CyanPulseBrush}" />
@@ -144,9 +144,9 @@
                         <Setter Target="NetworkAccent.Opacity" Value="0" />
                         <Setter Target="NetworkNav.Background" Value="Transparent" />
                         <Setter Target="NetworkNav.Foreground" Value="{StaticResource MutedTextBrush}" />
-                        <Setter Target="StreamAccent.Opacity" Value="0" />
-                        <Setter Target="StreamNav.Background" Value="Transparent" />
-                        <Setter Target="StreamNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="ToolsAccent.Opacity" Value="0" />
+                        <Setter Target="ToolsNav.Background" Value="Transparent" />
+                        <Setter Target="ToolsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="ModsAccent.Opacity" Value="0" />
                         <Setter Target="ModsNav.Background" Value="Transparent" />
                         <Setter Target="ModsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -169,9 +169,9 @@
                         <Setter Target="NetworkAccent.Opacity" Value="0" />
                         <Setter Target="NetworkNav.Background" Value="Transparent" />
                         <Setter Target="NetworkNav.Foreground" Value="{StaticResource MutedTextBrush}" />
-                        <Setter Target="StreamAccent.Opacity" Value="0" />
-                        <Setter Target="StreamNav.Background" Value="Transparent" />
-                        <Setter Target="StreamNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="ToolsAccent.Opacity" Value="0" />
+                        <Setter Target="ToolsNav.Background" Value="Transparent" />
+                        <Setter Target="ToolsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="ModsAccent.Opacity" Value="0" />
                         <Setter Target="ModsNav.Background" Value="Transparent" />
                         <Setter Target="ModsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -267,14 +267,14 @@
                             <TextBlock Grid.Column="1" Text="NETWORK" />
                         </Grid>
                     </Button>
-                    <Button x:Name="StreamNav" Tag="Stream" Style="{StaticResource NavRailButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Stream">
+                    <Button x:Name="ToolsNav" Tag="Tools" Style="{StaticResource NavRailButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Tools">
                         <Grid ColumnSpacing="10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Rectangle x:Name="StreamAccent" Fill="{StaticResource CyanPulseBrush}" Opacity="0" RadiusX="1" RadiusY="1" />
-                            <TextBlock Grid.Column="1" Text="STREAM" />
+                            <Rectangle x:Name="ToolsAccent" Fill="{StaticResource CyanPulseBrush}" Opacity="0" RadiusX="1" RadiusY="1" />
+                            <TextBlock Grid.Column="1" Text="TOOLS" />
                         </Grid>
                     </Button>
                     <Button x:Name="ModsNav" Tag="Mods" Style="{StaticResource NavRailButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Mods and Steam Workshop">
@@ -392,7 +392,7 @@
 
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <Button Style="{StaticResource SignalButtonStyle}" Content="START SESSION" Click="GoSession_Click" AutomationProperties.Name="Start session" />
-                            <Button Style="{StaticResource GhostButtonStyle}" Content="STREAM CANVAS" Click="GoStream_Click" AutomationProperties.Name="Open stream canvas" />
+                            <Button Style="{StaticResource GhostButtonStyle}" Content="TOOLS" Click="GoTools_Click" AutomationProperties.Name="Open tools marketplace" />
                             <Button Style="{StaticResource GhostButtonStyle}" Content="NETWORK SPLIT" Click="GoNetwork_Click" AutomationProperties.Name="Open network director" />
                             <Button Style="{StaticResource GhostButtonStyle}" Content="MODS + WORKSHOP" Click="GoMods_Click" AutomationProperties.Name="Open mods and Workshop" />
                         </StackPanel>
@@ -417,8 +417,8 @@
                             </Border>
                             <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="2">
                                 <StackPanel Spacing="8">
-                                    <TextBlock Style="{StaticResource PanelLabelText}" Text="STREAM" />
-                                    <TextBlock Style="{StaticResource BodyMutedText}" Text="5110×1400 → center 16:9 → 1080p60 with Lanczos + sharpen. Copy OBS filters in one click." />
+                                    <TextBlock Style="{StaticResource PanelLabelText}" Text="TOOLS" />
+                                    <TextBlock Style="{StaticResource BodyMutedText}" Text="Launch OBS, Vortex, Discord, Playnite, or Steam. Ultrawide crop math lives on the OBS tile." />
                                 </StackPanel>
                             </Border>
                         </Grid>

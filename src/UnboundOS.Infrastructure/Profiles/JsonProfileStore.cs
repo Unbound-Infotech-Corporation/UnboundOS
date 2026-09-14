@@ -81,7 +81,7 @@ public sealed class JsonProfileStore : IProfileStore
                 "OneDrive", "Microsoft.SharePoint", "YourPhone", "Widgets",
                 "AdobeUpdateService", "CCXProcess", "iCUE", "ArmouryCrate"
             ],
-            ProtectProcessNames = ["obs64", "obs32", "Streamlabs OBS", "discord", "Vortex"],
+            ProtectProcessNames = ["obs64", "obs32", "Streamlabs OBS", "discord", "Vortex", "Steam"],
             StreamProcessHints = ["obs64", "obs32", "Streamlabs OBS"],
             Stream = new StreamPreferences
             {

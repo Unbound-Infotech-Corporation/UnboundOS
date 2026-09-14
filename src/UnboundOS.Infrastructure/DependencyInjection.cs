@@ -11,6 +11,7 @@ using UnboundOS.Infrastructure.Profiles;
 using UnboundOS.Infrastructure.Session;
 using UnboundOS.Infrastructure.Stream;
 using UnboundOS.Infrastructure.Telemetry;
+using UnboundOS.Infrastructure.Tools;
 
 namespace UnboundOS.Infrastructure;
 
@@ -22,6 +23,9 @@ public static class DependencyInjection
         services.AddSingleton<INetworkDirector, NetworkDirector>();
         services.AddSingleton<IPowerPlanService, WindowsPowerPlanService>();
         services.AddSingleton<IStreamCanvas, StreamCanvasService>();
+        services.AddSingleton<DesktopToolDiscoverySettings>();
+        services.AddSingleton<IDesktopToolCatalog, DesktopToolCatalog>();
+        services.AddSingleton<IDesktopToolLauncher, DesktopToolLauncher>();
         services.AddSingleton<IProfileStore, JsonProfileStore>();
         services.AddSingleton<ITelemetryService, WindowsTelemetryService>();
         services.AddSingleton<ISessionEngine, SessionEngine>();

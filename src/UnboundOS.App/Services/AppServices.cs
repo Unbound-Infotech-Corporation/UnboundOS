@@ -16,6 +16,7 @@ public static class AppServices
         services.AddTransient<SessionViewModel>();
         services.AddTransient<NetworkViewModel>();
         services.AddTransient<StreamViewModel>();
+        services.AddTransient<ToolsViewModel>();
         services.AddTransient<ProfilesViewModel>();
         services.AddTransient<ModsViewModel>();
         services.AddTransient<OverlayViewModel>();
