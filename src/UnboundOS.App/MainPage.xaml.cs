@@ -46,6 +46,10 @@ public sealed partial class MainPage : Page
 
     private void GoSettings_Click(object sender, RoutedEventArgs e) => Navigate("Settings");
 
+    private void GoFiles_Click(object sender, RoutedEventArgs e) => Navigate("Files");
+
+    private void GoHardware_Click(object sender, RoutedEventArgs e) => Navigate("Hardware");
+
     private void Navigate(string tag)
     {
         ViewModel.SelectedNav = tag;
@@ -55,9 +59,11 @@ public sealed partial class MainPage : Page
             "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
             "Tools" => "Tools marketplace ready.",
+            "Files" => "Daily folders. Windows Explorer stays for game launchers.",
+            "Hardware" => "CPU, GPU, disks, RAM from this PC. Sensors wait on the image.",
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
-            "Settings" => "Shell settings. Interface motion can pause itself during a session.",
+            "Settings" => "Display, overclocking launch, startup audit, motion.",
             "Overlay" => "Overlay addon hook — optional and off unless a host is registered.",
             _ => ViewModel.StatusLine
         };
@@ -79,6 +85,8 @@ public sealed partial class MainPage : Page
             "Session" => typeof(SessionPage),
             "Network" => typeof(NetworkPage),
             "Tools" => typeof(ToolsPage),
+            "Files" => typeof(FilesPage),
+            "Hardware" => typeof(HardwarePage),
             "Mods" => typeof(ModsPage),
             "Profiles" => typeof(ProfilesPage),
             "Settings" => typeof(SettingsPage),

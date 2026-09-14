@@ -28,9 +28,9 @@ public sealed class DesktopToolCatalogTests
         });
 
         var tools = catalog.Discover();
-        Assert.Equal(7, tools.Count);
+        Assert.Equal(8, tools.Count);
         Assert.Equal(5, tools.Count(tool => tool.Group == DesktopToolGroup.Kit));
-        Assert.Equal(2, tools.Count(tool => tool.Group == DesktopToolGroup.Utility));
+        Assert.Equal(3, tools.Count(tool => tool.Group == DesktopToolGroup.Utility));
 
         var obsTool = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Obs);
         Assert.True(obsTool.IsInstalled);
@@ -52,6 +52,8 @@ public sealed class DesktopToolCatalogTests
         Assert.True(Assert.Single(tools, tool => tool.Id == DesktopToolIds.Steam).IsInstalled);
         Assert.Equal(DesktopToolGroup.Utility, Assert.Single(tools, tool => tool.Id == DesktopToolIds.NotepadPlusPlus).Group);
         Assert.Equal(DesktopToolGroup.Utility, Assert.Single(tools, tool => tool.Id == DesktopToolIds.SevenZip).Group);
+        Assert.Equal(DesktopToolGroup.Utility, Assert.Single(tools, tool => tool.Id == DesktopToolIds.HwInfo).Group);
+        Assert.False(Assert.Single(tools, tool => tool.Id == DesktopToolIds.HwInfo).IsInstalled);
     }
 
     [Fact]
@@ -101,6 +103,7 @@ public sealed class DesktopToolCatalogTests
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.SteamGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.NotepadPlusPlusGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.SevenZipGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.HwInfoGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri("ms-windows-store://pdp/?ProductId=9nblggh4v2k6"));
         Assert.False(DesktopToolLauncher.IsSafeGetUri("http://obsproject.com/download"));
         Assert.False(DesktopToolLauncher.IsSafeGetUri(@"C:\setup.exe"));

@@ -8,6 +8,8 @@ UnboundOS does **not** replace Windows. It applies a focused gaming / streaming 
 
 The shell is a living-room home: slim top bar, ambient obsidian gradient with a faint scan grid, and a wide row of large tiles. The focused tile is a few percent larger with a 1px cyan hairline and hairline corner ticks (one amber). Tools, session profiles, and modded games use the same tile language — artwork-forward cards, short labels, Open / Get / Session as secondary metadata.
 
+OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
+
 **Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (wide tile row, slim top chrome, obsidian `#05070A`, steel `#0B121D`, cyan pulse `#00F0FF`). See [docs/screenshots/README.md](docs/screenshots/README.md).
 
 ## What it is
@@ -24,7 +26,9 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Profiles** | JSON profiles in LocalAppData (`Competitive`, `Streamer`, `Living Room`) |
 | **Mods + Workshop** | Local Steam Workshop discovery, per-game mod profiles, safe adapter-based apply/restore |
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
-| **Settings** | Interface motion On / Off (persisted). Auto-pauses if Windows animations are off or a session is live |
+| **Files** | Daily folder UI (Home, Desktop, Downloads, drives). Explorer stays for EAC / BattlEye / Vanguard |
+| **Hardware** | CPU, GPU, disks, RAM from this PC. Live sensors later; optional Open HWiNFO in Tools |
+| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Interface motion On / Off |
 
 ## Solution layout
 
@@ -65,11 +69,11 @@ Created on first launch at:
 
 ## Tools marketplace
 
-The **Tools** page is a local kit catalog presented as a media row of large tiles (OBS, Vortex, Discord, Playnite, Steam, plus Notepad++ / 7-Zip utilities) — not a store and not a streaming product.
+The **Tools** page is a local kit catalog presented as a media row of large tiles (OBS, Vortex, Discord, Playnite, Steam, plus Notepad++ / 7-Zip / optional HWiNFO utilities) — not a store and not a streaming product.
 
-- Detects the kit (OBS Studio, Vortex, Discord, Playnite, Steam) plus a short Utilities row (Notepad++, 7-Zip) from install paths, Start Menu, and uninstall registry.
+- Detects the kit (OBS Studio, Vortex, Discord, Playnite, Steam) plus a short Utilities row (Notepad++, 7-Zip, HWiNFO) from install paths, Start Menu, and uninstall registry.
 - **Launch** starts the real app. The Vortex tile uses the same read-only Vortex handoff as Mods (`--game` / `--profile` when known; opening Vortex itself from Tools).
-- **Get** opens an official HTTPS page (or a `ms-windows-store` / `winget` URI). UnboundOS does not download or bundle those binaries.
+- **Get** opens an official HTTPS page (or a `ms-windows-store` / `winget` URI). UnboundOS does not download or bundle those binaries — including HWiNFO.
 - If OBS is missing, the tile says Get. The ultrawide crop recipe still explains the filters and that they need OBS. Play native — never lower monitor resolution.
 - Streamer protects OBS, Discord, Vortex, and Steam. Competitive can still terminate Discord. Those lists are not merged.
 
@@ -152,7 +156,19 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 - Safe process guardian with hard-protect for critical Windows processes
 - OBS crop recipe never asks you to lower monitor resolution
 - Tools marketplace does not sell apps, bundle installers, or scrape accounts
+- Unbound Files is the daily file UI; Explorer remains for compatibility (no `Shell=`)
+- Settings Display / Overclocking only **launch** vendor tools — UnboundOS never writes clocks
 - No ads. Overlay / skins stay a later optional layer
+
+## Files, hardware, and image follow-ups
+
+See [docs/os-spec.md](docs/os-spec.md) for the full OS-level spec. This slice:
+
+- **Files** — browse user folders with Unbound styling. Show in Explorer is one click.
+- **Settings → Display / Overclocking** — discover NVIDIA / AMD / Intel vendor apps and Get if missing.
+- **Settings → Startup audit** — report Run keys, Startup folder, tasks; persist pin allowlist; never silently drop anticheat, GPU vendor, Vortex, OBS, or HardProtect. Daily cadence stub: [docs/startup-audit-task.xml](docs/startup-audit-task.xml).
+- **Settings → Finish setup** — delete known Unbound leftover folders after an online-ok marker. The image owns the full OOBE wipe.
+- **Hardware** — inventory from this PC. Not a HWiNFO clone.
 
 ## Roadmap (next)
 
@@ -163,6 +179,7 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 - One-click OBS scene import
 - Bufferbloat / QoS helper hooks
 - First-party adapters for selected games with documented mod configuration formats
+- Image/OOBE leftover wipe, daily startup task on the sealed image, LibreHardwareMonitor sensors
 
 ---
 

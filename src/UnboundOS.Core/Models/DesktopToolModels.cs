@@ -9,6 +9,7 @@ public static class DesktopToolIds
     public const string Steam = "steam";
     public const string NotepadPlusPlus = "notepadplusplus";
     public const string SevenZip = "sevenzip";
+    public const string HwInfo = "hwinfo";
 }
 
 public enum DesktopToolGroup

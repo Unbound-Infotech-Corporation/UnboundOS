@@ -31,6 +31,9 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
     public static ToolGetPath SevenZipGetPath { get; } =
         new("Official site", "https://www.7-zip.org/");
 
+    public static ToolGetPath HwInfoGetPath { get; } =
+        new("Official site", "https://www.hwinfo.com/download/");
+
     private readonly DesktopToolDiscoverySettings _settings = settings ?? new DesktopToolDiscoverySettings();
 
     public Task<IReadOnlyList<DesktopTool>> DiscoverAsync(CancellationToken cancellationToken = default) =>
@@ -89,6 +92,14 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
             FindSevenZip(),
             ["7zFM", "7z"],
             SevenZipGetPath,
+            DesktopToolGroup.Utility),
+        Create(
+            DesktopToolIds.HwInfo,
+            "HWiNFO",
+            "Optional sensors. UnboundOS does not bundle HWiNFO; Open launches the official app if installed.",
+            FindHwInfo(),
+            ["HWiNFO64", "HWiNFO32", "HWiNFO"],
+            HwInfoGetPath,
             DesktopToolGroup.Utility)
     ];
 
@@ -280,6 +291,29 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
                 .Concat(DesktopAppLocator.UninstallExecutables("7-Zip")
                     .SelectMany(path => DesktopAppLocator.ExpandInstallLocation(path, "7zFM.exe", "7z.exe")))
                 .Concat(DesktopAppLocator.StartMenuExecutables("7zFM.exe", "7z.exe")));
+    }
+
+    private string? FindHwInfo()
+    {
+        if (TryForced(DesktopToolIds.HwInfo, out var forced))
+        {
+            return forced;
+        }
+
+        if (!_settings.UseDefaultWindowsLocations)
+        {
+            return null;
+        }
+
+        return DesktopAppLocator.FindFirstExisting(
+            DesktopAppLocator.Combine(
+                    DesktopAppLocator.ProgramRoots(),
+                    Path.Combine("HWiNFO64", "HWiNFO64.exe"),
+                    Path.Combine("HWiNFO32", "HWiNFO32.exe"),
+                    Path.Combine("HWiNFO", "HWiNFO64.exe"))
+                .Concat(DesktopAppLocator.UninstallExecutables("HWiNFO")
+                    .SelectMany(path => DesktopAppLocator.ExpandInstallLocation(path, "HWiNFO64.exe", "HWiNFO32.exe")))
+                .Concat(DesktopAppLocator.StartMenuExecutables("HWiNFO64.exe", "HWiNFO32.exe")));
     }
 
     private bool TryForced(string id, out string? path)

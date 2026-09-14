@@ -38,6 +38,105 @@
                         Text="Motion runs on the compositor. Unfocused tiles stay still. Off is instant states with no animation." />
                 </StackPanel>
             </Border>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="DISPLAY" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.DisplayHonesty}" />
+                    <ListView
+                        MaxHeight="220"
+                        ItemsSource="{x:Bind ViewModel.DisplayApps, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedDisplayApp, Mode=TwoWay}"
+                        AutomationProperties.Name="GPU vendor display apps">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:VendorApp">
+                                <Grid ColumnSpacing="12" Padding="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{StaticResource PaperBrush}" Text="{x:Bind DisplayName}" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MicroLabelText}" Text="{x:Bind StatusLabel}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Style="{StaticResource SignalButtonStyle}" Content="OPEN / GET DISPLAY APP" Command="{x:Bind ViewModel.OpenDisplayCommand}" AutomationProperties.Name="Open or get GPU display app" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="OVERCLOCKING" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.OverclockHonesty}" />
+                    <ListView
+                        MaxHeight="220"
+                        ItemsSource="{x:Bind ViewModel.OverclockApps, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedOcApp, Mode=TwoWay}"
+                        AutomationProperties.Name="Manufacturer overclocking tools">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:VendorApp">
+                                <Grid ColumnSpacing="12" Padding="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{StaticResource PaperBrush}" Text="{x:Bind DisplayName}" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MicroLabelText}" Text="{x:Bind StatusLabel}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="OPEN / GET OC TOOL" Command="{x:Bind ViewModel.OpenOverclockCommand}" AutomationProperties.Name="Open or get overclocking tool" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.VendorStatus, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="STARTUP AUDIT" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.StartupHonesty}" />
+                    <ListView
+                        MaxHeight="280"
+                        ItemsSource="{x:Bind ViewModel.StartupEntries, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedStartup, Mode=TwoWay}"
+                        AutomationProperties.Name="Startup audit entries">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:StartupEntry">
+                                <Grid ColumnSpacing="12" Padding="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="100" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource MicroLabelText}" Text="{x:Bind DispositionLabel}" />
+                                    <TextBlock Grid.Column="1" Foreground="{StaticResource PaperBrush}" Text="{x:Bind Name}" />
+                                    <TextBlock Grid.Column="2" FontFamily="{StaticResource MonoFontFamily}" FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{x:Bind SourceLabel}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="SCAN NOW" Command="{x:Bind ViewModel.RefreshStartupCommand}" AutomationProperties.Name="Scan startup" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="PIN / UNPIN" Command="{x:Bind ViewModel.PinSelectedCommand}" AutomationProperties.Name="Pin or unpin selected startup item" />
+                        <Button Style="{StaticResource SignalButtonStyle}" Content="APPLY RECOMMENDED" Command="{x:Bind ViewModel.ApplyStartupCommand}" AutomationProperties.Name="Disable review startup items" />
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.StartupSummary, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="Daily cadence on the Windows image: docs/startup-audit-task.xml. HKLM and Scheduled Tasks stay report-only in this slice." />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="FINISH SETUP" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.CleanupHonesty}" />
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="CLEAN LEFTOVER INSTALL FILES" Command="{x:Bind ViewModel.CleanLeftoversCommand}" AutomationProperties.Name="Finish setup and clean leftover install files" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.CleanupStatus, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.HardwareHonesty}" />
+            <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.FilesHonesty}" />
         </StackPanel>
     </ScrollViewer>
 </Page>

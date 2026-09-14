@@ -10,9 +10,14 @@ using UnboundOS.Infrastructure.Process;
 using UnboundOS.Infrastructure.Profiles;
 using UnboundOS.Infrastructure.Session;
 using UnboundOS.Infrastructure.Settings;
+using UnboundOS.Infrastructure.Files;
+using UnboundOS.Infrastructure.Hardware;
+using UnboundOS.Infrastructure.Setup;
+using UnboundOS.Infrastructure.Startup;
 using UnboundOS.Infrastructure.Stream;
 using UnboundOS.Infrastructure.Telemetry;
 using UnboundOS.Infrastructure.Tools;
+using UnboundOS.Infrastructure.Vendor;
 
 namespace UnboundOS.Infrastructure;
 
@@ -31,6 +36,15 @@ public static class DependencyInjection
         services.TryAddSingleton<ISystemAnimationPreference, AlwaysOnSystemAnimationPreference>();
         services.AddSingleton<IShellSettingsStore, JsonShellSettingsStore>();
         services.AddSingleton<IUiMotionPolicy, UiMotionPolicy>();
+        services.AddSingleton<IStartupInventory, WindowsStartupInventory>();
+        services.AddSingleton<IStartupAllowlistStore, JsonStartupAllowlistStore>();
+        services.AddSingleton<IStartupMutator, WindowsStartupMutator>();
+        services.AddSingleton<IStartupAuditService, StartupAuditService>();
+        services.AddSingleton<IVendorAppCatalog, VendorAppCatalog>();
+        services.AddSingleton<IVendorAppLauncher, VendorAppLauncher>();
+        services.AddSingleton<IFileBrowser, LocalFileBrowser>();
+        services.AddSingleton<IHardwareInventory, OsHardwareInventory>();
+        services.AddSingleton<ISetupCleanup, SetupCleanupService>();
         services.AddSingleton<ITelemetryService, WindowsTelemetryService>();
         services.AddSingleton<ISessionEngine, SessionEngine>();
         services.AddSingleton<SteamWorkshopCatalogService>();

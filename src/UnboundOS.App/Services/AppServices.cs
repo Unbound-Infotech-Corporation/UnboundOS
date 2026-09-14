@@ -21,6 +21,8 @@ public static class AppServices
         services.AddTransient<NetworkViewModel>();
         services.AddTransient<StreamViewModel>();
         services.AddTransient<ToolsViewModel>();
+        services.AddTransient<FilesViewModel>();
+        services.AddTransient<HardwareViewModel>();
         services.AddTransient<ProfilesViewModel>();
         services.AddTransient<ModsViewModel>();
         services.AddTransient<OverlayViewModel>();
