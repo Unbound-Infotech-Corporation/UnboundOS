@@ -6,8 +6,8 @@
     xmlns:models="using:UnboundOS.Core.Models"
     Background="Transparent">
 
-    <ScrollViewer Padding="8" AutomationProperties.Name="Network director">
-        <StackPanel Spacing="20" MaxWidth="1100">
+    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Network director">
+        <StackPanel Spacing="22">
             <StackPanel Spacing="6">
                 <TextBlock Style="{StaticResource KickerText}" Text="TRAFFIC SPLIT" />
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="Network Director" />

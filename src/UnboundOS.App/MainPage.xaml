@@ -186,247 +186,211 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="236" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-        <!-- Rail -->
         <Border
-            Grid.Column="0"
-            Padding="18,22"
+            Grid.Row="0"
+            Padding="28,14,28,12"
             BorderBrush="{StaticResource LineSubtleBrush}"
-            BorderThickness="0,0,1,0">
-            <Border.Background>
-                <StaticResource ResourceKey="RailSheenBrush" />
-            </Border.Background>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            BorderThickness="0,0,0,1"
+            Background="{StaticResource TelemetryStripBrush}"
+            AutomationProperties.Name="Console chrome">
+            <Grid ColumnSpacing="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-                <StackPanel Spacing="10">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <Grid Width="28" Height="28" AutomationProperties.Name="Unbound Infotech mark">
-                            <Border Background="{StaticResource CyanPulseBrush}" CornerRadius="4" />
-                            <Border Margin="7" Background="{StaticResource ObsidianBrush}" CornerRadius="2" />
-                        </Grid>
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock
-                                Style="{StaticResource BrandDisplayText}"
-                                FontSize="20"
-                                CharacterSpacing="20"
-                                Text="{x:Bind ViewModel.ProductName}"
-                                Foreground="{StaticResource CyanPulseBrush}" />
-                            <TextBlock
-                                FontFamily="{StaticResource MonoFontFamily}"
-                                FontSize="9"
-                                Foreground="{StaticResource MutedTextBrush}"
-                                Text="SESSION SHELL"
-                                CharacterSpacing="60" />
-                        </StackPanel>
-                    </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <Grid Width="28" Height="28" AutomationProperties.Name="Unbound Infotech mark">
+                        <Border Background="{StaticResource CyanPulseBrush}" CornerRadius="8" />
+                        <Border Margin="7" Background="{StaticResource ObsidianBrush}" CornerRadius="3" />
+                    </Grid>
                     <TextBlock
-                        FontFamily="{StaticResource UiFontFamily}"
-                        FontSize="11"
-                        Foreground="{StaticResource MutedTextBrush}"
-                        Text="{x:Bind ViewModel.CompanyName}"
-                        TextWrapping="Wrap" />
+                        Style="{StaticResource BrandDisplayText}"
+                        FontSize="18"
+                        CharacterSpacing="20"
+                        VerticalAlignment="Center"
+                        Text="{x:Bind ViewModel.ProductName}"
+                        Foreground="{StaticResource CyanPulseBrush}" />
                 </StackPanel>
 
-                <StackPanel x:Name="NavRail" Grid.Row="1" Spacing="4" Margin="0,32,0,0" AutomationProperties.Name="Primary navigation">
-                    <Button x:Name="HomeNav" Tag="Home" Style="{StaticResource NavRailButtonStyle}" Click="Nav_Click" Background="{StaticResource CyanDimFillBrush}" Foreground="{StaticResource CyanPulseBrush}" AutomationProperties.Name="Home">
-                        <Grid ColumnSpacing="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Rectangle x:Name="HomeAccent" Fill="{StaticResource CyanPulseBrush}" RadiusX="1" RadiusY="1" />
-                            <TextBlock Grid.Column="1" Text="HOME" />
+                <StackPanel
+                    x:Name="NavRail"
+                    Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="4"
+                    VerticalAlignment="Center"
+                    XYFocusKeyboardNavigation="Enabled"
+                    AutomationProperties.Name="Primary navigation">
+                    <Button x:Name="HomeNav" Tag="Home" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" Background="{StaticResource CyanDimFillBrush}" Foreground="{StaticResource CyanPulseBrush}" AutomationProperties.Name="Home">
+                        <Grid>
+                            <TextBlock Text="HOME" Margin="0,0,0,4" />
+                            <Rectangle x:Name="HomeAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" />
                         </Grid>
                     </Button>
-                    <Button x:Name="SessionNav" Tag="Session" Style="{StaticResource NavRailButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Session">
-                        <Grid ColumnSpacing="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Rectangle x:Name="SessionAccent" Fill="{StaticResource CyanPulseBrush}" Opacity="0" RadiusX="1" RadiusY="1" />
-                            <TextBlock Grid.Column="1" Text="SESSION" />
+                    <Button x:Name="SessionNav" Tag="Session" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Session">
+                        <Grid>
+                            <TextBlock Text="SESSION" Margin="0,0,0,4" />
+                            <Rectangle x:Name="SessionAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
                         </Grid>
                     </Button>
-                    <Button x:Name="NetworkNav" Tag="Network" Style="{StaticResource NavRailButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Network">
-                        <Grid ColumnSpacing="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Rectangle x:Name="NetworkAccent" Fill="{StaticResource CyanPulseBrush}" Opacity="0" RadiusX="1" RadiusY="1" />
-                            <TextBlock Grid.Column="1" Text="NETWORK" />
+                    <Button x:Name="NetworkNav" Tag="Network" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Network">
+                        <Grid>
+                            <TextBlock Text="NETWORK" Margin="0,0,0,4" />
+                            <Rectangle x:Name="NetworkAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
                         </Grid>
                     </Button>
-                    <Button x:Name="ToolsNav" Tag="Tools" Style="{StaticResource NavRailButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Tools">
-                        <Grid ColumnSpacing="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Rectangle x:Name="ToolsAccent" Fill="{StaticResource CyanPulseBrush}" Opacity="0" RadiusX="1" RadiusY="1" />
-                            <TextBlock Grid.Column="1" Text="TOOLS" />
+                    <Button x:Name="ToolsNav" Tag="Tools" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Tools">
+                        <Grid>
+                            <TextBlock Text="TOOLS" Margin="0,0,0,4" />
+                            <Rectangle x:Name="ToolsAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
                         </Grid>
                     </Button>
-                    <Button x:Name="ModsNav" Tag="Mods" Style="{StaticResource NavRailButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Mods and Steam Workshop">
-                        <Grid ColumnSpacing="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Rectangle x:Name="ModsAccent" Fill="{StaticResource CyanPulseBrush}" Opacity="0" RadiusX="1" RadiusY="1" />
-                            <TextBlock Grid.Column="1" Text="MODS + WORKSHOP" />
+                    <Button x:Name="ModsNav" Tag="Mods" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Mods and Steam Workshop">
+                        <Grid>
+                            <TextBlock Text="MODS" Margin="0,0,0,4" />
+                            <Rectangle x:Name="ModsAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
                         </Grid>
                     </Button>
-                    <Button x:Name="ProfilesNav" Tag="Profiles" Style="{StaticResource NavRailButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Profiles">
-                        <Grid ColumnSpacing="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Rectangle x:Name="ProfilesAccent" Fill="{StaticResource CyanPulseBrush}" Opacity="0" RadiusX="1" RadiusY="1" />
-                            <TextBlock Grid.Column="1" Text="PROFILES" />
+                    <Button x:Name="ProfilesNav" Tag="Profiles" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Profiles">
+                        <Grid>
+                            <TextBlock Text="PROFILES" Margin="0,0,0,4" />
+                            <Rectangle x:Name="ProfilesAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
                         </Grid>
                     </Button>
                     <Button
                         x:Name="OverlayNav"
                         Tag="Overlay"
-                        Style="{StaticResource NavRailButtonStyle}"
+                        Style="{StaticResource TopNavButtonStyle}"
                         Click="Nav_Click"
                         Visibility="Collapsed"
                         AutomationProperties.Name="Desktop overlay addon">
-                        <Grid ColumnSpacing="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Rectangle x:Name="OverlayAccent" Fill="{StaticResource CyanPulseBrush}" Opacity="0" RadiusX="1" RadiusY="1" />
-                            <TextBlock Grid.Column="1" Text="OVERLAY" />
+                        <Grid>
+                            <TextBlock Text="OVERLAY" Margin="0,0,0,4" />
+                            <Rectangle x:Name="OverlayAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
                         </Grid>
                     </Button>
                 </StackPanel>
 
-                <StackPanel Grid.Row="2" Spacing="6">
-                    <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{x:Bind ViewModel.VersionText}" />
-                    <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{StaticResource CyanPulseBrush}" Text="{x:Bind ViewModel.SessionStateText, Mode=OneWay}" />
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="18" VerticalAlignment="Center" AutomationProperties.Name="Live telemetry">
+                    <StackPanel Spacing="0" AutomationProperties.Name="CPU usage">
+                        <TextBlock Style="{StaticResource TelemetryLabelText}" Text="CPU" />
+                        <TextBlock Style="{StaticResource TelemetryValueText}" Text="{x:Bind ViewModel.CpuUsageText, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Spacing="0" AutomationProperties.Name="Memory usage">
+                        <TextBlock Style="{StaticResource TelemetryLabelText}" Text="MEM" />
+                        <TextBlock Style="{StaticResource TelemetryValueText}" Text="{x:Bind ViewModel.MemoryText, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Spacing="0" AutomationProperties.Name="Process count">
+                        <TextBlock Style="{StaticResource TelemetryLabelText}" Text="PROC" />
+                        <TextBlock Style="{StaticResource TelemetryValueText}" Text="{x:Bind ViewModel.ProcessCount, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Spacing="0" AutomationProperties.Name="Denylist suspects">
+                        <TextBlock Style="{StaticResource TelemetryLabelText}" Text="HITS" />
+                        <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="14" Foreground="{StaticResource AlertAmberBrush}" Text="{x:Bind ViewModel.SuspectCount, Mode=OneWay}" />
+                    </StackPanel>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontFamily="{StaticResource MonoFontFamily}"
+                        FontSize="12"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="{x:Bind ViewModel.SessionStateText, Mode=OneWay}" />
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- Stage -->
-        <Grid Grid.Column="1">
+        <Grid Grid.Row="1">
             <Grid.Background>
                 <StaticResource ResourceKey="HeroAtmosphereBrush" />
             </Grid.Background>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+            <ScrollViewer x:Name="HomeView" Padding="48,36,48,28" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Spacing="28">
+                    <StackPanel Spacing="8" MaxWidth="920">
+                        <TextBlock Style="{StaticResource KickerText}" Text="CONSOLE-STYLE SESSION SHELL" />
+                        <TextBlock Style="{StaticResource BrandDisplayText}" FontSize="52" Text="UnboundOS" Foreground="{StaticResource PaperBrush}" />
+                        <TextBlock
+                            Text="{x:Bind ViewModel.Tagline}"
+                            FontSize="22"
+                            FontFamily="{StaticResource UiFontSemiboldFamily}"
+                            Foreground="{StaticResource CyanPulseBrush}" />
+                        <TextBlock
+                            Style="{StaticResource BodyMutedText}"
+                            MaxWidth="720"
+                            Text="From Unbound Infotech Corporation. UnboundOS does not replace Windows — it applies a focused gaming or streaming posture, then restores the desktop when you exit." />
+                        <TextBlock
+                            FontFamily="{StaticResource UiFontFamily}"
+                            FontSize="16"
+                            Foreground="{StaticResource PaperBrush}"
+                            Text="{x:Bind ViewModel.StatusLine, Mode=OneWay}" />
+                    </StackPanel>
 
-            <Border
-                Grid.Row="0"
-                Background="{StaticResource TelemetryStripBrush}"
-                Padding="28,14"
-                BorderBrush="{StaticResource LineSubtleBrush}"
-                BorderThickness="0,0,0,1"
-                AutomationProperties.Name="Live telemetry">
-                <Grid ColumnSpacing="28">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Spacing="2">
-                        <TextBlock Style="{StaticResource TelemetryLabelText}" Text="STATUS" />
-                        <TextBlock FontFamily="{StaticResource UiFontFamily}" Foreground="{StaticResource PaperBrush}" Text="{x:Bind ViewModel.StatusLine, Mode=OneWay}" />
+                    <StackPanel Spacing="4">
+                        <TextBlock Style="{StaticResource TileRowLabelText}" Text="START" />
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" XYFocusKeyboardNavigation="Enabled">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button Style="{StaticResource ConsoleHeroTileStyle}" Click="GoSession_Click" AutomationProperties.Name="Start session">
+                                    <Grid>
+                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldHeroBrush}" />
+                                        <TextBlock Style="{StaticResource TileMonogramText}" FontSize="72" Text="S" />
+                                        <StackPanel VerticalAlignment="Bottom" Padding="20,16">
+                                            <TextBlock Style="{StaticResource TileCaptionText}" FontSize="22" Text="Session" />
+                                            <TextBlock Style="{StaticResource TileMetaText}" Text="ENTER" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoTools_Click" AutomationProperties.Name="Open tools marketplace">
+                                    <Grid>
+                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldBrush}" />
+                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="T" />
+                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
+                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Tools" />
+                                            <TextBlock Style="{StaticResource TileMetaText}" Text="KIT" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoNetwork_Click" AutomationProperties.Name="Open network director">
+                                    <Grid>
+                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldAltBrush}" />
+                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="N" />
+                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
+                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Network" />
+                                            <TextBlock Style="{StaticResource TileMetaText}" Text="SPLIT" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoMods_Click" AutomationProperties.Name="Open mods and Workshop">
+                                    <Grid>
+                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldBrush}" />
+                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="M" />
+                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
+                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Mods" />
+                                            <TextBlock Style="{StaticResource TileMetaText}" Text="OPEN" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoProfiles_Click" AutomationProperties.Name="Open profiles">
+                                    <Grid>
+                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldAltBrush}" />
+                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="P" />
+                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
+                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Profiles" />
+                                            <TextBlock Style="{StaticResource TileMetaText}" Text="LIBRARY" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+                        </ScrollViewer>
                     </StackPanel>
-                    <StackPanel Grid.Column="1" Spacing="2" AutomationProperties.Name="CPU usage">
-                        <TextBlock Style="{StaticResource TelemetryLabelText}" Text="CPU" />
-                        <TextBlock Style="{StaticResource TelemetryValueText}" Text="{x:Bind ViewModel.CpuUsageText, Mode=OneWay}" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="2" Spacing="2" AutomationProperties.Name="Memory usage">
-                        <TextBlock Style="{StaticResource TelemetryLabelText}" Text="MEMORY" />
-                        <TextBlock Style="{StaticResource TelemetryValueText}" Text="{x:Bind ViewModel.MemoryText, Mode=OneWay}" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="3" Spacing="2" AutomationProperties.Name="Process count">
-                        <TextBlock Style="{StaticResource TelemetryLabelText}" Text="PROCESSES" />
-                        <TextBlock Style="{StaticResource TelemetryValueText}" Text="{x:Bind ViewModel.ProcessCount, Mode=OneWay}" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="4" Spacing="2" AutomationProperties.Name="Denylist suspects">
-                        <TextBlock Style="{StaticResource TelemetryLabelText}" Text="SUSPECTS" />
-                        <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="14" Foreground="{StaticResource AlertAmberBrush}" Text="{x:Bind ViewModel.SuspectCount, Mode=OneWay}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
+                </StackPanel>
+            </ScrollViewer>
 
-            <Grid Grid.Row="1">
-                <ScrollViewer x:Name="HomeView" Padding="40,32">
-                    <StackPanel Spacing="28" MaxWidth="980" VerticalAlignment="Center">
-                        <StackPanel Spacing="12">
-                            <TextBlock Style="{StaticResource KickerText}" Text="WINDOWS 11 SESSION SHELL" />
-                            <TextBlock Style="{StaticResource BrandDisplayText}" FontSize="68" Text="UnboundOS" Foreground="{StaticResource PaperBrush}" />
-                            <Rectangle Height="2" Width="180" HorizontalAlignment="Left" Fill="{StaticResource SignalSweepBrush}" />
-                            <TextBlock
-                                Text="{x:Bind ViewModel.Tagline}"
-                                FontSize="22"
-                                FontFamily="{StaticResource UiFontSemiboldFamily}"
-                                Foreground="{StaticResource CyanPulseBrush}" />
-                            <TextBlock
-                                Style="{StaticResource BodyMutedText}"
-                                FontSize="16"
-                                MaxWidth="640"
-                                Text="From Unbound Infotech Corporation. UnboundOS does not replace Windows — it applies a focused gaming or streaming posture, then restores the desktop when you exit." />
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button Style="{StaticResource SignalButtonStyle}" Content="START SESSION" Click="GoSession_Click" AutomationProperties.Name="Start session" />
-                            <Button Style="{StaticResource GhostButtonStyle}" Content="TOOLS" Click="GoTools_Click" AutomationProperties.Name="Open tools marketplace" />
-                            <Button Style="{StaticResource GhostButtonStyle}" Content="NETWORK SPLIT" Click="GoNetwork_Click" AutomationProperties.Name="Open network director" />
-                            <Button Style="{StaticResource GhostButtonStyle}" Content="MODS + WORKSHOP" Click="GoMods_Click" AutomationProperties.Name="Open mods and Workshop" />
-                        </StackPanel>
-
-                        <Grid ColumnSpacing="14" Margin="0,8,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="0">
-                                <StackPanel Spacing="8">
-                                    <TextBlock Style="{StaticResource PanelLabelText}" Text="SESSION" />
-                                    <TextBlock Style="{StaticResource BodyMutedText}" Text="Enter a profile that clears denylist junk and keeps anticheat and game processes protected." />
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="1">
-                                <StackPanel Spacing="8">
-                                    <TextBlock Style="{StaticResource PanelLabelText}" Foreground="{StaticResource CobaltAccentBrush}" Text="NETWORK" />
-                                    <TextBlock Style="{StaticResource BodyMutedText}" Text="Prefer the game NIC. Park OBS upload on the second adapter so stream bitrate cannot choke ping." />
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="2">
-                                <StackPanel Spacing="8">
-                                    <TextBlock Style="{StaticResource PanelLabelText}" Text="TOOLS" />
-                                    <TextBlock Style="{StaticResource BodyMutedText}" Text="Launch OBS, Vortex, Discord, Playnite, Steam, plus utilities like Notepad++. Ultrawide crop math lives on the OBS tile." />
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </StackPanel>
-                </ScrollViewer>
-
-                <Frame x:Name="ContentFrame" Visibility="Collapsed" />
-            </Grid>
+            <Frame x:Name="ContentFrame" Visibility="Collapsed" />
         </Grid>
     </Grid>
 </Page>

@@ -16,6 +16,13 @@ public sealed class SessionProfile
     public bool EnableHighPerformancePowerHint { get; init; } = true;
     public bool PauseWindowsUpdateOrchestrator { get; init; }
 
+    public string Monogram =>
+        string.IsNullOrWhiteSpace(Name)
+            ? "P"
+            : char.ToUpperInvariant(Name.Trim()[0]).ToString();
+
+    public string KindLabel => Kind.ToString().ToUpperInvariant();
+
     public SessionProfile WithProcessLists(
         IReadOnlyList<string> terminateProcessNames,
         IReadOnlyList<string> protectProcessNames) =>

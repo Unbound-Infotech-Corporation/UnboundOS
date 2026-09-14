@@ -35,6 +35,8 @@ public sealed class DesktopToolCatalogTests
         var obsTool = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Obs);
         Assert.True(obsTool.IsInstalled);
         Assert.Equal("Installed", obsTool.AvailabilityLabel);
+        Assert.Equal("OPEN", obsTool.StatusLabel);
+        Assert.Equal("O", obsTool.Monogram);
         Assert.True(obsTool.HasObsRecipe);
         Assert.Equal(obs, obsTool.ExecutablePath);
         Assert.Equal(DesktopToolCatalog.ObsGetPath.Uri, obsTool.GetPath.Uri);
@@ -42,6 +44,8 @@ public sealed class DesktopToolCatalogTests
         var vortex = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Vortex);
         Assert.False(vortex.IsInstalled);
         Assert.Equal("Get", vortex.AvailabilityLabel);
+        Assert.Equal("GET", vortex.StatusLabel);
+        Assert.Equal("V", vortex.Monogram);
         Assert.Null(vortex.ExecutablePath);
 
         Assert.False(Assert.Single(tools, tool => tool.Id == DesktopToolIds.Discord).IsInstalled);

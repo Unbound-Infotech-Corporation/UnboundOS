@@ -31,6 +31,13 @@ public sealed record DesktopTool(
     bool HasObsRecipe = false)
 {
     public string AvailabilityLabel => IsInstalled ? "Installed" : "Get";
+
+    public string StatusLabel => IsInstalled ? "OPEN" : "GET";
+
+    public string Monogram =>
+        string.IsNullOrWhiteSpace(DisplayName)
+            ? "+"
+            : char.ToUpperInvariant(DisplayName.Trim()[0]).ToString();
 }
 
 public sealed record ToolLaunchResult(bool Succeeded, string Message)

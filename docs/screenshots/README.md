@@ -3,6 +3,7 @@
 Drop a PNG here named `shell.png` after a local Windows run of the
 UnboundOS shell. The README references that file.
 
-Visual check: obsidian `#05070A` background, cyan pulse `#00F0FF`
-primary, Inter UI + JetBrains Mono telemetry — matching
-[unboundinfotech.com](https://unboundinfotech.com).
+Visual check: console-style shell — slim top bar, wide horizontal
+tiles, focused tile with a soft cyan glow. Obsidian `#05070A`
+background, cyan pulse `#00F0FF` primary, Inter UI + JetBrains Mono
+telemetry — matching [unboundinfotech.com](https://unboundinfotech.com).

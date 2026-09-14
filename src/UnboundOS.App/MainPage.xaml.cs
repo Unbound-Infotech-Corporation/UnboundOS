@@ -41,6 +41,8 @@ public sealed partial class MainPage : Page
     private void GoNetwork_Click(object sender, RoutedEventArgs e) => Navigate("Network");
     private void GoMods_Click(object sender, RoutedEventArgs e) => Navigate("Mods");
 
+    private void GoProfiles_Click(object sender, RoutedEventArgs e) => Navigate("Profiles");
+
     private void Navigate(string tag)
     {
         ViewModel.SelectedNav = tag;

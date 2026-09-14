@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="UnboundOS.App.Views.ToolsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,112 +6,102 @@
     xmlns:views="using:UnboundOS.App.Views"
     Background="Transparent">
 
-    <ScrollViewer Padding="8" AutomationProperties.Name="Tools marketplace">
-        <StackPanel MaxWidth="1180" Spacing="18">
+    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Tools marketplace">
+        <StackPanel Spacing="22">
             <Grid ColumnSpacing="16">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Spacing="5">
+                <StackPanel Spacing="6">
                     <TextBlock Style="{StaticResource KickerText}" Text="LOCAL KIT" />
                     <TextBlock Style="{StaticResource SectionTitleText}" Text="Tools" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Discover the apps you already use, launch them, or open an official Get page. UnboundOS is not a store and does not bundle installers." />
+                        MaxWidth="820"
+                        Text="A living-room row of capture, launchers, and chat. Select a tile. Open launches the real app. Get opens the official download page — UnboundOS never ships an installer." />
                 </StackPanel>
                 <Button
                     Grid.Column="1"
+                    VerticalAlignment="Top"
                     Style="{StaticResource GhostButtonStyle}"
                     Content="REFRESH KIT"
                     Command="{x:Bind ViewModel.RefreshCommand}"
                     AutomationProperties.Name="Refresh local tool catalog" />
             </Grid>
 
-            <InfoBar
-                IsOpen="True"
-                IsClosable="False"
-                Severity="Informational"
-                Title="{x:Bind ViewModel.AvailabilityLabel, Mode=OneWay}"
-                Message="{x:Bind ViewModel.SelectedJob, Mode=OneWay}" />
+            <TextBlock Style="{StaticResource TileRowLabelText}" Text="KIT" />
+            <ListView
+                Height="320"
+                ItemsSource="{x:Bind ViewModel.KitTools, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedKitTool, Mode=OneWay}"
+                IsItemClickEnabled="True"
+                ItemClick="Kit_ItemClick"
+                SelectionMode="Single"
+                Style="{StaticResource ConsoleListViewStyle}"
+                ItemContainerStyle="{StaticResource ConsoleTileItemStyle}"
+                AutomationProperties.Name="Game and stream tools">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:DesktopTool">
+                        <Border Style="{StaticResource ConsoleTileCardStyle}">
+                            <Grid>
+                                <Border Style="{StaticResource ConsoleTileArtStyle}" />
+                                <TextBlock Style="{StaticResource TileMonogramText}" Text="{x:Bind Monogram}" />
+                                <StackPanel VerticalAlignment="Bottom" Padding="18,14">
+                                    <TextBlock Style="{StaticResource TileCaptionText}" Text="{x:Bind DisplayName}" />
+                                    <TextBlock Style="{StaticResource TileMetaText}" Text="{x:Bind StatusLabel}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-            <Grid ColumnSpacing="16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="330" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource TileRowLabelText}" Text="UTILITIES" />
+            <ListView
+                Height="260"
+                ItemsSource="{x:Bind ViewModel.UtilityTools, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedUtilityTool, Mode=OneWay}"
+                IsItemClickEnabled="True"
+                ItemClick="Utility_ItemClick"
+                SelectionMode="Single"
+                Style="{StaticResource ConsoleListViewStyle}"
+                ItemContainerStyle="{StaticResource CompactConsoleTileItemStyle}"
+                AutomationProperties.Name="Utility apps">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:DesktopTool">
+                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldAltBrush}">
+                            <Grid>
+                                <Border Style="{StaticResource ConsoleTileArtAltStyle}" />
+                                <TextBlock Style="{StaticResource TileMonogramText}" FontSize="40" Text="{x:Bind Monogram}" />
+                                <StackPanel VerticalAlignment="Bottom" Padding="16,12">
+                                    <TextBlock Style="{StaticResource TileCaptionText}" FontSize="18" Text="{x:Bind DisplayName}" />
+                                    <TextBlock Style="{StaticResource TileMetaText}" Text="{x:Bind StatusLabel}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-                <Border Grid.Column="0" Style="{StaticResource PanelBorderStyle}">
-                    <StackPanel Spacing="12">
-                        <TextBlock Style="{StaticResource PanelLabelText}" Text="KIT" />
-                        <ListView
-                            MinHeight="220"
-                            ItemsSource="{x:Bind ViewModel.KitTools, Mode=OneWay}"
-                            SelectedItem="{x:Bind ViewModel.SelectedKitTool, Mode=OneWay}"
-                            SelectionMode="Single"
-                            IsItemClickEnabled="True"
-                            ItemClick="Kit_ItemClick"
-                            XYFocusKeyboardNavigation="Enabled"
-                            AutomationProperties.Name="Game and stream tools">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:DesktopTool">
-                                    <StackPanel Margin="0,7" Spacing="3">
-                                        <TextBlock
-                                            FontSize="17"
-                                            FontFamily="{StaticResource UiFontSemiboldFamily}"
-                                            Foreground="{StaticResource PaperBrush}"
-                                            Text="{x:Bind DisplayName}" />
-                                        <TextBlock
-                                            FontFamily="{StaticResource MonoFontFamily}"
-                                            FontSize="11"
-                                            Foreground="{StaticResource CyanPulseBrush}"
-                                            Text="{x:Bind AvailabilityLabel}" />
-                                        <TextBlock
-                                            FontFamily="{StaticResource UiFontFamily}"
-                                            FontSize="12"
-                                            Foreground="{StaticResource MutedTextBrush}"
-                                            Text="{x:Bind Job}"
-                                            TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        <TextBlock Style="{StaticResource PanelLabelText}" Text="UTILITIES" />
-                        <ListView
-                            MinHeight="120"
-                            ItemsSource="{x:Bind ViewModel.UtilityTools, Mode=OneWay}"
-                            SelectedItem="{x:Bind ViewModel.SelectedUtilityTool, Mode=OneWay}"
-                            SelectionMode="Single"
-                            IsItemClickEnabled="True"
-                            ItemClick="Utility_ItemClick"
-                            XYFocusKeyboardNavigation="Enabled"
-                            AutomationProperties.Name="Utility apps">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:DesktopTool">
-                                    <StackPanel Margin="0,7" Spacing="3">
-                                        <TextBlock
-                                            FontSize="17"
-                                            FontFamily="{StaticResource UiFontSemiboldFamily}"
-                                            Foreground="{StaticResource PaperBrush}"
-                                            Text="{x:Bind DisplayName}" />
-                                        <TextBlock
-                                            FontFamily="{StaticResource MonoFontFamily}"
-                                            FontSize="11"
-                                            Foreground="{StaticResource CyanPulseBrush}"
-                                            Text="{x:Bind AvailabilityLabel}" />
-                                        <TextBlock
-                                            FontFamily="{StaticResource UiFontFamily}"
-                                            FontSize="12"
-                                            Foreground="{StaticResource MutedTextBrush}"
-                                            Text="{x:Bind Job}"
-                                            TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock
+                        Style="{StaticResource SectionTitleText}"
+                        FontSize="28"
+                        Text="{x:Bind ViewModel.SelectedName, Mode=OneWay}" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.SelectedJob, Mode=OneWay}" />
+                    <TextBlock
+                        FontFamily="{StaticResource MonoFontFamily}"
+                        FontSize="13"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="{x:Bind ViewModel.AvailabilityLabel, Mode=OneWay}" />
+                    <StackPanel Orientation="Horizontal" Spacing="12">
                         <Button
                             Style="{StaticResource SignalButtonStyle}"
-                            Content="LAUNCH"
+                            Content="OPEN"
                             Command="{x:Bind ViewModel.LaunchCommand}"
                             IsEnabled="{x:Bind ViewModel.CanLaunch, Mode=OneWay}"
                             AutomationProperties.Name="Launch selected tool"
@@ -130,30 +119,21 @@
                             IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
                             AutomationProperties.Name="Tool scan in progress" />
                     </StackPanel>
-                </Border>
-
-                <StackPanel Grid.Column="1" Spacing="16">
-                    <Border Style="{StaticResource PanelBorderStyle}">
-                        <StackPanel Spacing="8">
-                            <TextBlock Style="{StaticResource PanelLabelText}" Foreground="{StaticResource PaperBrush}" Text="{x:Bind ViewModel.SelectedName, Mode=OneWay}" />
-                            <TextBlock
-                                Style="{StaticResource BodyMutedText}"
-                                Text="{x:Bind ViewModel.Status, Mode=OneWay}"
-                                TextWrapping="Wrap"
-                                AutomationProperties.LiveSetting="Polite" />
-                        </StackPanel>
-                    </Border>
-
-                    <InfoBar
-                        IsOpen="{x:Bind ViewModel.ShowObsNeedsInstall, Mode=OneWay}"
-                        IsClosable="False"
-                        Severity="Warning"
-                        Title="OBS not installed"
-                        Message="This crop recipe needs OBS Studio. Use Get, then paste the filters. Play native — never lower monitor resolution." />
-
-                    <views:ObsCropRecipeView Visibility="{x:Bind ViewModel.ShowObsRecipe, Mode=OneWay}" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.Status, Mode=OneWay}"
+                        AutomationProperties.LiveSetting="Polite" />
                 </StackPanel>
-            </Grid>
+            </Border>
+
+            <InfoBar
+                IsOpen="{x:Bind ViewModel.ShowObsNeedsInstall, Mode=OneWay}"
+                IsClosable="False"
+                Severity="Warning"
+                Title="OBS not installed"
+                Message="This crop recipe needs OBS Studio. Use Get, then paste the filters. Play native — never lower monitor resolution." />
+
+            <views:ObsCropRecipeView Visibility="{x:Bind ViewModel.ShowObsRecipe, Mode=OneWay}" />
         </StackPanel>
     </ScrollViewer>
 </Page>

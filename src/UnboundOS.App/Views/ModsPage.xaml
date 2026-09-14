@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="UnboundOS.App.Views.ModsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,22 +5,24 @@
     xmlns:models="using:UnboundOS.Core.Models"
     Background="Transparent">
 
-    <ScrollViewer Padding="8" AutomationProperties.Name="Mods, Steam Workshop, and Vortex">
-        <StackPanel MaxWidth="1180" Spacing="18">
+    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Mods, Steam Workshop, and Vortex">
+        <StackPanel Spacing="22">
             <Grid ColumnSpacing="16">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Spacing="5">
+                <StackPanel Spacing="6">
                     <TextBlock Style="{StaticResource KickerText}" Text="LOCAL DISCOVERY" />
-                    <TextBlock Style="{StaticResource SectionTitleText}" Text="Mods + Workshop + Vortex" />
+                    <TextBlock Style="{StaticResource SectionTitleText}" Text="Mods" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Discover local Workshop and Vortex staging. Steam and Vortex stay in charge of install, enable, and deploy." />
+                        MaxWidth="820"
+                        Text="Workshop and Vortex sit as a game row. UnboundOS never writes Steam or Vortex state. Install, enable, and order stay in those apps." />
                 </StackPanel>
                 <Button
                     Grid.Column="1"
+                    VerticalAlignment="Top"
                     Style="{StaticResource GhostButtonStyle}"
                     Content="REFRESH LIBRARIES"
                     Command="{x:Bind ViewModel.RefreshCommand}"
@@ -35,171 +36,153 @@
                 Title="Safe by design"
                 Message="{x:Bind ViewModel.CapabilitySummary, Mode=OneWay}" />
 
-            <Grid ColumnSpacing="16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="330" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource TileRowLabelText}" Text="LIBRARY" />
+            <ListView
+                Height="320"
+                ItemsSource="{x:Bind ViewModel.Games, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedGame, Mode=TwoWay}"
+                SelectionMode="Single"
+                Style="{StaticResource ConsoleListViewStyle}"
+                ItemContainerStyle="{StaticResource ConsoleTileItemStyle}"
+                AutomationProperties.Name="Games with mod content">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ModGame">
+                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldAltBrush}">
+                            <Grid>
+                                <Border Style="{StaticResource ConsoleTileArtAltStyle}" />
+                                <TextBlock Style="{StaticResource TileMonogramText}" Text="{x:Bind Monogram}" />
+                                <StackPanel VerticalAlignment="Bottom" Padding="18,14">
+                                    <TextBlock Style="{StaticResource TileCaptionText}" Text="{x:Bind DisplayName}" />
+                                    <TextBlock Style="{StaticResource TileMetaText}" Text="{x:Bind ProviderLabel}" />
+                                    <TextBlock Style="{StaticResource TileMetaText}" Foreground="{StaticResource MutedTextBrush}" Text="{x:Bind ItemCountLabel}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-                <Border Grid.Column="0" Style="{StaticResource PanelBorderStyle}">
-                    <StackPanel Spacing="12">
-                        <TextBlock Style="{StaticResource PanelLabelText}" Text="MODDED GAMES" />
-                        <ListView
-                            MinHeight="220"
-                            ItemsSource="{x:Bind ViewModel.Games, Mode=OneWay}"
-                            SelectedItem="{x:Bind ViewModel.SelectedGame, Mode=TwoWay}"
-                            SelectionMode="Single"
-                            IsItemClickEnabled="True"
-                            XYFocusKeyboardNavigation="Enabled"
-                            AutomationProperties.Name="Games with mod content">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:ModGame">
-                                    <StackPanel Margin="0,7" Spacing="3">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button
+                    Style="{StaticResource GhostButtonStyle}"
+                    Content="OPEN IN STEAM"
+                    Command="{x:Bind ViewModel.OpenWorkshopCommand}"
+                    IsEnabled="{x:Bind ViewModel.CanOpenWorkshop, Mode=OneWay}"
+                    AutomationProperties.Name="Open game Workshop in Steam"
+                    AutomationProperties.HelpText="Opens the supported Steam Workshop page; UnboundOS does not subscribe on your behalf." />
+                <Button
+                    Style="{StaticResource GhostButtonStyle}"
+                    Content="OPEN IN VORTEX"
+                    Command="{x:Bind ViewModel.OpenVortexCommand}"
+                    IsEnabled="{x:Bind ViewModel.CanOpenVortex, Mode=OneWay}"
+                    AutomationProperties.Name="Open game in Vortex"
+                    AutomationProperties.HelpText="Launches Vortex for this game. UnboundOS does not write Vortex staging or Nexus credentials." />
+            </StackPanel>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="12">
+                    <Grid ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Style="{StaticResource PanelLabelText}" Foreground="{StaticResource PaperBrush}" Text="INSTALLED CONTENT" />
+                        <ProgressRing
+                            Grid.Column="1"
+                            Width="22"
+                            Height="22"
+                            IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
+                            AutomationProperties.Name="Workshop scan in progress" />
+                    </Grid>
+
+                    <ListView
+                        MinHeight="220"
+                        MaxHeight="360"
+                        ItemsSource="{x:Bind ViewModel.Mods, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedMod, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        XYFocusKeyboardNavigation="Enabled"
+                        AutomationProperties.Name="Installed mods and Workshop items">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:InstalledMod">
+                                <Grid Margin="0,8" ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        FontFamily="{StaticResource MonoFontFamily}"
+                                        Foreground="{StaticResource MutedTextBrush}"
+                                        Text="{x:Bind LoadOrder}" />
+                                    <StackPanel Grid.Column="1" Spacing="2">
                                         <TextBlock
-                                            FontSize="17"
                                             FontFamily="{StaticResource UiFontSemiboldFamily}"
+                                            FontSize="16"
                                             Foreground="{StaticResource PaperBrush}"
                                             Text="{x:Bind DisplayName}" />
                                         <TextBlock
                                             FontFamily="{StaticResource MonoFontFamily}"
-                                            FontSize="11"
-                                            Foreground="{StaticResource CyanPulseBrush}">
+                                            FontSize="12"
+                                            Foreground="{StaticResource MutedTextBrush}">
                                             <Run Text="{x:Bind Provider}" />
                                             <Run Text=" • " />
-                                            <Run Text="{x:Bind Mods.Count}" />
-                                            <Run Text=" items" />
+                                            <Run Text="{x:Bind Id}" />
                                         </TextBlock>
-                                        <TextBlock
-                                            FontFamily="{StaticResource MonoFontFamily}"
-                                            FontSize="11"
-                                            Foreground="{StaticResource MutedTextBrush}"
-                                            Text="{x:Bind InstallPath}"
-                                            TextWrapping="Wrap" />
                                     </StackPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        <Button
-                            Style="{StaticResource SignalButtonStyle}"
-                            Content="OPEN IN STEAM"
-                            Command="{x:Bind ViewModel.OpenWorkshopCommand}"
-                            IsEnabled="{x:Bind ViewModel.CanOpenWorkshop, Mode=OneWay}"
-                            AutomationProperties.Name="Open game Workshop in Steam"
-                            AutomationProperties.HelpText="Opens the supported Steam Workshop page; UnboundOS does not subscribe on your behalf." />
-                        <Button
-                            Style="{StaticResource SignalButtonStyle}"
-                            Content="OPEN IN VORTEX"
-                            Command="{x:Bind ViewModel.OpenVortexCommand}"
-                            IsEnabled="{x:Bind ViewModel.CanOpenVortex, Mode=OneWay}"
-                            AutomationProperties.Name="Open game in Vortex"
-                            AutomationProperties.HelpText="Launches Vortex for this game. UnboundOS does not write Vortex staging or Nexus credentials." />
-                    </StackPanel>
-                </Border>
-
-                <Border Grid.Column="1" Style="{StaticResource PanelBorderStyle}">
-                    <StackPanel Spacing="12">
-                        <Grid ColumnSpacing="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Style="{StaticResource PanelLabelText}" Foreground="{StaticResource PaperBrush}" Text="INSTALLED CONTENT" />
-                            <ProgressRing
-                                Grid.Column="1"
-                                Width="22"
-                                Height="22"
-                                IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
-                                AutomationProperties.Name="Workshop scan in progress" />
-                        </Grid>
-
-                        <ListView
-                            MinHeight="300"
-                            MaxHeight="430"
-                            ItemsSource="{x:Bind ViewModel.Mods, Mode=OneWay}"
-                            SelectedItem="{x:Bind ViewModel.SelectedMod, Mode=TwoWay}"
-                            SelectionMode="Single"
-                            XYFocusKeyboardNavigation="Enabled"
-                            AutomationProperties.Name="Installed mods and Workshop items">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:InstalledMod">
-                                    <Grid Margin="0,7" ColumnSpacing="12">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="34" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                         <TextBlock
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"
+                                            FontSize="12"
                                             FontFamily="{StaticResource MonoFontFamily}"
-                                            Foreground="{StaticResource MutedTextBrush}"
-                                            Text="{x:Bind LoadOrder}" />
-                                        <StackPanel Grid.Column="1" Spacing="2">
-                                            <TextBlock
-                                                FontFamily="{StaticResource UiFontSemiboldFamily}"
-                                                Foreground="{StaticResource PaperBrush}"
-                                                Text="{x:Bind DisplayName}" />
-                                            <TextBlock
-                                                FontFamily="{StaticResource MonoFontFamily}"
-                                                FontSize="11"
-                                                Foreground="{StaticResource MutedTextBrush}">
-                                                <Run Text="{x:Bind Provider}" />
-                                                <Run Text=" • " />
-                                                <Run Text="{x:Bind Id}" />
-                                            </TextBlock>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                            <TextBlock
-                                                FontSize="11"
-                                                FontFamily="{StaticResource MonoFontFamily}"
-                                                Foreground="{StaticResource CyanPulseBrush}"
-                                                Text="{x:Bind UpdateState}" />
-                                            <TextBlock
-                                                FontSize="11"
-                                                FontFamily="{StaticResource MonoFontFamily}"
-                                                Foreground="{StaticResource PaperBrush}">
-                                                <Run Text="Enabled: " />
-                                                <Run Text="{x:Bind IsEnabled}" />
-                                            </TextBlock>
-                                        </StackPanel>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                                            Foreground="{StaticResource CyanPulseBrush}"
+                                            Text="{x:Bind UpdateState}" />
+                                        <TextBlock
+                                            FontSize="12"
+                                            FontFamily="{StaticResource MonoFontFamily}"
+                                            Foreground="{StaticResource PaperBrush}">
+                                            <Run Text="Enabled: " />
+                                            <Run Text="{x:Bind IsEnabled}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Button
-                                Style="{StaticResource GhostButtonStyle}"
-                                Content="TOGGLE DRAFT"
-                                Command="{x:Bind ViewModel.ToggleSelectedCommand}"
-                                AutomationProperties.Name="Toggle selected mod in profile draft" />
-                            <Button
-                                Style="{StaticResource GhostButtonStyle}"
-                                Content="MOVE UP"
-                                Command="{x:Bind ViewModel.MoveUpCommand}"
-                                AutomationProperties.Name="Move selected mod up" />
-                            <Button
-                                Style="{StaticResource GhostButtonStyle}"
-                                Content="MOVE DOWN"
-                                Command="{x:Bind ViewModel.MoveDownCommand}"
-                                AutomationProperties.Name="Move selected mod down" />
-                            <Button
-                                Style="{StaticResource GhostButtonStyle}"
-                                Content="VIEW ITEM"
-                                Command="{x:Bind ViewModel.OpenSelectedItemCommand}"
-                                AutomationProperties.Name="View Workshop item in Steam"
-                                AutomationProperties.HelpText="Opens this item in Steam." />
-                        </StackPanel>
-
-                        <TextBlock
-                            FontFamily="{StaticResource MonoFontFamily}"
-                            FontSize="12"
-                            Foreground="{StaticResource MutedTextBrush}"
-                            Text="{x:Bind ViewModel.ModDetails, Mode=OneWay}"
-                            TextWrapping="Wrap" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="TOGGLE DRAFT"
+                            Command="{x:Bind ViewModel.ToggleSelectedCommand}"
+                            AutomationProperties.Name="Toggle selected mod in profile draft" />
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="MOVE UP"
+                            Command="{x:Bind ViewModel.MoveUpCommand}"
+                            AutomationProperties.Name="Move selected mod up" />
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="MOVE DOWN"
+                            Command="{x:Bind ViewModel.MoveDownCommand}"
+                            AutomationProperties.Name="Move selected mod down" />
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="VIEW ITEM"
+                            Command="{x:Bind ViewModel.OpenSelectedItemCommand}"
+                            AutomationProperties.Name="View Workshop item in Steam"
+                            AutomationProperties.HelpText="Opens this item in Steam." />
                     </StackPanel>
-                </Border>
-            </Grid>
+
+                    <TextBlock
+                        FontFamily="{StaticResource MonoFontFamily}"
+                        FontSize="12"
+                        Foreground="{StaticResource MutedTextBrush}"
+                        Text="{x:Bind ViewModel.ModDetails, Mode=OneWay}"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
 
             <Border Style="{StaticResource PanelBorderStyle}">
                 <Grid ColumnSpacing="16">
@@ -211,6 +194,7 @@
                         <TextBlock Style="{StaticResource PanelLabelText}" Text="PROFILE LAB" />
                         <TextBox
                             Header="New profile name"
+                            MinHeight="48"
                             Text="{x:Bind ViewModel.ProfileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             AutomationProperties.Name="New mod profile name" />
                         <Button
@@ -224,6 +208,7 @@
                     <StackPanel Grid.Column="1" Spacing="10">
                         <ComboBox
                             Header="Saved profile"
+                            MinHeight="48"
                             ItemsSource="{x:Bind ViewModel.Profiles, Mode=OneWay}"
                             SelectedItem="{x:Bind ViewModel.SelectedProfile, Mode=TwoWay}"
                             DisplayMemberPath="Name"

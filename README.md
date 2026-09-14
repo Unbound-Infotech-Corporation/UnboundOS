@@ -2,11 +2,13 @@
 
 **Cut the noise. Own the frame.**
 
-A public Windows 11 gaming session shell by **[Unbound Infotech Corporation](https://unboundinfotech.com)**.
+A public Windows 11 **console-style shell** by **[Unbound Infotech Corporation](https://unboundinfotech.com)**.
 
 UnboundOS does **not** replace Windows. It applies a focused gaming / streaming posture — snapshot NICs, clear denylist junk, protect games and anticheat — then restores the desktop when you exit.
 
-**Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (obsidian `#05070A`, steel `#0B121D`, cyan pulse `#00F0FF`). See [docs/screenshots/README.md](docs/screenshots/README.md).
+The shell is a living-room home: slim top bar, ambient obsidian gradient, and a wide row of large rounded tiles. The focused tile scales up with a soft cyan glow. Tools, session profiles, and modded games use the same tile language — artwork-forward cards, short labels, Open / Get / Session as secondary metadata.
+
+**Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (wide tile row, slim top chrome, obsidian `#05070A`, steel `#0B121D`, cyan pulse `#00F0FF`). See [docs/screenshots/README.md](docs/screenshots/README.md).
 
 ## What it is
 
@@ -62,7 +64,7 @@ Created on first launch at:
 
 ## Tools marketplace
 
-The **Tools** page is a local kit catalog, not a store and not a streaming product.
+The **Tools** page is a local kit catalog presented as a media row of large tiles (OBS, Vortex, Discord, Playnite, Steam, plus Notepad++ / 7-Zip utilities) — not a store and not a streaming product.
 
 - Detects the kit (OBS Studio, Vortex, Discord, Playnite, Steam) plus a short Utilities row (Notepad++, 7-Zip) from install paths, Start Menu, and uninstall registry.
 - **Launch** starts the real app. The Vortex tile uses the same read-only Vortex handoff as Mods (`--game` / `--profile` when known; opening Vortex itself from Tools).
@@ -140,6 +142,7 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 
 ## Design notes
 
+- Console-style shell: horizontal tile rows, instant focus glow, large type and hit targets
 - CommunityToolkit.Mvvm + Microsoft.Extensions.DependencyInjection
 - Safe process guardian with hard-protect for critical Windows processes
 - OBS crop recipe never asks you to lower monitor resolution

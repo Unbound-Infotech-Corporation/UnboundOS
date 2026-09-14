@@ -19,6 +19,44 @@ public sealed class BrandingAndOverlayTests
         Assert.Equal("#00F0FF", Branding.Palette.CyanPulse);
         Assert.Equal("#1E40AF", Branding.Palette.Cobalt);
         Assert.DoesNotContain("lime", Branding.Tagline, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("PlayStation", Branding.ProductName, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("PlayStation", Branding.CompanyName, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("PlayStation", Branding.Tagline, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void TileLabels_StayArtworkForwardWithoutStoreBranding()
+    {
+        var tool = new DesktopTool(
+            DesktopToolIds.Obs,
+            "OBS Studio",
+            "Capture",
+            true,
+            @"C:\obs64.exe",
+            ["obs64"],
+            new ToolGetPath("OBS", "https://obsproject.com/download"));
+        Assert.Equal("O", tool.Monogram);
+        Assert.Equal("OPEN", tool.StatusLabel);
+
+        var game = new ModGame(
+            "skyrim",
+            "Skyrim",
+            null,
+            ModProvider.NexusMods,
+            ModCapabilities.VortexDiscoveryOnly,
+            []);
+        Assert.Equal("S", game.Monogram);
+        Assert.Equal("VORTEX", game.ProviderLabel);
+        Assert.Equal("0 ITEMS", game.ItemCountLabel);
+
+        var profile = new SessionProfile
+        {
+            Id = "living",
+            Name = "Living Room Shell",
+            Kind = ProfileKind.LivingRoom
+        };
+        Assert.Equal("L", profile.Monogram);
+        Assert.Equal("LIVINGROOM", profile.KindLabel);
     }
 
     [Fact]

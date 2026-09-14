@@ -6,8 +6,8 @@
     xmlns:overlay="using:UnboundOS.Core.Overlay"
     Background="Transparent">
 
-    <ScrollViewer Padding="8" AutomationProperties.Name="Desktop overlay addon">
-        <StackPanel Spacing="20" MaxWidth="1100">
+    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Desktop overlay addon">
+        <StackPanel Spacing="22">
             <StackPanel Spacing="6">
                 <TextBlock Style="{StaticResource KickerText}" Text="OPTIONAL ADDON" />
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="{x:Bind ViewModel.Headline}" />

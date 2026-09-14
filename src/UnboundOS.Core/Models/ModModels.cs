@@ -60,7 +60,25 @@ public sealed record ModGame(
     string? AdapterId = null,
     string? SteamAppId = null,
     string? VortexGameId = null,
-    string? VortexProfileId = null);
+    string? VortexProfileId = null)
+{
+    public string Monogram =>
+        string.IsNullOrWhiteSpace(DisplayName)
+            ? "G"
+            : char.ToUpperInvariant(DisplayName.Trim()[0]).ToString();
+
+    public string ProviderLabel => Provider switch
+    {
+        ModProvider.SteamWorkshop => "WORKSHOP",
+        ModProvider.NexusMods => "VORTEX",
+        ModProvider.Local => "LOCAL",
+        ModProvider.Thunderstore => "THUNDERSTORE",
+        ModProvider.BuiltIn => "PREVIEW",
+        _ => "MODS"
+    };
+
+    public string ItemCountLabel => $"{Mods.Count} ITEMS";
+}
 
 public sealed record InstalledMod(
     string Id,
