@@ -11,6 +11,8 @@ public partial class ToolsViewModel(
     IDesktopToolLauncher launcher) : ObservableObject
 {
     public ObservableCollection<DesktopTool> Tools { get; } = [];
+    public ObservableCollection<DesktopTool> KitTools { get; } = [];
+    public ObservableCollection<DesktopTool> UtilityTools { get; } = [];
 
     [ObservableProperty] private DesktopTool? _selectedTool;
     [ObservableProperty] private bool _isBusy;
@@ -30,6 +32,12 @@ public partial class ToolsViewModel(
 
     public string SelectedName => SelectedTool?.DisplayName ?? "Tools";
 
+    public DesktopTool? SelectedKitTool =>
+        SelectedTool?.Group == DesktopToolGroup.Kit ? SelectedTool : null;
+
+    public DesktopTool? SelectedUtilityTool =>
+        SelectedTool?.Group == DesktopToolGroup.Utility ? SelectedTool : null;
+
     public async Task InitializeAsync()
     {
         IsBusy = true;
@@ -38,12 +46,24 @@ public partial class ToolsViewModel(
             var discovered = await catalog.DiscoverAsync();
             var selectedId = SelectedTool?.Id;
             Tools.Clear();
+            KitTools.Clear();
+            UtilityTools.Clear();
             foreach (var tool in discovered)
             {
                 Tools.Add(tool);
+                if (tool.Group == DesktopToolGroup.Utility)
+                {
+                    UtilityTools.Add(tool);
+                }
+                else
+                {
+                    KitTools.Add(tool);
+                }
             }
 
-            SelectedTool = Tools.FirstOrDefault(tool => tool.Id == selectedId) ?? Tools.FirstOrDefault();
+            SelectedTool = Tools.FirstOrDefault(tool => tool.Id == selectedId)
+                ?? KitTools.FirstOrDefault()
+                ?? Tools.FirstOrDefault();
             Status = Summarize();
         }
         catch (Exception error)
@@ -65,6 +85,17 @@ public partial class ToolsViewModel(
         OnPropertyChanged(nameof(AvailabilityLabel));
         OnPropertyChanged(nameof(SelectedJob));
         OnPropertyChanged(nameof(SelectedName));
+        OnPropertyChanged(nameof(SelectedKitTool));
+        OnPropertyChanged(nameof(SelectedUtilityTool));
+    }
+
+    [RelayCommand]
+    private void SelectTool(DesktopTool? tool)
+    {
+        if (tool is not null)
+        {
+            SelectedTool = tool;
+        }
     }
 
     [RelayCommand]

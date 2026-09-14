@@ -46,13 +46,47 @@
                     <StackPanel Spacing="12">
                         <TextBlock Style="{StaticResource PanelLabelText}" Text="KIT" />
                         <ListView
-                            MinHeight="280"
-                            ItemsSource="{x:Bind ViewModel.Tools, Mode=OneWay}"
-                            SelectedItem="{x:Bind ViewModel.SelectedTool, Mode=TwoWay}"
+                            MinHeight="220"
+                            ItemsSource="{x:Bind ViewModel.KitTools, Mode=OneWay}"
+                            SelectedItem="{x:Bind ViewModel.SelectedKitTool, Mode=OneWay}"
                             SelectionMode="Single"
                             IsItemClickEnabled="True"
+                            ItemClick="Kit_ItemClick"
                             XYFocusKeyboardNavigation="Enabled"
-                            AutomationProperties.Name="Desktop tools">
+                            AutomationProperties.Name="Game and stream tools">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:DesktopTool">
+                                    <StackPanel Margin="0,7" Spacing="3">
+                                        <TextBlock
+                                            FontSize="17"
+                                            FontFamily="{StaticResource UiFontSemiboldFamily}"
+                                            Foreground="{StaticResource PaperBrush}"
+                                            Text="{x:Bind DisplayName}" />
+                                        <TextBlock
+                                            FontFamily="{StaticResource MonoFontFamily}"
+                                            FontSize="11"
+                                            Foreground="{StaticResource CyanPulseBrush}"
+                                            Text="{x:Bind AvailabilityLabel}" />
+                                        <TextBlock
+                                            FontFamily="{StaticResource UiFontFamily}"
+                                            FontSize="12"
+                                            Foreground="{StaticResource MutedTextBrush}"
+                                            Text="{x:Bind Job}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <TextBlock Style="{StaticResource PanelLabelText}" Text="UTILITIES" />
+                        <ListView
+                            MinHeight="120"
+                            ItemsSource="{x:Bind ViewModel.UtilityTools, Mode=OneWay}"
+                            SelectedItem="{x:Bind ViewModel.SelectedUtilityTool, Mode=OneWay}"
+                            SelectionMode="Single"
+                            IsItemClickEnabled="True"
+                            ItemClick="Utility_ItemClick"
+                            XYFocusKeyboardNavigation="Enabled"
+                            AutomationProperties.Name="Utility apps">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:DesktopTool">
                                     <StackPanel Margin="0,7" Spacing="3">

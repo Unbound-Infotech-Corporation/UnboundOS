@@ -18,7 +18,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 |--------|---------|
 | **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
-| **Tools** | Small local kit marketplace: detect OBS, Vortex, Discord, Playnite, Steam; Launch or official Get. Ultrawide crop recipe lives on the OBS tile |
+| **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam) plus utilities (Notepad++, 7-Zip). Launch or official Get. Ultrawide crop recipe lives on the OBS tile |
 | **Profiles** | JSON profiles in LocalAppData (`Competitive`, `Streamer`, `Living Room`) |
 | **Mods + Workshop** | Local Steam Workshop discovery, per-game mod profiles, safe adapter-based apply/restore |
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
@@ -64,7 +64,7 @@ Created on first launch at:
 
 The **Tools** page is a local kit catalog, not a store and not a streaming product.
 
-- Detects OBS Studio, Vortex, Discord, Playnite, and Steam from install paths, Start Menu, and uninstall registry.
+- Detects the kit (OBS Studio, Vortex, Discord, Playnite, Steam) plus a short Utilities row (Notepad++, 7-Zip) from install paths, Start Menu, and uninstall registry.
 - **Launch** starts the real app. The Vortex tile uses the same read-only Vortex handoff as Mods (`--game` / `--profile` when known; opening Vortex itself from Tools).
 - **Get** opens an official HTTPS page (or a `ms-windows-store` / `winget` URI). UnboundOS does not download or bundle those binaries.
 - If OBS is missing, the tile says Get. The ultrawide crop recipe still explains the filters and that they need OBS. Play native — never lower monitor resolution.

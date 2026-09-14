@@ -418,7 +418,7 @@
                             <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="2">
                                 <StackPanel Spacing="8">
                                     <TextBlock Style="{StaticResource PanelLabelText}" Text="TOOLS" />
-                                    <TextBlock Style="{StaticResource BodyMutedText}" Text="Launch OBS, Vortex, Discord, Playnite, or Steam. Ultrawide crop math lives on the OBS tile." />
+                                    <TextBlock Style="{StaticResource BodyMutedText}" Text="Launch OBS, Vortex, Discord, Playnite, Steam, plus utilities like Notepad++. Ultrawide crop math lives on the OBS tile." />
                                 </StackPanel>
                             </Border>
                         </Grid>

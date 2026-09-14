@@ -28,7 +28,9 @@ public sealed class DesktopToolCatalogTests
         });
 
         var tools = catalog.Discover();
-        Assert.Equal(5, tools.Count);
+        Assert.Equal(7, tools.Count);
+        Assert.Equal(5, tools.Count(tool => tool.Group == DesktopToolGroup.Kit));
+        Assert.Equal(2, tools.Count(tool => tool.Group == DesktopToolGroup.Utility));
 
         var obsTool = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Obs);
         Assert.True(obsTool.IsInstalled);
@@ -44,6 +46,30 @@ public sealed class DesktopToolCatalogTests
 
         Assert.False(Assert.Single(tools, tool => tool.Id == DesktopToolIds.Discord).IsInstalled);
         Assert.True(Assert.Single(tools, tool => tool.Id == DesktopToolIds.Steam).IsInstalled);
+        Assert.Equal(DesktopToolGroup.Utility, Assert.Single(tools, tool => tool.Id == DesktopToolIds.NotepadPlusPlus).Group);
+        Assert.Equal(DesktopToolGroup.Utility, Assert.Single(tools, tool => tool.Id == DesktopToolIds.SevenZip).Group);
+    }
+
+    [Fact]
+    public void Discover_NotepadPlusPlus_UsesForcedPathAndOfficialGet()
+    {
+        using var temp = new TempTree();
+        var exe = temp.File("notepad++.exe");
+        var catalog = new DesktopToolCatalog(new DesktopToolDiscoverySettings
+        {
+            UseDefaultWindowsLocations = false,
+            ForcedExecutables = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase)
+            {
+                [DesktopToolIds.NotepadPlusPlus] = exe
+            }
+        });
+
+        var notepad = Assert.Single(catalog.Discover(), tool => tool.Id == DesktopToolIds.NotepadPlusPlus);
+        Assert.True(notepad.IsInstalled);
+        Assert.Equal(exe, notepad.ExecutablePath);
+        Assert.Equal(DesktopToolGroup.Utility, notepad.Group);
+        Assert.Equal(DesktopToolCatalog.NotepadPlusPlusGetPath.Uri, notepad.GetPath.Uri);
+        Assert.False(notepad.HasObsRecipe);
     }
 
     [Fact]
@@ -69,6 +95,8 @@ public sealed class DesktopToolCatalogTests
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.DiscordGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.PlayniteGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.SteamGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.NotepadPlusPlusGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.SevenZipGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri("ms-windows-store://pdp/?ProductId=9nblggh4v2k6"));
         Assert.False(DesktopToolLauncher.IsSafeGetUri("http://obsproject.com/download"));
         Assert.False(DesktopToolLauncher.IsSafeGetUri(@"C:\setup.exe"));
@@ -87,7 +115,7 @@ public sealed class DesktopToolCatalogTests
             null,
             ["obs64"],
             DesktopToolCatalog.ObsGetPath,
-            true);
+            HasObsRecipe: true);
 
         var result = await launcher.LaunchAsync(tool);
         Assert.False(result.Succeeded);
@@ -117,7 +145,36 @@ public sealed class DesktopToolCatalogTests
             exe,
             ["obs64"],
             DesktopToolCatalog.ObsGetPath,
-            true));
+            HasObsRecipe: true));
+
+        Assert.True(result.Succeeded);
+        Assert.Equal(exe, started);
+    }
+
+    [Fact]
+    public async Task Launch_NotepadPlusPlus_StartsExecutable()
+    {
+        using var temp = new TempTree();
+        var exe = temp.File("notepad++.exe");
+        string? started = null;
+        var launcher = new DesktopToolLauncher(
+            new VortexLauncher(IsolatedVortex()),
+            (path, _) =>
+            {
+                started = path;
+                return true;
+            },
+            _ => true);
+
+        var result = await launcher.LaunchAsync(new DesktopTool(
+            DesktopToolIds.NotepadPlusPlus,
+            "Notepad++",
+            "Edit text",
+            true,
+            exe,
+            ["notepad++"],
+            DesktopToolCatalog.NotepadPlusPlusGetPath,
+            DesktopToolGroup.Utility));
 
         Assert.True(result.Succeeded);
         Assert.Equal(exe, started);
@@ -164,7 +221,7 @@ public sealed class DesktopToolCatalogTests
             null,
             ["obs64"],
             DesktopToolCatalog.ObsGetPath,
-            true));
+            HasObsRecipe: true));
 
         Assert.True(result.Succeeded);
         Assert.Equal(DesktopToolCatalog.ObsGetPath.Uri, opened);

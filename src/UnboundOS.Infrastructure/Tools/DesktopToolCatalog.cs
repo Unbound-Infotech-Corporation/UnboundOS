@@ -5,8 +5,8 @@ using UnboundOS.Core.Models;
 namespace UnboundOS.Infrastructure.Tools;
 
 /// <summary>
-/// Read-only kit catalog. Discovers OBS, Vortex, Discord, Playnite, and Steam.
-/// Missing tools stay listed as Get — never a fake demo install.
+/// Read-only kit + utilities catalog. Missing tools stay listed as Get —
+/// never a fake demo install. Utilities stay a short, obvious set.
 /// </summary>
 public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = null) : IDesktopToolCatalog
 {
@@ -24,6 +24,12 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
 
     public static ToolGetPath SteamGetPath { get; } =
         new("Official site", "https://store.steampowered.com/about/");
+
+    public static ToolGetPath NotepadPlusPlusGetPath { get; } =
+        new("Official site", "https://notepad-plus-plus.org/downloads/");
+
+    public static ToolGetPath SevenZipGetPath { get; } =
+        new("Official site", "https://www.7-zip.org/");
 
     private readonly DesktopToolDiscoverySettings _settings = settings ?? new DesktopToolDiscoverySettings();
 
@@ -67,7 +73,23 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
             "Launch the client you already use. Workshop stays on the Mods page.",
             FindSteam(),
             ["Steam"],
-            SteamGetPath)
+            SteamGetPath),
+        Create(
+            DesktopToolIds.NotepadPlusPlus,
+            "Notepad++",
+            "Edit text, configs, and logs. Get opens the official downloads page.",
+            FindNotepadPlusPlus(),
+            ["notepad++"],
+            NotepadPlusPlusGetPath,
+            DesktopToolGroup.Utility),
+        Create(
+            DesktopToolIds.SevenZip,
+            "7-Zip",
+            "Open archives. Get opens the official 7-Zip page.",
+            FindSevenZip(),
+            ["7zFM", "7z"],
+            SevenZipGetPath,
+            DesktopToolGroup.Utility)
     ];
 
     private DesktopTool Create(
@@ -77,6 +99,7 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
         string? executable,
         IReadOnlyList<string> processNames,
         ToolGetPath getPath,
+        DesktopToolGroup group = DesktopToolGroup.Kit,
         bool HasObsRecipe = false)
     {
         var installed = !string.IsNullOrWhiteSpace(executable) && File.Exists(executable);
@@ -88,6 +111,7 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
             installed ? executable : null,
             processNames,
             getPath,
+            group,
             HasObsRecipe);
     }
 
@@ -213,6 +237,49 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
                 .Concat(DesktopAppLocator.UninstallExecutables("Steam")
                     .SelectMany(path => DesktopAppLocator.ExpandInstallLocation(path, "steam.exe")))
                 .Concat(DesktopAppLocator.StartMenuExecutables("steam.exe")));
+    }
+
+    private string? FindNotepadPlusPlus()
+    {
+        if (TryForced(DesktopToolIds.NotepadPlusPlus, out var forced))
+        {
+            return forced;
+        }
+
+        if (!_settings.UseDefaultWindowsLocations)
+        {
+            return null;
+        }
+
+        return DesktopAppLocator.FindFirstExisting(
+            DesktopAppLocator.Combine(
+                    DesktopAppLocator.ProgramRoots(),
+                    Path.Combine("Notepad++", "notepad++.exe"))
+                .Concat(DesktopAppLocator.UninstallExecutables("Notepad++")
+                    .SelectMany(path => DesktopAppLocator.ExpandInstallLocation(path, "notepad++.exe")))
+                .Concat(DesktopAppLocator.StartMenuExecutables("notepad++.exe")));
+    }
+
+    private string? FindSevenZip()
+    {
+        if (TryForced(DesktopToolIds.SevenZip, out var forced))
+        {
+            return forced;
+        }
+
+        if (!_settings.UseDefaultWindowsLocations)
+        {
+            return null;
+        }
+
+        return DesktopAppLocator.FindFirstExisting(
+            DesktopAppLocator.Combine(
+                    DesktopAppLocator.ProgramRoots(),
+                    Path.Combine("7-Zip", "7zFM.exe"),
+                    Path.Combine("7-Zip", "7z.exe"))
+                .Concat(DesktopAppLocator.UninstallExecutables("7-Zip")
+                    .SelectMany(path => DesktopAppLocator.ExpandInstallLocation(path, "7zFM.exe", "7z.exe")))
+                .Concat(DesktopAppLocator.StartMenuExecutables("7zFM.exe", "7z.exe")));
     }
 
     private bool TryForced(string id, out string? path)

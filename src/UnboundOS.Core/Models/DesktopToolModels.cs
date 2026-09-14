@@ -7,6 +7,14 @@ public static class DesktopToolIds
     public const string Discord = "discord";
     public const string Playnite = "playnite";
     public const string Steam = "steam";
+    public const string NotepadPlusPlus = "notepadplusplus";
+    public const string SevenZip = "sevenzip";
+}
+
+public enum DesktopToolGroup
+{
+    Kit,
+    Utility
 }
 
 public sealed record ToolGetPath(string Label, string Uri);
@@ -19,6 +27,7 @@ public sealed record DesktopTool(
     string? ExecutablePath,
     IReadOnlyList<string> ProcessNames,
     ToolGetPath GetPath,
+    DesktopToolGroup Group = DesktopToolGroup.Kit,
     bool HasObsRecipe = false)
 {
     public string AvailabilityLabel => IsInstalled ? "Installed" : "Get";
