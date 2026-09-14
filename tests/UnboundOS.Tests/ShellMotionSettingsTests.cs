@@ -33,6 +33,9 @@ public sealed class ShellMotionSettingsTests
         Assert.True(policy.UserWantsMotion);
         Assert.True(policy.AllowMotion);
         Assert.Equal(MotionSuppression.None, policy.Suppression);
+        Assert.Contains("hairline", policy.StatusText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("sheen", policy.StatusText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("glow", policy.StatusText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

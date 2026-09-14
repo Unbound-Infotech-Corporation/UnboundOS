@@ -56,7 +56,7 @@ public sealed class UiMotionPolicy : IUiMotionPolicy
         MotionSuppression.UserDisabled => "Interface motion is off. Tiles and buttons use instant states.",
         MotionSuppression.SystemDisabled => "Interface motion is paused because Windows animations are off.",
         MotionSuppression.SessionLive => "Interface motion is paused while a session is live. The toggle stays available.",
-        _ => "Interface motion is on. Focus scale, cyan glow, and a one-shot sheen on the active control."
+        _ => "Interface motion is on. A few-percent scale and a 1px cyan hairline on the focused tile."
     };
 
     public event EventHandler? Changed;

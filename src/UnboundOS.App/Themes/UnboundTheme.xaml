@@ -7,8 +7,9 @@
     <!--
         UnboundOS — Unbound Infotech brand tokens (unboundinfotech.com).
         Obsidian + cyan pulse. No signal lime, no generic WinUI purple.
-        Motion is compositor-driven (ConsoleMotion). Instant when Settings,
-        Windows animations, or a live session say off.
+        Motion is compositor-driven (ConsoleMotion): a few-percent focus
+        scale on the active tile and a short press opacity. Instant when
+        Settings, Windows animations, or a live session say off.
     -->
     <Color x:Key="Obsidian">#05070A</Color>
     <Color x:Key="SteelPanel">#0B121D</Color>
@@ -99,19 +100,6 @@
         <GradientStop Color="#1E40AF" Offset="1" />
     </LinearGradientBrush>
 
-    <SolidColorBrush x:Key="FocusGlowBrush" Color="#6600F0FF" />
-
-    <LinearGradientBrush x:Key="SignalSweepBrush" StartPoint="0,0.5" EndPoint="1,0.5">
-        <GradientStop Color="#0000F0FF" Offset="0" />
-        <GradientStop Color="#00F0FF" Offset="0.5" />
-        <GradientStop Color="#0000F0FF" Offset="1" />
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="RailSheenBrush" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#0B121D" Offset="0" />
-        <GradientStop Color="#070B12" Offset="1" />
-    </LinearGradientBrush>
-
     <Style x:Key="BrandDisplayText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource DisplayFontFamily}" />
         <Setter Property="FontWeight" Value="Bold" />
@@ -168,71 +156,53 @@
         <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="Padding" Value="24,16" />
+        <Setter Property="Padding" Value="24,14" />
         <Setter Property="MinHeight" Value="48" />
-        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="CornerRadius" Value="8" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="motion:ConsoleMotion.Role" Value="Signal" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid RenderTransformOrigin="0.5,0.5">
+                    <Grid>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.Background" Value="{StaticResource CyanPulseBrightBrush}" />
+                                        <Setter Target="Root.BorderBrush" Value="{StaticResource ObsidianBrush}" />
+                                        <Setter Target="Root.BorderThickness" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
-                                <VisualState x:Name="Pressed">
-                                    <VisualState.Setters>
-                                        <Setter Target="Root.Opacity" Value="0.92" />
-                                    </VisualState.Setters>
-                                </VisualState>
+                                <VisualState x:Name="Pressed" />
                                 <VisualState x:Name="Disabled">
                                     <VisualState.Setters>
                                         <Setter Target="Root.Opacity" Value="0.38" />
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Unfocused" />
+                                <VisualState x:Name="Focused">
+                                    <VisualState.Setters>
+                                        <Setter Target="Root.BorderBrush" Value="{StaticResource ObsidianBrush}" />
+                                        <Setter Target="Root.BorderThickness" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="PointerFocused" />
+                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Border
-                            x:Name="Glow"
-                            Margin="-8"
-                            CornerRadius="18"
-                            Background="{StaticResource FocusGlowBrush}"
-                            Opacity="0"
-                            IsHitTestVisible="False"
-                            AutomationProperties.AccessibilityView="Raw" />
                         <Border
                             x:Name="Root"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Padding="{TemplateBinding Padding}">
-                            <Grid>
-                                <Rectangle
-                                    x:Name="Sheen"
-                                    Opacity="0"
-                                    IsHitTestVisible="False"
-                                    RadiusX="12"
-                                    RadiusY="12"
-                                    AutomationProperties.AccessibilityView="Raw">
-                                    <Rectangle.Fill>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#0000F0FF" Offset="0" />
-                                            <GradientStop Color="#88FFFFFF" Offset="0.5" />
-                                            <GradientStop Color="#0000F0FF" Offset="1" />
-                                        </LinearGradientBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                                <ContentPresenter
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Foreground="{TemplateBinding Foreground}" />
-                            </Grid>
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{TemplateBinding Foreground}" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -241,20 +211,20 @@
     </Style>
 
     <Style x:Key="GhostButtonStyle" TargetType="Button">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{StaticResource CardSurfaceBrush}" />
         <Setter Property="Foreground" Value="{StaticResource PaperBrush}" />
         <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Padding" Value="20,14" />
         <Setter Property="MinHeight" Value="48" />
-        <Setter Property="CornerRadius" Value="14" />
-        <Setter Property="BorderBrush" Value="{StaticResource LineStrongBrush}" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderBrush" Value="{StaticResource LineSubtleBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="motion:ConsoleMotion.Role" Value="Ghost" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid RenderTransformOrigin="0.5,0.5">
+                    <Grid>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />
@@ -264,26 +234,24 @@
                                         <Setter Target="Root.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
                                     </VisualState.Setters>
                                 </VisualState>
-                                <VisualState x:Name="Pressed">
-                                    <VisualState.Setters>
-                                        <Setter Target="Root.Opacity" Value="0.92" />
-                                    </VisualState.Setters>
-                                </VisualState>
+                                <VisualState x:Name="Pressed" />
                                 <VisualState x:Name="Disabled">
                                     <VisualState.Setters>
                                         <Setter Target="Root.Opacity" Value="0.38" />
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Unfocused" />
+                                <VisualState x:Name="Focused">
+                                    <VisualState.Setters>
+                                        <Setter Target="Root.Background" Value="{StaticResource CyanDimFillBrush}" />
+                                        <Setter Target="Root.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="PointerFocused" />
+                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Border
-                            x:Name="Glow"
-                            Margin="-8"
-                            CornerRadius="18"
-                            Background="{StaticResource FocusGlowBrush}"
-                            Opacity="0"
-                            IsHitTestVisible="False"
-                            AutomationProperties.AccessibilityView="Raw" />
                         <Border
                             x:Name="Root"
                             Background="{TemplateBinding Background}"
@@ -291,25 +259,10 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Padding="{TemplateBinding Padding}">
-                            <Grid>
-                                <Rectangle
-                                    x:Name="Sheen"
-                                    Opacity="0"
-                                    IsHitTestVisible="False"
-                                    AutomationProperties.AccessibilityView="Raw">
-                                    <Rectangle.Fill>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#0000F0FF" Offset="0" />
-                                            <GradientStop Color="#55FFFFFF" Offset="0.5" />
-                                            <GradientStop Color="#0000F0FF" Offset="1" />
-                                        </LinearGradientBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                                <ContentPresenter
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="Center"
-                                    Foreground="{TemplateBinding Foreground}" />
-                            </Grid>
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="Center"
+                                Foreground="{TemplateBinding Foreground}" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -320,10 +273,10 @@
     <Style x:Key="NavRailButtonStyle" TargetType="Button" BasedOn="{StaticResource GhostButtonStyle}">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
-        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="16,12" />
         <Setter Property="MinHeight" Value="44" />
-        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
         <Setter Property="motion:ConsoleMotion.Role" Value="Nav" />
     </Style>
@@ -391,13 +344,13 @@
         <Setter Property="Width" Value="228" />
         <Setter Property="Height" Value="280" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Margin" Value="0,18,18,18" />
-        <Setter Property="CornerRadius" Value="22" />
+        <Setter Property="Margin" Value="0,16,16,16" />
+        <Setter Property="CornerRadius" Value="16" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="3" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
         <Setter Property="motion:ConsoleMotion.Role" Value="Tile" />
         <Setter Property="Template">
@@ -420,17 +373,16 @@
                                 <VisualState x:Name="Selected">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
-                                        <Setter Target="Stroke.BorderThickness" Value="3" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrightBrush}" />
+                                        <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="PointerOverSelected">
                                     <VisualState.Setters>
-                                        <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrightBrush}" />
+                                        <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPressed">
@@ -455,41 +407,16 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Border
-                            x:Name="Glow"
-                            Margin="-10"
-                            CornerRadius="28"
-                            Background="{StaticResource FocusGlowBrush}"
-                            Opacity="0"
-                            IsHitTestVisible="False"
-                            AutomationProperties.AccessibilityView="Raw" />
-                        <Border
                             x:Name="Stroke"
                             Background="Transparent"
                             BorderBrush="Transparent"
-                            BorderThickness="2"
-                            CornerRadius="22">
-                            <Grid>
-                                <ContentPresenter
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Content="{TemplateBinding Content}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}" />
-                                <Rectangle
-                                    x:Name="Sheen"
-                                    Opacity="0"
-                                    IsHitTestVisible="False"
-                                    RadiusX="20"
-                                    RadiusY="20"
-                                    AutomationProperties.AccessibilityView="Raw">
-                                    <Rectangle.Fill>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#0000F0FF" Offset="0" />
-                                            <GradientStop Color="#66FFFFFF" Offset="0.45" />
-                                            <GradientStop Color="#0000F0FF" Offset="1" />
-                                        </LinearGradientBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </Grid>
+                            BorderThickness="1"
+                            CornerRadius="16">
+                            <ContentPresenter
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -507,7 +434,7 @@
 
     <Style x:Key="ConsoleTileCardStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource TileFieldBrush}" />
-        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="CornerRadius" Value="16" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -515,14 +442,14 @@
 
     <Style x:Key="ConsoleTileArtStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource TileFieldBrush}" />
-        <Setter Property="CornerRadius" Value="20,20,0,0" />
+        <Setter Property="CornerRadius" Value="16,16,0,0" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
 
     <Style x:Key="ConsoleTileArtAltStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource TileFieldAltBrush}" />
-        <Setter Property="CornerRadius" Value="20,20,0,0" />
+        <Setter Property="CornerRadius" Value="16,16,0,0" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
@@ -540,8 +467,8 @@
         <Setter Property="MinWidth" Value="200" />
         <Setter Property="MinHeight" Value="240" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="CornerRadius" Value="22" />
-        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -571,42 +498,26 @@
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Unfocused" />
+                                <VisualState x:Name="Focused">
+                                    <VisualState.Setters>
+                                        <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="PointerFocused" />
+                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Border
-                            x:Name="Glow"
-                            Margin="-10"
-                            CornerRadius="28"
-                            Background="{StaticResource FocusGlowBrush}"
-                            Opacity="0"
-                            IsHitTestVisible="False"
-                            AutomationProperties.AccessibilityView="Raw" />
                         <Border
                             x:Name="Stroke"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{TemplateBinding CornerRadius}">
-                            <Grid>
-                                <ContentPresenter
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Content="{TemplateBinding Content}" />
-                                <Rectangle
-                                    x:Name="Sheen"
-                                    Opacity="0"
-                                    IsHitTestVisible="False"
-                                    RadiusX="20"
-                                    RadiusY="20"
-                                    AutomationProperties.AccessibilityView="Raw">
-                                    <Rectangle.Fill>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#0000F0FF" Offset="0" />
-                                            <GradientStop Color="#66FFFFFF" Offset="0.45" />
-                                            <GradientStop Color="#0000F0FF" Offset="1" />
-                                        </LinearGradientBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </Grid>
+                            <ContentPresenter
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Content="{TemplateBinding Content}" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -618,7 +529,7 @@
         <Setter Property="Width" Value="300" />
         <Setter Property="Height" Value="340" />
         <Setter Property="BorderBrush" Value="{StaticResource CyanPulseBrush}" />
-        <Setter Property="BorderThickness" Value="3" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="motion:ConsoleMotion.Role" Value="HeroTile" />
     </Style>
 

@@ -22,7 +22,7 @@
                         IsOn="{x:Bind ViewModel.InterfaceMotionEnabled, Mode=TwoWay}"
                         OnContent="On"
                         OffContent="Off"
-                        Header="Scale, glow bloom, press squash, and a one-shot sheen on the focused tile or button."
+                        Header="A few-percent scale and a 1px cyan hairline on the focused tile. Press is a short opacity change."
                         AutomationProperties.Name="Interface motion"
                         AutomationProperties.HelpText="When off, tiles and buttons use instant visual states only. Keyboard focus and narrator stay available either way." />
                     <TextBlock
@@ -35,7 +35,7 @@
                         Text="{x:Bind ViewModel.SessionNote}" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Motion runs on the compositor. UnboundOS does not run per-frame layout loops or loop a sheen on every tile at once." />
+                        Text="Motion runs on the compositor. Unfocused tiles stay still. Off is instant states with no animation." />
                 </StackPanel>
             </Border>
         </StackPanel>
