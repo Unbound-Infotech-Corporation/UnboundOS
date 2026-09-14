@@ -9,6 +9,7 @@ using UnboundOS.Infrastructure.Power;
 using UnboundOS.Infrastructure.Process;
 using UnboundOS.Infrastructure.Profiles;
 using UnboundOS.Infrastructure.Session;
+using UnboundOS.Infrastructure.Settings;
 using UnboundOS.Infrastructure.Stream;
 using UnboundOS.Infrastructure.Telemetry;
 using UnboundOS.Infrastructure.Tools;
@@ -27,6 +28,9 @@ public static class DependencyInjection
         services.AddSingleton<IDesktopToolCatalog, DesktopToolCatalog>();
         services.AddSingleton<IDesktopToolLauncher, DesktopToolLauncher>();
         services.AddSingleton<IProfileStore, JsonProfileStore>();
+        services.TryAddSingleton<ISystemAnimationPreference, AlwaysOnSystemAnimationPreference>();
+        services.AddSingleton<IShellSettingsStore, JsonShellSettingsStore>();
+        services.AddSingleton<IUiMotionPolicy, UiMotionPolicy>();
         services.AddSingleton<ITelemetryService, WindowsTelemetryService>();
         services.AddSingleton<ISessionEngine, SessionEngine>();
         services.AddSingleton<SteamWorkshopCatalogService>();

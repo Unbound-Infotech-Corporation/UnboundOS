@@ -24,6 +24,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Profiles** | JSON profiles in LocalAppData (`Competitive`, `Streamer`, `Living Room`) |
 | **Mods + Workshop** | Local Steam Workshop discovery, per-game mod profiles, safe adapter-based apply/restore |
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
+| **Settings** | Interface motion On / Off (persisted). Auto-pauses if Windows animations are off or a session is live |
 
 ## Solution layout
 
@@ -142,7 +143,9 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 
 ## Design notes
 
-- Console-style shell: horizontal tile rows, instant focus glow, large type and hit targets
+- Console-style shell: horizontal tile rows, compositor motion (scale / cyan glow / press squash / one-shot sheen)
+- Settings → Interface motion Off (or Windows animations off, or a live session) snaps back to instant states
+- Preferences live at `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\settings.json`
 - CommunityToolkit.Mvvm + Microsoft.Extensions.DependencyInjection
 - Safe process guardian with hard-protect for critical Windows processes
 - OBS crop recipe never asks you to lower monitor resolution

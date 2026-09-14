@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using UnboundOS.App.Services;
 using UnboundOS.App.ViewModels;
 using UnboundOS.App.Views;
+using UnboundOS.Core.Abstractions;
 
 namespace UnboundOS.App;
 
@@ -43,6 +44,8 @@ public sealed partial class MainPage : Page
 
     private void GoProfiles_Click(object sender, RoutedEventArgs e) => Navigate("Profiles");
 
+    private void GoSettings_Click(object sender, RoutedEventArgs e) => Navigate("Settings");
+
     private void Navigate(string tag)
     {
         ViewModel.SelectedNav = tag;
@@ -54,6 +57,7 @@ public sealed partial class MainPage : Page
             "Tools" => "Tools marketplace ready.",
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
+            "Settings" => "Shell settings. Interface motion can pause itself during a session.",
             "Overlay" => "Overlay addon hook — optional and off unless a host is registered.",
             _ => ViewModel.StatusLine
         };
@@ -77,6 +81,7 @@ public sealed partial class MainPage : Page
             "Tools" => typeof(ToolsPage),
             "Mods" => typeof(ModsPage),
             "Profiles" => typeof(ProfilesPage),
+            "Settings" => typeof(SettingsPage),
             "Overlay" => typeof(OverlayPage),
             _ => typeof(SessionPage)
         };
@@ -86,6 +91,7 @@ public sealed partial class MainPage : Page
 
     private void ApplyNavState(string tag)
     {
-        VisualStateManager.GoToState(this, tag, useTransitions: false);
+        var motion = AppServices.Get<IUiMotionPolicy>();
+        VisualStateManager.GoToState(this, tag, useTransitions: motion.AllowMotion);
     }
 }

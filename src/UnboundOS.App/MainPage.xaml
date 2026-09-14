@@ -8,6 +8,13 @@
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="NavStates">
+                <VisualStateGroup.Transitions>
+                    <VisualTransition GeneratedDuration="0:0:0.18">
+                        <VisualTransition.GeneratedEasingFunction>
+                            <CubicEase EasingMode="EaseOut" />
+                        </VisualTransition.GeneratedEasingFunction>
+                    </VisualTransition>
+                </VisualStateGroup.Transitions>
                 <VisualState x:Name="Home">
                     <VisualState.Setters>
                         <Setter Target="HomeAccent.Opacity" Value="1" />
@@ -28,6 +35,9 @@
                         <Setter Target="ProfilesAccent.Opacity" Value="0" />
                         <Setter Target="ProfilesNav.Background" Value="Transparent" />
                         <Setter Target="ProfilesNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="SettingsAccent.Opacity" Value="0" />
+                        <Setter Target="SettingsNav.Background" Value="Transparent" />
+                        <Setter Target="SettingsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="OverlayAccent.Opacity" Value="0" />
                         <Setter Target="OverlayNav.Background" Value="Transparent" />
                         <Setter Target="OverlayNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -53,6 +63,9 @@
                         <Setter Target="ProfilesAccent.Opacity" Value="0" />
                         <Setter Target="ProfilesNav.Background" Value="Transparent" />
                         <Setter Target="ProfilesNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="SettingsAccent.Opacity" Value="0" />
+                        <Setter Target="SettingsNav.Background" Value="Transparent" />
+                        <Setter Target="SettingsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="OverlayAccent.Opacity" Value="0" />
                         <Setter Target="OverlayNav.Background" Value="Transparent" />
                         <Setter Target="OverlayNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -78,6 +91,9 @@
                         <Setter Target="ProfilesAccent.Opacity" Value="0" />
                         <Setter Target="ProfilesNav.Background" Value="Transparent" />
                         <Setter Target="ProfilesNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="SettingsAccent.Opacity" Value="0" />
+                        <Setter Target="SettingsNav.Background" Value="Transparent" />
+                        <Setter Target="SettingsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="OverlayAccent.Opacity" Value="0" />
                         <Setter Target="OverlayNav.Background" Value="Transparent" />
                         <Setter Target="OverlayNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -103,6 +119,9 @@
                         <Setter Target="ProfilesAccent.Opacity" Value="0" />
                         <Setter Target="ProfilesNav.Background" Value="Transparent" />
                         <Setter Target="ProfilesNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="SettingsAccent.Opacity" Value="0" />
+                        <Setter Target="SettingsNav.Background" Value="Transparent" />
+                        <Setter Target="SettingsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="OverlayAccent.Opacity" Value="0" />
                         <Setter Target="OverlayNav.Background" Value="Transparent" />
                         <Setter Target="OverlayNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -128,6 +147,9 @@
                         <Setter Target="ProfilesAccent.Opacity" Value="0" />
                         <Setter Target="ProfilesNav.Background" Value="Transparent" />
                         <Setter Target="ProfilesNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="SettingsAccent.Opacity" Value="0" />
+                        <Setter Target="SettingsNav.Background" Value="Transparent" />
+                        <Setter Target="SettingsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="OverlayAccent.Opacity" Value="0" />
                         <Setter Target="OverlayNav.Background" Value="Transparent" />
                         <Setter Target="OverlayNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -153,6 +175,37 @@
                         <Setter Target="ProfilesAccent.Opacity" Value="1" />
                         <Setter Target="ProfilesNav.Background" Value="{StaticResource CyanDimFillBrush}" />
                         <Setter Target="ProfilesNav.Foreground" Value="{StaticResource CyanPulseBrush}" />
+                        <Setter Target="SettingsAccent.Opacity" Value="0" />
+                        <Setter Target="SettingsNav.Background" Value="Transparent" />
+                        <Setter Target="SettingsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="OverlayAccent.Opacity" Value="0" />
+                        <Setter Target="OverlayNav.Background" Value="Transparent" />
+                        <Setter Target="OverlayNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Settings">
+                    <VisualState.Setters>
+                        <Setter Target="HomeAccent.Opacity" Value="0" />
+                        <Setter Target="HomeNav.Background" Value="Transparent" />
+                        <Setter Target="HomeNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="SessionAccent.Opacity" Value="0" />
+                        <Setter Target="SessionNav.Background" Value="Transparent" />
+                        <Setter Target="SessionNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="NetworkAccent.Opacity" Value="0" />
+                        <Setter Target="NetworkNav.Background" Value="Transparent" />
+                        <Setter Target="NetworkNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="ToolsAccent.Opacity" Value="0" />
+                        <Setter Target="ToolsNav.Background" Value="Transparent" />
+                        <Setter Target="ToolsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="ModsAccent.Opacity" Value="0" />
+                        <Setter Target="ModsNav.Background" Value="Transparent" />
+                        <Setter Target="ModsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="ProfilesAccent.Opacity" Value="0" />
+                        <Setter Target="ProfilesNav.Background" Value="Transparent" />
+                        <Setter Target="ProfilesNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="SettingsAccent.Opacity" Value="1" />
+                        <Setter Target="SettingsNav.Background" Value="{StaticResource CyanDimFillBrush}" />
+                        <Setter Target="SettingsNav.Foreground" Value="{StaticResource CyanPulseBrush}" />
                         <Setter Target="OverlayAccent.Opacity" Value="0" />
                         <Setter Target="OverlayNav.Background" Value="Transparent" />
                         <Setter Target="OverlayNav.Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -178,6 +231,9 @@
                         <Setter Target="ProfilesAccent.Opacity" Value="0" />
                         <Setter Target="ProfilesNav.Background" Value="Transparent" />
                         <Setter Target="ProfilesNav.Foreground" Value="{StaticResource MutedTextBrush}" />
+                        <Setter Target="SettingsAccent.Opacity" Value="0" />
+                        <Setter Target="SettingsNav.Background" Value="Transparent" />
+                        <Setter Target="SettingsNav.Foreground" Value="{StaticResource MutedTextBrush}" />
                         <Setter Target="OverlayAccent.Opacity" Value="1" />
                         <Setter Target="OverlayNav.Background" Value="{StaticResource CyanDimFillBrush}" />
                         <Setter Target="OverlayNav.Foreground" Value="{StaticResource CyanPulseBrush}" />
@@ -261,6 +317,12 @@
                         <Grid>
                             <TextBlock Text="PROFILES" Margin="0,0,0,4" />
                             <Rectangle x:Name="ProfilesAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
+                        </Grid>
+                    </Button>
+                    <Button x:Name="SettingsNav" Tag="Settings" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Settings">
+                        <Grid>
+                            <TextBlock Text="SETTINGS" Margin="0,0,0,4" />
+                            <Rectangle x:Name="SettingsAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
                         </Grid>
                     </Button>
                     <Button
@@ -381,6 +443,16 @@
                                         <StackPanel VerticalAlignment="Bottom" Padding="18,14">
                                             <TextBlock Style="{StaticResource TileCaptionText}" Text="Profiles" />
                                             <TextBlock Style="{StaticResource TileMetaText}" Text="LIBRARY" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoSettings_Click" AutomationProperties.Name="Open settings">
+                                    <Grid>
+                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldBrush}" />
+                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="I" />
+                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
+                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Settings" />
+                                            <TextBlock Style="{StaticResource TileMetaText}" Text="MOTION" />
                                         </StackPanel>
                                     </Grid>
                                 </Button>

@@ -1,9 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using UnboundOS.Core;
+using UnboundOS.Core.Abstractions;
 using UnboundOS.Core.Models;
 using UnboundOS.Core.Overlay;
 using UnboundOS.Infrastructure;
 using UnboundOS.Infrastructure.Overlay;
+using UnboundOS.Infrastructure.Settings;
 
 namespace UnboundOS.Tests;
 
@@ -99,6 +101,10 @@ public sealed class BrandingAndOverlayTests
         var host = provider.GetRequiredService<IDesktopOverlayHost>();
         Assert.IsType<DisabledDesktopOverlayHost>(host);
         Assert.False(host.IsEnabled);
+
+        var motion = provider.GetRequiredService<IUiMotionPolicy>();
+        Assert.IsType<UiMotionPolicy>(motion);
+        Assert.True(motion.UserWantsMotion);
     }
 
     [Fact]

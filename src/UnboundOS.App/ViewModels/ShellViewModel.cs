@@ -14,18 +14,21 @@ public partial class ShellViewModel : ObservableObject
     private readonly ITelemetryService _telemetry;
     private readonly IProfileStore _profiles;
     private readonly IDesktopOverlayHost _overlay;
+    private readonly IUiMotionPolicy _motion;
     private readonly DispatcherTimer _timer;
 
     public ShellViewModel(
         ISessionEngine session,
         ITelemetryService telemetry,
         IProfileStore profiles,
-        IDesktopOverlayHost overlay)
+        IDesktopOverlayHost overlay,
+        IUiMotionPolicy motion)
     {
         _session = session;
         _telemetry = telemetry;
         _profiles = profiles;
         _overlay = overlay;
+        _motion = motion;
         _session.StateChanged += (_, state) =>
         {
             SessionStateText = state.ToString();
@@ -61,6 +64,7 @@ public partial class ShellViewModel : ObservableObject
     public async Task InitializeAsync()
     {
         await _profiles.EnsureDefaultsAsync();
+        await _motion.InitializeAsync();
         await RefreshTelemetryAsync();
         _timer.Start();
     }
