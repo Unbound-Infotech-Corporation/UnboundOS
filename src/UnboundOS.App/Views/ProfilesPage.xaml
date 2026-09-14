@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="UnboundOS.App.Views.ProfilesPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,47 +5,74 @@
     xmlns:models="using:UnboundOS.Core.Models"
     Background="Transparent">
 
-    <ScrollViewer Padding="8">
-        <StackPanel Spacing="20" MaxWidth="1100">
+    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Session profiles">
+        <StackPanel Spacing="22">
             <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource KickerText}" Text="LOCAL JSON" />
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="Profiles" />
-                <TextBlock Style="{StaticResource BodyMutedText}" Text="JSON-backed profiles in your LocalAppData. Tune denylists per game later — defaults ship ready." />
+                <TextBlock
+                    Style="{StaticResource BodyMutedText}"
+                    MaxWidth="820"
+                    Text="JSON-backed profiles in your LocalAppData. Pick a tile, then review what it terminates and protects." />
             </StackPanel>
+
+            <TextBlock Style="{StaticResource TileRowLabelText}" Text="LIBRARY" />
+            <ListView
+                Height="320"
+                ItemsSource="{x:Bind ViewModel.Profiles, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedProfile, Mode=TwoWay}"
+                SelectionMode="Single"
+                Style="{StaticResource ConsoleListViewStyle}"
+                ItemContainerStyle="{StaticResource ConsoleTileItemStyle}"
+                AutomationProperties.Name="Saved session profiles">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:SessionProfile">
+                        <Border Style="{StaticResource ConsoleTileCardStyle}">
+                            <Grid>
+                                <Border Style="{StaticResource ConsoleTileArtStyle}" />
+                                <TextBlock Style="{StaticResource TileMonogramText}" Text="{x:Bind Monogram}" />
+                                <StackPanel VerticalAlignment="Bottom" Padding="18,14">
+                                    <TextBlock Style="{StaticResource TileCaptionText}" Text="{x:Bind Name}" />
+                                    <TextBlock Style="{StaticResource TileMetaText}" Text="{x:Bind KindLabel}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock
+                Style="{StaticResource BodyMutedText}"
+                MaxWidth="820"
+                Text="{x:Bind ViewModel.SelectedProfile.Description, Mode=OneWay}" />
 
             <Grid ColumnSpacing="16">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.9*" />
-                    <ColumnDefinition Width="1.2*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="0">
+                <Border Style="{StaticResource PanelBorderStyle}">
                     <StackPanel Spacing="12">
-                        <ListView
-                            ItemsSource="{x:Bind ViewModel.Profiles, Mode=OneWay}"
-                            SelectedItem="{x:Bind ViewModel.SelectedProfile, Mode=TwoWay}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:SessionProfile">
-                                    <StackPanel Margin="0,6" Spacing="2">
-                                        <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{StaticResource WarmPaperBrush}" />
-                                        <TextBlock Text="{x:Bind Kind}" FontSize="12" Foreground="{StaticResource SignalLimeBrush}" />
-                                        <TextBlock Text="{x:Bind Description}" Style="{StaticResource BodyMutedText}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        <Button Style="{StaticResource GhostButtonStyle}" Content="RESET DEFAULTS" Command="{x:Bind ViewModel.ResetDefaultsCommand}" />
+                        <TextBlock Style="{StaticResource PanelLabelText}" Foreground="{StaticResource AlertAmberBrush}" Text="TERMINATE" />
+                        <TextBlock Text="{x:Bind ViewModel.DenylistPreview, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
                     </StackPanel>
                 </Border>
 
-                <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="1">
+                <Border Grid.Column="1" Style="{StaticResource PanelBorderStyle}">
                     <StackPanel Spacing="12">
-                        <TextBlock FontFamily="Bahnschrift" Text="TERMINATE" Foreground="{StaticResource AlertAmberBrush}" />
-                        <TextBlock Text="{x:Bind ViewModel.DenylistPreview, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
-                        <TextBlock FontFamily="Bahnschrift" Text="PROTECT" Foreground="{StaticResource SignalLimeBrush}" Margin="0,12,0,0" />
+                        <TextBlock Style="{StaticResource PanelLabelText}" Text="PROTECT" />
                         <TextBlock Text="{x:Bind ViewModel.ProtectPreview, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
                     </StackPanel>
                 </Border>
             </Grid>
+
+            <Button
+                Style="{StaticResource GhostButtonStyle}"
+                HorizontalAlignment="Left"
+                Content="RESET DEFAULTS"
+                Command="{x:Bind ViewModel.ResetDefaultsCommand}"
+                AutomationProperties.Name="Reset default profiles" />
         </StackPanel>
     </ScrollViewer>
 </Page>

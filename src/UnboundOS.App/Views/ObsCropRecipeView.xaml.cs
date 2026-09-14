@@ -4,9 +4,9 @@ using UnboundOS.App.ViewModels;
 
 namespace UnboundOS.App.Views;
 
-public sealed partial class StreamPage : Page
+public sealed partial class ObsCropRecipeView : UserControl
 {
     public StreamViewModel ViewModel { get; } = AppServices.Get<StreamViewModel>();
 
-    public StreamPage() => InitializeComponent();
+    public ObsCropRecipeView() => InitializeComponent();
 }

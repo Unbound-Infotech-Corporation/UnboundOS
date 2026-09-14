@@ -1,0 +1,94 @@
+<Page
+    x:Class="UnboundOS.App.Views.HardwarePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:UnboundOS.Core.Models"
+    Background="Transparent">
+
+    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Hardware">
+        <StackPanel Spacing="22" MaxWidth="920">
+            <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource KickerText}" Text="HARDWARE" />
+                <TextBlock Style="{StaticResource SectionTitleText}" Text="Hardware" />
+                <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.Honesty}" />
+            </StackPanel>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="10">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="CPU" />
+                    <TextBlock FontFamily="{StaticResource UiFontSemiboldFamily}" FontSize="22" Foreground="{StaticResource PaperBrush}" Text="{x:Bind ViewModel.CpuName, Mode=OneWay}" />
+                    <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="14" Foreground="{StaticResource CyanPulseBrush}" Text="{x:Bind ViewModel.MemorySummary, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource MicroLabelText}" Text="BIOS" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.Bios, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="10">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="GPU" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="No GPU adapter reported. Install the vendor app from Settings → Display if you expected one."
+                        Visibility="{x:Bind ViewModel.ShowGpuEmpty, Mode=OneWay}" />
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Gpus, Mode=OneWay}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:GpuAdapterInfo">
+                                <StackPanel Margin="0,0,0,8">
+                                    <TextBlock FontFamily="{StaticResource UiFontSemiboldFamily}" Foreground="{StaticResource PaperBrush}" Text="{x:Bind Name}" />
+                                    <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Text="{x:Bind DriverVersion}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="10">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="DISKS" />
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Disks, Mode=OneWay}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:DiskVolumeInfo">
+                                <Grid ColumnSpacing="12" Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="160" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource MicroLabelText}" Text="{x:Bind Name}" />
+                                    <TextBlock Grid.Column="1" Foreground="{StaticResource PaperBrush}" Text="{x:Bind Label}" />
+                                    <TextBlock Grid.Column="2" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Text="{x:Bind SizeLabel}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="10">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="SENSORS" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.SourceNote, Mode=OneWay}" />
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Sensors, Mode=OneWay}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:SensorReading">
+                                <Grid ColumnSpacing="12" Margin="0,0,0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="160" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="120" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource MicroLabelText}" Text="{x:Bind Group}" />
+                                    <TextBlock Grid.Column="1" Foreground="{StaticResource PaperBrush}" Text="{x:Bind Name}" />
+                                    <TextBlock Grid.Column="2" FontFamily="{StaticResource MonoFontFamily}" Foreground="{StaticResource CyanPulseBrush}" Text="{x:Bind Value}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.Status, Mode=OneWay}" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

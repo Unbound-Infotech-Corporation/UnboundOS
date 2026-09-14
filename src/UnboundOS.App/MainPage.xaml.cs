@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using UnboundOS.App.Services;
 using UnboundOS.App.ViewModels;
 using UnboundOS.App.Views;
+using UnboundOS.Core.Abstractions;
 
 namespace UnboundOS.App;
 
@@ -13,6 +14,9 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         InitializeComponent();
+        OverlayNav.Visibility = ViewModel.OverlayNavVisible
+            ? Visibility.Visible
+            : Visibility.Collapsed;
         Loaded += OnLoaded;
     }
 
@@ -20,6 +24,7 @@ public sealed partial class MainPage : Page
     {
         await ViewModel.InitializeAsync();
         ViewModel.StatusLine = "Shell online. Pick a lane.";
+        ApplyNavState(ViewModel.SelectedNav);
     }
 
     private void Nav_Click(object sender, RoutedEventArgs e)
@@ -33,9 +38,17 @@ public sealed partial class MainPage : Page
     }
 
     private void GoSession_Click(object sender, RoutedEventArgs e) => Navigate("Session");
-    private void GoStream_Click(object sender, RoutedEventArgs e) => Navigate("Stream");
+    private void GoTools_Click(object sender, RoutedEventArgs e) => Navigate("Tools");
     private void GoNetwork_Click(object sender, RoutedEventArgs e) => Navigate("Network");
     private void GoMods_Click(object sender, RoutedEventArgs e) => Navigate("Mods");
+
+    private void GoProfiles_Click(object sender, RoutedEventArgs e) => Navigate("Profiles");
+
+    private void GoSettings_Click(object sender, RoutedEventArgs e) => Navigate("Settings");
+
+    private void GoFiles_Click(object sender, RoutedEventArgs e) => Navigate("Files");
+
+    private void GoHardware_Click(object sender, RoutedEventArgs e) => Navigate("Hardware");
 
     private void Navigate(string tag)
     {
@@ -43,13 +56,19 @@ public sealed partial class MainPage : Page
         ViewModel.StatusLine = tag switch
         {
             "Home" => "Shell online. Pick a lane.",
-            "Session" => "Session engine armed.",
+            "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
-            "Stream" => "Ultrawide canvas ready.",
+            "Tools" => "Tools marketplace ready.",
+            "Files" => "Daily folders. Windows Explorer stays for game launchers.",
+            "Hardware" => "CPU, GPU, disks, RAM from this PC. Sensors wait on the image.",
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
+            "Settings" => "Display, overclocking launch, startup audit, motion.",
+            "Overlay" => "Overlay addon hook — optional and off unless a host is registered.",
             _ => ViewModel.StatusLine
         };
+
+        ApplyNavState(tag);
 
         if (tag == "Home")
         {
@@ -65,12 +84,22 @@ public sealed partial class MainPage : Page
         {
             "Session" => typeof(SessionPage),
             "Network" => typeof(NetworkPage),
-            "Stream" => typeof(StreamPage),
+            "Tools" => typeof(ToolsPage),
+            "Files" => typeof(FilesPage),
+            "Hardware" => typeof(HardwarePage),
             "Mods" => typeof(ModsPage),
             "Profiles" => typeof(ProfilesPage),
+            "Settings" => typeof(SettingsPage),
+            "Overlay" => typeof(OverlayPage),
             _ => typeof(SessionPage)
         };
 
         ContentFrame.Navigate(pageType);
+    }
+
+    private void ApplyNavState(string tag)
+    {
+        var motion = AppServices.Get<IUiMotionPolicy>();
+        VisualStateManager.GoToState(this, tag, useTransitions: motion.AllowMotion);
     }
 }

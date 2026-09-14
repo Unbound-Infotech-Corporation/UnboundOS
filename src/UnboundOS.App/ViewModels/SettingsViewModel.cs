@@ -1,0 +1,225 @@
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using UnboundOS.Core;
+using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Models;
+
+namespace UnboundOS.App.ViewModels;
+
+public partial class SettingsViewModel : ObservableObject
+{
+    private readonly IUiMotionPolicy _motion;
+    private readonly IStartupAuditService _startup;
+    private readonly IVendorAppCatalog _vendors;
+    private readonly IVendorAppLauncher _vendorLauncher;
+    private readonly ISetupCleanup _cleanup;
+    private bool _suppressToggle;
+
+    public SettingsViewModel(
+        IUiMotionPolicy motion,
+        IStartupAuditService startup,
+        IVendorAppCatalog vendors,
+        IVendorAppLauncher vendorLauncher,
+        ISetupCleanup cleanup)
+    {
+        _motion = motion;
+        _startup = startup;
+        _vendors = vendors;
+        _vendorLauncher = vendorLauncher;
+        _cleanup = cleanup;
+        _motion.Changed += OnMotionChanged;
+    }
+
+    [ObservableProperty] private bool _interfaceMotionEnabled = true;
+    [ObservableProperty] private string _motionStatus = string.Empty;
+    [ObservableProperty] private string _sessionNote =
+        "A live session always pauses motion so frame time stays clean. This toggle is not hidden.";
+    [ObservableProperty] private string _startupSummary = OsProductCopy.StartupHonesty;
+    [ObservableProperty] private string _vendorStatus = OsProductCopy.DisplayHonesty;
+    [ObservableProperty] private string _cleanupStatus = OsProductCopy.CleanupHonesty;
+    [ObservableProperty] private StartupEntry? _selectedStartup;
+    [ObservableProperty] private VendorApp? _selectedDisplayApp;
+    [ObservableProperty] private VendorApp? _selectedOcApp;
+
+    public ObservableCollection<StartupEntry> StartupEntries { get; } = [];
+    public ObservableCollection<VendorApp> DisplayApps { get; } = [];
+    public ObservableCollection<VendorApp> OverclockApps { get; } = [];
+
+    public string DisplayHonesty => OsProductCopy.DisplayHonesty;
+    public string OverclockHonesty => OsProductCopy.OverclockHonesty;
+    public string StartupHonesty => OsProductCopy.StartupHonesty;
+    public string CleanupHonesty => OsProductCopy.CleanupHonesty;
+    public string HardwareHonesty => OsProductCopy.HardwareHonesty;
+    public string FilesHonesty => OsProductCopy.FilesHonesty;
+
+    public bool CanPinSelected => SelectedStartup is { Disposition: not StartupDisposition.Protected };
+    public bool SelectedIsPinned => SelectedStartup?.IsPinned == true;
+
+    public async Task InitializeAsync()
+    {
+        await _motion.InitializeAsync();
+        SyncFromPolicy();
+        await RefreshVendorsAsync();
+        await RefreshStartupAsync();
+    }
+
+    partial void OnInterfaceMotionEnabledChanged(bool value)
+    {
+        if (_suppressToggle)
+        {
+            return;
+        }
+
+        _ = _motion.SetUserWantsMotionAsync(value);
+    }
+
+    partial void OnSelectedStartupChanged(StartupEntry? value)
+    {
+        OnPropertyChanged(nameof(CanPinSelected));
+        OnPropertyChanged(nameof(SelectedIsPinned));
+    }
+
+    [RelayCommand]
+    private async Task RefreshStartupAsync()
+    {
+        try
+        {
+            var report = await _startup.AuditAsync();
+            StartupEntries.Clear();
+            foreach (var entry in report.Entries)
+            {
+                StartupEntries.Add(entry);
+            }
+
+            SelectedStartup = StartupEntries.FirstOrDefault();
+            StartupSummary = report.Summary + " " + OsProductCopy.StartupHonesty;
+        }
+        catch (Exception error)
+        {
+            StartupSummary = $"Startup audit could not complete: {error.Message}";
+        }
+    }
+
+    [RelayCommand]
+    private async Task PinSelectedAsync()
+    {
+        if (SelectedStartup is null || SelectedStartup.Disposition == StartupDisposition.Protected)
+        {
+            return;
+        }
+
+        await _startup.PinAsync(SelectedStartup.Id, pinned: !SelectedStartup.IsPinned);
+        await RefreshStartupAsync();
+    }
+
+    [RelayCommand]
+    private async Task ApplyStartupAsync()
+    {
+        try
+        {
+            StartupSummary = await _startup.ApplyRecommendedAsync() + " " + OsProductCopy.StartupHonesty;
+            await RefreshStartupAsync();
+        }
+        catch (Exception error)
+        {
+            StartupSummary = error.Message;
+        }
+    }
+
+    [RelayCommand]
+    private async Task RefreshVendorsAsync()
+    {
+        try
+        {
+            var apps = await _vendors.DiscoverAsync();
+            DisplayApps.Clear();
+            OverclockApps.Clear();
+            foreach (var app in apps)
+            {
+                if (app.Role == VendorAppRole.Display)
+                {
+                    DisplayApps.Add(app);
+                }
+                else
+                {
+                    OverclockApps.Add(app);
+                }
+            }
+
+            SelectedDisplayApp = DisplayApps.FirstOrDefault(app => app.IsInstalled) ?? DisplayApps.FirstOrDefault();
+            SelectedOcApp = OverclockApps.FirstOrDefault(app => app.IsInstalled) ?? OverclockApps.FirstOrDefault();
+            VendorStatus = DisplayApps.Any(app => app.IsInstalled)
+                ? OsProductCopy.DisplayHonesty
+                : "No GPU vendor app found. Get NVIDIA App, AMD Adrenalin, or Intel Arc Control. " + OsProductCopy.DisplayHonesty;
+        }
+        catch (Exception error)
+        {
+            VendorStatus = error.Message;
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenDisplayAsync()
+    {
+        if (SelectedDisplayApp is null)
+        {
+            VendorStatus = "No display vendor app selected. " + OsProductCopy.DisplayHonesty;
+            return;
+        }
+
+        var result = SelectedDisplayApp.IsInstalled
+            ? await _vendorLauncher.LaunchAsync(SelectedDisplayApp)
+            : await _vendorLauncher.OpenGetPathAsync(SelectedDisplayApp);
+        VendorStatus = result.Message;
+    }
+
+    [RelayCommand]
+    private async Task OpenOverclockAsync()
+    {
+        if (SelectedOcApp is null)
+        {
+            VendorStatus = "No overclocking tool found. " + OsProductCopy.OverclockHonesty;
+            return;
+        }
+
+        var result = SelectedOcApp.IsInstalled
+            ? await _vendorLauncher.LaunchAsync(SelectedOcApp)
+            : await _vendorLauncher.OpenGetPathAsync(SelectedOcApp);
+        VendorStatus = result.Message;
+    }
+
+    [RelayCommand]
+    private async Task CleanLeftoversAsync()
+    {
+        try
+        {
+            var result = await _cleanup.CleanLeftoversAsync();
+            CleanupStatus = result.Message;
+        }
+        catch (Exception error)
+        {
+            CleanupStatus = error.Message;
+        }
+    }
+
+    private void OnMotionChanged(object? sender, EventArgs e)
+    {
+        var queue = App.DispatcherQueue;
+        if (queue is not null && !queue.HasThreadAccess)
+        {
+            _ = queue.TryEnqueue(SyncFromPolicy);
+            return;
+        }
+
+        SyncFromPolicy();
+    }
+
+    private void SyncFromPolicy()
+    {
+        _suppressToggle = true;
+        InterfaceMotionEnabled = _motion.UserWantsMotion;
+        _suppressToggle = false;
+        MotionStatus = _motion.StatusText;
+    }
+}

@@ -3,12 +3,30 @@ using UnboundOS.Core.Models;
 
 namespace UnboundOS.Infrastructure.Mods;
 
-public sealed class UnifiedModCatalogService(SteamWorkshopCatalogService steam) : IModCatalogService
+public sealed class UnifiedModCatalogService(
+    SteamWorkshopCatalogService steam,
+    VortexCatalogService vortex) : IModCatalogService
 {
     public async Task<IReadOnlyList<ModGame>> DiscoverAsync(CancellationToken cancellationToken = default)
     {
-        var discovered = await steam.DiscoverAsync(cancellationToken).ConfigureAwait(false);
-        return discovered.Count > 0 ? discovered : CreateDemoCatalog();
+        var workshop = await steam.DiscoverAsync(cancellationToken).ConfigureAwait(false);
+        var nexus = await vortex.DiscoverAsync(cancellationToken).ConfigureAwait(false);
+        return Merge(workshop, nexus);
+    }
+
+    internal static IReadOnlyList<ModGame> Merge(
+        IReadOnlyList<ModGame> workshop,
+        IReadOnlyList<ModGame> vortex)
+    {
+        if (workshop.Count == 0 && vortex.Count == 0)
+        {
+            return CreateDemoCatalog();
+        }
+
+        return workshop
+            .Concat(vortex)
+            .OrderBy(game => game.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+            .ToArray();
     }
 
     private static IReadOnlyList<ModGame> CreateDemoCatalog()
