@@ -43,6 +43,11 @@ public sealed record ModCapabilities(
         true, false, false, false, false, false,
         ModManagementLevel.ExternalHandoff,
         "Workshop files are discovered locally. Subscribe, install, update, and remove through Steam.");
+
+    public static ModCapabilities VortexDiscoveryOnly { get; } = new(
+        true, false, false, false, false, false,
+        ModManagementLevel.ExternalHandoff,
+        "Vortex owns Nexus install, enable, and deploy. UnboundOS only discovers local staging and can open Vortex.");
 }
 
 public sealed record ModGame(
@@ -53,7 +58,9 @@ public sealed record ModGame(
     ModCapabilities Capabilities,
     IReadOnlyList<InstalledMod> Mods,
     string? AdapterId = null,
-    string? SteamAppId = null);
+    string? SteamAppId = null,
+    string? VortexGameId = null,
+    string? VortexProfileId = null);
 
 public sealed record InstalledMod(
     string Id,

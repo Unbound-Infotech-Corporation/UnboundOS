@@ -60,9 +60,9 @@ Created on first launch at:
 2. **Streamer Split** — gentler cleanup + 5110×1400 → 1920×1080 stream plan
 3. **Living Room Shell** — calm big-picture focus
 
-## Mods + Steam Workshop
+## Mods + Steam Workshop + Vortex
 
-The **Mods + Workshop** page discovers local content without signing into Steam or reading
+The **Mods + Workshop + Vortex** page discovers local content without signing into Steam or Nexus or reading
 credentials. It reads Steam's local `libraryfolders.vdf`, `appmanifest_*.acf`, and
 `appworkshop_*.acf` files, then inspects numeric folders under
 `steamapps\workshop\content\<app-id>`.
@@ -76,12 +76,18 @@ Current behavior:
   `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\mod-profiles.json`.
 - Opens game Workshop and item pages with supported `steam://` URLs.
 - Provides a clearly labeled read-only preview when no Workshop content is installed.
+- Discovers Vortex-managed Nexus games from `%APPDATA%\Vortex` and known staging roots
+  (`F:\Vortex Mods`, `F:\vmods`, plus paths Vortex records via `--get` only when Vortex is not running).
+- Offers **Open in Vortex** (`--game` / `--profile`). Vortex stays the source of truth.
+- Protects the `Vortex` process on default session profiles and in the hard-protect list so Competitive cleanup cannot kill it.
 
 ### Safety and limitations
 
 Steam remains responsible for Workshop subscription, download, update, and removal.
+Vortex remains responsible for Nexus install, enable, deploy, and profiles.
 UnboundOS deliberately does **not** alter Workshop folders, impersonate the Steam client,
-scrape credentials, or claim that one generic enable/load-order method works for every game.
+scrape Nexus credentials, write Vortex `state.v2`, mutate staging folders, or use
+Vortex `--set` / `--del` / `--restore` / `--merge`.
 
 Profile toggles and ordering are safe drafts until a game-specific adapter reports support.
 Unsupported **Apply** operations are disabled and explained in the UI. Every writable adapter
@@ -104,7 +110,8 @@ Implement `IGameModAdapter` in `UnboundOS.Infrastructure`:
 - Register the adapter as `IGameModAdapter` in `DependencyInjection.cs`.
 - Never edit Workshop payload directories to simulate disabling a mod.
 
-`SteamWorkshopReadOnlyAdapter` is the safe fallback for every game without a dedicated adapter.
+`SteamWorkshopReadOnlyAdapter` is the safe fallback for every Workshop game without a dedicated adapter.
+`VortexReadOnlyAdapter` only hands off to Vortex — it never applies UnboundOS drafts to staging.
 
 ## Brand
 

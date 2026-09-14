@@ -6,7 +6,7 @@
     xmlns:models="using:UnboundOS.Core.Models"
     Background="Transparent">
 
-    <ScrollViewer Padding="8" AutomationProperties.Name="Mods and Steam Workshop">
+    <ScrollViewer Padding="8" AutomationProperties.Name="Mods, Steam Workshop, and Vortex">
         <StackPanel MaxWidth="1180" Spacing="18">
             <Grid ColumnSpacing="16">
                 <Grid.ColumnDefinitions>
@@ -15,17 +15,17 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Spacing="5">
                     <TextBlock Style="{StaticResource KickerText}" Text="LOCAL DISCOVERY" />
-                    <TextBlock Style="{StaticResource SectionTitleText}" Text="Mods + Workshop" />
+                    <TextBlock Style="{StaticResource SectionTitleText}" Text="Mods + Workshop + Vortex" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Discover local Workshop content, build per-game profiles, and hand subscriptions back to Steam." />
+                        Text="Discover local Workshop and Vortex staging. Steam and Vortex stay in charge of install, enable, and deploy." />
                 </StackPanel>
                 <Button
                     Grid.Column="1"
                     Style="{StaticResource GhostButtonStyle}"
                     Content="REFRESH LIBRARIES"
                     Command="{x:Bind ViewModel.RefreshCommand}"
-                    AutomationProperties.Name="Refresh Steam Workshop libraries" />
+                    AutomationProperties.Name="Refresh Steam Workshop and Vortex libraries" />
             </Grid>
 
             <InfoBar
@@ -69,6 +69,12 @@
                                             <Run Text="{x:Bind Mods.Count}" />
                                             <Run Text=" items" />
                                         </TextBlock>
+                                        <TextBlock
+                                            FontFamily="{StaticResource MonoFontFamily}"
+                                            FontSize="11"
+                                            Foreground="{StaticResource MutedTextBrush}"
+                                            Text="{x:Bind InstallPath}"
+                                            TextWrapping="Wrap" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -80,6 +86,13 @@
                             IsEnabled="{x:Bind ViewModel.CanOpenWorkshop, Mode=OneWay}"
                             AutomationProperties.Name="Open game Workshop in Steam"
                             AutomationProperties.HelpText="Opens the supported Steam Workshop page; UnboundOS does not subscribe on your behalf." />
+                        <Button
+                            Style="{StaticResource SignalButtonStyle}"
+                            Content="OPEN IN VORTEX"
+                            Command="{x:Bind ViewModel.OpenVortexCommand}"
+                            IsEnabled="{x:Bind ViewModel.CanOpenVortex, Mode=OneWay}"
+                            AutomationProperties.Name="Open game in Vortex"
+                            AutomationProperties.HelpText="Launches Vortex for this game. UnboundOS does not write Vortex staging or Nexus credentials." />
                     </StackPanel>
                 </Border>
 

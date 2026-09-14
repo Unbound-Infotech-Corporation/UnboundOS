@@ -26,12 +26,17 @@ public static class DependencyInjection
         services.AddSingleton<ITelemetryService, WindowsTelemetryService>();
         services.AddSingleton<ISessionEngine, SessionEngine>();
         services.AddSingleton<SteamWorkshopCatalogService>();
+        services.AddSingleton<VortexDiscoverySettings>();
+        services.AddSingleton<VortexCatalogService>();
+        services.AddSingleton<VortexLauncher>();
         services.AddSingleton<IModCatalogService, UnifiedModCatalogService>();
         services.AddSingleton<IModProfileStore, JsonModProfileStore>();
         services.AddSingleton<IModBackupService, FileModBackupService>();
         services.AddSingleton<IGameModAdapter, SteamWorkshopReadOnlyAdapter>();
+        services.AddSingleton<IGameModAdapter, VortexReadOnlyAdapter>();
         services.AddSingleton<IModProfileManager, ModProfileManager>();
-        services.AddSingleton<IExternalModHandoff, SteamExternalModHandoff>();
+        services.AddSingleton<SteamExternalModHandoff>();
+        services.AddSingleton<IExternalModHandoff, CompositeExternalModHandoff>();
         // Overlay is optional and off. Register IDesktopOverlayHost before AddUnboundOs() to replace this.
         services.TryAddSingleton<IDesktopOverlayHost, DisabledDesktopOverlayHost>();
         return services;

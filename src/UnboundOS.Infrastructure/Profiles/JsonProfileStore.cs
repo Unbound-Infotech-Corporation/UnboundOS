@@ -67,7 +67,7 @@ public sealed class JsonProfileStore : IProfileStore
                 "AdobeUpdateService", "CCXProcess", "Creative Cloud", "iCUE",
                 "ArmouryCrate", "RGBFusion", "LogiOverlay", "Overwolf"
             ],
-            ProtectProcessNames = ["Steam", "EasyAntiCheat", "RiotClientServices", "vgtray", "vgc"],
+            ProtectProcessNames = ["Steam", "EasyAntiCheat", "RiotClientServices", "vgtray", "vgc", "Vortex"],
             GameProcessHints = ["cs2", "valorant", "r5apex", "fortniteclient-win64-shipping"]
         },
         new SessionProfile
@@ -81,7 +81,7 @@ public sealed class JsonProfileStore : IProfileStore
                 "OneDrive", "Microsoft.SharePoint", "YourPhone", "Widgets",
                 "AdobeUpdateService", "CCXProcess", "iCUE", "ArmouryCrate"
             ],
-            ProtectProcessNames = ["obs64", "obs32", "Streamlabs OBS", "discord"],
+            ProtectProcessNames = ["obs64", "obs32", "Streamlabs OBS", "discord", "Vortex"],
             StreamProcessHints = ["obs64", "obs32", "Streamlabs OBS"],
             Stream = new StreamPreferences
             {
@@ -105,7 +105,7 @@ public sealed class JsonProfileStore : IProfileStore
                 "OneDrive", "Widgets", "YourPhone", "Microsoft.SharePoint",
                 "Teams", "ms-teams", "Outlook", "HxOutlook"
             ],
-            ProtectProcessNames = ["Steam", "Playnite.DesktopApp", "Playnite.FullscreenApp"]
+            ProtectProcessNames = ["Steam", "Playnite.DesktopApp", "Playnite.FullscreenApp", "Vortex"]
         }
     ];
 }

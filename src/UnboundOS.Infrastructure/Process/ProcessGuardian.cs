@@ -11,8 +11,20 @@ public sealed class ProcessGuardian : IProcessGuardian
         "System", "Registry", "smss", "csrss", "wininit", "services", "lsass", "svchost",
         "dwm", "explorer", "fontdrvhost", "conhost", "RuntimeBroker", "SearchHost",
         "ShellExperienceHost", "StartMenuExperienceHost", "TextInputHost", "sihost",
-        "taskhostw", "SecurityHealthService", "MsMpEng", "UnboundOS.App"
+        "taskhostw", "SecurityHealthService", "MsMpEng", "UnboundOS.App",
+        "Vortex"
     };
+
+    public static bool IsAlwaysProtected(string processName)
+    {
+        if (string.IsNullOrWhiteSpace(processName))
+        {
+            return false;
+        }
+
+        var normalized = processName.Trim().Replace(".exe", string.Empty, StringComparison.OrdinalIgnoreCase);
+        return HardProtect.Contains(normalized);
+    }
 
     public Task<IReadOnlyList<string>> ListRunningSuspectsAsync(IEnumerable<string> denylist, CancellationToken ct = default)
     {
