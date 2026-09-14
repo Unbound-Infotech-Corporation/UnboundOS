@@ -263,16 +263,20 @@
 
                 <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
                     <Grid Width="28" Height="28" AutomationProperties.Name="Unbound Infotech mark">
-                        <Border Background="{StaticResource CyanPulseBrush}" CornerRadius="8" />
-                        <Border Margin="7" Background="{StaticResource ObsidianBrush}" CornerRadius="3" />
+                        <Border Background="{StaticResource CyanPulseBrush}" CornerRadius="2" />
+                        <Border Margin="7" Background="{StaticResource ObsidianBrush}" CornerRadius="1" />
+                        <Rectangle Width="6" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,2,0" Fill="{StaticResource CircuitAmberBrush}" />
+                        <Rectangle Width="1" Height="6" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,2,0" Fill="{StaticResource CircuitAmberBrush}" />
                     </Grid>
-                    <TextBlock
-                        Style="{StaticResource BrandDisplayText}"
-                        FontSize="18"
-                        CharacterSpacing="20"
-                        VerticalAlignment="Center"
-                        Text="{x:Bind ViewModel.ProductName}"
-                        Foreground="{StaticResource CyanPulseBrush}" />
+                    <StackPanel VerticalAlignment="Center" Spacing="0">
+                        <TextBlock
+                            Style="{StaticResource BrandDisplayText}"
+                            FontSize="18"
+                            CharacterSpacing="20"
+                            Text="{x:Bind ViewModel.ProductName}"
+                            Foreground="{StaticResource CyanPulseBrush}" />
+                        <TextBlock Style="{StaticResource MicroLabelText}" Text="SYS" Opacity="0.85" />
+                    </StackPanel>
                 </StackPanel>
 
                 <StackPanel
@@ -356,12 +360,16 @@
                         <TextBlock Style="{StaticResource TelemetryLabelText}" Text="HITS" />
                         <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="14" Foreground="{StaticResource AlertAmberBrush}" Text="{x:Bind ViewModel.SuspectCount, Mode=OneWay}" />
                     </StackPanel>
+                    <StackPanel Spacing="0" AutomationProperties.Name="Session link">
+                        <TextBlock Style="{StaticResource TelemetryLabelText}" Text="LINK" />
+                        <TextBlock Style="{StaticResource TelemetryValueText}" Text="{x:Bind ViewModel.SessionStateText, Mode=OneWay}" />
+                    </StackPanel>
                     <TextBlock
+                        Style="{StaticResource MicroLabelText}"
                         VerticalAlignment="Center"
-                        FontFamily="{StaticResource MonoFontFamily}"
-                        FontSize="12"
-                        Foreground="{StaticResource CyanPulseBrush}"
-                        Text="{x:Bind ViewModel.SessionStateText, Mode=OneWay}" />
+                        Text="LIVE"
+                        Visibility="{x:Bind ViewModel.IsSessionActive, Mode=OneWay}"
+                        AutomationProperties.Name="Session live" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -370,6 +378,36 @@
             <Grid.Background>
                 <StaticResource ResourceKey="HeroAtmosphereBrush" />
             </Grid.Background>
+            <Rectangle
+                IsHitTestVisible="False"
+                Fill="{StaticResource HeroScanBrush}"
+                Opacity="0.55"
+                AutomationProperties.AccessibilityView="Raw" />
+            <Rectangle
+                IsHitTestVisible="False"
+                Fill="{StaticResource HeroGridBrush}"
+                Opacity="0.7"
+                AutomationProperties.AccessibilityView="Raw" />
+            <Rectangle
+                Width="1"
+                Height="36"
+                Margin="48,10,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Fill="{StaticResource CyanPulseBrush}"
+                Opacity="0.28"
+                IsHitTestVisible="False"
+                AutomationProperties.AccessibilityView="Raw" />
+            <Rectangle
+                Width="88"
+                Height="1"
+                Margin="48,10,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Fill="{StaticResource CircuitAmberBrush}"
+                Opacity="0.45"
+                IsHitTestVisible="False"
+                AutomationProperties.AccessibilityView="Raw" />
 
             <ScrollViewer x:Name="HomeView" Padding="48,36,48,28" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel Spacing="28">
@@ -399,6 +437,12 @@
                                 <Button Style="{StaticResource ConsoleHeroTileStyle}" Click="GoSession_Click" AutomationProperties.Name="Start session">
                                     <Grid>
                                         <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldHeroBrush}" />
+                                        <TextBlock
+                                            Style="{StaticResource MicroLabelText}"
+                                            Margin="16,12"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Text="SYS" />
                                         <TextBlock Style="{StaticResource TileMonogramText}" FontSize="72" Text="S" />
                                         <StackPanel VerticalAlignment="Bottom" Padding="20,16">
                                             <TextBlock Style="{StaticResource TileCaptionText}" FontSize="22" Text="Session" />

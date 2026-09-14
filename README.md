@@ -6,7 +6,7 @@ A public Windows 11 **console-style shell** by **[Unbound Infotech Corporation](
 
 UnboundOS does **not** replace Windows. It applies a focused gaming / streaming posture — snapshot NICs, clear denylist junk, protect games and anticheat — then restores the desktop when you exit.
 
-The shell is a living-room home: slim top bar, ambient obsidian gradient, and a wide row of large rounded tiles. The focused tile is a few percent larger with a 1px cyan hairline. Tools, session profiles, and modded games use the same tile language — artwork-forward cards, short labels, Open / Get / Session as secondary metadata.
+The shell is a living-room home: slim top bar, ambient obsidian gradient with a faint scan grid, and a wide row of large tiles. The focused tile is a few percent larger with a 1px cyan hairline and hairline corner ticks (one amber). Tools, session profiles, and modded games use the same tile language — artwork-forward cards, short labels, Open / Get / Session as secondary metadata.
 
 **Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (wide tile row, slim top chrome, obsidian `#05070A`, steel `#0B121D`, cyan pulse `#00F0FF`). See [docs/screenshots/README.md](docs/screenshots/README.md).
 
@@ -136,6 +136,7 @@ Shell UI matches [unboundinfotech.com](https://unboundinfotech.com):
 | Steel panels | `#0B121D` |
 | Cyan pulse (primary) | `#00F0FF` |
 | Cobalt | `#1E40AF` |
+| Circuit amber (seasoning) | `#E4B53C` |
 | UI type | Inter (bundled Latin subset) |
 | Telemetry type | JetBrains Mono (bundled Latin subset) |
 
@@ -144,6 +145,7 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 ## Design notes
 
 - Console-style shell: horizontal tile rows, quiet compositor motion (few-percent focus scale, 1px cyan hairline, short press opacity)
+- Atmosphere: faint static scan/grid in the hero field, hairline L-ticks on the focused tile, spare circuit amber next to cyan — not a neon HUD
 - Settings → Interface motion Off (or Windows animations off, or a live session) snaps back to instant states
 - Preferences live at `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\settings.json`
 - CommunityToolkit.Mvvm + Microsoft.Extensions.DependencyInjection

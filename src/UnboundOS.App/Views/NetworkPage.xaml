@@ -8,8 +8,11 @@
 
     <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Network director">
         <StackPanel Spacing="22">
-            <StackPanel Spacing="6">
-                <TextBlock Style="{StaticResource KickerText}" Text="TRAFFIC SPLIT" />
+                <StackPanel Spacing="6">
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                        <TextBlock Style="{StaticResource KickerText}" Text="TRAFFIC SPLIT" />
+                        <TextBlock Style="{StaticResource MicroLabelText}" Text="LINK" />
+                    </StackPanel>
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="Network Director" />
                 <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.PlanSummary, Mode=OneWay}" />
             </StackPanel>

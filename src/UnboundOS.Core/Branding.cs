@@ -16,6 +16,7 @@ public static class Branding
         public const string Steel = "#0B121D";
         public const string CyanPulse = "#00F0FF";
         public const string Cobalt = "#1E40AF";
+        public const string CircuitAmber = "#E4B53C";
         public const string Card = "#090C10";
         public const string MutedText = "#94A3B8";
         public const string Foreground = "#F8FAFC";

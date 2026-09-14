@@ -20,10 +20,14 @@ public sealed class BrandingAndOverlayTests
         Assert.Equal("#05070A", Branding.Palette.Obsidian);
         Assert.Equal("#00F0FF", Branding.Palette.CyanPulse);
         Assert.Equal("#1E40AF", Branding.Palette.Cobalt);
+        Assert.Equal("#E4B53C", Branding.Palette.CircuitAmber);
         Assert.DoesNotContain("lime", Branding.Tagline, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", Branding.ProductName, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", Branding.CompanyName, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", Branding.Tagline, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Night City", Branding.ProductName, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Night City", Branding.Tagline, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Night City", Branding.CompanyName, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

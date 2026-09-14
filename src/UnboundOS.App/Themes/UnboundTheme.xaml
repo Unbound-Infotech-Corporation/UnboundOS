@@ -6,10 +6,13 @@
 
     <!--
         UnboundOS — Unbound Infotech brand tokens (unboundinfotech.com).
-        Obsidian + cyan pulse. No signal lime, no generic WinUI purple.
+        Obsidian + cyan pulse + cobalt. Circuit amber is a spare seasoning,
+        never a second primary. No signal lime, no generic WinUI purple.
         Motion is compositor-driven (ConsoleMotion): a few-percent focus
         scale on the active tile and a short press opacity. Instant when
         Settings, Windows animations, or a live session say off.
+        Focus tiles use a 1px cyan hairline and L-ticks (one amber corner).
+        No glow bloom, sheen, squash, or looping scan.
     -->
     <Color x:Key="Obsidian">#05070A</Color>
     <Color x:Key="SteelPanel">#0B121D</Color>
@@ -21,6 +24,7 @@
     <Color x:Key="CobaltAccent">#1E40AF</Color>
     <Color x:Key="Paper">#F8FAFC</Color>
     <Color x:Key="MutedText">#94A3B8</Color>
+    <Color x:Key="CircuitAmber">#E4B53C</Color>
     <Color x:Key="AlertAmber">#F59E0B</Color>
     <Color x:Key="FaultRed">#FF5C5C</Color>
     <Color x:Key="CyanDimFill">#1A0A2A32</Color>
@@ -46,6 +50,7 @@
     <SolidColorBrush x:Key="CobaltAccentBrush" Color="{StaticResource CobaltAccent}" />
     <SolidColorBrush x:Key="PaperBrush" Color="{StaticResource Paper}" />
     <SolidColorBrush x:Key="MutedTextBrush" Color="{StaticResource MutedText}" />
+    <SolidColorBrush x:Key="CircuitAmberBrush" Color="{StaticResource CircuitAmber}" />
     <SolidColorBrush x:Key="AlertAmberBrush" Color="{StaticResource AlertAmber}" />
     <SolidColorBrush x:Key="FaultRedBrush" Color="{StaticResource FaultRed}" />
     <SolidColorBrush x:Key="CyanDimFillBrush" Color="#1400F0FF" />
@@ -79,7 +84,30 @@
         <GradientStop Color="#05070A" Offset="0" />
         <GradientStop Color="#0B121D" Offset="0.48" />
         <GradientStop Color="#081428" Offset="0.82" />
-        <GradientStop Color="#07101A" Offset="1" />
+        <GradientStop Color="#0A0906" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- Barely-there scan / grid. Static. Keep opacity on the host ~0.04–0.06. -->
+    <LinearGradientBrush
+        x:Key="HeroScanBrush"
+        MappingMode="Absolute"
+        StartPoint="0,0"
+        EndPoint="0,9"
+        SpreadMethod="Repeat">
+        <GradientStop Color="#10FFFFFF" Offset="0" />
+        <GradientStop Color="#00FFFFFF" Offset="0.14" />
+        <GradientStop Color="#00FFFFFF" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush
+        x:Key="HeroGridBrush"
+        MappingMode="Absolute"
+        StartPoint="0,0"
+        EndPoint="36,0"
+        SpreadMethod="Repeat">
+        <GradientStop Color="#0A00F0FF" Offset="0" />
+        <GradientStop Color="#0000F0FF" Offset="0.05" />
+        <GradientStop Color="#0000F0FF" Offset="1" />
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="TileFieldBrush" StartPoint="0.15,0" EndPoint="1,1">
@@ -96,8 +124,9 @@
 
     <LinearGradientBrush x:Key="TileFieldHeroBrush" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#0B121D" Offset="0" />
-        <GradientStop Color="#0C3A40" Offset="0.5" />
-        <GradientStop Color="#1E40AF" Offset="1" />
+        <GradientStop Color="#0C3A40" Offset="0.48" />
+        <GradientStop Color="#1E40AF" Offset="0.88" />
+        <GradientStop Color="#161208" Offset="1" />
     </LinearGradientBrush>
 
     <Style x:Key="BrandDisplayText" TargetType="TextBlock">
@@ -120,6 +149,15 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="CharacterSpacing" Value="160" />
         <Setter Property="Foreground" Value="{StaticResource CyanPulseBrush}" />
+    </Style>
+
+    <Style x:Key="MicroLabelText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="CharacterSpacing" Value="140" />
+        <Setter Property="Foreground" Value="{StaticResource CircuitAmberBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style x:Key="BodyMutedText" TargetType="TextBlock">
@@ -345,7 +383,7 @@
         <Setter Property="Height" Value="280" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0,16,16,16" />
-        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="CornerRadius" Value="10" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="Background" Value="Transparent" />
@@ -363,31 +401,37 @@
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Ticks.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Ticks.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Selected">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Ticks.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Ticks.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="PointerOverSelected">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Ticks.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPressed">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Ticks.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -401,6 +445,7 @@
                                 <VisualState x:Name="Focused">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Ticks.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="PointerFocused" />
@@ -411,13 +456,27 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="1"
-                            CornerRadius="16">
+                            CornerRadius="10">
                             <ContentPresenter
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 Content="{TemplateBinding Content}"
                                 ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </Border>
+                        <Grid
+                            x:Name="Ticks"
+                            Opacity="0"
+                            IsHitTestVisible="False"
+                            AutomationProperties.AccessibilityView="Raw">
+                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
+                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
+                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4,0,0,4" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4,0,0,4" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,4" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,4" Fill="{StaticResource CyanPulseBrush}" />
+                        </Grid>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -434,7 +493,7 @@
 
     <Style x:Key="ConsoleTileCardStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource TileFieldBrush}" />
-        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="CornerRadius" Value="10" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -442,14 +501,14 @@
 
     <Style x:Key="ConsoleTileArtStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource TileFieldBrush}" />
-        <Setter Property="CornerRadius" Value="16,16,0,0" />
+        <Setter Property="CornerRadius" Value="10,10,0,0" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
 
     <Style x:Key="ConsoleTileArtAltStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource TileFieldAltBrush}" />
-        <Setter Property="CornerRadius" Value="16,16,0,0" />
+        <Setter Property="CornerRadius" Value="10,10,0,0" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
@@ -467,7 +526,7 @@
         <Setter Property="MinWidth" Value="200" />
         <Setter Property="MinHeight" Value="240" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="CornerRadius" Value="10" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Background" Value="Transparent" />
@@ -485,11 +544,13 @@
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Ticks.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Ticks.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -503,6 +564,7 @@
                                 <VisualState x:Name="Focused">
                                     <VisualState.Setters>
                                         <Setter Target="Stroke.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Ticks.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="PointerFocused" />
@@ -519,6 +581,20 @@
                                 VerticalAlignment="Stretch"
                                 Content="{TemplateBinding Content}" />
                         </Border>
+                        <Grid
+                            x:Name="Ticks"
+                            Opacity="0"
+                            IsHitTestVisible="False"
+                            AutomationProperties.AccessibilityView="Raw">
+                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
+                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
+                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4,0,0,4" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4,0,0,4" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,4" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,4" Fill="{StaticResource CyanPulseBrush}" />
+                        </Grid>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
