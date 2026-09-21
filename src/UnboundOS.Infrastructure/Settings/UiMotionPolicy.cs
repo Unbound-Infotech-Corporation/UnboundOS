@@ -53,10 +53,10 @@ public sealed class UiMotionPolicy : IUiMotionPolicy
 
     public string StatusText => Suppression switch
     {
-        MotionSuppression.UserDisabled => "Interface motion is off. Tiles, buttons, and the navigation cube use instant states.",
+        MotionSuppression.UserDisabled => "Interface motion is off. Tiles, buttons, and the navigation cube use instant states. Cube arcs and idle are skipped.",
         MotionSuppression.SystemDisabled => "Interface motion is paused because Windows animations are off.",
-        MotionSuppression.SessionLive => "Interface motion is paused while a session is live. The toggle stays available. The cube will not idle-spin.",
-        _ => "Interface motion is on. A few-percent scale, a 1px cyan hairline on the focused tile, and a springy cube rotate."
+        MotionSuppression.SessionLive => "Interface motion is paused while a session is live. The toggle stays available. The cube will not idle-spin or emit arcs.",
+        _ => "Interface motion is on. A few-percent scale, a 1px cyan hairline on the focused tile, and a springy cube rotate with restrained electric arcs."
     };
 
     public event EventHandler? Changed;

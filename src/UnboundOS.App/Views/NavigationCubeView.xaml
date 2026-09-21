@@ -7,24 +7,55 @@
     XYFocusKeyboardNavigation="Disabled"
     AllowFocusOnInteraction="True"
     KeyDown="OnKeyDown"
+    HorizontalAlignment="Center"
     AutomationProperties.Name="UnboundOS navigation cube"
-    AutomationProperties.HelpText="Arrow keys rotate. Enter opens the front face. Drag or click an edge to turn. Settings and Profiles stay in the top bar.">
+    AutomationProperties.HelpText="Arrow keys rotate. Enter opens the front face. Drag or click a plate to turn. Settings and Profiles stay in the top bar.">
 
     <StackPanel Spacing="14">
         <TextBlock Style="{StaticResource TileRowLabelText}" Text="NAVIGATE" />
         <Grid
             x:Name="PerspectiveHost"
             Style="{StaticResource CubeHostStyle}"
-            AutomationProperties.Name="3D navigation cube"
-            PointerPressed="OnPointerPressed"
-            PointerMoved="OnPointerMoved"
-            PointerReleased="OnPointerReleased"
-            PointerCanceled="OnPointerCanceled"
-            PointerCaptureLost="OnPointerCanceled"
-            PointerWheelChanged="OnWheel">
-            <Grid.Background>
-                <SolidColorBrush Color="#00000000" />
-            </Grid.Background>
+            AutomationProperties.Name="3D navigation cube">
+            <WebView2
+                x:Name="CubeWeb"
+                DefaultBackgroundColor="#FF05070A"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                IsTabStop="False"
+                AllowFocusOnInteraction="False"
+                AutomationProperties.AccessibilityView="Raw" />
+            <Border
+                x:Name="FallbackCard"
+                Visibility="Collapsed"
+                Background="{StaticResource TileFieldHeroBrush}"
+                BorderBrush="{StaticResource CyanPulseBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Width="280"
+                Height="280"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                PointerPressed="OnFallbackPressed">
+                <Grid>
+                    <TextBlock
+                        x:Name="FallbackKicker"
+                        Style="{StaticResource MicroLabelText}"
+                        Margin="16,14"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Text="SYS" />
+                    <TextBlock
+                        x:Name="FallbackMonogram"
+                        Style="{StaticResource TileMonogramText}"
+                        FontSize="84"
+                        Text="S" />
+                    <StackPanel VerticalAlignment="Bottom" Padding="18,16">
+                        <TextBlock x:Name="FallbackTitle" Style="{StaticResource TileCaptionText}" FontSize="22" Text="Session" />
+                        <TextBlock Style="{StaticResource TileMetaText}" Text="ENTER" />
+                    </StackPanel>
+                </Grid>
+            </Border>
             <Border
                 x:Name="FocusRing"
                 HorizontalAlignment="Stretch"
@@ -34,121 +65,8 @@
                 CornerRadius="12"
                 Opacity="0"
                 IsHitTestVisible="False" />
-            <Grid
-                x:Name="CubeRoot"
-                Width="248"
-                Height="248"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                UseLayoutRounding="False">
-                <Border x:Name="FaceHardware" Style="{StaticResource CubeFaceStyle}" Background="{StaticResource TileFieldAltBrush}" Tag="Hardware">
-                    <Grid>
-                        <Rectangle Fill="{StaticResource TileFieldAltBrush}" />
-                        <Border x:Name="SpecHardware" Background="{StaticResource CyanDimFillBrush}" Opacity="0" />
-                        <TextBlock Style="{StaticResource MicroLabelText}" Margin="14,12" HorizontalAlignment="Left" VerticalAlignment="Top" Text="HW" />
-                        <TextBlock Style="{StaticResource TileMonogramText}" FontSize="72" Text="H" />
-                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Hardware" />
-                            <TextBlock Style="{StaticResource TileMetaText}" Text="READ" />
-                        </StackPanel>
-                        <Grid x:Name="TicksHardware" Opacity="0" IsHitTestVisible="False">
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                        </Grid>
-                    </Grid>
-                </Border>
-                <Border x:Name="FaceNetwork" Style="{StaticResource CubeFaceStyle}" Background="{StaticResource TileFieldBrush}" Tag="Network">
-                    <Grid>
-                        <Border x:Name="SpecNetwork" Background="{StaticResource CyanDimFillBrush}" Opacity="0" />
-                        <TextBlock Style="{StaticResource MicroLabelText}" Margin="14,12" HorizontalAlignment="Left" VerticalAlignment="Top" Text="LINK" />
-                        <TextBlock Style="{StaticResource TileMonogramText}" FontSize="72" Text="N" />
-                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Network" />
-                            <TextBlock Style="{StaticResource TileMetaText}" Text="SPLIT" />
-                        </StackPanel>
-                        <Grid x:Name="TicksNetwork" Opacity="0" IsHitTestVisible="False">
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                        </Grid>
-                    </Grid>
-                </Border>
-                <Border x:Name="FaceMods" Style="{StaticResource CubeFaceStyle}" Background="{StaticResource TileFieldBrush}" Tag="Mods">
-                    <Grid>
-                        <Border x:Name="SpecMods" Background="{StaticResource CyanDimFillBrush}" Opacity="0" />
-                        <TextBlock Style="{StaticResource MicroLabelText}" Margin="14,12" HorizontalAlignment="Left" VerticalAlignment="Top" Text="MOD" />
-                        <TextBlock Style="{StaticResource TileMonogramText}" FontSize="72" Text="M" />
-                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Mods" />
-                            <TextBlock Style="{StaticResource TileMetaText}" Text="OPEN" />
-                        </StackPanel>
-                        <Grid x:Name="TicksMods" Opacity="0" IsHitTestVisible="False">
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                        </Grid>
-                    </Grid>
-                </Border>
-                <Border x:Name="FaceFiles" Style="{StaticResource CubeFaceStyle}" Background="{StaticResource TileFieldAltBrush}" Tag="Files">
-                    <Grid>
-                        <Border x:Name="SpecFiles" Background="{StaticResource CyanDimFillBrush}" Opacity="0" />
-                        <TextBlock Style="{StaticResource MicroLabelText}" Margin="14,12" HorizontalAlignment="Left" VerticalAlignment="Top" Text="FS" />
-                        <TextBlock Style="{StaticResource TileMonogramText}" FontSize="72" Text="F" />
-                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Files" />
-                            <TextBlock Style="{StaticResource TileMetaText}" Text="BROWSE" />
-                        </StackPanel>
-                        <Grid x:Name="TicksFiles" Opacity="0" IsHitTestVisible="False">
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                        </Grid>
-                    </Grid>
-                </Border>
-                <Border x:Name="FaceTools" Style="{StaticResource CubeFaceStyle}" Background="{StaticResource TileFieldBrush}" Tag="Tools">
-                    <Grid>
-                        <Border x:Name="SpecTools" Background="{StaticResource CyanDimFillBrush}" Opacity="0" />
-                        <TextBlock Style="{StaticResource MicroLabelText}" Margin="14,12" HorizontalAlignment="Left" VerticalAlignment="Top" Text="KIT" />
-                        <TextBlock Style="{StaticResource TileMonogramText}" FontSize="72" Text="T" />
-                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Tools" />
-                            <TextBlock Style="{StaticResource TileMetaText}" Text="OPEN" />
-                        </StackPanel>
-                        <Grid x:Name="TicksTools" Opacity="0" IsHitTestVisible="False">
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                        </Grid>
-                    </Grid>
-                </Border>
-                <Border x:Name="FaceSession" Style="{StaticResource CubeFaceStyle}" Background="{StaticResource TileFieldHeroBrush}" Tag="Session" BorderBrush="{StaticResource CyanPulseBrush}">
-                    <Grid>
-                        <Border x:Name="SpecSession" Background="{StaticResource CyanDimFillBrush}" Opacity="0" />
-                        <TextBlock Style="{StaticResource MicroLabelText}" Margin="14,12" HorizontalAlignment="Left" VerticalAlignment="Top" Text="SYS" />
-                        <TextBlock Style="{StaticResource TileMonogramText}" FontSize="72" Text="S" />
-                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                            <TextBlock Style="{StaticResource TileCaptionText}" FontSize="22" Text="Session" />
-                            <TextBlock Style="{StaticResource TileMetaText}" Text="ENTER" />
-                        </StackPanel>
-                        <Grid x:Name="TicksSession" Opacity="1" IsHitTestVisible="False">
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4,0,0,4" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4,0,0,4" Fill="{StaticResource CyanPulseBrush}" />
-                        </Grid>
-                    </Grid>
-                </Border>
-            </Grid>
         </Grid>
-        <StackPanel Spacing="4" MaxWidth="520">
+        <StackPanel Spacing="4" MaxWidth="560">
             <TextBlock
                 x:Name="FrontCaption"
                 Style="{StaticResource TileCaptionText}"
@@ -162,7 +80,7 @@
             <TextBlock
                 Style="{StaticResource BodyMutedText}"
                 FontSize="13"
-                Text="Arrows rotate · Enter opens · drag or click an edge to turn. Settings and Profiles stay in the top bar." />
+                Text="Arrows rotate · Enter opens · drag the cube or click a plate. Settings and Profiles stay in the top bar." />
         </StackPanel>
     </StackPanel>
 </UserControl>

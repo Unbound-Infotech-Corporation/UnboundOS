@@ -8,12 +8,12 @@
         UnboundOS — Unbound Infotech brand tokens (unboundinfotech.com).
         Obsidian + cyan pulse + cobalt. Circuit amber is a spare seasoning,
         never a second primary. No signal lime, no generic WinUI purple.
-        Motion is compositor-driven (ConsoleMotion + Home cube): a few-percent
-        focus scale on tiles, a springy 3D cube rotate, and a short press
-        opacity. Instant when Settings, Windows animations, or a live session
-        say off. The cube never idle-spins during a session.
-        Focus tiles use a 1px cyan hairline and L-ticks (one amber corner).
-        No glow bloom, sheen, squash, or looping scan.
+        Motion is compositor-driven (ConsoleMotion) plus a packaged WebGL
+        Home cube: springy 3/4 rotate, restrained electric arcs on a turn,
+        and a quiet idle. Instant, no arcs, when Settings, Windows
+        animations, or a live session say off. The cube never idle-spins
+        during a session. Focus tiles use a 1px cyan hairline and L-ticks
+        (one amber corner). No carnival neon, sheen, or squash.
     -->
     <Color x:Key="Obsidian">#05070A</Color>
     <Color x:Key="SteelPanel">#0B121D</Color>
@@ -617,8 +617,8 @@
     </Style>
 
     <Style x:Key="CubeHostStyle" TargetType="Grid">
-        <Setter Property="Width" Value="460" />
-        <Setter Property="Height" Value="460" />
+        <Setter Property="Width" Value="720" />
+        <Setter Property="Height" Value="560" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="UseLayoutRounding" Value="False" />
     </Style>

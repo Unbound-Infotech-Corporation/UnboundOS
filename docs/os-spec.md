@@ -15,9 +15,10 @@ circuit amber. Restrained professional buttons. A hint of cyberpunk
 atmosphere — not a neon costume. No ads. No silent overclock. Treat
 **x64** as the WinUI platform.
 
-Home navigation is a **3D cube** (WinUI Composition, not Unreal). Faces:
-Session, Tools, Network, Mods, Files, Hardware. Settings, Profiles, and
-Overlay stay in the top chrome.
+Home navigation is a **3D cube** (WebView2 hosting packaged Three.js, not
+Unreal in-process). Faces: Session, Tools, Network, Mods, Files,
+Hardware. Settings, Profiles, and Overlay stay in the top chrome.
+Architecture: [docs/cube-nav.md](cube-nav.md).
 
 ## 1. OOBE / initial setup last step
 

@@ -143,4 +143,81 @@ public sealed class NavigationCubeTests
         Assert.True(CubeLayout.Perspective().M34 < 0);
         Assert.NotEqual(Matrix4x4.Identity, CubeLayout.FaceLocal(CubeDestination.Tools, 120));
     }
+
+    [Fact]
+    public void Atmosphere_RestPoseShowsThreeFaces()
+    {
+        Assert.NotEqual(0f, CubeAtmosphere.RestYawDegrees);
+        Assert.NotEqual(0f, CubeAtmosphere.RestPitchDegrees);
+        var rot = CubeAtmosphere.ViewRotation(0, 0);
+        Assert.True(CubeLayout.FacingCamera(CubeDestination.Session, rot) > 0.7f);
+        Assert.True(CubeLayout.FacingCamera(CubeDestination.Tools, rot) > 0.2f);
+        Assert.True(CubeLayout.FacingCamera(CubeDestination.Mods, rot) > 0.15f);
+        Assert.True(
+            CubeLayout.FacingCamera(CubeDestination.Session, rot) >
+            CubeLayout.FacingCamera(CubeDestination.Tools, rot));
+        Assert.True(CubeLayout.FacingCamera(CubeDestination.Hardware, rot) < 0.2f);
+
+        var mods = CubeAtmosphere.ViewRotation(0, -90);
+        Assert.True(
+            CubeLayout.FacingCamera(CubeDestination.Mods, mods) >
+            CubeLayout.FacingCamera(CubeDestination.Session, mods));
+    }
+
+    [Fact]
+    public void Atmosphere_PalettesStayInTheBrandFamily()
+    {
+        foreach (var face in CubeCatalog.Faces)
+        {
+            var palette = CubeAtmosphere.Palette(face);
+            Assert.True(CubeAtmosphere.IsBrandFamilyHex(palette.AccentHex), palette.AccentHex);
+            Assert.True(CubeAtmosphere.IsBrandFamilyHex(palette.SeamHex), palette.SeamHex);
+            Assert.True(CubeAtmosphere.IsBrandFamilyHex(palette.CoreHex), palette.CoreHex);
+            Assert.DoesNotContain("ff00ff", palette.AccentHex, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Night City", palette.AccentHex, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Equal("#00F0FF", CubeAtmosphere.Palette(CubeDestination.Session).AccentHex);
+        Assert.False(CubeAtmosphere.IsBrandFamilyHex("#FF4FAD"));
+        Assert.False(CubeAtmosphere.IsBrandFamilyHex("#FF7A00"));
+        Assert.False(CubeAtmosphere.IsBrandFamilyHex("#B4FF00"));
+    }
+
+    [Fact]
+    public void AimedAt_KeepsYawWhenPitching_AndSnapsEquatorFaces()
+    {
+        var fromNetwork = CubeAtmosphere.AimedAt(CubeDestination.Mods, new CubePose(3, 0));
+        Assert.Equal(3, fromNetwork.YawSteps);
+        Assert.Equal(CubeDestination.Mods, fromNetwork.Front);
+
+        var toTools = CubeAtmosphere.AimedAt(CubeDestination.Tools, fromNetwork);
+        Assert.Equal(CubeDestination.Tools, toTools.Front);
+        Assert.Equal(0, toTools.PitchSteps);
+
+        Assert.Equal(CubeDestination.Session, CubeAtmosphere.AimedAt(CubeDestination.Session, CubePose.Home).Front);
+        Assert.Equal(CubeDestination.Files, CubeAtmosphere.AimedAt(CubeDestination.Files, CubePose.Home).Front);
+    }
+
+    [Fact]
+    public void Bridge_SerializesStateAndReadsHostMessages()
+    {
+        var json = CubeBridge.ToJson(CubeBridge.State(CubePose.Home, 0, 0, motion: true, burst: true));
+        Assert.Contains("\"restYaw\":28", json, StringComparison.Ordinal);
+        Assert.Contains("\"front\":\"Session\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"burst\":true", json, StringComparison.Ordinal);
+        Assert.Contains("\"accent\":\"#00F0FF\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"id\":\"Tools\"", json, StringComparison.Ordinal);
+        Assert.DoesNotContain("PlayStation", json, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Unreal", json, StringComparison.OrdinalIgnoreCase);
+
+        Assert.True(CubeBridge.TryRead("""{"v":1,"type":"turn","turn":"Right"}""", out var turn));
+        Assert.Equal(CubeTurn.Right, CubeBridge.ParseTurn(turn.Turn));
+        Assert.True(CubeBridge.TryRead("""{"type":"pick","face":"Files"}""", out var pick));
+        Assert.Equal(CubeDestination.Files, CubeBridge.ParseFace(pick.Face));
+        Assert.True(CubeBridge.TryRead("""{"type":"dragEnd","dx":40,"dy":-12,"vx":-800,"vy":10}""", out var drag));
+        Assert.Equal("dragEnd", drag.Type);
+        Assert.Equal(40, drag.Dx);
+        Assert.False(CubeBridge.TryRead("not-json", out _));
+        Assert.Equal(CubeBridge.IndexUrl, "https://unboundos.cube/Cube/index.html");
+    }
 }
