@@ -17,14 +17,16 @@ Visual check:
   row. Settings / Profiles are discreet corner glyphs, not cube faces.
   Inner pages restore HOME / SESSION / NETWORK / TOOLS / FILES /
   HARDWARE / MODS / PROFILES / SETTINGS.
-- Home hero is a **volcanic 3/4 cube** with etched group logos (Games,
-  Tools, Network, Mods, Files, Hardware), wet floor, no face-letter soup.
-- Enter on Games **disassembles** into a block carousel of library games.
+- Home hero is a **biomechanical 3/4 cube** on a bone pedestal in a
+  cavity bay. Group logos are carved bone glyphs (Games, Tools, Network,
+  Mods, Files, Hardware), not neon stickers.
+- Enter on Games **unfolds** into a block carousel of library games.
   Settings / Files / Hardware / Network land on list UI.
-- On a turn: short electric arcs, then settle; accent hue drifts per
-  destination (cyan / cobalt; magenta and amber as seasoning).
-- Interface motion On: springy rotate, arcs, idle, open transform.
-  Off (or a live session): instant snap, no arcs, no idle, no open FX.
-- Obsidian `#05070A`, cyan pulse `#00F0FF`, circuit amber `#E4B53C` spare,
-  Inter UI + JetBrains Mono telemetry — matching
-  [unboundinfotech.com](https://unboundinfotech.com).
+- On a turn: short tendon filaments, then settle; accent stays in the
+  organic family (vein / bruise / bile / blood / bone).
+- Interface motion On: springy rotate, filaments, idle, organic unfold.
+  Off (or a live session): instant snap, no volumetrics, no idle, no open FX.
+- Inner-page chrome keeps obsidian `#05070A` and cyan pulse `#00F0FF`.
+  Home HUD/glyphs are bone plaques. Inter UI + JetBrains Mono telemetry —
+  matching [unboundinfotech.com](https://unboundinfotech.com) for the
+  product identity, not the Home materials.

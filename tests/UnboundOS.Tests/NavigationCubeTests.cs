@@ -188,10 +188,14 @@ public sealed class NavigationCubeTests
             Assert.DoesNotContain("Night City", palette.AccentHex, StringComparison.OrdinalIgnoreCase);
         }
 
-        Assert.Equal("#00F0FF", CubeAtmosphere.Palette(CubeDestination.Session).AccentHex);
+        Assert.Equal("#6FA896", CubeAtmosphere.Palette(CubeDestination.Session).AccentHex);
         Assert.False(CubeAtmosphere.IsBrandFamilyHex("#FF4FAD"));
         Assert.False(CubeAtmosphere.IsBrandFamilyHex("#FF7A00"));
         Assert.False(CubeAtmosphere.IsBrandFamilyHex("#B4FF00"));
+        Assert.False(CubeAtmosphere.IsBrandFamilyHex("#00F0FF"));
+        Assert.True(CubeAtmosphere.IsBrandFamilyHex("#9A8A72"));
+        Assert.True(CubeAtmosphere.IsBrandFamilyHex("#6A5A78"));
+        Assert.True(CubeAtmosphere.IsBrandFamilyHex("#7A4A42"));
     }
 
     [Fact]
@@ -216,7 +220,7 @@ public sealed class NavigationCubeTests
         Assert.Contains("\"restYaw\":28", json, StringComparison.Ordinal);
         Assert.Contains("\"front\":\"Session\"", json, StringComparison.Ordinal);
         Assert.Contains("\"burst\":true", json, StringComparison.Ordinal);
-        Assert.Contains("\"accent\":\"#00F0FF\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"accent\":\"#6FA896\"", json, StringComparison.Ordinal);
         Assert.Contains("\"id\":\"Tools\"", json, StringComparison.Ordinal);
         Assert.DoesNotContain("PlayStation", json, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Unreal", json, StringComparison.OrdinalIgnoreCase);

@@ -11,9 +11,10 @@ This document is the full spec. The current UnboundOS PR ships a **first
 slice** only (called out per section). Image/OOBE owners pick up the rest.
 
 Brand stays Unbound Infotech first: obsidian, cyan pulse, cobalt, spare
-circuit amber. Restrained professional buttons. A hint of cyberpunk
-atmosphere — not a neon costume. No ads. No silent overclock. Treat
-**x64** as the WinUI platform.
+circuit amber on **inner pages**. Home is a separate bay — original
+biomechanical craft (Scorn-inspired, no third-party assets). Restrained
+professional buttons. No ads. No silent overclock. Treat **x64** as the
+WinUI platform.
 
 Home navigation is a **3D cube** (WebView2 hosting packaged Three.js, not
 Unreal in-process). Faces: Session, Tools, Network, Mods, Files,

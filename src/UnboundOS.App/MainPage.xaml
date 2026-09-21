@@ -543,6 +543,11 @@
             </Grid>
 
             <Grid x:Name="HomeView">
+                <Rectangle
+                    x:Name="HomeBayFill"
+                    Fill="{StaticResource HomeCavityBrush}"
+                    IsHitTestVisible="False"
+                    AutomationProperties.AccessibilityView="Raw" />
                 <views:NavigationCubeView
                     x:Name="HomeCube"
                     HorizontalAlignment="Stretch"
@@ -550,15 +555,15 @@
                     FaceActivated="OnCubeActivated"
                     FrontChanged="OnCubeFrontChanged"
                     Notice="OnCubeNotice" />
-                <StackPanel
+                <Border
                     x:Name="HomeTempsHud"
+                    Style="{StaticResource HomePlaqueStyle}"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Margin="28,20,0,0"
-                    Spacing="6"
-                    IsHitTestVisible="False"
                     Visibility="{x:Bind Hud.TempsStripVisibility, Mode=OneWay}"
                     AutomationProperties.Name="System temperatures">
+                    <StackPanel Spacing="6">
                     <TextBlock Style="{StaticResource HomeHudKickerText}" Text="THERM" />
                     <StackPanel Orientation="Horizontal" Spacing="14">
                         <StackPanel Spacing="0">
@@ -574,16 +579,17 @@
                             <TextBlock Style="{StaticResource HomeHudValueText}" Text="{x:Bind Hud.PackageTempText, Mode=OneWay}" />
                         </StackPanel>
                     </StackPanel>
-                </StackPanel>
-                <StackPanel
+                    </StackPanel>
+                </Border>
+                <Border
                     x:Name="HomeClockHud"
+                    Style="{StaticResource HomePlaqueStyle}"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     Margin="0,20,28,0"
-                    Spacing="2"
-                    IsHitTestVisible="False"
                     Visibility="{x:Bind Hud.ClockStripVisibility, Mode=OneWay}"
                     AutomationProperties.Name="Local time">
+                    <StackPanel Spacing="2">
                     <TextBlock
                         Style="{StaticResource HomeHudKickerText}"
                         HorizontalAlignment="Right"
@@ -592,7 +598,8 @@
                         Style="{StaticResource HomeHudClockText}"
                         HorizontalAlignment="Right"
                         Text="{x:Bind Hud.ClockText, Mode=OneWay}" />
-                </StackPanel>
+                    </StackPanel>
+                </Border>
                 <Button
                     x:Name="HomeProfilesGlyph"
                     Tag="Profiles"

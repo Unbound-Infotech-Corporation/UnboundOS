@@ -56,9 +56,9 @@
                         IsOn="{x:Bind ViewModel.InterfaceMotionEnabled, Mode=TwoWay}"
                         OnContent="On"
                         OffContent="Off"
-                        Header="A few-percent scale and a 1px cyan hairline on the focused tile. The Home cube uses a springy 3/4 rotate, restrained electric arcs on a turn, a quiet idle, and a Games block carousel. Press is a short opacity change."
+                        Header="A few-percent scale and a 1px cyan hairline on the focused tile. The Home cube uses a springy 3/4 rotate, tendon filaments on a turn, a quiet idle, and a Games block carousel. Press is a short opacity change."
                         AutomationProperties.Name="Interface motion"
-                        AutomationProperties.HelpText="When off, tiles, buttons, and the navigation cube use instant visual states only. Cube arcs, idle, and the open transform stop. Keyboard focus and narrator stay available either way." />
+                        AutomationProperties.HelpText="When off, tiles, buttons, and the navigation cube use instant visual states only. Cube filaments, idle, and the unfold transform stop. Keyboard focus and narrator stay available either way." />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
                         Text="{x:Bind ViewModel.MotionStatus, Mode=OneWay}"
@@ -69,7 +69,7 @@
                         Text="{x:Bind ViewModel.SessionNote}" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Tile motion runs on the compositor. The Home cube is a packaged WebGL scene. Unfocused tiles stay still. Off is instant states with no animation, no cube idle, no electric arcs, and no open/disassemble transform." />
+                        Text="Tile motion runs on the compositor. The Home cube is a packaged WebGL scene. Unfocused tiles stay still. Off is instant states with no animation, no cube idle, no filaments, and no open/unfold transform." />
                 </StackPanel>
             </Border>
 

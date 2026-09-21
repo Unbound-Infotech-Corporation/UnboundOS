@@ -6,7 +6,8 @@ namespace UnboundOS.Core.Navigation;
 /// <summary>
 /// Rest pose, destination palettes, and visual helpers for the Home cube.
 /// Logical pose stays 90° snaps; the rest yaw/pitch is a product-shot 3/4 so
-/// three faces read at once. Accents stay inside the Unbound Infotech family.
+/// three faces read at once. Accents stay inside the organic Home family
+/// (bone, bruise, bile, blood, ash, sparse vein light) — not electric cyan.
 /// </summary>
 public readonly record struct CubeAccent(
     string AccentHex,
@@ -30,12 +31,12 @@ public static class CubeAtmosphere
     public static CubeAccent Palette(CubeDestination destination) =>
         destination switch
         {
-            CubeDestination.Session => new("#00F0FF", "#00D0E8", "#1E40AF", "#0B121D", "#05070A"),
-            CubeDestination.Tools => new("#00D4F0", "#0098C8", "#1E3A8A", "#0A1018", "#05070A"),
-            CubeDestination.Network => new("#4F7CFF", "#1E40AF", "#0EA5E9", "#0B121D", "#05080F"),
-            CubeDestination.Mods => new("#2EE9D0", "#0891B2", "#155E75", "#0A1214", "#05070A"),
-            CubeDestination.Files => new("#7DD3FC", "#0369A1", "#1E40AF", "#0B121D", "#05070A"),
-            CubeDestination.Hardware => new("#60A5FA", "#1D4ED8", "#00B4D8", "#10151E", "#05070A"),
+            CubeDestination.Session => new("#6FA896", "#8A6B4A", "#5C2A2E", "#2A221C", "#0A0808"),
+            CubeDestination.Tools => new("#7A8B6A", "#6B4A38", "#4A3428", "#1C1814", "#0A0808"),
+            CubeDestination.Network => new("#6A5A78", "#8A6B4A", "#3A2A38", "#1A1418", "#0C080A"),
+            CubeDestination.Mods => new("#8A7A58", "#5C3A32", "#4A2E28", "#181410", "#0A0808"),
+            CubeDestination.Files => new("#9A8A72", "#6A5848", "#3A3028", "#1A1612", "#0A0808"),
+            CubeDestination.Hardware => new("#7A4A42", "#8A7060", "#2A1C1A", "#141010", "#0A0808"),
             _ => Palette(CubeDestination.Session)
         };
 
@@ -73,8 +74,10 @@ public static class CubeAtmosphere
         }
 
         var max = Math.Max(r, Math.Max(g, b));
+        var min = Math.Min(r, Math.Min(g, b));
+        var chroma = max - min;
 
-        // Stay cool-steel: cyan / cobalt / teal. Reject hot pink, carnival orange, lime.
+        // Hot pink, carnival orange, acid lime, electric neon cyan, neon magenta.
         if (r > 200 && g < 90 && b > 140)
         {
             return false;
@@ -90,6 +93,26 @@ public static class CubeAtmosphere
             return false;
         }
 
-        return max >= 8 && b >= r && g + 48 >= r;
+        if (b > 200 && g > 180 && r < 90 && chroma > 160)
+        {
+            return false;
+        }
+
+        if (r < 40 && g > 220 && b > 230)
+        {
+            return false;
+        }
+
+        if (r > 220 && b > 220 && g < 80)
+        {
+            return false;
+        }
+
+        if (max > 210 && chroma > 180)
+        {
+            return false;
+        }
+
+        return max >= 8;
     }
 }

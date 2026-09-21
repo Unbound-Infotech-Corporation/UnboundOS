@@ -6,11 +6,11 @@ A public Windows 11 **console-style shell** by **[Unbound Infotech Corporation](
 
 UnboundOS does **not** replace Windows. It applies a focused gaming / streaming posture — snapshot NICs, clear denylist junk, protect games and anticheat — then restores the desktop when you exit.
 
-The shell is a living-room home: on Home the **3D navigation cube** is the only focal point (packaged Three.js in WebView2 — volcanic grooved rest with etched group logos). Drag, flick, or arrow-key the cube; Enter on **Games** opens a playable block carousel (cycle to launch). Tools/Mods become a mosaic when items exist. Network, Files, Hardware, and Settings land on list UI. Settings and Profiles stay discreet Home corner glyphs. A quiet Home HUD can show local time and CPU/GPU temps; hide them in Settings. The old Settings tile that showed the letter “I” is gone.
+The shell is a living-room home: on Home the **3D navigation cube** is the only focal point (packaged Three.js in WebView2 — original biomechanical control altar, Scorn-inspired, no third-party assets). Drag, flick, or arrow-key the cube; Enter on **Games** opens a playable block carousel (cycle to launch). Tools/Mods become a mosaic when items exist. Network, Files, Hardware, and Settings land on list UI. Settings and Profiles stay discreet Home corner glyphs. A quiet Home HUD can show local time and CPU/GPU temps; hide them in Settings. The old Settings tile that showed the letter “I” is gone.
 
 OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
 
-**Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (cube-only Home, volcanic 3/4 cube, obsidian `#05070A`, steel `#0B121D`, cyan pulse `#00F0FF`). See [docs/screenshots/README.md](docs/screenshots/README.md).
+**Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (cube-only Home, biomechanical 3/4 cube in a cavity bay). Company cyan `#00F0FF` stays on inner pages. See [docs/screenshots/README.md](docs/screenshots/README.md).
 
 ## What it is
 
@@ -20,7 +20,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 
 | Module | Purpose |
 |--------|---------|
-| **Home cube** | Cube-only Home with etched face logos, framed to fit a desktop. Games opens a block carousel of the Steam library (`steam://rungameid`). Optional Home HUD: clock and temps. Settings is a list of option groups. See [docs/cube-nav.md](docs/cube-nav.md) |
+| **Home cube** | Cube-only Home: original bone/metal control altar, framed to fit a desktop. Games opens a block carousel of the Steam library (`steam://rungameid`). Optional Home HUD: clock and temps as engraved plaques. Settings is a list of option groups. See [docs/cube-nav.md](docs/cube-nav.md) |
 | **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
 | **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam) plus utilities (Notepad++, 7-Zip). Launch or official Get. Ultrawide crop recipe lives on the OBS tile |
@@ -150,9 +150,9 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 ## Design notes
 
 - Console-style shell: **3D Home cube** (WebView2 + packaged Three.js, not Unreal/Unity in-process) plus inner-page tile rows. Home hides top chrome so the cube is the only focal point
-- Cube motion: volcanic 3/4 rest with etched group logos, springy rotate, arcs on a turn, Games block carousel on activate. Instant snap when Settings, Windows animations, or a live session say off
+- Cube motion: biomechanical 3/4 rest with carved group glyphs, springy rotate, tendon filaments on a turn, Games block carousel on activate. Instant snap when Settings, Windows animations, or a live session say off
 - Keyboard: arrows rotate, Enter opens. Mouse: drag / flick / click a visible plate. Gamepad D-pad / A is mapped in Core for a later stub
-- Atmosphere: grit over glass — recessed cyan/cobalt grooves, wet floor, haze. Circuit amber and a controlled magenta are seasoning, not a costume. Inner pages keep a faint scan/grid
+- Atmosphere: Home is a cavity bay of bone, oxidized metal, and sparse vein light. Inner pages keep Unbound cyan / cobalt chrome. Circuit amber remains a seasoning on tiles
 - Settings → Interface motion Off (or Windows animations off, or a live session) snaps back to instant states
 - Preferences live at `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\settings.json`
 - CommunityToolkit.Mvvm + Microsoft.Extensions.DependencyInjection

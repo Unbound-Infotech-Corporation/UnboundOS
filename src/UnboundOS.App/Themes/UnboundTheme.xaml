@@ -6,14 +6,12 @@
 
     <!--
         UnboundOS — Unbound Infotech brand tokens (unboundinfotech.com).
-        Obsidian + cyan pulse + cobalt. Circuit amber is a spare seasoning,
-        never a second primary. No signal lime, no generic WinUI purple.
-        Motion is compositor-driven (ConsoleMotion) plus a packaged WebGL
-        Home cube: volcanic grooved 3/4 rest, springy rotate, arcs on a
-        turn, Tetris/greeble open on activate. Instant snap, no arcs, no
-        open FX when Settings, Windows animations, or a live session say
-        off. Home chrome is cube-only. Focus tiles use a 1px cyan hairline
-        and L-ticks (one amber corner). No carnival neon, sheen, or squash.
+        Inner pages keep obsidian + cyan pulse + cobalt. Home is a separate
+        bay: original biomechanical control altar (Scorn-inspired, no
+        third-party assets). Bone ivory, bruise, bile, dried blood, ash,
+        sparse vein light — not matrix neon. Motion-off kills volumetrics.
+        Home chrome is cube-only. Inner-page tiles still use a 1px cyan
+        hairline. No carnival neon, sheen, or squash.
     -->
     <Color x:Key="Obsidian">#05070A</Color>
     <Color x:Key="SteelPanel">#0B121D</Color>
@@ -58,6 +56,22 @@
     <SolidColorBrush x:Key="LineSubtleBrush" Color="{StaticResource LineSubtle}" />
     <SolidColorBrush x:Key="LineStrongBrush" Color="{StaticResource LineStrong}" />
     <SolidColorBrush x:Key="TelemetryStripBrush" Color="#CC05070A" />
+
+    <!-- Home bay (diegetic plaques). Company CyanPulse stays for inner pages. -->
+    <Color x:Key="HomeCavity">#080605</Color>
+    <Color x:Key="HomeBoneIvory">#C8B49A</Color>
+    <Color x:Key="HomeBoneDark">#2A241C</Color>
+    <Color x:Key="HomeBile">#C4A46A</Color>
+    <Color x:Key="HomeVein">#6FA896</Color>
+    <Color x:Key="HomeAsh">#1A1612</Color>
+    <SolidColorBrush x:Key="HomeCavityBrush" Color="{StaticResource HomeCavity}" />
+    <SolidColorBrush x:Key="HomeBoneIvoryBrush" Color="{StaticResource HomeBoneIvory}" />
+    <SolidColorBrush x:Key="HomeBoneDarkBrush" Color="{StaticResource HomeBoneDark}" />
+    <SolidColorBrush x:Key="HomeBileBrush" Color="{StaticResource HomeBile}" />
+    <SolidColorBrush x:Key="HomeVeinBrush" Color="{StaticResource HomeVein}" />
+    <SolidColorBrush x:Key="HomeAshBrush" Color="{StaticResource HomeAsh}" />
+    <SolidColorBrush x:Key="HomePlaqueFillBrush" Color="#CC1C1814" />
+    <SolidColorBrush x:Key="HomePlaqueStrokeBrush" Color="#8A7A62" />
 
     <!-- WinUI chrome — keep ComboBox / ListView / NumberBox on-brand -->
     <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="{StaticResource CyanPulse}" />
@@ -187,32 +201,41 @@
         <Setter Property="FontSize" Value="9" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="CharacterSpacing" Value="180" />
-        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
-        <Setter Property="Opacity" Value="0.72" />
+        <Setter Property="Foreground" Value="{StaticResource HomeBoneIvoryBrush}" />
+        <Setter Property="Opacity" Value="0.48" />
     </Style>
 
     <Style x:Key="HomeHudLabelText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
         <Setter Property="FontSize" Value="9" />
         <Setter Property="CharacterSpacing" Value="80" />
-        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
-        <Setter Property="Opacity" Value="0.7" />
+        <Setter Property="Foreground" Value="{StaticResource HomeBoneIvoryBrush}" />
+        <Setter Property="Opacity" Value="0.42" />
     </Style>
 
     <Style x:Key="HomeHudValueText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
         <Setter Property="FontSize" Value="13" />
-        <Setter Property="Foreground" Value="{StaticResource CyanPulseBrush}" />
-        <Setter Property="Opacity" Value="0.82" />
+        <Setter Property="Foreground" Value="{StaticResource HomeBileBrush}" />
+        <Setter Property="Opacity" Value="0.88" />
     </Style>
 
     <Style x:Key="HomeHudClockText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
         <Setter Property="FontSize" Value="20" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="{StaticResource PaperBrush}" />
-        <Setter Property="Opacity" Value="0.78" />
+        <Setter Property="Foreground" Value="{StaticResource HomeBoneIvoryBrush}" />
+        <Setter Property="Opacity" Value="0.82" />
         <Setter Property="CharacterSpacing" Value="40" />
+    </Style>
+
+    <Style x:Key="HomePlaqueStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource HomePlaqueFillBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource HomePlaqueStrokeBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="1" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
 
     <Style x:Key="PanelLabelText" TargetType="TextBlock">
@@ -649,14 +672,65 @@
         <Setter Property="Padding" Value="14,10" />
     </Style>
 
-    <Style x:Key="HomeGlyphButtonStyle" TargetType="Button" BasedOn="{StaticResource GhostButtonStyle}">
+    <Style x:Key="HomeGlyphButtonStyle" TargetType="Button">
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="MinWidth" Value="56" />
-        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="Padding" Value="12,7" />
         <Setter Property="FontSize" Value="10" />
-        <Setter Property="Opacity" Value="0.38" />
-        <Setter Property="Background" Value="#6605070A" />
-        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
+        <Setter Property="Foreground" Value="{StaticResource HomeBoneIvoryBrush}" />
+        <Setter Property="Background" Value="{StaticResource HomePlaqueFillBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource HomePlaqueStrokeBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="1" />
+        <Setter Property="Opacity" Value="0.72" />
+        <Setter Property="motion:ConsoleMotion.Role" Value="Ghost" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="Root.BorderBrush" Value="{StaticResource HomeBileBrush}" />
+                                        <Setter Target="Root.Opacity" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Pressed" />
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="Root.Opacity" Value="0.38" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Unfocused" />
+                                <VisualState x:Name="Focused">
+                                    <VisualState.Setters>
+                                        <Setter Target="Root.BorderBrush" Value="{StaticResource HomeVeinBrush}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="PointerFocused" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border
+                            x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="CubeHostStyle" TargetType="Grid">

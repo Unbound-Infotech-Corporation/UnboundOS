@@ -1,4 +1,5 @@
-/* UnboundOS Home cube — packaged Three.js scene. C# owns pose and navigation. */
+/* UnboundOS Home — original biomechanical control altar.
+   Scorn-class art direction as inspiration only. No third-party assets. */
 (() => {
   "use strict";
 
@@ -8,12 +9,12 @@
   const LAYOUT_K = 72;
   const LAYOUT_D = 15;
   const DEFAULT_FACES = [
-    { id: "Session", title: "Games", kicker: "PLAY", monogram: "G", meta: "PLAY", hint: "Installed library. Cycle the blocks, Enter launches.", accent: "#00F0FF", seam: "#00D0E8", core: "#1E40AF", plate: "#0B121D", glyph: "games" },
-    { id: "Tools", title: "Tools", kicker: "KIT", monogram: "T", meta: "OPEN", hint: "OBS, Vortex, Discord, Playnite, utilities.", accent: "#00D4F0", seam: "#0098C8", core: "#1E3A8A", plate: "#0A1018", glyph: "tools" },
-    { id: "Hardware", title: "Hardware", kicker: "HW", monogram: "H", meta: "READ", hint: "Inventory from this PC. Optional official HWiNFO.", accent: "#60A5FA", seam: "#1D4ED8", core: "#00B4D8", plate: "#10151E", glyph: "hardware" },
-    { id: "Network", title: "Network", kicker: "LINK", monogram: "N", meta: "SPLIT", hint: "Prefer a game NIC. Park bulk traffic.", accent: "#4F7CFF", seam: "#1E40AF", core: "#0EA5E9", plate: "#0B121D", glyph: "network" },
-    { id: "Mods", title: "Mods", kicker: "MOD", monogram: "M", meta: "OPEN", hint: "Workshop and Vortex discovery. Vortex stays in charge.", accent: "#2EE9D0", seam: "#0891B2", core: "#155E75", plate: "#0A1214", glyph: "mods" },
-    { id: "Files", title: "Files", kicker: "FS", monogram: "F", meta: "BROWSE", hint: "Daily folders. Explorer stays for anticheat.", accent: "#7DD3FC", seam: "#0369A1", core: "#1E40AF", plate: "#0B121D", glyph: "files" }
+    { id: "Session", title: "Games", kicker: "PLAY", monogram: "G", meta: "PLAY", hint: "Installed library. Cycle the blocks, Enter launches.", accent: "#6FA896", seam: "#8A6B4A", core: "#5C2A2E", plate: "#2A221C", glyph: "games" },
+    { id: "Tools", title: "Tools", kicker: "KIT", monogram: "T", meta: "OPEN", hint: "OBS, Vortex, Discord, Playnite, utilities.", accent: "#7A8B6A", seam: "#6B4A38", core: "#4A3428", plate: "#1C1814", glyph: "tools" },
+    { id: "Hardware", title: "Hardware", kicker: "HW", monogram: "H", meta: "READ", hint: "Inventory from this PC. Optional official HWiNFO.", accent: "#7A4A42", seam: "#8A7060", core: "#2A1C1A", plate: "#141010", glyph: "hardware" },
+    { id: "Network", title: "Network", kicker: "LINK", monogram: "N", meta: "SPLIT", hint: "Prefer a game NIC. Park bulk traffic.", accent: "#6A5A78", seam: "#8A6B4A", core: "#3A2A38", plate: "#1A1418", glyph: "network" },
+    { id: "Mods", title: "Mods", kicker: "MOD", monogram: "M", meta: "OPEN", hint: "Workshop and Vortex discovery. Vortex stays in charge.", accent: "#8A7A58", seam: "#5C3A32", core: "#4A2E28", plate: "#181410", glyph: "mods" },
+    { id: "Files", title: "Files", kicker: "FS", monogram: "F", meta: "BROWSE", hint: "Daily folders. Explorer stays for anticheat.", accent: "#9A8A72", seam: "#6A5848", core: "#3A3028", plate: "#1A1612", glyph: "files" }
   ];
 
   const FACE_LAYOUT = {
@@ -25,8 +26,9 @@
     Files: { dir: [0, -1, 0], up: [0, 0, 1] }
   };
 
-  const MAGENTA = "#C45A8A";
-  const AMBER = "#E4B53C";
+  const BILE = "#C4A46A";
+  const BLOOD = "#5C2A2E";
+  const CAVITY = 0x080605;
 
   const params = new URLSearchParams(location.search);
   const preview = params.has("preview");
@@ -56,12 +58,12 @@
     pitchVel: 0,
     front: "Session",
     motion: !reduced,
-    accent: new THREE.Color("#00F0FF"),
-    targetAccent: new THREE.Color("#00F0FF"),
-    seam: new THREE.Color("#00D0E8"),
-    targetSeam: new THREE.Color("#00D0E8"),
-    core: new THREE.Color("#1E40AF"),
-    targetCore: new THREE.Color("#1E40AF"),
+    accent: new THREE.Color("#6FA896"),
+    targetAccent: new THREE.Color("#6FA896"),
+    seam: new THREE.Color("#8A6B4A"),
+    targetSeam: new THREE.Color("#8A6B4A"),
+    core: new THREE.Color("#5C2A2E"),
+    targetCore: new THREE.Color("#5C2A2E"),
     burstUntil: 0,
     idle: 0,
     dragging: false,
@@ -108,20 +110,21 @@
   }
 
   fallback.hidden = true;
-  renderer.setClearColor(0x030508, 1);
+  renderer.setClearColor(CAVITY, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
-  renderer.shadowMap.enabled = false;
+  renderer.toneMappingExposure = 0.9;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x030508, 0.078);
+  scene.fog = new THREE.FogExp2(CAVITY, 0.052);
   scene.environment = makeEnvMap();
 
   const camera = new THREE.PerspectiveCamera(26, 1, 0.08, 48);
   camera.position.set(0, 1.52, 5.7);
-  camera.lookAt(0, -0.22, 0);
+  camera.lookAt(0, -0.28, 0);
   const _out = new THREE.Vector3();
   const _away = new THREE.Vector3();
 
@@ -134,66 +137,83 @@
   spinRig.add(artifact);
 
   const plates = [];
-  const glows = [];
+  const plateMats = [];
   const arcs = [];
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   const clock = new THREE.Clock();
 
-  const coreLight = new THREE.PointLight(0x00f0ff, 1.8, 8.5, 1.4);
-  coreLight.position.set(0, 0.05, 0.2);
-  artifact.add(coreLight);
+  const boneShared = paintBoneStack(0x6b0a11);
+  const oxidizedShared = paintOxidized(0x4a2e18);
 
-  const bounce = new THREE.PointLight(0x00d0e8, 1.15, 6.5, 1.8);
-  bounce.position.set(0, -0.7, 0.4);
-  artifact.add(bounce);
+  const marrowLight = new THREE.PointLight(0xc48a3c, 0.55, 5.5, 1.6);
+  marrowLight.position.set(0, -0.08, 0.12);
+  artifact.add(marrowLight);
 
-  const magentaKick = new THREE.PointLight(0xc45a8a, 0.35, 5.5, 2);
-  magentaKick.position.set(0.55, -0.2, 0.7);
-  artifact.add(magentaKick);
+  const veinLight = new THREE.PointLight(0x6fa896, 0.28, 4.2, 1.8);
+  veinLight.position.set(0.18, 0.12, 0.22);
+  artifact.add(veinLight);
 
-  const key = new THREE.DirectionalLight(0x9aa8b8, 0.55);
-  key.position.set(-2.6, 4.2, 3.4);
+  const bruiseKick = new THREE.PointLight(0x6a5a78, 0.18, 5.2, 2.1);
+  bruiseKick.position.set(-0.45, -0.15, 0.55);
+  artifact.add(bruiseKick);
+
+  const key = new THREE.DirectionalLight(0xf2e4c8, 1.42);
+  key.position.set(-2.8, 5.1, 3.6);
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.camera.near = 1;
+  key.shadow.camera.far = 16;
+  key.shadow.camera.left = -4.2;
+  key.shadow.camera.right = 4.2;
+  key.shadow.camera.top = 4.2;
+  key.shadow.camera.bottom = -4.2;
+  key.shadow.bias = -0.0007;
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0x243044, 0.22);
-  fill.position.set(2.2, 0.4, 4.4);
+  const fill = new THREE.DirectionalLight(0x3a2a32, 0.2);
+  fill.position.set(2.6, 0.15, 4.2);
   scene.add(fill);
 
-  const rim = new THREE.DirectionalLight(0x1e40af, 0.7);
-  rim.position.set(3.6, 1.1, -2.8);
+  const rim = new THREE.DirectionalLight(0xc5d0d4, 0.95);
+  rim.position.set(3.8, 1.6, -3.1);
   scene.add(rim);
 
-  scene.add(new THREE.HemisphereLight(0x1a2436, 0x030508, 0.32));
-  scene.add(new THREE.AmbientLight(0x0a1018, 0.18));
+  const cavityGlow = new THREE.PointLight(0xc48a3c, 1.15, 7.2, 1.35);
+  cavityGlow.position.set(0, -0.82, 0.2);
+  scene.add(cavityGlow);
 
-  const openSpot = new THREE.SpotLight(0x00f0ff, 0, 16, 0.46, 0.62, 1.3);
-  openSpot.position.set(-1.6, 4.6, 3.2);
+  scene.add(new THREE.HemisphereLight(0xc8b8a0, 0x140e0c, 0.28));
+  scene.add(new THREE.AmbientLight(0x1a120e, 0.12));
+
+  const openSpot = new THREE.SpotLight(0xe8c9a0, 0, 16, 0.5, 0.7, 1.25);
+  openSpot.position.set(-1.4, 4.8, 3.4);
   openSpot.target.position.set(0, 0, 0);
   scene.add(openSpot);
   scene.add(openSpot.target);
 
-  const creviceCyan = new THREE.PointLight(0x2ee9d0, 0, 3.4, 1.6);
-  const creviceMagenta = new THREE.PointLight(0xc45a8a, 0, 3.2, 1.7);
-  const creviceAmber = new THREE.PointLight(0xe4b53c, 0, 2.8, 1.8);
-  creviceCyan.position.set(0.35, 0.2, 0.4);
-  creviceMagenta.position.set(-0.4, -0.15, 0.25);
+  const creviceVein = new THREE.PointLight(0x6fa896, 0, 3.4, 1.6);
+  const creviceBruise = new THREE.PointLight(0x6a5a78, 0, 3.2, 1.7);
+  const creviceAmber = new THREE.PointLight(0xc4a46a, 0, 2.8, 1.8);
+  creviceVein.position.set(0.35, 0.2, 0.4);
+  creviceBruise.position.set(-0.4, -0.15, 0.25);
   creviceAmber.position.set(0.1, 0.45, -0.3);
-  artifact.add(creviceCyan, creviceMagenta, creviceAmber);
+  artifact.add(creviceVein, creviceBruise, creviceAmber);
 
-  const volcanicMap = paintVolcanic();
   const chassis = new THREE.Mesh(
-    new THREE.BoxGeometry(1.74, 1.74, 1.74),
-    new THREE.MeshBasicMaterial({ map: volcanicMap, color: 0xffffff })
+    new THREE.BoxGeometry(1.58, 1.58, 1.58),
+    boneMat(boneShared.map, boneShared.bump, { color: 0xe4d4b8 })
   );
-  artifact.add(chassis);
+  chassis.castShadow = true;
+  chassis.receiveShadow = true;
 
   const hullGroup = new THREE.Group();
   artifact.add(hullGroup);
   hullGroup.add(chassis);
 
+  dressCore();
   buildPlates();
-  const floor = buildFloor();
+  const floor = buildBay();
   const haze = buildHaze();
   const motes = buildMotes();
   const bricks = buildGreeble();
@@ -203,206 +223,478 @@
     return state.faces.find((f) => f.id === id) || DEFAULT_FACES[0];
   }
 
-  function paintVolcanic() {
+  function boneMat(map, bump, extra) {
+    return new THREE.MeshPhysicalMaterial(Object.assign({
+      map,
+      bumpMap: bump,
+      bumpScale: 0.042,
+      color: 0xe8dcc4,
+      roughness: 0.5,
+      metalness: 0.07,
+      clearcoat: 0.46,
+      clearcoatRoughness: 0.36,
+      sheen: 0.38,
+      sheenColor: new THREE.Color(0xc4a090),
+      sheenRoughness: 0.52,
+      envMapIntensity: 1.05
+    }, extra || {}));
+  }
+
+  function oxidizedMat(map, extra) {
+    return new THREE.MeshPhysicalMaterial(Object.assign({
+      map: map || oxidizedShared.map,
+      bumpMap: oxidizedShared.bump,
+      bumpScale: 0.03,
+      color: 0x6a5848,
+      roughness: 0.58,
+      metalness: 0.74,
+      clearcoat: 0.14,
+      clearcoatRoughness: 0.72,
+      envMapIntensity: 1.18
+    }, extra || {}));
+  }
+
+  function cartilageMat(extra) {
+    return new THREE.MeshPhysicalMaterial(Object.assign({
+      color: 0xb8a090,
+      roughness: 0.68,
+      metalness: 0.03,
+      sheen: 0.82,
+      sheenColor: new THREE.Color(0x8a6a78),
+      sheenRoughness: 0.38,
+      clearcoat: 0.58,
+      clearcoatRoughness: 0.26,
+      envMapIntensity: 0.85
+    }, extra || {}));
+  }
+
+  function paintBoneStack(seed) {
     const size = 512;
     const c = document.createElement("canvas");
     c.width = c.height = size;
+    const h = document.createElement("canvas");
+    h.width = h.height = size;
     const ctx = c.getContext("2d");
-    const rng = mulberry(0x5e1f0c);
-    ctx.fillStyle = "#0C1014";
-    ctx.fillRect(0, 0, size, size);
-    grit(ctx, size, rng, 5200);
-    pits(ctx, size, rng, 40);
-    scratches(ctx, size, rng, 80);
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-    tex.anisotropy = 8;
-    return tex;
+    const hx = h.getContext("2d");
+    const rng = mulberry(seed);
+    fillIvory(ctx, size, rng);
+    pores(ctx, hx, size, rng, 4200);
+    haversian(ctx, hx, size, rng, 18);
+    sutures(ctx, hx, size, rng, 14);
+    marrow(ctx, size, rng, 10);
+    grain(ctx, size, rng);
+    const map = canvasTex(c, true);
+    const bump = canvasTex(h, false);
+    map.wrapS = map.wrapT = bump.wrapS = bump.wrapT = THREE.RepeatWrapping;
+    return { map, bump };
   }
 
-  function paintMetal(info) {
+  function paintOxidized(seed) {
+    const size = 512;
+    const c = document.createElement("canvas");
+    c.width = c.height = size;
+    const h = document.createElement("canvas");
+    h.width = h.height = size;
+    const ctx = c.getContext("2d");
+    const hx = h.getContext("2d");
+    const rng = mulberry(seed);
+    ctx.fillStyle = "#3A3028";
+    ctx.fillRect(0, 0, size, size);
+    hx.fillStyle = "#808080";
+    hx.fillRect(0, 0, size, size);
+    for (let i = 0; i < 40; i++) {
+      ctx.fillStyle = i % 2 ? "rgba(90,70,48,0.35)" : "rgba(28,22,18,0.4)";
+      ctx.beginPath();
+      ctx.ellipse(rng() * size, rng() * size, 20 + rng() * 80, 10 + rng() * 40, rng() * Math.PI, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    gritWarm(ctx, size, rng, 5000);
+    scratches(ctx, hx, size, rng, 90);
+    const map = canvasTex(c, true);
+    const bump = canvasTex(h, false);
+    return { map, bump };
+  }
+
+  function paintPlate(info) {
     const size = 1024;
     const c = document.createElement("canvas");
     c.width = c.height = size;
+    const h = document.createElement("canvas");
+    h.width = h.height = size;
+    const e = document.createElement("canvas");
+    e.width = e.height = size;
     const ctx = c.getContext("2d");
-    const rng = mulberry(hash(info.id + "-metal"));
+    const hx = h.getContext("2d");
+    const ex = e.getContext("2d");
+    const rng = mulberry(hash(info.id + "-bone"));
+    fillIvory(ctx, size, rng);
+    hx.fillStyle = "#888888";
+    hx.fillRect(0, 0, size, size);
+    ex.fillStyle = "#000";
+    ex.fillRect(0, 0, size, size);
+    pores(ctx, hx, size, rng, 7600);
+    haversian(ctx, hx, size, rng, 22);
+    sutures(ctx, hx, size, rng, 16);
+    marrow(ctx, size, rng, 12);
+    grain(ctx, size, rng);
+    carveFrame(ctx, hx, size);
+    carveSocket(ctx, hx, ex, size, info);
+    capillaries(ctx, ex, size, rng, info);
+    etchGlyph(ctx, hx, ex, size, info);
+    return {
+      map: canvasTex(c, true),
+      bump: canvasTex(h, false),
+      emissive: canvasTex(e, false)
+    };
+  }
 
-    ctx.fillStyle = "#0A0D11";
+  function fillIvory(ctx, size, rng) {
+    ctx.fillStyle = "#CDBBA0";
     ctx.fillRect(0, 0, size, size);
-
-    const vg = ctx.createRadialGradient(size * 0.42, size * 0.3, 8, size * 0.5, size * 0.55, size * 0.9);
-    vg.addColorStop(0, "rgba(28, 34, 40, 0.55)");
-    vg.addColorStop(0.45, "rgba(10, 14, 18, 0.2)");
-    vg.addColorStop(1, "rgba(4, 5, 7, 0.95)");
+    const vg = ctx.createRadialGradient(size * 0.38, size * 0.28, 10, size * 0.5, size * 0.52, size * 0.82);
+    vg.addColorStop(0, "rgba(236, 222, 196, 0.7)");
+    vg.addColorStop(0.45, "rgba(196, 168, 132, 0.18)");
+    vg.addColorStop(1, "rgba(72, 52, 40, 0.55)");
     ctx.fillStyle = vg;
     ctx.fillRect(0, 0, size, size);
+    gritWarm(ctx, size, rng, 6400);
+  }
 
-    grit(ctx, size, rng, 7800);
-    pits(ctx, size, rng, 56);
-    scratches(ctx, size, rng, 110);
-
+  function gritWarm(ctx, size, rng, count) {
     ctx.save();
-    ctx.strokeStyle = "rgba(0, 0, 0, 0.55)";
-    ctx.lineWidth = 5;
-    for (let g = 0; g < 7; g++) {
-      const x = 80 + ((hash(info.id + g) >> 3) % 820);
+    for (let i = 0; i < count; i++) {
+      const n = 90 + rng() * 80;
+      ctx.globalAlpha = 0.05 + rng() * 0.12;
+      ctx.fillStyle = `rgb(${n | 0},${(n * 0.86) | 0},${(n * 0.68) | 0})`;
+      ctx.fillRect(rng() * size, rng() * size, 1 + rng() * 2.4, 1);
+    }
+    ctx.restore();
+  }
+
+  function pores(ctx, hx, size, rng, count) {
+    ctx.save();
+    for (let i = 0; i < count; i++) {
+      const x = rng() * size;
+      const y = rng() * size;
+      const r = 0.4 + rng() * 1.6;
+      ctx.globalAlpha = 0.12 + rng() * 0.28;
+      ctx.fillStyle = rng() > 0.7 ? "rgba(92,42,46,0.55)" : "rgba(58,44,32,0.7)";
       ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x + ((g % 2) ? 18 : -10), size);
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+      hx.fillStyle = "rgba(20,20,20,0.55)";
+      hx.beginPath();
+      hx.arc(x, y, r * 1.2, 0, Math.PI * 2);
+      hx.fill();
+    }
+    ctx.restore();
+  }
+
+  function haversian(ctx, hx, size, rng, count) {
+    ctx.save();
+    for (let i = 0; i < count; i++) {
+      const x = rng() * size;
+      const y = rng() * size;
+      const rx = 10 + rng() * 28;
+      const ry = 8 + rng() * 18;
+      ctx.strokeStyle = "rgba(90,70,52,0.28)";
+      ctx.lineWidth = 1.2;
+      for (let k = 1; k <= 3; k++) {
+        ctx.beginPath();
+        ctx.ellipse(x, y, rx * k * 0.55, ry * k * 0.55, rng(), 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      hx.strokeStyle = "rgba(30,30,30,0.35)";
+      hx.lineWidth = 2;
+      hx.beginPath();
+      hx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+      hx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function sutures(ctx, hx, size, rng, count) {
+    ctx.save();
+    ctx.lineCap = "round";
+    for (let i = 0; i < count; i++) {
+      let x = rng() * size;
+      let y = rng() * size;
+      ctx.strokeStyle = "rgba(42, 28, 22, 0.55)";
+      ctx.lineWidth = 1.4 + rng();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      hx.beginPath();
+      hx.moveTo(x, y);
+      const segs = 6 + ((rng() * 8) | 0);
+      for (let s = 0; s < segs; s++) {
+        x += rng() * 48 - 10;
+        y += rng() * 36 - 8;
+        ctx.lineTo(x, y);
+        hx.lineTo(x, y);
+      }
+      ctx.stroke();
+      hx.strokeStyle = "rgba(18,18,18,0.5)";
+      hx.lineWidth = 3;
+      hx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function marrow(ctx, size, rng, count) {
+    ctx.save();
+    for (let i = 0; i < count; i++) {
+      const g = ctx.createRadialGradient(rng() * size, rng() * size, 4, rng() * size, rng() * size, 40 + rng() * 90);
+      g.addColorStop(0, i % 3 === 0 ? "rgba(92,42,46,0.18)" : "rgba(106,90,120,0.12)");
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, size, size);
+    }
+    ctx.restore();
+  }
+
+  function grain(ctx, size, rng) {
+    ctx.save();
+    ctx.globalAlpha = 0.06;
+    ctx.strokeStyle = "rgba(90,70,50,1)";
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 70; i++) {
+      const y = rng() * size;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(size, y + rng() * 8 - 4);
       ctx.stroke();
     }
     ctx.restore();
-
-    drawTrenches(ctx, size, mulberry(hash(info.id + "-circuit")), info);
-    etchGlyph(ctx, size, info, false);
-
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = 8;
-    return tex;
   }
 
-  function paintGlow(info, isFront) {
-    const size = 1024;
-    const c = document.createElement("canvas");
-    c.width = c.height = size;
-    const ctx = c.getContext("2d");
-    const rng = mulberry(hash(info.id + "-circuit"));
-    ctx.clearRect(0, 0, size, size);
-    drawTraces(ctx, size, rng, info, isFront);
-    etchGlyph(ctx, size, info, true);
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = 8;
-    return tex;
+  function scratches(ctx, hx, size, rng, count) {
+    ctx.save();
+    ctx.strokeStyle = "rgba(196, 176, 140, 0.12)";
+    ctx.lineWidth = 1;
+    for (let i = 0; i < count; i++) {
+      const x = rng() * size;
+      const y = rng() * size;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + rng() * 90 - 16, y + rng() * 14 - 7);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
-  function etchGlyph(ctx, size, info, glow) {
+  function carveFrame(ctx, hx, size) {
+    ctx.save();
+    ctx.strokeStyle = "rgba(42, 32, 24, 0.72)";
+    ctx.lineWidth = 38;
+    ctx.strokeRect(28, 28, size - 56, size - 56);
+    ctx.strokeStyle = "rgba(232, 214, 184, 0.28)";
+    ctx.lineWidth = 6;
+    ctx.strokeRect(52, 52, size - 104, size - 104);
+    ctx.restore();
+    hx.save();
+    hx.strokeStyle = "#202020";
+    hx.lineWidth = 28;
+    hx.strokeRect(28, 28, size - 56, size - 56);
+    hx.restore();
+  }
+
+  function carveSocket(ctx, hx, ex, size, info) {
+    const cx = size * 0.5;
+    const cy = size * 0.44;
+    ctx.save();
+    ctx.strokeStyle = "rgba(32, 22, 18, 0.78)";
+    ctx.lineWidth = 18;
+    for (let r = 210; r >= 78; r -= 28) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+      hx.strokeStyle = "#1a1a1a";
+      hx.lineWidth = 10;
+      hx.beginPath();
+      hx.arc(cx, cy, r, 0, Math.PI * 2);
+      hx.stroke();
+    }
+    ctx.fillStyle = "rgba(18, 12, 10, 0.55)";
+    ctx.beginPath();
+    ctx.arc(cx, cy, 70, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = hexAlpha(info.seam || "#8A6B4A", 0.45);
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 96, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+    ex.save();
+    ex.strokeStyle = hexAlpha(info.accent || "#6FA896", 0.55);
+    ex.lineWidth = 3;
+    ex.beginPath();
+    ex.arc(cx, cy, 96, 0, Math.PI * 2);
+    ex.stroke();
+    ex.restore();
+  }
+
+  function capillaries(ctx, ex, size, rng, info) {
+    const accent = info.accent || "#6FA896";
+    ctx.save();
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    for (let i = 0; i < 9; i++) {
+      let x = 80 + rng() * 860;
+      let y = 80 + rng() * 860;
+      ctx.strokeStyle = "rgba(42, 28, 22, 0.55)";
+      ctx.lineWidth = 3.2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ex.beginPath();
+      ex.moveTo(x, y);
+      const segs = 4 + ((rng() * 5) | 0);
+      for (let s = 0; s < segs; s++) {
+        x += rng() * 80 - 28;
+        y += rng() * 70 - 22;
+        ctx.lineTo(x, y);
+        ex.lineTo(x, y);
+      }
+      ctx.stroke();
+      ex.strokeStyle = hexAlpha(i % 4 === 0 ? BILE : accent, 0.42);
+      ex.lineWidth = 1.6;
+      ex.stroke();
+    }
+    ctx.restore();
+  }
+
+  function etchGlyph(ctx, hx, ex, size, info) {
     const glyph = String(info.glyph || info.id || "games").toLowerCase();
-    const accent = info.accent || "#00F0FF";
     ctx.save();
     ctx.translate(size * 0.5, size * 0.44);
-    ctx.lineCap = "square";
-    ctx.lineJoin = "miter";
-    if (glow) {
-      ctx.shadowBlur = 18;
-      ctx.shadowColor = hexAlpha(accent, 0.75);
-      ctx.strokeStyle = hexAlpha(accent, 0.92);
-      ctx.fillStyle = hexAlpha(accent, 0.12);
-      ctx.lineWidth = 5;
-    } else {
-      ctx.strokeStyle = "rgba(2, 3, 4, 0.96)";
-      ctx.fillStyle = "rgba(4, 6, 8, 0.55)";
-      ctx.lineWidth = 16;
-    }
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "rgba(28, 18, 14, 0.92)";
+    ctx.fillStyle = "rgba(22, 14, 12, 0.35)";
+    ctx.lineWidth = 11;
+    drawGlyph(ctx, glyph);
+    ctx.strokeStyle = "rgba(214, 196, 164, 0.28)";
+    ctx.lineWidth = 3;
     drawGlyph(ctx, glyph);
     ctx.restore();
+
+    hx.save();
+    hx.translate(size * 0.5, size * 0.44);
+    hx.lineCap = "round";
+    hx.strokeStyle = "#101010";
+    hx.lineWidth = 14;
+    drawGlyph(hx, glyph);
+    hx.restore();
+
+    ex.save();
+    ex.translate(size * 0.5, size * 0.44);
+    ex.lineCap = "round";
+    ex.strokeStyle = hexAlpha(info.accent || "#6FA896", 0.7);
+    ex.lineWidth = 2.2;
+    drawGlyph(ex, glyph);
+    ex.restore();
 
     const label = String(info.title || "").toUpperCase();
     if (!label) return;
     ctx.save();
     ctx.textAlign = "center";
-    ctx.font = "600 26px 'Segoe UI', sans-serif";
+    ctx.font = "600 28px 'Segoe UI', serif";
     const spaced = label.split("").join("  ");
-    if (glow) {
-      ctx.fillStyle = hexAlpha(accent, 0.5);
-    } else {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.72)";
-    }
-    ctx.fillText(spaced, size * 0.5, size * 0.8);
+    ctx.fillStyle = "rgba(42, 32, 24, 0.78)";
+    ctx.fillText(spaced, size * 0.5, size * 0.82);
+    ctx.fillStyle = "rgba(214, 196, 164, 0.22)";
+    ctx.fillText(spaced, size * 0.5, size * 0.818);
     ctx.restore();
   }
 
   function drawGlyph(ctx, glyph) {
     ctx.beginPath();
     if (glyph === "games") {
-      rounded(ctx, -150, -88, 300, 176, 22);
+      rounded(ctx, -132, -78, 264, 156, 18);
       ctx.stroke();
       ctx.beginPath();
-      ctx.arc(-72, 0, 34, 0, Math.PI * 2);
-      ctx.moveTo(-72, -18);
-      ctx.lineTo(-72, 18);
-      ctx.moveTo(-90, 0);
-      ctx.lineTo(-54, 0);
+      ctx.arc(-64, 0, 30, 0, Math.PI * 2);
+      ctx.moveTo(-64, -16);
+      ctx.lineTo(-64, 16);
+      ctx.moveTo(-80, 0);
+      ctx.lineTo(-48, 0);
       ctx.stroke();
-      for (const [x, y] of [[70, -22], [102, 0], [70, 22], [38, 0]]) {
+      for (const [x, y] of [[62, -20], [90, 0], [62, 20], [34, 0]]) {
         ctx.beginPath();
-        ctx.arc(x, y, 10, 0, Math.PI * 2);
+        ctx.arc(x, y, 9, 0, Math.PI * 2);
         ctx.stroke();
       }
       return;
     }
     if (glyph === "tools") {
-      ctx.moveTo(-20, -110);
-      ctx.lineTo(20, -110);
-      ctx.lineTo(20, -20);
-      ctx.lineTo(70, 70);
-      ctx.lineTo(40, 100);
-      ctx.lineTo(-40, 20);
-      ctx.lineTo(-70, 50);
-      ctx.lineTo(-100, 20);
-      ctx.lineTo(-20, -60);
+      ctx.moveTo(-18, -98);
+      ctx.lineTo(18, -98);
+      ctx.lineTo(18, -16);
+      ctx.lineTo(62, 62);
+      ctx.lineTo(36, 88);
+      ctx.lineTo(-36, 18);
+      ctx.lineTo(-62, 44);
+      ctx.lineTo(-88, 18);
+      ctx.lineTo(-18, -52);
       ctx.closePath();
       ctx.stroke();
-      ctx.strokeRect(-18, -18, 36, 36);
+      ctx.strokeRect(-16, -16, 32, 32);
       return;
     }
     if (glyph === "network") {
-      ctx.arc(-90, 40, 22, 0, Math.PI * 2);
+      ctx.arc(-80, 36, 20, 0, Math.PI * 2);
       ctx.stroke();
       ctx.beginPath();
-      ctx.arc(90, 40, 22, 0, Math.PI * 2);
+      ctx.arc(80, 36, 20, 0, Math.PI * 2);
       ctx.stroke();
       ctx.beginPath();
-      ctx.arc(0, -70, 26, 0, Math.PI * 2);
+      ctx.arc(0, -62, 24, 0, Math.PI * 2);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(-72, 26);
-      ctx.lineTo(-18, -52);
-      ctx.moveTo(72, 26);
-      ctx.lineTo(18, -52);
-      ctx.moveTo(-68, 40);
-      ctx.lineTo(68, 40);
+      ctx.moveTo(-64, 24);
+      ctx.lineTo(-16, -46);
+      ctx.moveTo(64, 24);
+      ctx.lineTo(16, -46);
+      ctx.moveTo(-60, 36);
+      ctx.lineTo(60, 36);
       ctx.stroke();
       return;
     }
     if (glyph === "mods") {
-      ctx.strokeRect(-110, -50, 90, 90);
-      ctx.strokeRect(-20, -110, 90, 90);
-      ctx.strokeRect(20, -10, 90, 90);
+      ctx.strokeRect(-98, -44, 80, 80);
+      ctx.strokeRect(-18, -98, 80, 80);
+      ctx.strokeRect(18, -8, 80, 80);
       return;
     }
     if (glyph === "files") {
-      ctx.moveTo(-110, -40);
-      ctx.lineTo(-40, -40);
-      ctx.lineTo(-10, -80);
-      ctx.lineTo(110, -80);
-      ctx.lineTo(110, 90);
-      ctx.lineTo(-110, 90);
+      ctx.moveTo(-98, -36);
+      ctx.lineTo(-36, -36);
+      ctx.lineTo(-10, -72);
+      ctx.lineTo(98, -72);
+      ctx.lineTo(98, 80);
+      ctx.lineTo(-98, 80);
       ctx.closePath();
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(-80, -10);
-      ctx.lineTo(80, -10);
-      ctx.moveTo(-80, 30);
-      ctx.lineTo(80, 30);
+      ctx.moveTo(-72, -8);
+      ctx.lineTo(72, -8);
+      ctx.moveTo(-72, 28);
+      ctx.lineTo(72, 28);
       ctx.stroke();
       return;
     }
     if (glyph === "hardware") {
-      ctx.strokeRect(-90, -70, 180, 140);
-      ctx.strokeRect(-50, -30, 100, 60);
-      for (let i = -60; i <= 60; i += 30) {
-        ctx.moveTo(i, -70);
-        ctx.lineTo(i, -95);
-        ctx.moveTo(i, 70);
-        ctx.lineTo(i, 95);
+      ctx.strokeRect(-80, -62, 160, 124);
+      ctx.strokeRect(-44, -26, 88, 52);
+      for (let i = -54; i <= 54; i += 27) {
+        ctx.moveTo(i, -62);
+        ctx.lineTo(i, -84);
+        ctx.moveTo(i, 62);
+        ctx.lineTo(i, 84);
       }
       ctx.stroke();
       return;
     }
-    ctx.strokeRect(-80, -80, 160, 160);
+    ctx.strokeRect(-70, -70, 140, 140);
   }
 
   function rounded(ctx, x, y, w, h, r) {
@@ -417,355 +709,320 @@
     ctx.quadraticCurveTo(x, y, x + r, y);
   }
 
-  function drawTrenches(ctx, size, rng, info) {
-    const paths = circuitPaths(info.id, rng);
-    ctx.save();
-    ctx.lineCap = "square";
-    ctx.lineJoin = "miter";
-    ctx.strokeStyle = "rgba(2, 3, 4, 0.92)";
-    ctx.lineWidth = 11;
-    strokePaths(ctx, paths);
-    ctx.strokeStyle = "rgba(0, 0, 0, 0.7)";
-    ctx.lineWidth = 7;
-    strokePaths(ctx, paths);
-    ctx.restore();
-
-    ctx.save();
-    ctx.fillStyle = "rgba(2, 3, 4, 0.88)";
-    for (const pad of circuitPads(info.id, rng)) {
-      ctx.fillRect(pad.x - 2, pad.y - 2, pad.w + 4, pad.h + 4);
+  function dressCore() {
+    const ox = oxidizedMat();
+    const cart = cartilageMat();
+    const h = 0.79;
+    const len = h * 2;
+    const edges = [
+      { p: [0, h, h], r: [0, 0, Math.PI / 2] },
+      { p: [0, h, -h], r: [0, 0, Math.PI / 2] },
+      { p: [0, -h, h], r: [0, 0, Math.PI / 2] },
+      { p: [0, -h, -h], r: [0, 0, Math.PI / 2] },
+      { p: [h, 0, h], r: [0, 0, 0] },
+      { p: [h, 0, -h], r: [0, 0, 0] },
+      { p: [-h, 0, h], r: [0, 0, 0] },
+      { p: [-h, 0, -h], r: [0, 0, 0] },
+      { p: [h, h, 0], r: [Math.PI / 2, 0, 0] },
+      { p: [h, -h, 0], r: [Math.PI / 2, 0, 0] },
+      { p: [-h, h, 0], r: [Math.PI / 2, 0, 0] },
+      { p: [-h, -h, 0], r: [Math.PI / 2, 0, 0] }
+    ];
+    for (const e of edges) {
+      const rib = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.062, len, 8), cart);
+      rib.position.set(e.p[0], e.p[1], e.p[2]);
+      rib.rotation.set(e.r[0], e.r[1], e.r[2]);
+      rib.castShadow = true;
+      hullGroup.add(rib);
     }
-    ctx.restore();
-  }
-
-  function drawTraces(ctx, size, rng, info, isFront) {
-    const accent = info.accent || "#00F0FF";
-    const cobalt = info.core || "#1E40AF";
-    const paths = circuitPaths(info.id, rng);
-    const pads = circuitPads(info.id, rng);
-    const boost = isFront ? 1 : 0.78;
-
-    ctx.save();
-    ctx.lineCap = "square";
-    ctx.lineJoin = "miter";
-    ctx.shadowBlur = isFront ? 18 : 12;
-
-    paths.forEach((path, i) => {
-      const tone = traceTone(i, accent, cobalt);
-      ctx.shadowColor = hexAlpha(tone, 0.85);
-      ctx.strokeStyle = hexAlpha(tone, 0.22 * boost);
-      ctx.lineWidth = 9;
-      strokeOne(ctx, path);
-      ctx.strokeStyle = hexAlpha(tone, 0.55 * boost);
-      ctx.lineWidth = 4.5;
-      strokeOne(ctx, path);
-      ctx.strokeStyle = hexAlpha(tone, 0.95 * boost);
-      ctx.lineWidth = 2;
-      strokeOne(ctx, path);
-      ctx.strokeStyle = "rgba(220, 245, 255, 0.85)";
-      ctx.lineWidth = 0.8;
-      strokeOne(ctx, path);
-    });
-
-    pads.forEach((pad, i) => {
-      const tone = traceTone(i + 3, accent, cobalt);
-      ctx.shadowColor = hexAlpha(tone, 0.7);
-      ctx.strokeStyle = hexAlpha(tone, 0.8 * boost);
-      ctx.lineWidth = 3.2;
-      ctx.strokeRect(pad.x, pad.y, pad.w, pad.h);
-      if (pad.inner) {
-        ctx.strokeRect(pad.x + 16, pad.y + 16, pad.w - 32, pad.h - 32);
+    for (const x of [-h, h]) {
+      for (const y of [-h, h]) {
+        for (const z of [-h, h]) {
+          const boss = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 10), boneMat(boneShared.map, boneShared.bump, { color: 0xd8c4a4 }));
+          boss.position.set(x, y, z);
+          boss.castShadow = true;
+          hullGroup.add(boss);
+          const rivet = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), ox);
+          rivet.position.set(x * 0.92, y * 0.92, z * 0.92);
+          hullGroup.add(rivet);
+        }
       }
-      ctx.fillStyle = hexAlpha(tone, 0.12 * boost);
-      ctx.fillRect(pad.x, pad.y, pad.w, pad.h);
-    });
-    ctx.restore();
-  }
-
-  function traceTone(i, accent, cobalt) {
-    const m = i % 9;
-    if (m === 0) return MAGENTA;
-    if (m === 4) return AMBER;
-    if (m === 2 || m === 6) return cobalt;
-    return accent;
-  }
-
-  function circuitPaths(id, rng) {
-    const seed = hash(id);
-    const paths = [];
-    const n = 32;
-    for (let i = 0; i < n; i++) {
-      let x = 70 + Math.floor(rng() * 14) * 64;
-      let y = 70 + Math.floor(rng() * 14) * 64;
-      const pts = [[x, y]];
-      const segs = 3 + ((seed + i) % 6);
-      for (let s = 0; s < segs; s++) {
-        const step = 48 + ((seed >> (s + i)) & 3) * 32;
-        if (((seed + i + s) & 1) === 0) x += rng() > 0.45 ? step : -step;
-        else y += rng() > 0.5 ? step : -step;
-        x = clamp(x, 48, 976);
-        y = clamp(y, 48, 976);
-        pts.push([x, y]);
-      }
-      paths.push(pts);
     }
-    return paths;
-  }
-
-  function circuitPads(id, rng) {
-    const pads = [];
-    const count = 5 + (hash(id) % 4);
-    for (let i = 0; i < count; i++) {
-      const w = 70 + Math.floor(rng() * 5) * 28;
-      const h = 54 + Math.floor(rng() * 5) * 24;
-      pads.push({
-        x: 80 + Math.floor(rng() * 12) * 64,
-        y: 80 + Math.floor(rng() * 12) * 64,
-        w,
-        h,
-        inner: i % 2 === 0
-      });
+    const tendons = [
+      [[-h, -h, -h], [h, h, -h]],
+      [[-h, h, h], [h, -h, h]],
+      [[-h, -h, h], [h, h, h]],
+      [[h, -h, -h], [-h, h, h]]
+    ];
+    for (const [a, b] of tendons) {
+      const curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(...a),
+        new THREE.Vector3((a[0] + b[0]) * 0.5, (a[1] + b[1]) * 0.5 + 0.12, (a[2] + b[2]) * 0.5),
+        new THREE.Vector3(...b)
+      ]);
+      const tube = new THREE.Mesh(
+        new THREE.TubeGeometry(curve, 24, 0.018, 6, false),
+        cartilageMat({ color: 0x8a6b4a, roughness: 0.55, clearcoat: 0.7 })
+      );
+      hullGroup.add(tube);
     }
-    return pads;
-  }
-
-  function strokePaths(ctx, paths) {
-    for (const path of paths) strokeOne(ctx, path);
-  }
-
-  function strokeOne(ctx, path) {
-    if (!path.length) return;
-    ctx.beginPath();
-    ctx.moveTo(path[0][0], path[0][1]);
-    for (let i = 1; i < path.length; i++) ctx.lineTo(path[i][0], path[i][1]);
-    ctx.stroke();
-  }
-
-  function grit(ctx, size, rng, count) {
-    ctx.save();
-    for (let i = 0; i < count; i++) {
-      const n = 5 + rng() * 26;
-      ctx.globalAlpha = 0.07 + rng() * 0.16;
-      ctx.fillStyle = `rgb(${n},${n + 2},${n + 6})`;
-      ctx.fillRect(rng() * size, rng() * size, 1 + rng() * 3, 1);
-    }
-    ctx.restore();
-  }
-
-  function pits(ctx, size, rng, count) {
-    ctx.save();
-    ctx.globalAlpha = 0.22;
-    for (let i = 0; i < count; i++) {
-      ctx.fillStyle = i % 3 === 0 ? "rgba(16, 22, 18, 1)" : "rgba(4, 5, 6, 1)";
-      ctx.beginPath();
-      ctx.ellipse(rng() * size, rng() * size, 18 + rng() * 70, 8 + rng() * 28, rng() * Math.PI, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-
-  function scratches(ctx, size, rng, count) {
-    ctx.save();
-    ctx.strokeStyle = "rgba(170, 186, 198, 0.1)";
-    ctx.lineWidth = 1;
-    for (let i = 0; i < count; i++) {
-      const x = rng() * size;
-      const y = rng() * size;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + rng() * 90 - 16, y + rng() * 14 - 7);
-      ctx.stroke();
-    }
-    ctx.restore();
   }
 
   function buildPlates() {
-    const metalGeom = new THREE.BoxGeometry(1.742, 1.742, 0.034);
-    const glowGeom = new THREE.PlaneGeometry(1.73, 1.73);
+    const geom = new THREE.BoxGeometry(1.62, 1.62, 0.055);
     for (const info of state.faces) {
       const layout = FACE_LAYOUT[info.id];
       if (!layout) continue;
       const dir = new THREE.Vector3(...layout.dir);
       const up = new THREE.Vector3(...layout.up);
-      const metal = new THREE.Mesh(
-        metalGeom,
-        new THREE.MeshBasicMaterial({ map: paintMetal(info), color: 0xffffff })
-      );
-      metal.position.copy(dir).multiplyScalar(0.888);
-      orientPlate(metal, dir, up);
-      metal.userData.face = info.id;
-      hullGroup.add(metal);
-      plates.push(metal);
-
-      const glow = new THREE.Mesh(
-        glowGeom,
-        new THREE.MeshBasicMaterial({
-          map: paintGlow(info, info.id === state.front),
-          transparent: true,
-          opacity: 0.92,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false
-        })
-      );
-      glow.position.copy(dir).multiplyScalar(0.91);
-      orientPlate(glow, dir, up);
-      glow.userData.face = info.id;
-      hullGroup.add(glow);
-      glows.push(glow);
+      const maps = paintPlate(info);
+      const mat = boneMat(maps.map, maps.bump, {
+        color: 0xf0e4cc,
+        emissive: new THREE.Color(info.accent || "#6FA896"),
+        emissiveMap: maps.emissive,
+        emissiveIntensity: info.id === state.front ? 0.32 : 0.14,
+        roughness: 0.48
+      });
+      const plate = new THREE.Mesh(geom, mat);
+      plate.position.copy(dir).multiplyScalar(0.84);
+      orientPlate(plate, dir, up);
+      plate.userData.face = info.id;
+      plate.userData.dir = dir.clone();
+      plate.userData.restPos = plate.position.clone();
+      plate.userData.peel = 0.12 + (hash(info.id) % 10) * 0.012;
+      plate.castShadow = true;
+      plate.receiveShadow = true;
+      hullGroup.add(plate);
+      plates.push(plate);
+      plateMats.push(mat);
+      addSocket(plate, info);
     }
+  }
+
+  function addSocket(plate, info) {
+    const ox = oxidizedMat(null, { color: 0x5a4638 });
+    const cart = cartilageMat({ color: 0xa89078 });
+    const lip = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.048, 10, 28), ox);
+    lip.position.z = 0.042;
+    plate.add(lip);
+    const iris = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.018, 8, 22), cart);
+    iris.position.z = 0.05;
+    plate.add(iris);
+    const well = new THREE.Mesh(
+      new THREE.CircleGeometry(0.2, 20),
+      new THREE.MeshPhysicalMaterial({
+        color: 0x140e0c,
+        roughness: 0.82,
+        metalness: 0.2,
+        emissive: new THREE.Color(info.accent || "#6FA896"),
+        emissiveIntensity: 0.12
+      })
+    );
+    well.position.z = 0.03;
+    plate.add(well);
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      const rivet = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.03, 8), ox);
+      rivet.rotation.x = Math.PI / 2;
+      rivet.position.set(Math.cos(a) * 0.52, Math.sin(a) * 0.52, 0.04);
+      plate.add(rivet);
+    }
+    const duct = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.034, 0.22, 8), ox);
+    duct.rotation.z = Math.PI / 2;
+    duct.position.set(0.58, -0.5, 0.02);
+    plate.add(duct);
   }
 
   function rebuildPlateTextures() {
     for (const mesh of plates) {
       const info = faceInfo(mesh.userData.face);
-      mesh.material.map?.dispose();
-      mesh.material.map = paintMetal(info);
-      mesh.material.needsUpdate = true;
-    }
-    for (const mesh of glows) {
-      const info = faceInfo(mesh.userData.face);
-      mesh.material.map?.dispose();
-      mesh.material.map = paintGlow(info, info.id === state.front);
-      mesh.material.needsUpdate = true;
+      const maps = paintPlate(info);
+      const m = mesh.material;
+      m.map?.dispose();
+      m.bumpMap?.dispose();
+      m.emissiveMap?.dispose();
+      m.map = maps.map;
+      m.bumpMap = maps.bump;
+      m.emissiveMap = maps.emissive;
+      m.emissive.set(info.accent || "#6FA896");
+      m.needsUpdate = true;
     }
   }
 
-  function buildFloor() {
+  function buildBay() {
     const size = 1024;
     const c = document.createElement("canvas");
     c.width = c.height = size;
     const ctx = c.getContext("2d");
-    ctx.fillStyle = "#06080C";
+    const rng = mulberry(0x0a0808);
+    ctx.fillStyle = "#120e0c";
     ctx.fillRect(0, 0, size, size);
-    const tiles = 8;
-    const cell = size / tiles;
-    for (let y = 0; y < tiles; y++) {
-      for (let x = 0; x < tiles; x++) {
-        const shade = 8 + ((x * 3 + y * 7) % 10);
-        ctx.fillStyle = `rgb(${shade},${shade + 1},${shade + 3})`;
-        ctx.fillRect(x * cell + 2, y * cell + 2, cell - 4, cell - 4);
-      }
+    for (let i = 0; i < 28; i++) {
+      ctx.fillStyle = i % 2 ? "rgba(42,32,24,0.35)" : "rgba(18,12,10,0.5)";
+      ctx.beginPath();
+      ctx.ellipse(rng() * size, rng() * size, 40 + rng() * 160, 18 + rng() * 70, rng() * Math.PI, 0, Math.PI * 2);
+      ctx.fill();
     }
-    ctx.strokeStyle = "rgba(0,0,0,0.7)";
-    ctx.lineWidth = 6;
-    for (let i = 0; i <= tiles; i++) {
+    gritWarm(ctx, size, rng, 5000);
+    ctx.strokeStyle = "rgba(28,20,16,0.7)";
+    ctx.lineWidth = 10;
+    for (let r = 80; r < 480; r += 70) {
       ctx.beginPath();
-      ctx.moveTo(i * cell, 0);
-      ctx.lineTo(i * cell, size);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, i * cell);
-      ctx.lineTo(size, i * cell);
+      ctx.arc(size * 0.5, size * 0.5, r, 0, Math.PI * 2);
       ctx.stroke();
     }
-    ctx.save();
-    ctx.globalAlpha = 0.18;
-    ctx.strokeStyle = "rgba(180,200,220,0.35)";
-    ctx.lineWidth = 1;
-    for (let i = 0; i < 40; i++) {
-      ctx.beginPath();
-      ctx.moveTo(Math.random() * size, Math.random() * size);
-      ctx.lineTo(Math.random() * size, Math.random() * size);
-      ctx.stroke();
-    }
-    ctx.restore();
-
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
+    const tex = canvasTex(c, true);
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
     tex.repeat.set(2, 2);
 
     const mesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(14, 14),
-      new THREE.MeshBasicMaterial({
+      new THREE.PlaneGeometry(18, 18),
+      new THREE.MeshPhysicalMaterial({
         map: tex,
-        color: 0x8a94a0,
-        transparent: true,
-        opacity: 1
+        color: 0x8a7a68,
+        roughness: 0.86,
+        metalness: 0.08,
+        envMapIntensity: 0.35
       })
     );
     mesh.rotation.x = -Math.PI / 2;
-    mesh.position.y = -0.88;
+    mesh.position.y = -0.95;
+    mesh.receiveShadow = true;
     scene.add(mesh);
 
-    const glowTex = (() => {
+    const cavityTex = (() => {
       const g = document.createElement("canvas");
       g.width = g.height = 256;
       const gx = g.getContext("2d");
-      const rad = gx.createRadialGradient(128, 128, 8, 128, 128, 124);
-      rad.addColorStop(0, "rgba(0,240,255,0.55)");
-      rad.addColorStop(0.35, "rgba(30,64,175,0.28)");
-      rad.addColorStop(0.7, "rgba(196,90,138,0.1)");
+      const rad = gx.createRadialGradient(128, 128, 6, 128, 128, 124);
+      rad.addColorStop(0, "rgba(196,138,60,0.55)");
+      rad.addColorStop(0.35, "rgba(92,42,46,0.22)");
+      rad.addColorStop(0.7, "rgba(26,16,12,0.08)");
       rad.addColorStop(1, "rgba(0,0,0,0)");
       gx.fillStyle = rad;
       gx.fillRect(0, 0, 256, 256);
-      const t = new THREE.CanvasTexture(g);
-      t.colorSpace = THREE.SRGBColorSpace;
-      return t;
+      return canvasTex(g, true);
     })();
 
-    const pool = new THREE.Mesh(
-      new THREE.PlaneGeometry(4.6, 4.6),
+    const cavity = new THREE.Mesh(
+      new THREE.PlaneGeometry(4.2, 4.2),
       new THREE.MeshBasicMaterial({
-        map: glowTex,
+        map: cavityTex,
         transparent: true,
-        opacity: 0.72,
+        opacity: 0.7,
         blending: THREE.AdditiveBlending,
         depthWrite: false
       })
     );
-    pool.rotation.x = -Math.PI / 2;
-    pool.position.y = -0.872;
-    scene.add(pool);
+    cavity.rotation.x = -Math.PI / 2;
+    cavity.position.y = -0.942;
+    scene.add(cavity);
 
     const wet = new THREE.Mesh(
-      new THREE.PlaneGeometry(14, 14),
-      new THREE.MeshBasicMaterial({
-        color: 0x101820,
+      new THREE.PlaneGeometry(18, 18),
+      new THREE.MeshPhysicalMaterial({
+        color: 0x2a2018,
+        roughness: 0.18,
+        metalness: 0.05,
         transparent: true,
-        opacity: 0.28,
-        blending: THREE.AdditiveBlending,
+        opacity: 0.22,
+        envMapIntensity: 1.4,
         depthWrite: false
       })
     );
     wet.rotation.x = -Math.PI / 2;
-    wet.position.y = -0.868;
+    wet.position.y = -0.938;
     scene.add(wet);
 
     const contact = new THREE.Mesh(
-      new THREE.CircleGeometry(1.05, 40),
+      new THREE.CircleGeometry(1.15, 40),
       new THREE.MeshBasicMaterial({
         color: 0x000000,
         transparent: true,
-        opacity: 0.72,
+        opacity: 0.62,
         depthWrite: false
       })
     );
     contact.rotation.x = -Math.PI / 2;
-    contact.position.y = -0.869;
+    contact.position.y = -0.936;
     scene.add(contact);
 
-    return { mesh, pool, wet, contact };
+    const pedestal = new THREE.Group();
+    const ox = oxidizedMat();
+    const bone = boneMat(boneShared.map, boneShared.bump, { color: 0xd4c2a4 });
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.55, 0.18, 28), bone);
+    base.position.y = -0.86;
+    base.castShadow = true;
+    base.receiveShadow = true;
+    pedestal.add(base);
+    const column = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.78, 0.22, 20), ox);
+    column.position.y = -0.72;
+    column.castShadow = true;
+    pedestal.add(column);
+    const capital = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.07, 10, 28), cartilageMat());
+    capital.rotation.x = Math.PI / 2;
+    capital.position.y = -0.62;
+    pedestal.add(capital);
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      const rib = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.28, 0.09), bone);
+      rib.position.set(Math.cos(a) * 0.7, -0.78, Math.sin(a) * 0.7);
+      pedestal.add(rib);
+    }
+    scene.add(pedestal);
+
+    const alcove = [];
+    const wallMat = new THREE.MeshPhysicalMaterial({
+      map: tex,
+      color: 0x2a221c,
+      roughness: 0.9,
+      metalness: 0.04,
+      envMapIntensity: 0.22
+    });
+    const back = new THREE.Mesh(new THREE.PlaneGeometry(16, 9), wallMat);
+    back.position.set(0, 1.6, -5.4);
+    scene.add(back);
+    alcove.push(back);
+    const left = new THREE.Mesh(new THREE.PlaneGeometry(10, 9), wallMat.clone());
+    left.position.set(-6.2, 1.6, -1.4);
+    left.rotation.y = Math.PI * 0.42;
+    scene.add(left);
+    alcove.push(left);
+    const right = new THREE.Mesh(new THREE.PlaneGeometry(10, 9), wallMat.clone());
+    right.position.set(6.4, 1.6, -1.6);
+    right.rotation.y = -Math.PI * 0.4;
+    scene.add(right);
+    alcove.push(right);
+    for (let i = 0; i < 6; i++) {
+      const rib = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.08, 0.11, 7.5, 8),
+        cartilageMat({ color: 0x6a5848 })
+      );
+      rib.rotation.z = Math.PI / 2;
+      rib.position.set(0, 3.6, -4.6 + i * 0.12);
+      rib.rotation.y = (i - 2.5) * 0.04;
+      scene.add(rib);
+      alcove.push(rib);
+    }
+
+    return { mesh, cavity, wet, contact, pedestal, alcove };
   }
 
   function buildHaze() {
     const tex = (() => {
       const c = document.createElement("canvas");
-      c.width = 256;
-      c.height = 256;
+      c.width = c.height = 256;
       const ctx = c.getContext("2d");
       const rng = mulberry(0x0a2e);
       ctx.clearRect(0, 0, 256, 256);
       for (let i = 0; i < 70; i++) {
         const g = ctx.createRadialGradient(rng() * 256, rng() * 256, 4, rng() * 256, rng() * 256, 20 + rng() * 50);
-        g.addColorStop(0, `rgba(180,200,220,${0.08 + rng() * 0.12})`);
+        g.addColorStop(0, `rgba(196,168,120,${0.07 + rng() * 0.1})`);
         g.addColorStop(1, "rgba(0,0,0,0)");
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, 256, 256);
       }
-      const t = new THREE.CanvasTexture(c);
-      t.colorSpace = THREE.SRGBColorSpace;
-      return t;
+      return canvasTex(c, true);
     })();
     const group = [];
     for (let i = 0; i < 4; i++) {
@@ -774,7 +1031,7 @@
         new THREE.MeshBasicMaterial({
           map: tex,
           transparent: true,
-          opacity: 0.16,
+          opacity: 0.14,
           blending: THREE.AdditiveBlending,
           depthWrite: false,
           side: THREE.DoubleSide
@@ -789,7 +1046,7 @@
   }
 
   function buildMotes() {
-    const count = 140;
+    const count = 160;
     const geo = new THREE.BufferGeometry();
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -798,37 +1055,31 @@
       pos[i * 3 + 2] = (Math.random() - 0.5) * 7;
     }
     geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    const mat = new THREE.PointsMaterial({
-      color: 0x7a8ea4,
-      size: 0.014,
+    const pts = new THREE.Points(geo, new THREE.PointsMaterial({
+      color: 0xc4b090,
+      size: 0.012,
       transparent: true,
-      opacity: 0.12,
+      opacity: 0.16,
       blending: THREE.AdditiveBlending,
       depthWrite: false
-    });
-    const pts = new THREE.Points(geo, mat);
+    }));
     scene.add(pts);
     return pts;
   }
 
-  function gunmetal(hex, roughness) {
-    return new THREE.MeshStandardMaterial({
-      color: hex,
-      metalness: 0.92,
-      roughness: roughness,
-      envMapIntensity: 1.45
-    });
-  }
-
-  function makeSteppedBlock(size, shade, rng) {
+  function makeOrganBlock(size, rng) {
     const group = new THREE.Group();
-    const outer = new THREE.Mesh(
-      new THREE.BoxGeometry(size, size, size),
-      gunmetal(shade, 0.22 + rng() * 0.12)
-    );
+    const bone = boneMat(boneShared.map, boneShared.bump, {
+      color: rng() > 0.5 ? 0xe0d0b4 : 0xc8b49a,
+      roughness: 0.48 + rng() * 0.14
+    });
+    const ox = oxidizedMat(null, { color: rng() > 0.5 ? 0x6a5848 : 0x4a3a30 });
+    const outer = new THREE.Mesh(new THREE.BoxGeometry(size, size, size), bone);
+    outer.castShadow = true;
+    outer.receiveShadow = true;
     group.add(outer);
     if (size > 0.2) {
-      const inset = size * 0.14;
+      const inset = size * 0.16;
       const inner = size - inset * 2;
       const depth = size * 0.12;
       const faces = [
@@ -839,7 +1090,6 @@
         [0, size / 2 - depth * 0.35, 0],
         [0, -size / 2 + depth * 0.35, 0]
       ];
-      const innerMat = gunmetal(shade - 0x101010 > 0 ? shade - 0x0a0c10 : 0x2a3038, 0.34);
       for (let i = 0; i < faces.length; i++) {
         const [x, y, z] = faces[i];
         const geo = Math.abs(z) > Math.abs(x) && Math.abs(z) > Math.abs(y)
@@ -847,10 +1097,13 @@
           : Math.abs(x) > Math.abs(y)
             ? new THREE.BoxGeometry(depth, inner, inner)
             : new THREE.BoxGeometry(inner, depth, inner);
-        const mesh = new THREE.Mesh(geo, innerMat);
+        const mesh = new THREE.Mesh(geo, ox);
         mesh.position.set(x, y, z);
         group.add(mesh);
       }
+      const lip = new THREE.Mesh(new THREE.TorusGeometry(size * 0.18, size * 0.03, 6, 16), cartilageMat());
+      lip.position.z = size / 2 - depth * 0.1;
+      group.add(lip);
     }
     return group;
   }
@@ -863,9 +1116,7 @@
     const origin = -cell * (n / 2) + cell / 2;
 
     const add = (x, y, z, size, extra = 0) => {
-      const shadePick = rng();
-      const shade = shadePick > 0.7 ? 0x8a96a4 : shadePick > 0.4 ? 0x6e7884 : 0x5a646e;
-      const group = makeSteppedBlock(size, shade, rng);
+      const group = makeOrganBlock(size, rng);
       const rest = new THREE.Vector3(x, y, z);
       const out = rest.clone();
       if (out.lengthSq() < 0.01) out.set(0.15, 0.35, 0.4);
@@ -894,15 +1145,18 @@
       artifact.add(group);
       list.push(group);
 
-      if (rng() > 0.55) {
-        const glowCol = [0x00f0ff, 0x2ee9d0, 0xc45a8a, 0xe4b53c, 0x4f7cff][(rng() * 5) | 0];
+      if (rng() > 0.58) {
+        const glowCol = rng() > 0.5 ? 0x6fa896 : 0xc4a46a;
         const slit = new THREE.Mesh(
-          new THREE.BoxGeometry(size * 0.08, size * 0.08, size * 1.08),
-          new THREE.MeshBasicMaterial({
-            color: glowCol,
+          new THREE.BoxGeometry(size * 0.07, size * 0.07, size * 1.06),
+          new THREE.MeshPhysicalMaterial({
+            color: 0x2a221c,
+            emissive: glowCol,
+            emissiveIntensity: 0,
+            roughness: 0.4,
+            metalness: 0.2,
             transparent: true,
             opacity: 0,
-            blending: THREE.AdditiveBlending,
             depthWrite: false
           })
         );
@@ -951,12 +1205,12 @@
 
     const swirl = new THREE.Mesh(
       new THREE.IcosahedronGeometry(0.34, 2),
-      new THREE.MeshBasicMaterial({
-        color: 0x1a3040,
+      cartilageMat({
+        color: 0x8a6a78,
+        emissive: 0x5c2a2e,
+        emissiveIntensity: 0,
         transparent: true,
-        opacity: 0,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false
+        opacity: 0
       })
     );
     swirl.visible = false;
@@ -982,19 +1236,17 @@
       c.height = 256;
       const ctx = c.getContext("2d");
       const g = ctx.createLinearGradient(32, 0, 32, 256);
-      g.addColorStop(0, "rgba(0,240,255,0)");
-      g.addColorStop(0.4, "rgba(0,200,255,0.2)");
-      g.addColorStop(1, "rgba(196,90,138,0)");
+      g.addColorStop(0, "rgba(232,201,160,0)");
+      g.addColorStop(0.4, "rgba(196,138,60,0.22)");
+      g.addColorStop(1, "rgba(92,42,46,0)");
       ctx.fillStyle = g;
       ctx.fillRect(22, 0, 20, 256);
-      const t = new THREE.CanvasTexture(c);
-      t.colorSpace = THREE.SRGBColorSpace;
-      return t;
+      return canvasTex(c, true);
     })();
     const group = [];
     for (let i = 0; i < 3; i++) {
       const mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(0.5, 5.8),
+        new THREE.PlaneGeometry(0.55, 5.8),
         new THREE.MeshBasicMaterial({
           map: tex,
           transparent: true,
@@ -1013,23 +1265,31 @@
     return group;
   }
 
+  function restoreHull() {
+    hullGroup.visible = true;
+    chassis.scale.setScalar(1);
+    for (const plate of plates) {
+      if (plate.userData.restPos) plate.position.copy(plate.userData.restPos);
+      plate.rotation.z = 0;
+      plate.scale.setScalar(1);
+    }
+  }
+
   function setHullVisible(on) {
     hullGroup.visible = on;
   }
 
   function setFloorVisible(opacity) {
-    const on = opacity > 0.04;
-    floor.mesh.material.opacity = opacity;
-    floor.mesh.visible = on;
-    floor.pool.material.opacity = 0.72 * opacity;
-    floor.wet.material.opacity = 0.28 * opacity;
-    floor.contact.material.opacity = 0.72 * opacity;
-    floor.pool.visible = on;
-    floor.wet.visible = on;
-    floor.contact.visible = on;
+    const glow = Math.max(opacity, 0.22);
+    floor.mesh.visible = true;
+    floor.cavity.material.opacity = 0.7 * glow;
+    floor.wet.material.opacity = 0.22 * Math.max(opacity, 0.35);
+    floor.contact.material.opacity = 0.62 * Math.max(opacity, 0.4);
+    floor.pedestal.visible = true;
+    const hazeOn = state.motion && opacity > 0.08;
     for (const h of haze) {
-      h.visible = opacity > 0.08;
-      h.material.opacity = 0.16 * opacity;
+      h.visible = hazeOn;
+      h.material.opacity = 0.14 * opacity;
     }
   }
 
@@ -1053,14 +1313,17 @@
     state.openT = 0;
     state.dragging = false;
     spawnArcs();
-    setHullVisible(false);
+    restoreHull();
     for (const b of bricks) {
       b.visible = true;
       b.position.copy(b.userData.rest);
       b.rotation.set(0, 0, 0);
       b.scale.setScalar(b.userData.restScale || 1);
       clearBrickMotion(b, b.userData.target);
-      if (b.userData.glow && b.material) b.material.opacity = 0;
+      if (b.userData.glow && b.material) {
+        b.material.opacity = 0;
+        if (b.material.emissiveIntensity != null) b.material.emissiveIntensity = 0;
+      }
     }
     for (const s of shafts) s.visible = true;
     setLoop(true);
@@ -1095,22 +1358,24 @@
     c.width = 256;
     c.height = 256;
     const ctx = c.getContext("2d");
-    ctx.clearRect(0, 0, 256, 256);
-    ctx.fillStyle = "rgba(8, 10, 14, 0.35)";
-    ctx.fillRect(24, 24, 208, 208);
-    ctx.strokeStyle = hexAlpha(focused ? (faceInfo(state.front).accent || "#00F0FF") : "#8aa0b4", focused ? 0.9 : 0.35);
-    ctx.lineWidth = 3;
-    ctx.strokeRect(32, 32, 192, 192);
-    ctx.fillStyle = hexAlpha(faceInfo(state.front).accent || "#00F0FF", focused ? 0.85 : 0.45);
-    ctx.font = "600 72px 'Segoe UI', sans-serif";
+    ctx.fillStyle = "#C8B49A";
+    ctx.fillRect(0, 0, 256, 256);
+    ctx.fillStyle = "rgba(42, 32, 24, 0.55)";
+    ctx.fillRect(18, 18, 220, 220);
+    ctx.strokeStyle = hexAlpha(focused ? BILE : "#6A5848", focused ? 0.9 : 0.45);
+    ctx.lineWidth = 4;
+    ctx.strokeRect(28, 28, 200, 200);
+    ctx.beginPath();
+    ctx.arc(128, 108, 36, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = hexAlpha(focused ? "#E8DCC4" : "#C4B090", 0.95);
+    ctx.font = "600 64px 'Segoe UI', serif";
     ctx.textAlign = "center";
     ctx.fillText((item.glyph || item.title || "?").slice(0, 1), 128, 128);
-    ctx.font = "600 18px 'Segoe UI', sans-serif";
-    const name = String(item.title || "").slice(0, 18);
-    ctx.fillText(name, 128, 188);
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    return tex;
+    ctx.font = "600 16px 'Segoe UI', serif";
+    ctx.fillStyle = "rgba(232, 220, 196, 0.82)";
+    ctx.fillText(String(item.title || "").slice(0, 18), 128, 196);
+    return canvasTex(c, true);
   }
 
   function bindItems() {
@@ -1215,8 +1480,9 @@
       const m = child.material;
       if (m.emissive) {
         m.emissive.copy(state.accent);
-        m.emissiveIntensity = 0.02 + want * 0.42;
-        if (m.envMapIntensity != null) m.envMapIntensity = 1.28 + want * 0.7;
+        m.emissiveIntensity = 0.015 + want * 0.28;
+        if (m.envMapIntensity != null) m.envMapIntensity = 1.05 + want * 0.55;
+        if (m.clearcoat != null) m.clearcoat = 0.4 + want * 0.25;
       }
       if (child === b.userData.label) {
         m.opacity = 0.78 + want * 0.2;
@@ -1439,20 +1705,23 @@
     state.opening = false;
     state.browse = true;
     setHullVisible(false);
-    setFloorVisible(0.15);
-    renderer.toneMappingExposure = 1.35;
-    key.intensity = 2.2;
-    fill.intensity = 0.8;
-    rim.intensity = 1.6;
-    creviceCyan.intensity = 2.2;
-    creviceMagenta.intensity = 1.4;
-    creviceAmber.intensity = 1.1;
+    setFloorVisible(0.35);
+    renderer.toneMappingExposure = 1.12;
+    key.intensity = 1.7;
+    fill.intensity = 0.32;
+    rim.intensity = 1.15;
+    creviceVein.intensity = 0.85;
+    creviceBruise.intensity = 0.55;
+    creviceAmber.intensity = 0.9;
     for (const b of bricks) {
       b.visible = true;
       if (b.userData.target) b.position.copy(b.userData.target);
       b.scale.setScalar(b.userData.targetScale || 1);
       clearBrickMotion(b, b.userData.target);
-      if (b.userData.glow && b.material) b.material.opacity = 0.45;
+      if (b.userData.glow && b.material) {
+        b.material.opacity = 0.55;
+        if (b.material.emissiveIntensity != null) b.material.emissiveIntensity = 0.35;
+      }
     }
     bindItems();
     setLoop(state.motion || true);
@@ -1462,6 +1731,7 @@
   function enterBrowse() {
     state.opening = false;
     state.browse = true;
+    setHullVisible(false);
     bindItems();
     setLoop(true);
   }
@@ -1487,18 +1757,18 @@
     state.focus = 0;
     state.lastFocus = -1;
     state.openT = 0;
-    renderer.toneMappingExposure = 1.05;
-    scene.fog.density = 0.078;
+    renderer.toneMappingExposure = 0.9;
+    scene.fog.density = 0.052;
     openSpot.intensity = 0;
-    creviceCyan.intensity = 0;
-    creviceMagenta.intensity = 0;
+    creviceVein.intensity = 0;
+    creviceBruise.intensity = 0;
     creviceAmber.intensity = 0;
-    key.intensity = 0.55;
-    fill.intensity = 0.22;
-    rim.intensity = 0.7;
+    key.intensity = 1.42;
+    fill.intensity = 0.2;
+    rim.intensity = 0.95;
     camera.position.set(0, state.camY, state.camZ);
-    camera.lookAt(0, -0.22, 0);
-    setHullVisible(true);
+    camera.lookAt(0, -0.28, 0);
+    restoreHull();
     setFloorVisible(1);
     for (const b of bricks) {
       if (b.userData.label) {
@@ -1534,6 +1804,17 @@
     state.openT += dt;
     const t = state.openT / state.openDuration;
     const e = easeOut(t);
+    for (const plate of plates) {
+      const rest = plate.userData.restPos;
+      const dir = plate.userData.dir;
+      if (rest && dir) {
+        plate.position.copy(rest).addScaledVector(dir, e * 0.62);
+        plate.rotation.z = (plate.userData.peel || 0.14) * e;
+        plate.scale.setScalar(1 + e * 0.05);
+      }
+    }
+    chassis.scale.setScalar(1 - e * 0.22);
+    hullGroup.visible = e < 0.9;
     for (const b of bricks) {
       const local = easeOut((state.openT - b.userData.delay) / (state.openDuration * 0.82));
       b.position.lerpVectors(b.userData.rest, b.userData.target, local);
@@ -1545,27 +1826,27 @@
       b.scale.setScalar(s0 + (s1 - s0) * local);
       if (b.userData.glow && b.material) {
         b.material.opacity = 0.55 * local;
+        if (b.material.emissiveIntensity != null) b.material.emissiveIntensity = 0.4 * local;
       }
     }
     camera.position.z = state.camZ - e * 0.18;
     camera.position.y = state.camY - e * 0.12;
     camera.lookAt(0, -0.12 + e * 0.06, 0);
-    renderer.toneMappingExposure = 1.05 + e * 0.7;
-    scene.fog.density = 0.078 - e * 0.045;
-    setFloorVisible(1 - e);
-    key.intensity = 0.55 + e * 2.2;
-    fill.intensity = 0.22 + e * 0.9;
-    rim.intensity = 0.7 + e * 1.4;
-    openSpot.color.copy(state.accent);
-    openSpot.intensity = 5.2 * (0.25 + 0.75 * Math.sin(e * Math.PI));
-    coreLight.intensity = 2.2 + e * 3.4;
-    creviceCyan.intensity = 2.8 * e;
-    creviceMagenta.intensity = 1.8 * e;
-    creviceAmber.intensity = 1.4 * e;
+    renderer.toneMappingExposure = 0.9 + e * 0.28;
+    scene.fog.density = 0.052 - e * 0.018;
+    setFloorVisible(1 - e * 0.55);
+    key.intensity = 1.42 + e * 0.45;
+    fill.intensity = 0.2 + e * 0.18;
+    rim.intensity = 0.95 + e * 0.35;
+    openSpot.color.set(0xe8c9a0);
+    openSpot.intensity = 3.4 * (0.25 + 0.75 * Math.sin(e * Math.PI));
+    marrowLight.intensity = 0.55 + e * 1.1;
+    creviceVein.intensity = 1.1 * e;
+    creviceBruise.intensity = 0.7 * e;
+    creviceAmber.intensity = 1.2 * e;
     for (const s of shafts) {
-      s.material.opacity = 0.42 * Math.sin(e * Math.PI);
-      s.material.color.copy(state.accent);
-      s.rotation.y += dt * 0.12;
+      s.material.opacity = 0.38 * Math.sin(e * Math.PI);
+      s.rotation.y += dt * 0.08;
     }
     if (t >= 1) {
       if (state.stay && state.items.length) {
@@ -1590,23 +1871,24 @@
         }
       }
     }
-    const n = 8;
+    const n = 7;
     for (let i = 0; i < n; i++) {
       const a = corners[(Math.random() * corners.length) | 0];
       let b = corners[(Math.random() * corners.length) | 0];
       if (b === a) {
         b = corners[(i + 3) % corners.length];
       }
-      const pts = jagged(a, b, 16, 0.2 + Math.random() * 0.12);
+      const pts = jagged(a, b, 16, 0.16 + Math.random() * 0.1);
       const curve = new THREE.CatmullRomCurve3(pts);
-      const tube = new THREE.TubeGeometry(curve, 40, i < 3 ? 0.016 : 0.007, 6, false);
-      const col = i % 3 === 0 ? state.accent.clone() : i % 3 === 1 ? state.core.clone() : new THREE.Color(AMBER);
-      const mat = new THREE.MeshBasicMaterial({
+      const tube = new THREE.TubeGeometry(curve, 40, i < 3 ? 0.014 : 0.007, 6, false);
+      const col = i % 3 === 0 ? new THREE.Color(0x8a6b4a) : i % 3 === 1 ? new THREE.Color(BLOOD) : new THREE.Color(BILE);
+      const mat = new THREE.MeshPhysicalMaterial({
         color: col,
+        roughness: 0.42,
+        metalness: 0.18,
+        clearcoat: 0.55,
         transparent: true,
-        opacity: 0.92,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false
+        opacity: 0.82
       });
       const mesh = new THREE.Mesh(tube, mat);
       artifact.add(mesh);
@@ -1778,32 +2060,38 @@
       state.yawVel = y.vel;
       state.visualPitch = p.value;
       state.pitchVel = p.vel;
-      state.idle = 2.2 * Math.sin(now * 0.00055);
+      state.idle = 1.4 * Math.sin(now * 0.00045);
     }
     state.accent.lerp(state.targetAccent, state.motion ? 0.08 : 1);
     state.seam.lerp(state.targetSeam, state.motion ? 0.1 : 1);
     state.core.lerp(state.targetCore, state.motion ? 0.1 : 1);
 
     const burst = Math.max(0, (state.burstUntil - now) / 520);
-    const pulse = state.motion ? 0.82 + 0.18 * Math.sin(now * 0.0024) : 0.78;
-    coreLight.color.copy(state.accent);
-    coreLight.intensity = state.opening ? coreLight.intensity : (state.motion ? 1.55 + burst * 2.8 : 0.7);
-    bounce.color.copy(state.accent);
-    bounce.intensity = state.motion ? 0.9 + pulse * 0.4 : 0.4;
-    magentaKick.intensity = state.motion ? 0.28 + pulse * 0.12 : 0.12;
+    const pulse = state.motion ? 0.86 + 0.14 * Math.sin(now * 0.0018) : 0.84;
+    marrowLight.color.set(0xc48a3c);
+    marrowLight.intensity = state.opening ? marrowLight.intensity : (state.motion ? 0.5 + burst * 0.9 : 0.38);
+    veinLight.color.copy(state.accent);
+    veinLight.intensity = state.motion ? 0.22 + pulse * 0.16 : 0.16;
+    bruiseKick.intensity = state.motion ? 0.16 + pulse * 0.08 : 0.1;
+    cavityGlow.intensity = state.motion ? 1.05 + pulse * 0.18 : 0.9;
 
-    for (const glow of glows) {
-      glow.material.opacity = (glow.userData.face === state.front ? 0.98 : 0.78) * pulse + burst * 0.12;
+    for (const plate of plates) {
+      const front = plate.userData.face === state.front;
+      if (plate.material && plate.material.emissiveIntensity != null) {
+        plate.material.emissiveIntensity = (front ? 0.34 : 0.14) * pulse + burst * 0.08;
+      }
     }
 
-    floor.pool.material.color.copy(state.accent);
+    floor.cavity.material.color.copy(new THREE.Color(0xc48a3c));
 
-    motes.visible = state.motion && !state.opening && !state.browse;
+    const fx = state.motion && !state.browse;
+    motes.visible = fx && !state.opening;
+    for (const h of haze) h.visible = fx;
     if (state.motion) {
-      motes.rotation.y += dt * 0.02;
+      motes.rotation.y += dt * 0.015;
       for (const h of haze) {
-        h.rotation.y += dt * 0.015;
-        h.position.y += Math.sin(now * 0.0004 + h.position.x) * 0.00015;
+        h.rotation.y += dt * 0.01;
+        h.position.y += Math.sin(now * 0.0004 + h.position.x) * 0.00012;
       }
     }
 
@@ -2180,7 +2468,7 @@
   }
 
   function makeEnvMap() {
-    const colors = ["#243044", "#05070a", "#1a3048", "#080c14", "#182844", "#0c1016"];
+    const colors = ["#c8b49a", "#140e0c", "#6a5a78", "#1a120e", "#c4a46a", "#080605"];
     const images = colors.map((color) => {
       const c = document.createElement("canvas");
       c.width = c.height = 16;
@@ -2192,6 +2480,14 @@
     const tex = new THREE.CubeTexture(images);
     tex.needsUpdate = true;
     tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+
+  function canvasTex(c, srgb) {
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = srgb ? THREE.SRGBColorSpace : (THREE.NoColorSpace || THREE.LinearSRGBColorSpace);
+    tex.anisotropy = 8;
+    tex.needsUpdate = true;
     return tex;
   }
 

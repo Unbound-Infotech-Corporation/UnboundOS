@@ -18,7 +18,7 @@
         AutomationProperties.Name="3D navigation cube">
         <WebView2
             x:Name="CubeWeb"
-            DefaultBackgroundColor="#FF05070A"
+            DefaultBackgroundColor="#FF080605"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             IsTabStop="False"
@@ -27,8 +27,8 @@
         <Border
             x:Name="FallbackCard"
             Visibility="Collapsed"
-            Background="{StaticResource TileFieldHeroBrush}"
-            BorderBrush="{StaticResource CyanPulseBrush}"
+            Background="{StaticResource HomeAshBrush}"
+            BorderBrush="{StaticResource HomePlaqueStrokeBrush}"
             BorderThickness="1"
             CornerRadius="2"
             Width="280"
@@ -65,7 +65,7 @@
             x:Name="FocusRing"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            BorderBrush="{StaticResource CyanPulseBrush}"
+            BorderBrush="{StaticResource HomePlaqueStrokeBrush}"
             BorderThickness="1"
             Opacity="0"
             IsHitTestVisible="False" />
