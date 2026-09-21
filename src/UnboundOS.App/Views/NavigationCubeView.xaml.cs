@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
+using Microsoft.UI.Xaml.Automation;
 using UnboundOS.App.Services;
 using UnboundOS.Core.Abstractions;
 using UnboundOS.Core.Navigation;
