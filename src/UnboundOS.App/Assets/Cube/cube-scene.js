@@ -76,8 +76,8 @@
     opening: false,
     openT: 0,
     openDuration: 1.08,
-    camZ: 4.55,
-    camY: 1.62
+    camZ: 3.95,
+    camY: 1.28
   };
 
   let renderer;
@@ -112,8 +112,8 @@
   scene.environment = makeEnvMap();
 
   const camera = new THREE.PerspectiveCamera(28, 1, 0.08, 48);
-  camera.position.set(0, 1.62, 4.55);
-  camera.lookAt(0, -0.28, 0);
+  camera.position.set(0, 1.28, 3.95);
+  camera.lookAt(0, -0.22, 0);
 
   const restRig = new THREE.Group();
   const spinRig = new THREE.Group();
@@ -342,7 +342,7 @@
   function circuitPaths(id, rng) {
     const seed = hash(id);
     const paths = [];
-    const n = 20;
+    const n = 32;
     for (let i = 0; i < n; i++) {
       let x = 70 + Math.floor(rng() * 14) * 64;
       let y = 70 + Math.floor(rng() * 14) * 64;
@@ -663,9 +663,9 @@
   function gunmetal(hex, roughness) {
     return new THREE.MeshStandardMaterial({
       color: hex,
-      metalness: 0.88,
+      metalness: 0.92,
       roughness: roughness,
-      envMapIntensity: 1.15
+      envMapIntensity: 1.45
     });
   }
 
@@ -676,10 +676,10 @@
       gunmetal(shade, 0.22 + rng() * 0.12)
     );
     group.add(outer);
-    if (size > 0.22) {
-      const inset = size * 0.08;
-      const inner = size - inset * 2.4;
-      const depth = size * 0.08;
+    if (size > 0.2) {
+      const inset = size * 0.14;
+      const inner = size - inset * 2;
+      const depth = size * 0.12;
       const faces = [
         [0, 0, size / 2 - depth * 0.35],
         [0, 0, -size / 2 + depth * 0.35],
@@ -719,7 +719,8 @@
       const out = rest.clone();
       if (out.lengthSq() < 0.01) out.set(0.15, 0.35, 0.4);
       else out.normalize();
-      const target = rest.clone().addScaledVector(out, 0.16 + extra + size * 0.12);
+      const explode = 0.05 + size * 0.05 + extra;
+      const target = rest.clone().addScaledVector(out, explode);
       target.x += (rng() - 0.5) * 0.08;
       target.y += (rng() - 0.5) * 0.08;
       target.z += (rng() - 0.5) * 0.08;
@@ -773,7 +774,7 @@
           const cz = origin + z * cell;
           const edge = x === 0 || x === n - 1 || y === 0 || y === n - 1 || z === 0 || z === n - 1;
           const size = edge ? 0.28 + rng() * 0.28 : 0.18 + rng() * 0.16;
-          add(cx + (rng() - 0.5) * 0.08, cy + (rng() - 0.5) * 0.08, cz + (rng() - 0.5) * 0.08, size, edge ? 0.08 : 0);
+          add(cx + (rng() - 0.5) * 0.08, cy + (rng() - 0.5) * 0.08, cz + (rng() - 0.5) * 0.08, size, 0);
           if (edge && rng() > 0.45) {
             const faceOut = new THREE.Vector3(
               x === 0 ? -1 : x === n - 1 ? 1 : 0,
@@ -781,11 +782,11 @@
               z === 0 ? -1 : z === n - 1 ? 1 : 0
             );
             add(
-              cx + faceOut.x * 0.28,
-              cy + faceOut.y * 0.28,
-              cz + faceOut.z * 0.28,
-              0.16 + rng() * 0.16,
-              0.14
+              cx + faceOut.x * 0.22,
+              cy + faceOut.y * 0.22,
+              cz + faceOut.z * 0.22,
+              0.18 + rng() * 0.14,
+              0.04
             );
           }
         }
@@ -912,7 +913,7 @@
     fill.intensity = 0.22;
     rim.intensity = 0.7;
     camera.position.set(0, state.camY, state.camZ);
-    camera.lookAt(0, -0.28, 0);
+    camera.lookAt(0, -0.22, 0);
     setHullVisible(true);
     setFloorVisible(1);
     for (const b of bricks) {
@@ -951,15 +952,15 @@
         b.material.opacity = 0.55 * local;
       }
     }
-    camera.position.z = state.camZ - e * 0.7;
-    camera.position.y = state.camY - e * 0.35;
-    camera.lookAt(0, -0.05 + e * 0.08, 0);
-    renderer.toneMappingExposure = 1.05 + e * 0.55;
-    scene.fog.density = 0.078 - e * 0.04;
+    camera.position.z = state.camZ - e * 0.18;
+    camera.position.y = state.camY - e * 0.12;
+    camera.lookAt(0, -0.12 + e * 0.06, 0);
+    renderer.toneMappingExposure = 1.05 + e * 0.7;
+    scene.fog.density = 0.078 - e * 0.045;
     setFloorVisible(1 - e);
-    key.intensity = 0.55 + e * 1.6;
-    fill.intensity = 0.22 + e * 0.7;
-    rim.intensity = 0.7 + e * 1.1;
+    key.intensity = 0.55 + e * 2.2;
+    fill.intensity = 0.22 + e * 0.9;
+    rim.intensity = 0.7 + e * 1.4;
     openSpot.color.copy(state.accent);
     openSpot.intensity = 5.2 * (0.25 + 0.75 * Math.sin(e * Math.PI));
     coreLight.intensity = 2.2 + e * 3.4;
