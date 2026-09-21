@@ -3,7 +3,7 @@
   "use strict";
 
   const NODE_IDS = ["Session", "Tools", "Mods", "Network", "Files", "Hardware"];
-  const SPACING = 2.85;
+  const SPACING = 2.2;
   const DEFAULT_FACES = [
     { id: "Session", title: "Games", kicker: "PLAY", monogram: "G", meta: "PLAY", hint: "Up opens the library over the galaxy.", accent: "#C9D4E8", seam: "#8AA0C8", core: "#E8D7A8", plate: "#07080C", glyph: "games" },
     { id: "Tools", title: "Tools", kicker: "KIT", monogram: "T", meta: "OPEN", hint: "Enter opens Tools.", accent: "#B7C4A8", seam: "#8A9A78", core: "#E2D2B0", plate: "#07080C", glyph: "tools" },
@@ -73,24 +73,24 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.7;
+  renderer.toneMappingExposure = 1.18;
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x000000, 0.021);
+  scene.fog = new THREE.FogExp2(0x000000, 0.007);
 
-  const camera = new THREE.PerspectiveCamera(30, 1, 0.08, 140);
-  camera.position.set(0, 0.28, 8.6);
+  const camera = new THREE.PerspectiveCamera(28, 1, 0.08, 140);
+  camera.position.set(0, 0.04, 7.35);
   camera.lookAt(0, 0, 0);
 
   const rig = new THREE.Group();
   scene.add(rig);
 
   scene.add(new THREE.AmbientLight(0x101018, 0.4));
-  const key = new THREE.PointLight(0xf2e6c8, 1.6, 18, 1.6);
-  key.position.set(0, 0.2, 1.4);
+  const key = new THREE.PointLight(0xf2e6c8, 2.4, 22, 1.4);
+  key.position.set(0, 0.05, 1.6);
   rig.add(key);
-  const fill = new THREE.PointLight(0x6a7cb0, 0.35, 22, 1.8);
-  fill.position.set(-2.5, -0.4, 2.2);
+  const fill = new THREE.PointLight(0x6a7cb0, 0.7, 28, 1.6);
+  fill.position.set(-2.5, -0.2, 2.4);
   scene.add(fill);
 
   const starMap = spriteTex(64, (ctx, s) => {
@@ -136,12 +136,13 @@
     ctx.fillRect(0, 0, s, s);
   });
 
-  const farStars = buildStarField(11000, 48, 0.016, 0x8ea0c4, 0x51f);
-  const midStars = buildStarField(6400, 24, 0.026, 0xd8dce8, 0x77a);
-  const nearStars = buildStarField(2200, 12, 0.038, 0xf6f0e2, 0x91c);
-  const ribbon = buildRibbon(17000);
-  const spine = buildSpine(5200);
-  const orbiters = buildOrbiters(820);
+  const farStars = buildStarField(6000, 48, 1.5, 0x8ea0c4, 0x51f);
+  const midStars = buildStarField(3200, 24, 2.2, 0xd8dce8, 0x77a);
+  const nearStars = buildStarField(1100, 12, 3.0, 0xf6f0e2, 0x91c);
+  const ribbon = buildRibbon(9000);
+  const spine = buildSpine(3600);
+  const live = buildLive(1800);
+  const orbiters = buildOrbiters(360);
   const nodes = buildNodes();
   const shafts = buildShafts();
   const veils = buildVeils();
@@ -185,10 +186,10 @@
       color,
       size,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.9,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
-      sizeAttenuation: true
+      sizeAttenuation: false
     }));
     scene.add(pts);
     pts.userData.parallax = size > 0.02 ? 0.45 : 0.18;
@@ -264,10 +265,10 @@
     geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
     const pts = new THREE.Points(geo, new THREE.PointsMaterial({
       map: starMap,
-      size: 0.042,
+      size: 0.1,
       vertexColors: true,
       transparent: true,
-      opacity: 0.92,
+      opacity: 0.95,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       sizeAttenuation: true
@@ -310,14 +311,62 @@
     geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
     const pts = new THREE.Points(geo, new THREE.PointsMaterial({
       map: starMap,
-      size: 0.05,
+      size: 0.16,
       vertexColors: true,
       transparent: true,
-      opacity: 0.95,
+      opacity: 1,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       sizeAttenuation: true
     }));
+    rig.add(pts);
+    return pts;
+  }
+
+  function buildLive(count) {
+    const rng = mulberry(0x71fe);
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    const orbits = [];
+    const cWarm = new THREE.Color(0xfff4dc);
+    const cCool = new THREE.Color(0xb8c8f0);
+    for (let i = 0; i < count; i++) {
+      const node = i % NODE_IDS.length;
+      const nx = nodeX(node);
+      const radius = 0.12 + rng() * 0.62;
+      const phase = rng() * Math.PI * 2;
+      const tilt = (rng() - 0.5) * 1.05;
+      pos[i * 3] = nx + Math.cos(phase) * radius;
+      pos[i * 3 + 1] = barY(nx) + Math.sin(phase) * radius * 0.3 * Math.cos(tilt);
+      pos[i * 3 + 2] = Math.sin(phase * 0.9) * radius * 0.22;
+      const c = cWarm.clone().lerp(cCool, rng() * 0.5);
+      col[i * 3] = c.r;
+      col[i * 3 + 1] = c.g;
+      col[i * 3 + 2] = c.b;
+      orbits.push({
+        node,
+        radius,
+        phase,
+        speed: (0.14 + rng() * 0.38) * (rng() > 0.5 ? 1 : -1),
+        tilt,
+        along: nx,
+        bound: true
+      });
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+    const pts = new THREE.Points(geo, new THREE.PointsMaterial({
+      map: starMap,
+      size: 0.14,
+      vertexColors: true,
+      transparent: true,
+      opacity: 1,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      sizeAttenuation: true
+    }));
+    pts.userData.orbits = orbits;
     rig.add(pts);
     return pts;
   }
@@ -340,7 +389,7 @@
         new THREE.MeshBasicMaterial({
           map,
           transparent: true,
-          opacity: 0.18,
+          opacity: 0.32,
           depthWrite: false,
           blending: THREE.AdditiveBlending,
           side: THREE.DoubleSide
@@ -368,7 +417,7 @@
         blending: THREE.AdditiveBlending,
         opacity: 0.7
       }));
-      mesh.scale.setScalar(0.035 + rng() * 0.04);
+      mesh.scale.setScalar(0.08 + rng() * 0.1);
       mesh.userData = {
         node,
         radius: 0.18 + rng() * 0.7,
@@ -397,7 +446,7 @@
         depthWrite: false,
         blending: THREE.AdditiveBlending
       }));
-      bloom.scale.set(6.4, 3.4, 1);
+      bloom.scale.set(8.8, 4.6, 1);
       group.add(bloom);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({
         map: glowMap,
@@ -407,7 +456,7 @@
         depthWrite: false,
         blending: THREE.AdditiveBlending
       }));
-      halo.scale.set(3.8, 2.2, 1);
+      halo.scale.set(4.8, 2.6, 1);
       group.add(halo);
       const mid = new THREE.Sprite(new THREE.SpriteMaterial({
         map: glowMap,
@@ -427,9 +476,9 @@
         depthWrite: false,
         blending: THREE.AdditiveBlending
       }));
-      core.scale.set(0.32, 0.32, 1);
+      core.scale.set(0.55, 0.55, 1);
       group.add(core);
-      const light = new THREE.PointLight(coreCol, i === 0 ? 2.1 : 1.05, 5.4, 1.55);
+      const light = new THREE.PointLight(coreCol, i === 0 ? 3.2 : 1.7, 6.4, 1.4);
       group.add(light);
       const label = makeLabel(info.title);
       label.position.y = -0.78;
@@ -461,7 +510,7 @@
         new THREE.MeshBasicMaterial({
           map: dustMap,
           transparent: true,
-          opacity: 0.16,
+          opacity: 0.28,
           depthWrite: false,
           blending: THREE.AdditiveBlending,
           side: THREE.DoubleSide
@@ -479,8 +528,8 @@
     const tex = spriteTex(256, (ctx, s) => {
       const g = ctx.createRadialGradient(s / 2, s / 2, s * 0.18, s / 2, s / 2, s * 0.55);
       g.addColorStop(0, "rgba(0,0,0,0)");
-      g.addColorStop(0.55, "rgba(0,0,0,0.22)");
-      g.addColorStop(1, "rgba(0,0,0,0.92)");
+      g.addColorStop(0.62, "rgba(0,0,0,0.12)");
+      g.addColorStop(1, "rgba(0,0,0,0.72)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, s, s);
     });
@@ -499,22 +548,14 @@
 
   function tickOrbits(dt, now) {
     if (!state.motion) return;
-    const pos = ribbon.geometry.attributes.position;
-    const orbits = ribbon.userData.orbits;
+    const pos = live.geometry.attributes.position;
+    const orbits = live.userData.orbits;
     const arr = pos.array;
     for (let i = 0; i < orbits.length; i++) {
       const o = orbits[i];
-      if (!o.bound) {
-        const nx = nodeX(o.node);
-        o.along += (nx - o.along) * 0.04 * dt;
-        arr[i * 3] = o.along;
-        arr[i * 3 + 1] = o.restY + Math.sin(now * 0.00018 + o.phase) * 0.012;
-        continue;
-      }
       o.phase += o.speed * dt;
       const nx = nodeX(o.node);
-      const pull = 0.12;
-      o.along += (nx - o.along) * pull * dt;
+      o.along += (nx - o.along) * 0.12 * dt;
       const ca = Math.cos(o.phase);
       const sa = Math.sin(o.phase);
       arr[i * 3] = o.along + ca * o.radius;
@@ -675,14 +716,14 @@
       nearStars.rotation.y = now * 0.00003;
       spine.rotation.z = Math.sin(now * 0.00008) * 0.012;
       veils.forEach((v, i) => {
-        v.material.opacity = 0.1 + 0.05 * Math.sin(now * 0.0004 + i);
+        v.material.opacity = 0.22 + 0.08 * Math.sin(now * 0.0004 + i);
       });
     }
     const pan = state.visualX;
-    camera.position.x = pan * 0.14;
-    camera.position.y = 0.26 + state.idle;
-    camera.position.z = 8.55 + (state.overlay ? -0.42 : 0);
-    camera.lookAt(pan * 0.38, barY(pan) * 0.35, 0);
+    camera.position.x = pan * 0.2;
+    camera.position.y = 0.04 + state.idle;
+    camera.position.z = 7.35 + (state.overlay ? -0.35 : 0);
+    camera.lookAt(pan * 0.48, barY(pan) * 0.2, 0);
     farStars.position.x = pan * 0.05;
     midStars.position.x = pan * 0.1;
     nearStars.position.x = pan * 0.22;
@@ -691,20 +732,20 @@
     const pulse = state.motion ? 0.88 + 0.12 * Math.sin(now * 0.0016) : 0.9;
     for (const n of nodes) {
       const on = n.group.userData.node === state.node;
-      n.bloom.material.opacity = (on ? 0.42 : 0.16) * pulse;
-      n.halo.material.opacity = (on ? 0.78 : 0.3) * pulse;
-      n.mid.material.opacity = on ? 0.95 : 0.42;
-      n.light.intensity = on ? 2.35 * pulse : 0.75;
+      n.bloom.material.opacity = (on ? 0.72 : 0.32) * pulse;
+      n.halo.material.opacity = (on ? 0.95 : 0.48) * pulse;
+      n.mid.material.opacity = on ? 1 : 0.55;
+      n.light.intensity = on ? 3.4 * pulse : 1.2;
       n.label.material.opacity = on ? 0.78 : 0.12;
       const s = on ? 1.1 : 0.9;
       n.group.scale.setScalar(state.motion ? n.group.scale.x + (s - n.group.scale.x) * 0.08 : s);
     }
     shafts.forEach((shaft) => {
       const on = shaft.userData.node === state.node;
-      shaft.material.opacity = (on ? 0.34 : 0.12) * pulse;
+      shaft.material.opacity = (on ? 0.55 : 0.22) * pulse;
       shaft.rotation.y = state.motion ? Math.sin(now * 0.00025 + shaft.userData.node) * 0.08 : 0;
     });
-    renderer.toneMappingExposure = state.overlay ? 0.56 : 0.7;
+    renderer.toneMappingExposure = state.overlay ? 0.92 : 1.18;
     vignette.position.copy(camera.position);
     vignette.quaternion.copy(camera.quaternion);
     vignette.translateZ(-1.2);

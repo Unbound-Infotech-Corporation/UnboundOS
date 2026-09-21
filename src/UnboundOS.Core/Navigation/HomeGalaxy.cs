@@ -25,7 +25,7 @@ public static class HomeGalaxy
         CubeDestination.Hardware
     ];
 
-    public const float NodeSpacing = 2.85f;
+    public const float NodeSpacing = 2.2f;
 
     public static int Count => Nodes.Count;
 
