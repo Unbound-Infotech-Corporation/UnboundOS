@@ -87,6 +87,22 @@ public sealed class OsSpecSliceTests
     }
 
     [Fact]
+    public async Task ThermalProbe_DoesNotInventReadings()
+    {
+        var snap = await new OsThermalProbe().ReadAsync();
+        Assert.False(string.IsNullOrWhiteSpace(snap.SourceNote));
+        Assert.DoesNotContain("HWiNFO", snap.SourceNote, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("72°", snap.SourceNote, StringComparison.Ordinal);
+        foreach (var value in new double?[] { snap.CpuCelsius, snap.GpuCelsius, snap.PackageCelsius })
+        {
+            if (value is { } celsius)
+            {
+                Assert.InRange(celsius, 1, 120);
+            }
+        }
+    }
+
+    [Fact]
     public void FileBrowser_IncludeDrives_AddsReadyVolumes()
     {
         using var temp = new TempTree();
@@ -343,6 +359,9 @@ public sealed class OsSpecSliceTests
         Assert.IsType<LocalFileBrowser>(provider.GetRequiredService<IFileBrowser>());
         Assert.IsType<UnboundOS.Infrastructure.Hardware.OsHardwareInventory>(
             provider.GetRequiredService<IHardwareInventory>());
+        Assert.IsType<OsThermalProbe>(provider.GetRequiredService<IThermalProbe>());
+        Assert.IsType<UnboundOS.Infrastructure.Settings.HomeHudSettings>(
+            provider.GetRequiredService<IHomeHudSettings>());
         Assert.IsType<SetupCleanupService>(provider.GetRequiredService<ISetupCleanup>());
     }
 

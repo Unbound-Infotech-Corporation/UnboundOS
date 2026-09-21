@@ -6,7 +6,7 @@ A public Windows 11 **console-style shell** by **[Unbound Infotech Corporation](
 
 UnboundOS does **not** replace Windows. It applies a focused gaming / streaming posture — snapshot NICs, clear denylist junk, protect games and anticheat — then restores the desktop when you exit.
 
-The shell is a living-room home: on Home the **3D navigation cube** is the only focal point (packaged Three.js in WebView2 — volcanic grooved rest with etched group logos). Drag, flick, or arrow-key the cube; Enter on **Games** opens a playable block carousel (cycle to launch). Tools/Mods become a mosaic when items exist. Network, Files, Hardware, and Settings land on list UI. Settings and Profiles stay discreet Home corner glyphs. The old Settings tile that showed the letter “I” is gone.
+The shell is a living-room home: on Home the **3D navigation cube** is the only focal point (packaged Three.js in WebView2 — volcanic grooved rest with etched group logos). Drag, flick, or arrow-key the cube; Enter on **Games** opens a playable block carousel (cycle to launch). Tools/Mods become a mosaic when items exist. Network, Files, Hardware, and Settings land on list UI. Settings and Profiles stay discreet Home corner glyphs. A quiet Home HUD can show local time and CPU/GPU temps; hide them in Settings. The old Settings tile that showed the letter “I” is gone.
 
 OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
 
@@ -20,7 +20,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 
 | Module | Purpose |
 |--------|---------|
-| **Home cube** | Cube-only Home with etched face logos. Games opens a block carousel of the Steam library (`steam://rungameid`). Settings is a list of option groups. See [docs/cube-nav.md](docs/cube-nav.md) |
+| **Home cube** | Cube-only Home with etched face logos, framed to fit a desktop. Games opens a block carousel of the Steam library (`steam://rungameid`). Optional Home HUD: clock and temps. Settings is a list of option groups. See [docs/cube-nav.md](docs/cube-nav.md) |
 | **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
 | **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam) plus utilities (Notepad++, 7-Zip). Launch or official Get. Ultrawide crop recipe lives on the OBS tile |
@@ -29,7 +29,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
 | **Files** | Daily folder UI (Home, Desktop, Downloads, drives). Explorer stays for EAC / BattlEye / Vanguard |
 | **Hardware** | CPU, GPU, disks, RAM from this PC. Live sensors later; optional Open HWiNFO in Tools |
-| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Interface motion On / Off |
+| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Home HUD (clock / temps), Interface motion On / Off |
 
 ## Solution layout
 

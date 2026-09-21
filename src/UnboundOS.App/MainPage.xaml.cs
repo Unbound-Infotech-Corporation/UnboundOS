@@ -11,6 +11,7 @@ namespace UnboundOS.App;
 public sealed partial class MainPage : Page
 {
     public ShellViewModel ViewModel { get; } = AppServices.Get<ShellViewModel>();
+    public HomeHudViewModel Hud { get; } = AppServices.Get<HomeHudViewModel>();
 
     public MainPage()
     {
@@ -24,6 +25,7 @@ public sealed partial class MainPage : Page
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         await ViewModel.InitializeAsync();
+        await Hud.InitializeAsync();
         ApplyHomeChrome(home: true);
         ApplyNavState("Home");
         HomeCube.Focus(FocusState.Programmatic);
@@ -64,7 +66,7 @@ public sealed partial class MainPage : Page
             "Hardware" => "CPU, GPU, disks, RAM from this PC. Sensors wait on the image.",
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
-            "Settings" => "Display, overclocking launch, startup audit, motion.",
+            "Settings" => "Display, overclocking launch, startup audit, Home HUD, motion.",
             "Overlay" => "Overlay addon hook — optional and off unless a host is registered.",
             _ => ViewModel.StatusLine
         };

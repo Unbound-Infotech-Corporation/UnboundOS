@@ -84,8 +84,8 @@
     items: [],
     focus: 0,
     lastFocus: -1,
-    camZ: 3.95,
-    camY: 1.28
+    camZ: 5.7,
+    camY: 1.52
   };
 
   let renderer;
@@ -119,8 +119,8 @@
   scene.fog = new THREE.FogExp2(0x030508, 0.078);
   scene.environment = makeEnvMap();
 
-  const camera = new THREE.PerspectiveCamera(28, 1, 0.08, 48);
-  camera.position.set(0, 1.28, 3.95);
+  const camera = new THREE.PerspectiveCamera(26, 1, 0.08, 48);
+  camera.position.set(0, 1.52, 5.7);
   camera.lookAt(0, -0.22, 0);
   const _out = new THREE.Vector3();
   const _away = new THREE.Vector3();

@@ -24,6 +24,59 @@ public sealed class ShellMotionSettingsTests
     }
 
     [Fact]
+    public async Task SettingsStore_HomeHudDefaultsOnWhenKeysMissing_AndPersistsOff()
+    {
+        using var temp = new TempFolder();
+        var store = new JsonShellSettingsStore(temp.Path);
+        await File.WriteAllTextAsync(store.FilePath, """{ "interfaceMotionEnabled": true }""");
+
+        var loaded = await store.LoadAsync();
+        Assert.True(loaded.ShowHomeHud);
+        Assert.True(loaded.ShowHomeClock);
+        Assert.True(loaded.ShowHomeTemps);
+        Assert.DoesNotContain("homeHudEnabled", await File.ReadAllTextAsync(store.FilePath), StringComparison.Ordinal);
+
+        var hud = new HomeHudSettings(store);
+        await hud.InitializeAsync();
+        Assert.True(hud.HudEnabled);
+        await hud.SetHudEnabledAsync(false);
+        await hud.SetClockEnabledAsync(false);
+        await hud.SetTempsEnabledAsync(true);
+
+        var saved = await store.LoadAsync();
+        Assert.False(saved.ShowHomeHud);
+        Assert.False(saved.ShowHomeClock);
+        Assert.True(saved.ShowHomeTemps);
+        var json = await File.ReadAllTextAsync(store.FilePath);
+        Assert.Contains("homeHudEnabled", json, StringComparison.Ordinal);
+        Assert.Contains("homeClockEnabled", json, StringComparison.Ordinal);
+        Assert.True(json.Contains("true", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task MotionToggle_DoesNotClobberHomeHud()
+    {
+        using var temp = new TempFolder();
+        var store = new JsonShellSettingsStore(temp.Path);
+        var hud = new HomeHudSettings(store);
+        await hud.InitializeAsync();
+        await hud.SetClockEnabledAsync(false);
+
+        var policy = new UiMotionPolicy(
+            store,
+            new DelegateSystemAnimationPreference(() => true),
+            new StubSession { State = SessionState.Idle });
+        await policy.InitializeAsync();
+        await policy.SetUserWantsMotionAsync(false);
+
+        var loaded = await store.LoadAsync();
+        Assert.False(loaded.InterfaceMotionEnabled);
+        Assert.False(loaded.ShowHomeClock);
+        Assert.True(loaded.ShowHomeHud);
+        Assert.True(loaded.ShowHomeTemps);
+    }
+
+    [Fact]
     public async Task MotionPolicy_DefaultAllowsMotion()
     {
         using var temp = new TempFolder();

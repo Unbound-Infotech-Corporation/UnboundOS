@@ -24,3 +24,15 @@ public sealed record HardwareSnapshot(
 }
 
 public sealed record SetupCleanupResult(bool Succeeded, int RemovedCount, string Message);
+
+/// <summary>Live temps when a sensor path actually returns a value. Nulls mean unavailable.</summary>
+public sealed record ThermalSnapshot(
+    double? CpuCelsius,
+    double? GpuCelsius,
+    double? PackageCelsius,
+    string SourceNote)
+{
+    public bool HasAny => CpuCelsius is not null || GpuCelsius is not null || PackageCelsius is not null;
+
+    public static ThermalSnapshot Unavailable(string note) => new(null, null, null, note);
+}

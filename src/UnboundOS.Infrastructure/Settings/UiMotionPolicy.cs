@@ -69,7 +69,8 @@ public sealed class UiMotionPolicy : IUiMotionPolicy
 
     public async Task SetUserWantsMotionAsync(bool enabled, CancellationToken ct = default)
     {
-        _settings = _settings with { InterfaceMotionEnabled = enabled };
+        var latest = await _store.LoadAsync(ct).ConfigureAwait(false);
+        _settings = latest with { InterfaceMotionEnabled = enabled };
         await _store.SaveAsync(_settings, ct).ConfigureAwait(false);
         Changed?.Invoke(this, EventArgs.Empty);
     }

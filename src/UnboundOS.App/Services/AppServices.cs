@@ -16,6 +16,7 @@ public static class AppServices
         services.AddSingleton<ISystemAnimationPreference, WindowsAnimationPreference>();
         services.AddUnboundOs();
         services.AddSingleton<ShellViewModel>();
+        services.AddSingleton<HomeHudViewModel>();
         services.AddSingleton<SettingsViewModel>();
         services.AddTransient<SessionViewModel>();
         services.AddTransient<NetworkViewModel>();

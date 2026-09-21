@@ -182,6 +182,39 @@
         <Setter Property="Foreground" Value="{StaticResource CyanPulseBrush}" />
     </Style>
 
+    <Style x:Key="HomeHudKickerText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="CharacterSpacing" Value="180" />
+        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+        <Setter Property="Opacity" Value="0.72" />
+    </Style>
+
+    <Style x:Key="HomeHudLabelText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="CharacterSpacing" Value="80" />
+        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style x:Key="HomeHudValueText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource CyanPulseBrush}" />
+        <Setter Property="Opacity" Value="0.82" />
+    </Style>
+
+    <Style x:Key="HomeHudClockText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource PaperBrush}" />
+        <Setter Property="Opacity" Value="0.78" />
+        <Setter Property="CharacterSpacing" Value="40" />
+    </Style>
+
     <Style x:Key="PanelLabelText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
         <Setter Property="FontSize" Value="12" />

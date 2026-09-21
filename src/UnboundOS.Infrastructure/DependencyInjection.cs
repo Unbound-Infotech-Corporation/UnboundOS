@@ -37,6 +37,7 @@ public static class DependencyInjection
         services.TryAddSingleton<ISystemAnimationPreference, AlwaysOnSystemAnimationPreference>();
         services.AddSingleton<IShellSettingsStore, JsonShellSettingsStore>();
         services.AddSingleton<IUiMotionPolicy, UiMotionPolicy>();
+        services.AddSingleton<IHomeHudSettings, HomeHudSettings>();
         services.AddSingleton<IStartupInventory, WindowsStartupInventory>();
         services.AddSingleton<IStartupAllowlistStore, JsonStartupAllowlistStore>();
         services.AddSingleton<IStartupMutator, WindowsStartupMutator>();
@@ -45,6 +46,7 @@ public static class DependencyInjection
         services.AddSingleton<IVendorAppLauncher, VendorAppLauncher>();
         services.AddSingleton<IFileBrowser, LocalFileBrowser>();
         services.AddSingleton<IHardwareInventory, OsHardwareInventory>();
+        services.AddSingleton<IThermalProbe, OsThermalProbe>();
         services.AddSingleton<ISetupCleanup, SetupCleanupService>();
         services.AddSingleton<SteamLibraryDiscoverySettings>();
         services.AddSingleton<IGameLibraryCatalog, SteamGameLibraryCatalog>();

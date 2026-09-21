@@ -73,6 +73,39 @@
                 </StackPanel>
             </Border>
 
+            <Border x:Name="HudPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="16">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="HOME HUD" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="Quiet readouts on Home only. The cube stays the focal navigation. This does not restore the top menu." />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.HomeHudEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Home HUD strip"
+                        AutomationProperties.Name="Home HUD strip"
+                        AutomationProperties.HelpText="Hides both the clock and the temperature readouts on Home." />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.HomeClockEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Clock (top right)"
+                        AutomationProperties.Name="Home clock"
+                        AutomationProperties.HelpText="Local time on Home. Independent of system temps." />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.HomeTempsEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="System temps (top left)"
+                        AutomationProperties.Name="Home system temps"
+                        AutomationProperties.HelpText="CPU and GPU temperatures when sensors are available. Shows a dash until then." />
+                </StackPanel>
+            </Border>
+
             <Border x:Name="DisplayPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
                 <StackPanel Spacing="12">
                     <TextBlock Style="{StaticResource PanelLabelText}" Text="DISPLAY" />

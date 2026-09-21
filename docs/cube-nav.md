@@ -22,7 +22,7 @@ Home chrome.
 | Tools | **Tools** | Mosaic of kit/utilities if discovery returned items; otherwise the Tools list page. |
 | Mods | **Mods** | Mosaic of discovered Workshop/Vortex games if any; otherwise the Mods list page. |
 | Network, Files, Hardware | config | Short transform, then the native **list** page. |
-| SET glyph | **Options / Settings** | Settings list of groups (motion, display, OC, startup, cleanup). Not a block carousel. |
+| SET glyph | **Options / Settings** | Settings list of groups (motion, Home HUD, display, OC, startup, cleanup). Not a block carousel. |
 
 Motion-off skips the heavy transform and goes straight to that destination
 (browse pose for Games, list page for Settings/Files/…). Escape (or
@@ -59,8 +59,14 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
 - If WebView2 or WebGL is missing, the host shows a static face card and
   Enter still opens the WinUI page for that group.
 - **Home chrome is cube-only.** Settings (`SET`) and Profiles (`PRFL`)
-  are discreet corner glyphs. Inner pages restore the chrome; HOME
-  resets the scene.
+  are discreet corner glyphs. A quiet **Home HUD** can show local time
+  (top right) and CPU/GPU temps (top left) when sensors answer — dashes
+  until then. Settings → Home HUD toggles the strip, clock, and temps
+  independently (persisted in `settings.json`). Inner pages restore the
+  chrome; HOME resets the scene.
+
+The rest camera sits farther back (FOV 26, ~5.7 units) so the cube fits
+a typical ultrawide/desktop without clipping. Logos stay readable.
 
 Logical pose is still four yaw steps and ±90° pitch, with a rest bias
 (+28° yaw, −17° pitch) so three faces read at once.

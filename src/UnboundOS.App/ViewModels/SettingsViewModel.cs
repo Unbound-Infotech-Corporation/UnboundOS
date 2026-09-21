@@ -12,28 +12,36 @@ public sealed record SettingsGroup(string Id, string Title, string Hint);
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly IUiMotionPolicy _motion;
+    private readonly IHomeHudSettings _hud;
     private readonly IStartupAuditService _startup;
     private readonly IVendorAppCatalog _vendors;
     private readonly IVendorAppLauncher _vendorLauncher;
     private readonly ISetupCleanup _cleanup;
     private bool _suppressToggle;
+    private bool _suppressHudToggle;
 
     public SettingsViewModel(
         IUiMotionPolicy motion,
+        IHomeHudSettings hud,
         IStartupAuditService startup,
         IVendorAppCatalog vendors,
         IVendorAppLauncher vendorLauncher,
         ISetupCleanup cleanup)
     {
         _motion = motion;
+        _hud = hud;
         _startup = startup;
         _vendors = vendors;
         _vendorLauncher = vendorLauncher;
         _cleanup = cleanup;
         _motion.Changed += OnMotionChanged;
+        _hud.Changed += OnHudChanged;
     }
 
     [ObservableProperty] private bool _interfaceMotionEnabled = true;
+    [ObservableProperty] private bool _homeHudEnabled = true;
+    [ObservableProperty] private bool _homeClockEnabled = true;
+    [ObservableProperty] private bool _homeTempsEnabled = true;
     [ObservableProperty] private string _motionStatus = string.Empty;
     [ObservableProperty] private string _sessionNote =
         "A live session always pauses motion so frame time stays clean. This toggle is not hidden.";
@@ -48,6 +56,7 @@ public partial class SettingsViewModel : ObservableObject
     public ObservableCollection<SettingsGroup> Groups { get; } =
     [
         new("motion", "Interface motion", "Springy cube, arcs, idle, and the open transform."),
+        new("hud", "Home HUD", "Clock, system temps, and the Home readout strip. Cube stays the focal point."),
         new("display", "Display", "Launch the GPU vendor app. UnboundOS does not write display settings."),
         new("overclock", "Overclocking", "Launch-only vendor OC hubs. No silent clocks."),
         new("startup", "Startup audit", "Pin allowlist. Never silently kill anticheat or GPU vendor."),
@@ -71,7 +80,9 @@ public partial class SettingsViewModel : ObservableObject
     public async Task InitializeAsync()
     {
         await _motion.InitializeAsync();
+        await _hud.InitializeAsync();
         SyncFromPolicy();
+        SyncFromHud();
         await RefreshVendorsAsync();
         await RefreshStartupAsync();
         SelectedGroup ??= Groups[0];
@@ -80,6 +91,7 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnSelectedGroupChanged(SettingsGroup? value)
     {
         OnPropertyChanged(nameof(ShowMotion));
+        OnPropertyChanged(nameof(ShowHud));
         OnPropertyChanged(nameof(ShowDisplay));
         OnPropertyChanged(nameof(ShowOverclock));
         OnPropertyChanged(nameof(ShowStartup));
@@ -88,6 +100,7 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     public bool ShowMotion => SelectedGroup?.Id == "motion";
+    public bool ShowHud => SelectedGroup?.Id == "hud";
     public bool ShowDisplay => SelectedGroup?.Id == "display";
     public bool ShowOverclock => SelectedGroup?.Id == "overclock";
     public bool ShowStartup => SelectedGroup?.Id == "startup";
@@ -102,6 +115,36 @@ public partial class SettingsViewModel : ObservableObject
         }
 
         _ = _motion.SetUserWantsMotionAsync(value);
+    }
+
+    partial void OnHomeHudEnabledChanged(bool value)
+    {
+        if (_suppressHudToggle)
+        {
+            return;
+        }
+
+        _ = _hud.SetHudEnabledAsync(value);
+    }
+
+    partial void OnHomeClockEnabledChanged(bool value)
+    {
+        if (_suppressHudToggle)
+        {
+            return;
+        }
+
+        _ = _hud.SetClockEnabledAsync(value);
+    }
+
+    partial void OnHomeTempsEnabledChanged(bool value)
+    {
+        if (_suppressHudToggle)
+        {
+            return;
+        }
+
+        _ = _hud.SetTempsEnabledAsync(value);
     }
 
     partial void OnSelectedStartupChanged(StartupEntry? value)
@@ -251,5 +294,26 @@ public partial class SettingsViewModel : ObservableObject
         InterfaceMotionEnabled = _motion.UserWantsMotion;
         _suppressToggle = false;
         MotionStatus = _motion.StatusText;
+    }
+
+    private void OnHudChanged(object? sender, EventArgs e)
+    {
+        var queue = App.DispatcherQueue;
+        if (queue is not null && !queue.HasThreadAccess)
+        {
+            _ = queue.TryEnqueue(SyncFromHud);
+            return;
+        }
+
+        SyncFromHud();
+    }
+
+    private void SyncFromHud()
+    {
+        _suppressHudToggle = true;
+        HomeHudEnabled = _hud.HudEnabled;
+        HomeClockEnabled = _hud.ClockEnabled;
+        HomeTempsEnabled = _hud.TempsEnabled;
+        _suppressHudToggle = false;
     }
 }
