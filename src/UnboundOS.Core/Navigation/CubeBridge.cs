@@ -17,7 +17,9 @@ public sealed record CubeFacePayload(
     string Accent,
     string Seam,
     string Core,
-    string Plate);
+    string Plate,
+    string Glyph,
+    string OpenKind);
 
 public sealed record CubeSceneState
 {
@@ -57,7 +59,13 @@ public sealed record CubeSceneState
 
     public string Phase { get; init; } = "idle";
 
+    public string Mode { get; init; } = "list";
+
+    public int Focus { get; init; }
+
     public IReadOnlyList<CubeFacePayload> Faces { get; init; } = [];
+
+    public IReadOnlyList<CubeBrowseItem> Items { get; init; } = [];
 }
 
 public sealed record CubeHostMessage
@@ -77,7 +85,18 @@ public sealed record CubeHostMessage
     public float Vx { get; init; }
 
     public float Vy { get; init; }
+
+    public int Index { get; init; }
+
+    public string? Item { get; init; }
 }
+
+public sealed record CubeBrowseItem(
+    string Id,
+    string Title,
+    string Meta,
+    string Kind,
+    string Glyph);
 
 public sealed record CubeHostCommand
 {
@@ -88,6 +107,14 @@ public sealed record CubeHostCommand
     public string Front { get; init; } = nameof(CubeDestination.Session);
 
     public bool Motion { get; init; } = true;
+
+    public string Mode { get; init; } = "list";
+
+    public bool Stay { get; init; }
+
+    public int Focus { get; init; }
+
+    public IReadOnlyList<CubeBrowseItem> Items { get; init; } = [];
 }
 
 public static class CubeBridge
@@ -122,7 +149,9 @@ public static class CubeBridge
             accent.AccentHex,
             accent.SeamHex,
             accent.CoreHex,
-            accent.PlateHex);
+            accent.PlateHex,
+            info.Glyph,
+            info.OpenKind.ToString().ToLowerInvariant());
     }
 
     public static CubeSceneState State(
@@ -151,6 +180,7 @@ public static class CubeBridge
             Kicker = info.Kicker,
             Monogram = info.Monogram,
             Hint = info.Hint,
+            Mode = info.OpenKind.ToString().ToLowerInvariant(),
             Faces = CatalogPayload()
         };
     }
@@ -161,8 +191,27 @@ public static class CubeBridge
     public static string ToJson(CubeHostCommand command) =>
         JsonSerializer.Serialize(command, JsonOptions);
 
-    public static CubeHostCommand Open(CubeDestination front, bool motion) =>
-        new() { Type = "open", Front = front.ToString(), Motion = motion };
+    public static CubeHostCommand Open(
+        CubeDestination front,
+        bool motion,
+        IReadOnlyList<CubeBrowseItem>? items = null,
+        int focus = 0)
+    {
+        var kind = CubeCatalog.OpenKind(front);
+        return new()
+        {
+            Type = "open",
+            Front = front.ToString(),
+            Motion = motion,
+            Mode = kind.ToString().ToLowerInvariant(),
+            Stay = CubeCatalog.StaysInCube(front),
+            Focus = focus,
+            Items = items ?? []
+        };
+    }
+
+    public static CubeHostCommand Focus(int index) =>
+        new() { Type = "focus", Focus = index };
 
     public static CubeHostCommand Reset(CubeDestination front, bool motion) =>
         new() { Type = "reset", Front = front.ToString(), Motion = motion };

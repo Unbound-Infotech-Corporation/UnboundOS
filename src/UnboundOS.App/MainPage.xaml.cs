@@ -42,6 +42,9 @@ public sealed partial class MainPage : Page
     private void OnCubeActivated(object sender, CubeDestination destination) =>
         Navigate(CubeCatalog.NavTag(destination));
 
+    private void OnCubeNotice(object sender, string message) =>
+        ViewModel.StatusLine = message;
+
     private void OnCubeFrontChanged(object sender, CubeDestination destination)
     {
         var info = CubeCatalog.Info(destination);
@@ -53,7 +56,7 @@ public sealed partial class MainPage : Page
         ViewModel.SelectedNav = tag;
         ViewModel.StatusLine = tag switch
         {
-            "Home" => "Cube home.",
+            "Home" => "Cube home. Games face: cycle blocks, Enter launches.",
             "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
             "Tools" => "Tools marketplace ready.",

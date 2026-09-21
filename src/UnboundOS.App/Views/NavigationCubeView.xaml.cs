@@ -6,6 +6,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Automation;
 using UnboundOS.App.Services;
 using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Models;
 using UnboundOS.Core.Navigation;
 
 namespace UnboundOS.App.Views;
@@ -19,7 +20,13 @@ public sealed partial class NavigationCubeView : UserControl
     private bool _sceneReady;
     private bool _wired;
     private bool _opening;
+    private bool _browsing;
     private int _openToken;
+    private int _focus;
+    private IReadOnlyList<LibraryGame> _games = [];
+    private IReadOnlyList<DesktopTool> _tools = [];
+    private IReadOnlyList<ModGame> _mods = [];
+    private IReadOnlyList<CubeBrowseItem> _items = [];
 
     public NavigationCubeView()
     {
@@ -36,6 +43,8 @@ public sealed partial class NavigationCubeView : UserControl
 
     public event EventHandler<CubeDestination>? FrontChanged;
 
+    public event EventHandler<string>? Notice;
+
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (_wired)
@@ -51,6 +60,7 @@ public sealed partial class NavigationCubeView : UserControl
         }
 
         Announce(_pose.Front);
+        await LoadCatalogsAsync();
         await StartSceneAsync();
     }
 
@@ -70,6 +80,7 @@ public sealed partial class NavigationCubeView : UserControl
         _sceneReady = false;
         _wired = false;
         _opening = false;
+        _browsing = false;
         _pendingOpen = null;
     }
 
@@ -144,13 +155,41 @@ public sealed partial class NavigationCubeView : UserControl
                 PushState(burst: false);
                 break;
             case "activate":
+                if (_browsing)
+                {
+                    ActivateFocused();
+                    break;
+                }
+
                 ActivateFront();
                 break;
             case "opened":
                 CompleteActivation();
                 break;
+            case "cycle":
+                if (_browsing)
+                {
+                    Cycle(message.Index, fromScene: true);
+                }
+
+                break;
+            case "select":
+                if (_browsing)
+                {
+                    if (message.Index >= 0)
+                    {
+                        _focus = CubeBrowse.Wrap(message.Index, _items.Count);
+                    }
+
+                    ActivateFocused();
+                }
+
+                break;
+            case "back":
+                ResetScene();
+                break;
             case "turn":
-                if (_opening)
+                if (_opening || _browsing)
                 {
                     break;
                 }
@@ -162,7 +201,7 @@ public sealed partial class NavigationCubeView : UserControl
 
                 break;
             case "pick":
-                if (_opening)
+                if (_opening || _browsing)
                 {
                     break;
                 }
@@ -181,7 +220,7 @@ public sealed partial class NavigationCubeView : UserControl
 
                 break;
             case "dragend":
-                if (_opening)
+                if (_opening || _browsing)
                 {
                     break;
                 }
@@ -200,6 +239,39 @@ public sealed partial class NavigationCubeView : UserControl
         }
 
         var name = e.Key.ToString();
+        if (_browsing)
+        {
+            if (CubeInput.IsBackKey(name) || e.Key is Windows.System.VirtualKey.Escape)
+            {
+                ResetScene();
+                e.Handled = true;
+                return;
+            }
+
+            if (CubeInput.IsActivateKey(name) || e.Key is Windows.System.VirtualKey.Enter or Windows.System.VirtualKey.Space)
+            {
+                ActivateFocused();
+                e.Handled = true;
+                return;
+            }
+
+            var browseTurn = CubeInput.FromKey(name);
+            if (browseTurn is CubeTurn.Left or CubeTurn.Up)
+            {
+                Cycle(_focus - 1, fromScene: false);
+                e.Handled = true;
+                return;
+            }
+
+            if (browseTurn is CubeTurn.Right or CubeTurn.Down)
+            {
+                Cycle(_focus + 1, fromScene: false);
+                e.Handled = true;
+            }
+
+            return;
+        }
+
         if (CubeInput.IsActivateKey(name) || e.Key is Windows.System.VirtualKey.Enter or Windows.System.VirtualKey.Space)
         {
             ActivateFront();
@@ -226,7 +298,7 @@ public sealed partial class NavigationCubeView : UserControl
 
     public void Rotate(CubeTurn turn)
     {
-        if (_opening)
+        if (_opening || _browsing)
         {
             return;
         }
@@ -236,13 +308,23 @@ public sealed partial class NavigationCubeView : UserControl
 
     public void ActivateFront()
     {
-        if (_opening)
+        if (_opening || _browsing)
         {
             return;
         }
 
         var destination = _pose.Front;
-        if (!AllowMotion || !_sceneReady || CubeWeb.CoreWebView2 is null)
+        _items = ItemsFor(destination);
+        _focus = 0;
+        var stay = CubeCatalog.StaysInCube(destination) && _items.Count > 0;
+
+        if (!_sceneReady || CubeWeb.CoreWebView2 is null)
+        {
+            FaceActivated?.Invoke(this, destination);
+            return;
+        }
+
+        if (!stay && !AllowMotion)
         {
             FaceActivated?.Invoke(this, destination);
             return;
@@ -251,20 +333,32 @@ public sealed partial class NavigationCubeView : UserControl
         _opening = true;
         _pendingOpen = destination;
         var token = ++_openToken;
-        CubeWeb.CoreWebView2.PostWebMessageAsJson(CubeBridge.ToJson(CubeBridge.Open(destination, true)));
+        CubeWeb.CoreWebView2.PostWebMessageAsJson(
+            CubeBridge.ToJson(CubeBridge.Open(destination, AllowMotion, _items, _focus)));
+        if (stay && !AllowMotion)
+        {
+            EnterBrowse(destination);
+            return;
+        }
+
         _ = CompleteActivationAfterAsync(token);
     }
 
     public void ResetScene()
     {
         _opening = false;
+        _browsing = false;
         _pendingOpen = null;
+        _items = [];
+        _focus = 0;
         _openToken++;
         if (_sceneReady && CubeWeb.CoreWebView2 is not null)
         {
             CubeWeb.CoreWebView2.PostWebMessageAsJson(CubeBridge.ToJson(CubeBridge.Reset(_pose.Front, AllowMotion)));
             PushState(burst: false);
         }
+
+        Announce(_pose.Front);
     }
 
     private async Task CompleteActivationAfterAsync(int token)
@@ -287,8 +381,169 @@ public sealed partial class NavigationCubeView : UserControl
 
         _pendingOpen = null;
         _opening = false;
+        if (CubeCatalog.StaysInCube(destination) && _items.Count > 0)
+        {
+            EnterBrowse(destination);
+            return;
+        }
+
         FaceActivated?.Invoke(this, destination);
     }
+
+    private void EnterBrowse(CubeDestination destination)
+    {
+        _opening = false;
+        _browsing = true;
+        _pendingOpen = null;
+        if (_items.Count == 0)
+        {
+            FaceActivated?.Invoke(this, destination);
+            _browsing = false;
+            return;
+        }
+
+        _focus = CubeBrowse.Wrap(_focus, _items.Count);
+        AnnounceItem();
+        FocusScene();
+    }
+
+    private void Cycle(int index, bool fromScene)
+    {
+        if (_items.Count == 0)
+        {
+            return;
+        }
+
+        _focus = CubeBrowse.Wrap(index, _items.Count);
+        AnnounceItem();
+        if (!fromScene)
+        {
+            FocusScene();
+        }
+    }
+
+    private void FocusScene()
+    {
+        if (_sceneReady && CubeWeb.CoreWebView2 is not null)
+        {
+            CubeWeb.CoreWebView2.PostWebMessageAsJson(CubeBridge.ToJson(CubeBridge.Focus(_focus)));
+        }
+    }
+
+    private async void ActivateFocused()
+    {
+        if (_items.Count == 0)
+        {
+            return;
+        }
+
+        var item = _items[CubeBrowse.Wrap(_focus, _items.Count)];
+        switch (item.Kind)
+        {
+            case "game":
+                await LaunchGameAsync(item.Id);
+                break;
+            case "tool":
+                await LaunchToolAsync(item.Id);
+                break;
+            case "mod":
+                ResetScene();
+                FaceActivated?.Invoke(this, CubeDestination.Mods);
+                break;
+            case "page":
+                ResetScene();
+                FaceActivated?.Invoke(this, _pose.Front);
+                break;
+            default:
+                ResetScene();
+                FaceActivated?.Invoke(this, _pose.Front);
+                break;
+        }
+    }
+
+    private async Task LaunchGameAsync(string id)
+    {
+        var game = _games.FirstOrDefault(candidate =>
+            string.Equals(candidate.Id, id, StringComparison.OrdinalIgnoreCase));
+        var launcher = TryGet<ILibraryLaunchService>();
+        var profiles = TryGet<IProfileStore>();
+        if (game is null || launcher is null || profiles is null)
+        {
+            ResetScene();
+            FaceActivated?.Invoke(this, CubeDestination.Session);
+            return;
+        }
+
+        var profile = (await profiles.LoadAsync()).FirstOrDefault();
+        if (profile is null)
+        {
+            Notice?.Invoke(this, "No session profile. Open Profiles first.");
+            return;
+        }
+
+        var result = await launcher.LaunchAsync(game, profile);
+        Notice?.Invoke(this, result.Message);
+        if (!result.Succeeded)
+        {
+            ResetScene();
+            FaceActivated?.Invoke(this, CubeDestination.Session);
+        }
+    }
+
+    private async Task LaunchToolAsync(string id)
+    {
+        var tool = _tools.FirstOrDefault(candidate =>
+            string.Equals(candidate.Id, id, StringComparison.OrdinalIgnoreCase));
+        var launcher = TryGet<IDesktopToolLauncher>();
+        if (tool is null || launcher is null)
+        {
+            ResetScene();
+            FaceActivated?.Invoke(this, CubeDestination.Tools);
+            return;
+        }
+
+        var result = tool.IsInstalled
+            ? await launcher.LaunchAsync(tool)
+            : await launcher.OpenGetPathAsync(tool);
+        Notice?.Invoke(this, result.Message);
+    }
+
+    private async Task LoadCatalogsAsync()
+    {
+        try
+        {
+            var games = TryGet<IGameLibraryCatalog>();
+            if (games is not null)
+            {
+                _games = await games.DiscoverAsync();
+            }
+
+            var tools = TryGet<IDesktopToolCatalog>();
+            if (tools is not null)
+            {
+                _tools = await tools.DiscoverAsync();
+            }
+
+            var mods = TryGet<IModCatalogService>();
+            if (mods is not null)
+            {
+                _mods = await mods.DiscoverAsync();
+            }
+        }
+        catch (Exception)
+        {
+            // Discovery is best-effort. Stubs from CubeBrowse still populate Games.
+        }
+    }
+
+    private IReadOnlyList<CubeBrowseItem> ItemsFor(CubeDestination destination) =>
+        destination switch
+        {
+            CubeDestination.Session => CubeBrowse.Games(_games, _tools),
+            CubeDestination.Tools => CubeBrowse.Tools(_tools),
+            CubeDestination.Mods => CubeBrowse.Mods(_mods),
+            _ => []
+        };
 
     private void FinishDrag(float dx, float dy, float vx, float vy)
     {
@@ -309,7 +564,7 @@ public sealed partial class NavigationCubeView : UserControl
 
     private void PushState(bool burst)
     {
-        if (!_sceneReady || CubeWeb.CoreWebView2 is null)
+        if (!_sceneReady || CubeWeb.CoreWebView2 is null || _browsing || _opening)
         {
             return;
         }
@@ -332,6 +587,19 @@ public sealed partial class NavigationCubeView : UserControl
         }
     }
 
+    private void AnnounceItem()
+    {
+        if (_items.Count == 0)
+        {
+            return;
+        }
+
+        var item = _items[CubeBrowse.Wrap(_focus, _items.Count)];
+        FrontCaption.Text = item.Title;
+        AutomationProperties.SetName(this, CubeCatalog.AnnounceItem(item, _focus, _items.Count));
+        Notice?.Invoke(this, $"{item.Title} · {item.Meta}");
+    }
+
     private void SyncFallback()
     {
         if (FallbackCard.Visibility != Visibility.Visible)
@@ -347,11 +615,13 @@ public sealed partial class NavigationCubeView : UserControl
 
     private bool AllowMotion => _motion?.AllowMotion ?? true;
 
-    private static IUiMotionPolicy? TryMotion()
+    private static IUiMotionPolicy? TryMotion() => TryGet<IUiMotionPolicy>();
+
+    private static T? TryGet<T>() where T : class
     {
         try
         {
-            return AppServices.Get<IUiMotionPolicy>();
+            return AppServices.Get<T>();
         }
         catch (Exception)
         {

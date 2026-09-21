@@ -1,75 +1,64 @@
 # Home navigation cube
 
 UnboundOS Home is a **physical 3/4 cube**, not a face-on tile and not a
-letter-plate HUD. The WinUI 3 shell stays the product. Pages behind each
-face stay native WinUI.
+letter-plate HUD. The WinUI 3 shell stays the product. Pages behind list
+faces stay native WinUI. Games (and Tools/Mods when items exist) stay
+inside the cube as a block browse.
 
 ## Look
 
-Rest (product still): a single heavy volcanic cube on a dark wet floor.
-Recessed circuit grooves pulse in the Unbound family — cyan primary,
-cobalt secondary, controlled magenta and circuit amber as seasoning, not
-a pink costume. Haze, negative space, no chrome or face lettering. The
-cube is the only focal point on Home.
+Rest: a single heavy volcanic cube on a dark wet floor. Recessed circuit
+grooves pulse in the Unbound family — cyan primary, cobalt secondary,
+controlled magenta and circuit amber as seasoning. Each **face carries
+an etched group logo** (Games, Tools, Network, Mods, Files, Hardware)
+plus a small title — not letter soup. Haze, negative space, cube-only
+Home chrome.
 
-Activate (Enter / click the front): the hull **disassembles** into an
-uneven gunmetal block assembly (Tetris / greeble) with iridescent light
-in the seams (teal/cyan, magenta, amber), then the shell lands in that
-face’s native page. Motion-off skips the transform and navigates at once.
+## Open
+
+| Face | Group | Destination |
+|------|--------|-------------|
+| Session (front) | **Games** | Cube stays open. Each block is a library game. Cycle with arrows / gamepad / click; Enter launches. |
+| Tools | **Tools** | Mosaic of kit/utilities if discovery returned items; otherwise the Tools list page. |
+| Mods | **Mods** | Mosaic of discovered Workshop/Vortex games if any; otherwise the Mods list page. |
+| Network, Files, Hardware | config | Short transform, then the native **list** page. |
+| SET glyph | **Options / Settings** | Settings list of groups (motion, display, OC, startup, cleanup). Not a block carousel. |
+
+Motion-off skips the heavy transform and goes straight to that destination
+(browse pose for Games, list page for Settings/Files/…). Escape (or
+Gamepad B) returns from a cube browse to rest.
+
+Games come from the local Steam `appmanifest_*.acf` scan
+(`IGameLibraryCatalog` / `SteamGameLibraryCatalog`). Launch is
+`steam://rungameid/{id}` via `ILibraryLaunchService` — SessionEngine is
+not rewritten. If the library is empty, the carousel pads with **Session
+engine** plus Steam/Playnite from the existing Tools catalog. Those
+stubs are honest entry points, not fake installs.
 
 ## Architecture
 
 ```
-MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard)
+MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
                  │
-                 ├─ C#  CubePose / CubeCatalog / CubeInput / CubeAtmosphere
+                 ├─ C#  CubePose / CubeCatalog / CubeBrowse / CubeAtmosphere
                  │      owns snapping, destinations, motion policy, page nav
                  │
                  └─ WebView2  →  packaged Three.js scene (Assets/Cube)
-                        local virtual host https://unboundos.cube/Cube/
-                        JSON: state / open / reset / ready / activate /
-                              opened / turn / pick / dragEnd
+                        JSON: state / open / focus / reset
+                              ready / turn / pick / dragEnd / activate /
+                              opened / cycle / select / back
 ```
 
 - **Not Unreal.** UE is not a runtime dependency.
 - **WebView2 + Three.js r158** is the visual path.
-- If WebView2 or WebGL is missing, the host shows a static face card.
-  Keyboard, narrator, and Enter-to-open still work.
-- **Home chrome is cube-only.** Top nav, brand block, tagline, and scan
-  grid hide on Home. Settings and Profiles are discreet corner glyphs
-  (`SET` / `PRFL`). Inner pages restore the chrome; HOME resets the scene.
+- If WebView2 or WebGL is missing, the host shows a static face card and
+  Enter still opens the WinUI page for that group.
+- **Home chrome is cube-only.** Settings (`SET`) and Profiles (`PRFL`)
+  are discreet corner glyphs. Inner pages restore the chrome; HOME
+  resets the scene.
 
-Cube faces: Session, Tools, Network, Mods, Files, Hardware.
+Logical pose is still four yaw steps and ±90° pitch, with a rest bias
+(+28° yaw, −17° pitch) so three faces read at once.
 
-## Pose
-
-Logical pose is still four yaw steps and ±90° pitch. A **rest bias**
-(+28° yaw, −17° pitch) is applied only in the renderer so the cube sits
-in classic 3/4: Session leads, Tools on the right, Mods as the top plate.
-
-Each completed turn lerps the emissive accent inside the Unbound brand
-family. Motion-on spawns short electric arc filaments, then they die out.
-
-## Motion toggle
-
-`IUiMotionPolicy.AllowMotion` is false when:
-
-1. Settings → Interface motion is Off
-2. Windows animation effects are Off
-3. A session is live
-
-The scene then **snaps**, kills arcs, idle, motes, and the open
-disassemble, drops to a single frame, and stays usable as a static
-angled cube. That path is the cheap one for gaming performance.
-
-## Bridge
-
-C# → scene: `CubeBridge.State` JSON (`yaw`, `pitch`, `restYaw`,
-`restPitch`, `front`, `motion`, `burst`, palettes, face catalog).
-Activate posts `CubeBridge.Open`; returning Home posts `CubeBridge.Reset`.
-
-Scene → C#: `ready`, `turn`, `pick`, `activate`, `opened`, `dragEnd`.
-
-`docs/screenshots/README.md` still wants a Windows `Debug|x64` capture
-of the shell. The HTML scene can also be opened with `?preview=1` in a
-browser for look-dev without WinUI.
+`docs/screenshots/README.md` still wants a Windows `Debug|x64` capture.
+Look-dev: `Assets/Cube/index.html?preview=1`.

@@ -10,7 +10,7 @@
     HorizontalAlignment="Stretch"
     VerticalAlignment="Stretch"
     AutomationProperties.Name="UnboundOS navigation cube"
-    AutomationProperties.HelpText="Arrow keys rotate. Enter opens the front face. Drag or click a plate to turn. Settings and Profiles are the corner glyphs.">
+    AutomationProperties.HelpText="Arrow keys rotate. Enter opens the front group. Games stay as a block carousel. Settings and Profiles are the corner glyphs.">
 
     <Grid
         x:Name="PerspectiveHost"

@@ -12,7 +12,13 @@ public sealed class NavigationCubeTests
         Assert.Equal(6, CubeCatalog.Faces.Count);
         Assert.DoesNotContain(CubeCatalog.Faces, face => CubeCatalog.NavTag(face) is "Settings" or "Profiles" or "Overlay");
         Assert.Equal("Session", CubeCatalog.NavTag(CubeDestination.Session));
-        Assert.Equal("S", CubeCatalog.Info(CubeDestination.Session).Monogram);
+        Assert.Equal("Games", CubeCatalog.Info(CubeDestination.Session).Title);
+        Assert.Equal("games", CubeCatalog.Info(CubeDestination.Session).Glyph);
+        Assert.Equal(CubeOpenKind.Carousel, CubeCatalog.OpenKind(CubeDestination.Session));
+        Assert.Equal(CubeOpenKind.List, CubeCatalog.OpenKind(CubeDestination.Network));
+        Assert.True(CubeCatalog.StaysInCube(CubeDestination.Session));
+        Assert.False(CubeCatalog.StaysInCube(CubeDestination.Files));
+        Assert.Equal("G", CubeCatalog.Info(CubeDestination.Session).Monogram);
         Assert.NotEqual("I", CubeCatalog.Info(CubeDestination.Session).Monogram);
     }
 
@@ -50,6 +56,8 @@ public sealed class NavigationCubeTests
         Assert.Null(CubeInput.FromKey("Tab"));
         Assert.True(CubeInput.IsActivateKey("Enter"));
         Assert.True(CubeInput.IsActivateKey("GamepadA"));
+        Assert.True(CubeInput.IsBackKey("Escape"));
+        Assert.True(CubeInput.IsBackKey("GamepadB"));
         Assert.False(CubeInput.IsActivateKey("Escape"));
     }
 
@@ -137,6 +145,8 @@ public sealed class NavigationCubeTests
         Assert.Contains("Explorer stays", files.Hint, StringComparison.Ordinal);
         Assert.DoesNotContain("Night City", files.Hint, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", CubeCatalog.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("library", CubeCatalog.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("list", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("corner glyphs", CubeCatalog.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("top bar", CubeCatalog.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
         Assert.InRange(CubeLayout.FaceOpacity(1), 0.95f, 1.01f);
@@ -221,10 +231,24 @@ public sealed class NavigationCubeTests
         Assert.False(CubeBridge.TryRead("not-json", out _));
         Assert.Equal(CubeBridge.IndexUrl, "https://unboundos.cube/Cube/index.html");
 
-        var open = CubeBridge.ToJson(CubeBridge.Open(CubeDestination.Tools, true));
-        Assert.Contains("\"type\":\"open\"", open, StringComparison.Ordinal);
-        Assert.Contains("\"front\":\"Tools\"", open, StringComparison.Ordinal);
-        Assert.Contains("\"motion\":true", open, StringComparison.Ordinal);
+        var gamesOpen = CubeBridge.ToJson(CubeBridge.Open(
+            CubeDestination.Session,
+            true,
+            [new CubeBrowseItem("570", "Dota 2", "STEAM", "game", "D")]));
+        Assert.Contains("\"mode\":\"carousel\"", gamesOpen, StringComparison.Ordinal);
+        Assert.Contains("\"stay\":true", gamesOpen, StringComparison.Ordinal);
+        Assert.Contains("\"title\":\"Dota 2\"", gamesOpen, StringComparison.Ordinal);
+        Assert.Contains("\"glyph\":\"games\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"openKind\":\"carousel\"", json, StringComparison.Ordinal);
+
+        var listOpen = CubeBridge.ToJson(CubeBridge.Open(CubeDestination.Files, true));
+        Assert.Contains("\"mode\":\"list\"", listOpen, StringComparison.Ordinal);
+        Assert.Contains("\"stay\":false", listOpen, StringComparison.Ordinal);
+        Assert.Contains("\"type\":\"open\"", listOpen, StringComparison.Ordinal);
+        var toolsOpen = CubeBridge.ToJson(CubeBridge.Open(CubeDestination.Tools, true));
+        Assert.Contains("\"front\":\"Tools\"", toolsOpen, StringComparison.Ordinal);
+        Assert.Contains("\"motion\":true", toolsOpen, StringComparison.Ordinal);
+        Assert.Contains("\"mode\":\"mosaic\"", toolsOpen, StringComparison.Ordinal);
         var reset = CubeBridge.ToJson(CubeBridge.Reset(CubeDestination.Session, false));
         Assert.Contains("\"type\":\"reset\"", reset, StringComparison.Ordinal);
         Assert.Contains("\"motion\":false", reset, StringComparison.Ordinal);

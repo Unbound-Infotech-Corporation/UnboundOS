@@ -17,11 +17,10 @@ Visual check:
   row. Settings / Profiles are discreet corner glyphs, not cube faces.
   Inner pages restore HOME / SESSION / NETWORK / TOOLS / FILES /
   HARDWARE / MODS / PROFILES / SETTINGS.
-- Home hero is a **volcanic 3/4 cube** on a wet floor (recessed glowing
-  grooves, haze, no face letters), not a flat START tile or a CSS cube.
-  The old Settings tile monogram “I” must not return.
-- Enter / front-click **disassembles** the cube into an uneven gunmetal
-  block assembly with iridescent seam light, then lands in that page.
+- Home hero is a **volcanic 3/4 cube** with etched group logos (Games,
+  Tools, Network, Mods, Files, Hardware), wet floor, no face-letter soup.
+- Enter on Games **disassembles** into a block carousel of library games.
+  Settings / Files / Hardware / Network land on list UI.
 - On a turn: short electric arcs, then settle; accent hue drifts per
   destination (cyan / cobalt; magenta and amber as seasoning).
 - Interface motion On: springy rotate, arcs, idle, open transform.

@@ -17,8 +17,8 @@ atmosphere — not a neon costume. No ads. No silent overclock. Treat
 
 Home navigation is a **3D cube** (WebView2 hosting packaged Three.js, not
 Unreal in-process). Faces: Session, Tools, Network, Mods, Files,
-Hardware. Home is cube-only: Settings and Profiles are corner glyphs;
-inner pages restore chrome. Architecture: [docs/cube-nav.md](cube-nav.md).
+Hardware. Front face is **Games** (library carousel). Settings is a list
+via the SET glyph. Home is cube-only. Architecture: [docs/cube-nav.md](cube-nav.md).
 
 ## 1. OOBE / initial setup last step
 

@@ -548,7 +548,8 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     FaceActivated="OnCubeActivated"
-                    FrontChanged="OnCubeFrontChanged" />
+                    FrontChanged="OnCubeFrontChanged"
+                    Notice="OnCubeNotice" />
                 <Button
                     x:Name="HomeProfilesGlyph"
                     Tag="Profiles"

@@ -24,6 +24,17 @@ public enum CubeTurn
     Down = 3
 }
 
+/// <summary>
+/// How a face opens. Games stay in the cube as a block carousel.
+/// Tools/Mods stay as a mosaic when items exist. Config faces land on a list page.
+/// </summary>
+public enum CubeOpenKind
+{
+    List = 0,
+    Carousel = 1,
+    Mosaic = 2
+}
+
 public readonly record struct CubeHit(bool Activates, CubeTurn? Turn)
 {
     public static CubeHit Activate { get; } = new(true, null);
@@ -38,7 +49,9 @@ public sealed record CubeFaceInfo(
     string Kicker,
     string Monogram,
     string Meta,
-    string Hint);
+    string Hint,
+    string Glyph,
+    CubeOpenKind OpenKind);
 
 /// <summary>
 /// Discrete cube pose: four equatorial yaw steps and a ±90° pitch for Mods/Files.
@@ -106,30 +119,53 @@ public static class CubeCatalog
         destination switch
         {
             CubeDestination.Session => new(
-                destination, "Session", "Session", "SYS", "S", "ENTER",
-                "Enter or exit the gaming posture."),
+                destination, "Session", "Games", "PLAY", "G", "PLAY",
+                "Installed library. Cycle the blocks, Enter launches.",
+                "games", CubeOpenKind.Carousel),
             CubeDestination.Tools => new(
                 destination, "Tools", "Tools", "KIT", "T", "OPEN",
-                "OBS, Vortex, Discord, Playnite, utilities."),
+                "OBS, Vortex, Discord, Playnite, utilities.",
+                "tools", CubeOpenKind.Mosaic),
             CubeDestination.Network => new(
                 destination, "Network", "Network", "LINK", "N", "SPLIT",
-                "Prefer a game NIC. Park bulk traffic."),
+                "Prefer a game NIC. Park bulk traffic.",
+                "network", CubeOpenKind.List),
             CubeDestination.Mods => new(
                 destination, "Mods", "Mods", "MOD", "M", "OPEN",
-                "Workshop and Vortex discovery. Vortex stays in charge."),
+                "Workshop and Vortex discovery. Vortex stays in charge.",
+                "mods", CubeOpenKind.Mosaic),
             CubeDestination.Files => new(
                 destination, "Files", "Files", "FS", "F", "BROWSE",
-                "Daily folders. Explorer stays for anticheat."),
+                "Daily folders. Explorer stays for anticheat.",
+                "files", CubeOpenKind.List),
             CubeDestination.Hardware => new(
                 destination, "Hardware", "Hardware", "HW", "H", "READ",
-                "Inventory from this PC. Optional official HWiNFO."),
+                "Inventory from this PC. Optional official HWiNFO.",
+                "hardware", CubeOpenKind.List),
             _ => throw new ArgumentOutOfRangeException(nameof(destination))
         };
 
     public static string NavTag(CubeDestination destination) => Info(destination).NavTag;
 
-    public static string Announce(CubeDestination destination) =>
-        $"Front face {Info(destination).Title}. Enter opens it into that section. Arrow keys rotate. Settings and Profiles are the corner glyphs.";
+    public static CubeOpenKind OpenKind(CubeDestination destination) => Info(destination).OpenKind;
+
+    public static bool StaysInCube(CubeDestination destination) =>
+        OpenKind(destination) is CubeOpenKind.Carousel or CubeOpenKind.Mosaic;
+
+    public static string Announce(CubeDestination destination)
+    {
+        var info = Info(destination);
+        var open = info.OpenKind switch
+        {
+            CubeOpenKind.Carousel => "Enter opens the library. Cycle blocks to pick a game.",
+            CubeOpenKind.Mosaic => "Enter opens the group as blocks. Cycle to pick an item.",
+            _ => "Enter opens the list for this group."
+        };
+        return $"Front face {info.Title}. {open} Arrow keys rotate. Settings and Profiles are the corner glyphs.";
+    }
+
+    public static string AnnounceItem(CubeBrowseItem item, int index, int total) =>
+        $"{item.Title}, {item.Meta}, {index + 1} of {total}. Enter launches. Escape returns to the cube.";
 }
 
 /// <summary>Pointer, keyboard, and gamepad mapping for the Home cube.</summary>
@@ -151,6 +187,9 @@ public static class CubeInput
 
     public static bool IsActivateKey(string? key) =>
         key is "Enter" or "Space" or "GamepadA";
+
+    public static bool IsBackKey(string? key) =>
+        key is "Escape" or "Back" or "GamepadB";
 
     public static CubeHit HitFromNormalizedPoint(float nx, float ny, float edge = DefaultEdge)
     {

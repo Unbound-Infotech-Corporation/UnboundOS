@@ -7,6 +7,8 @@ using UnboundOS.Core.Models;
 
 namespace UnboundOS.App.ViewModels;
 
+public sealed record SettingsGroup(string Id, string Title, string Hint);
+
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly IUiMotionPolicy _motion;
@@ -41,6 +43,16 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private StartupEntry? _selectedStartup;
     [ObservableProperty] private VendorApp? _selectedDisplayApp;
     [ObservableProperty] private VendorApp? _selectedOcApp;
+    [ObservableProperty] private SettingsGroup? _selectedGroup;
+
+    public ObservableCollection<SettingsGroup> Groups { get; } =
+    [
+        new("motion", "Interface motion", "Springy cube, arcs, idle, and the open transform."),
+        new("display", "Display", "Launch the GPU vendor app. UnboundOS does not write display settings."),
+        new("overclock", "Overclocking", "Launch-only vendor OC hubs. No silent clocks."),
+        new("startup", "Startup audit", "Pin allowlist. Never silently kill anticheat or GPU vendor."),
+        new("cleanup", "Finish setup", "Known leftover folders. The image owns the full wipe.")
+    ];
 
     public ObservableCollection<StartupEntry> StartupEntries { get; } = [];
     public ObservableCollection<VendorApp> DisplayApps { get; } = [];
@@ -62,7 +74,25 @@ public partial class SettingsViewModel : ObservableObject
         SyncFromPolicy();
         await RefreshVendorsAsync();
         await RefreshStartupAsync();
+        SelectedGroup ??= Groups[0];
     }
+
+    partial void OnSelectedGroupChanged(SettingsGroup? value)
+    {
+        OnPropertyChanged(nameof(ShowMotion));
+        OnPropertyChanged(nameof(ShowDisplay));
+        OnPropertyChanged(nameof(ShowOverclock));
+        OnPropertyChanged(nameof(ShowStartup));
+        OnPropertyChanged(nameof(ShowCleanup));
+        OnPropertyChanged(nameof(GroupHint));
+    }
+
+    public bool ShowMotion => SelectedGroup?.Id == "motion";
+    public bool ShowDisplay => SelectedGroup?.Id == "display";
+    public bool ShowOverclock => SelectedGroup?.Id == "overclock";
+    public bool ShowStartup => SelectedGroup?.Id == "startup";
+    public bool ShowCleanup => SelectedGroup?.Id == "cleanup";
+    public string GroupHint => SelectedGroup?.Hint ?? "Pick a group.";
 
     partial void OnInterfaceMotionEnabledChanged(bool value)
     {

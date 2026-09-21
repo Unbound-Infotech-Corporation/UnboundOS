@@ -6,12 +6,12 @@
   const SPRING_K = 86;
   const SPRING_D = 15;
   const DEFAULT_FACES = [
-    { id: "Session", title: "Session", kicker: "SYS", monogram: "S", meta: "ENTER", hint: "Enter or exit the gaming posture.", accent: "#00F0FF", seam: "#00D0E8", core: "#1E40AF", plate: "#0B121D" },
-    { id: "Tools", title: "Tools", kicker: "KIT", monogram: "T", meta: "OPEN", hint: "OBS, Vortex, Discord, Playnite, utilities.", accent: "#00D4F0", seam: "#0098C8", core: "#1E3A8A", plate: "#0A1018" },
-    { id: "Hardware", title: "Hardware", kicker: "HW", monogram: "H", meta: "READ", hint: "Inventory from this PC. Optional official HWiNFO.", accent: "#60A5FA", seam: "#1D4ED8", core: "#00B4D8", plate: "#10151E" },
-    { id: "Network", title: "Network", kicker: "LINK", monogram: "N", meta: "SPLIT", hint: "Prefer a game NIC. Park bulk traffic.", accent: "#4F7CFF", seam: "#1E40AF", core: "#0EA5E9", plate: "#0B121D" },
-    { id: "Mods", title: "Mods", kicker: "MOD", monogram: "M", meta: "OPEN", hint: "Workshop and Vortex discovery. Vortex stays in charge.", accent: "#2EE9D0", seam: "#0891B2", core: "#155E75", plate: "#0A1214" },
-    { id: "Files", title: "Files", kicker: "FS", monogram: "F", meta: "BROWSE", hint: "Daily folders. Explorer stays for anticheat.", accent: "#7DD3FC", seam: "#0369A1", core: "#1E40AF", plate: "#0B121D" }
+    { id: "Session", title: "Games", kicker: "PLAY", monogram: "G", meta: "PLAY", hint: "Installed library. Cycle the blocks, Enter launches.", accent: "#00F0FF", seam: "#00D0E8", core: "#1E40AF", plate: "#0B121D", glyph: "games" },
+    { id: "Tools", title: "Tools", kicker: "KIT", monogram: "T", meta: "OPEN", hint: "OBS, Vortex, Discord, Playnite, utilities.", accent: "#00D4F0", seam: "#0098C8", core: "#1E3A8A", plate: "#0A1018", glyph: "tools" },
+    { id: "Hardware", title: "Hardware", kicker: "HW", monogram: "H", meta: "READ", hint: "Inventory from this PC. Optional official HWiNFO.", accent: "#60A5FA", seam: "#1D4ED8", core: "#00B4D8", plate: "#10151E", glyph: "hardware" },
+    { id: "Network", title: "Network", kicker: "LINK", monogram: "N", meta: "SPLIT", hint: "Prefer a game NIC. Park bulk traffic.", accent: "#4F7CFF", seam: "#1E40AF", core: "#0EA5E9", plate: "#0B121D", glyph: "network" },
+    { id: "Mods", title: "Mods", kicker: "MOD", monogram: "M", meta: "OPEN", hint: "Workshop and Vortex discovery. Vortex stays in charge.", accent: "#2EE9D0", seam: "#0891B2", core: "#155E75", plate: "#0A1214", glyph: "mods" },
+    { id: "Files", title: "Files", kicker: "FS", monogram: "F", meta: "BROWSE", hint: "Daily folders. Explorer stays for anticheat.", accent: "#7DD3FC", seam: "#0369A1", core: "#1E40AF", plate: "#0B121D", glyph: "files" }
   ];
 
   const FACE_LAYOUT = {
@@ -76,6 +76,11 @@
     opening: false,
     openT: 0,
     openDuration: 1.08,
+    browse: false,
+    stay: false,
+    mode: "list",
+    items: [],
+    focus: 0,
     camZ: 3.95,
     camY: 1.28
   };
@@ -245,6 +250,7 @@
     ctx.restore();
 
     drawTrenches(ctx, size, mulberry(hash(info.id + "-circuit")), info);
+    etchGlyph(ctx, size, info, false);
 
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
@@ -260,10 +266,150 @@
     const rng = mulberry(hash(info.id + "-circuit"));
     ctx.clearRect(0, 0, size, size);
     drawTraces(ctx, size, rng, info, isFront);
+    etchGlyph(ctx, size, info, true);
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = 8;
     return tex;
+  }
+
+  function etchGlyph(ctx, size, info, glow) {
+    const glyph = String(info.glyph || info.id || "games").toLowerCase();
+    const accent = info.accent || "#00F0FF";
+    ctx.save();
+    ctx.translate(size * 0.5, size * 0.44);
+    ctx.lineCap = "square";
+    ctx.lineJoin = "miter";
+    if (glow) {
+      ctx.shadowBlur = 18;
+      ctx.shadowColor = hexAlpha(accent, 0.75);
+      ctx.strokeStyle = hexAlpha(accent, 0.92);
+      ctx.fillStyle = hexAlpha(accent, 0.12);
+      ctx.lineWidth = 5;
+    } else {
+      ctx.strokeStyle = "rgba(2, 3, 4, 0.96)";
+      ctx.fillStyle = "rgba(4, 6, 8, 0.55)";
+      ctx.lineWidth = 16;
+    }
+    drawGlyph(ctx, glyph);
+    ctx.restore();
+
+    const label = String(info.title || "").toUpperCase();
+    if (!label) return;
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.font = "600 26px 'Segoe UI', sans-serif";
+    const spaced = label.split("").join("  ");
+    if (glow) {
+      ctx.fillStyle = hexAlpha(accent, 0.5);
+    } else {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.72)";
+    }
+    ctx.fillText(spaced, size * 0.5, size * 0.8);
+    ctx.restore();
+  }
+
+  function drawGlyph(ctx, glyph) {
+    ctx.beginPath();
+    if (glyph === "games") {
+      rounded(ctx, -150, -88, 300, 176, 22);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(-72, 0, 34, 0, Math.PI * 2);
+      ctx.moveTo(-72, -18);
+      ctx.lineTo(-72, 18);
+      ctx.moveTo(-90, 0);
+      ctx.lineTo(-54, 0);
+      ctx.stroke();
+      for (const [x, y] of [[70, -22], [102, 0], [70, 22], [38, 0]]) {
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      return;
+    }
+    if (glyph === "tools") {
+      ctx.moveTo(-20, -110);
+      ctx.lineTo(20, -110);
+      ctx.lineTo(20, -20);
+      ctx.lineTo(70, 70);
+      ctx.lineTo(40, 100);
+      ctx.lineTo(-40, 20);
+      ctx.lineTo(-70, 50);
+      ctx.lineTo(-100, 20);
+      ctx.lineTo(-20, -60);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.strokeRect(-18, -18, 36, 36);
+      return;
+    }
+    if (glyph === "network") {
+      ctx.arc(-90, 40, 22, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(90, 40, 22, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, -70, 26, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-72, 26);
+      ctx.lineTo(-18, -52);
+      ctx.moveTo(72, 26);
+      ctx.lineTo(18, -52);
+      ctx.moveTo(-68, 40);
+      ctx.lineTo(68, 40);
+      ctx.stroke();
+      return;
+    }
+    if (glyph === "mods") {
+      ctx.strokeRect(-110, -50, 90, 90);
+      ctx.strokeRect(-20, -110, 90, 90);
+      ctx.strokeRect(20, -10, 90, 90);
+      return;
+    }
+    if (glyph === "files") {
+      ctx.moveTo(-110, -40);
+      ctx.lineTo(-40, -40);
+      ctx.lineTo(-10, -80);
+      ctx.lineTo(110, -80);
+      ctx.lineTo(110, 90);
+      ctx.lineTo(-110, 90);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-80, -10);
+      ctx.lineTo(80, -10);
+      ctx.moveTo(-80, 30);
+      ctx.lineTo(80, 30);
+      ctx.stroke();
+      return;
+    }
+    if (glyph === "hardware") {
+      ctx.strokeRect(-90, -70, 180, 140);
+      ctx.strokeRect(-50, -30, 100, 60);
+      for (let i = -60; i <= 60; i += 30) {
+        ctx.moveTo(i, -70);
+        ctx.lineTo(i, -95);
+        ctx.moveTo(i, 70);
+        ctx.lineTo(i, 95);
+      }
+      ctx.stroke();
+      return;
+    }
+    ctx.strokeRect(-80, -80, 160, 160);
+  }
+
+  function rounded(ctx, x, y, w, h, r) {
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
   }
 
   function drawTrenches(ctx, size, rng, info) {
@@ -736,6 +882,9 @@
       group.userData.delay = rng() * 0.16;
       group.userData.restScale = 1;
       group.userData.targetScale = 1 + rng() * 0.06;
+      group.userData.size = size;
+      group.userData.item = null;
+      group.userData.itemIndex = -1;
       artifact.add(group);
       list.push(group);
 
@@ -879,12 +1028,20 @@
   function startOpen(msg) {
     if (msg && msg.front) state.front = msg.front;
     if (msg && msg.motion === false) state.motion = false;
+    state.items = Array.isArray(msg && msg.items) ? msg.items : previewItems();
+    state.mode = String((msg && msg.mode) || "list").toLowerCase();
+    state.stay = msg && msg.stay === true || state.mode === "carousel" || state.mode === "mosaic";
+    state.focus = typeof (msg && msg.focus) === "number" ? msg.focus : 0;
+    if (state.opening) return;
     if (!state.motion) {
-      send({ v: 1, type: "opened", face: state.front });
+      if (state.stay && state.items.length) {
+        snapBrowse();
+      }
+      send({ v: 1, type: "opened", face: state.front, stay: state.stay });
       return;
     }
-    if (state.opening) return;
     state.opening = true;
+    state.browse = false;
     state.openT = 0;
     state.dragging = false;
     spawnArcs();
@@ -900,8 +1057,165 @@
     setLoop(true);
   }
 
+  function previewItems() {
+    if (state.front === "Session") {
+      return [
+        { id: "session", title: "Session engine", meta: "PAGE", kind: "page", glyph: "G" },
+        { id: "steam", title: "Steam", meta: "KIT", kind: "tool", glyph: "S" },
+        { id: "playnite", title: "Playnite", meta: "KIT", kind: "tool", glyph: "P" }
+      ];
+    }
+    if (state.front === "Tools") {
+      return [
+        { id: "obs", title: "OBS Studio", meta: "KIT", kind: "tool", glyph: "O" },
+        { id: "vortex", title: "Vortex", meta: "KIT", kind: "tool", glyph: "V" },
+        { id: "discord", title: "Discord", meta: "KIT", kind: "tool", glyph: "D" }
+      ];
+    }
+    return [];
+  }
+
+  function playableBricks() {
+    return bricks
+      .filter((b) => !b.userData.glow && !b.userData.core && b.userData.size)
+      .sort((a, b) => (b.userData.size || 0) - (a.userData.size || 0));
+  }
+
+  function paintItemLabel(item, focused) {
+    const c = document.createElement("canvas");
+    c.width = 256;
+    c.height = 256;
+    const ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, 256, 256);
+    ctx.fillStyle = "rgba(8, 10, 14, 0.35)";
+    ctx.fillRect(24, 24, 208, 208);
+    ctx.strokeStyle = hexAlpha(focused ? (faceInfo(state.front).accent || "#00F0FF") : "#8aa0b4", focused ? 0.9 : 0.35);
+    ctx.lineWidth = 3;
+    ctx.strokeRect(32, 32, 192, 192);
+    ctx.fillStyle = hexAlpha(faceInfo(state.front).accent || "#00F0FF", focused ? 0.85 : 0.45);
+    ctx.font = "600 72px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText((item.glyph || item.title || "?").slice(0, 1), 128, 128);
+    ctx.font = "600 18px 'Segoe UI', sans-serif";
+    const name = String(item.title || "").slice(0, 18);
+    ctx.fillText(name, 128, 188);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+
+  function bindItems() {
+    const playable = playableBricks();
+    for (const b of playable) {
+      if (b.userData.label) {
+        b.remove(b.userData.label);
+        b.userData.label.material.map?.dispose();
+        b.userData.label.material.dispose();
+        b.userData.label = null;
+      }
+      b.userData.item = null;
+      b.userData.itemIndex = -1;
+    }
+    const n = Math.min(state.items.length, playable.length);
+    for (let i = 0; i < n; i++) {
+      const b = playable[i];
+      const item = state.items[i];
+      b.userData.item = item;
+      b.userData.itemIndex = i;
+      const plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(Math.max(0.22, (b.userData.size || 0.3) * 0.72), Math.max(0.22, (b.userData.size || 0.3) * 0.72)),
+        new THREE.MeshBasicMaterial({
+          map: paintItemLabel(item, i === state.focus),
+          transparent: true,
+          opacity: 0.95
+        })
+      );
+      plane.position.z = (b.userData.size || 0.3) * 0.52;
+      b.add(plane);
+      b.userData.label = plane;
+    }
+    applyFocus();
+  }
+
+  function applyFocus() {
+    const carousel = state.mode === "carousel";
+    for (const b of bricks) {
+      if (b.userData.glow || b.userData.core) continue;
+      const idx = b.userData.itemIndex;
+      const focused = idx === state.focus && idx >= 0;
+      const pop = focused ? (carousel ? 0.38 : 0.16) : 0;
+      const base = b.userData.target || b.userData.rest;
+      if (base && state.browse) {
+        const out = base.clone();
+        if (out.lengthSq() < 0.01) out.set(0, 0.3, 0.6);
+        else out.normalize();
+        b.position.copy(base).addScaledVector(out, pop);
+        b.scale.setScalar((b.userData.targetScale || 1) * (focused ? 1.18 : 0.96));
+      }
+      if (b.userData.label && idx >= 0) {
+        b.userData.label.material.map?.dispose();
+        b.userData.label.material.map = paintItemLabel(state.items[idx], focused);
+        b.userData.label.material.needsUpdate = true;
+      }
+    }
+    const item = state.items[state.focus];
+    if (item) {
+      const title = document.getElementById("previewTitle");
+      const hint = document.getElementById("previewHint");
+      if (title) title.textContent = item.title;
+      if (hint) hint.textContent = `${item.meta || ""} · arrows cycle · Enter launches · Esc returns`;
+    }
+  }
+
+  function snapBrowse() {
+    state.opening = false;
+    state.browse = true;
+    setHullVisible(false);
+    setFloorVisible(0.15);
+    renderer.toneMappingExposure = 1.35;
+    key.intensity = 2.2;
+    fill.intensity = 0.8;
+    rim.intensity = 1.6;
+    creviceCyan.intensity = 2.2;
+    creviceMagenta.intensity = 1.4;
+    creviceAmber.intensity = 1.1;
+    for (const b of bricks) {
+      b.visible = true;
+      if (b.userData.target) b.position.copy(b.userData.target);
+      b.scale.setScalar(b.userData.targetScale || 1);
+      if (b.userData.glow && b.material) b.material.opacity = 0.45;
+    }
+    bindItems();
+    setLoop(state.motion || true);
+    if (!state.motion) renderFrame(0);
+  }
+
+  function enterBrowse() {
+    state.opening = false;
+    state.browse = true;
+    bindItems();
+    setLoop(true);
+  }
+
+  function cycleFocus(delta) {
+    if (!state.items.length) return;
+    state.focus = ((state.focus + delta) % state.items.length + state.items.length) % state.items.length;
+    applyFocus();
+    send({ v: 1, type: "cycle", index: state.focus, item: state.items[state.focus].id });
+  }
+
+  function selectFocused() {
+    const item = state.items[state.focus];
+    if (!item) return;
+    send({ v: 1, type: "select", index: state.focus, item: item.id, face: state.front });
+  }
+
   function resetAssembly() {
     state.opening = false;
+    state.browse = false;
+    state.stay = false;
+    state.items = [];
+    state.focus = 0;
     state.openT = 0;
     renderer.toneMappingExposure = 1.05;
     scene.fog.density = 0.078;
@@ -917,6 +1231,14 @@
     setHullVisible(true);
     setFloorVisible(1);
     for (const b of bricks) {
+      if (b.userData.label) {
+        b.remove(b.userData.label);
+        b.userData.label.material.map?.dispose();
+        b.userData.label.material.dispose();
+        b.userData.label = null;
+      }
+      b.userData.item = null;
+      b.userData.itemIndex = -1;
       b.visible = false;
       b.position.copy(b.userData.rest);
       b.rotation.set(0, 0, 0);
@@ -973,7 +1295,10 @@
       s.rotation.y += dt * 0.12;
     }
     if (t >= 1) {
-      send({ v: 1, type: "opened", face: state.front });
+      if (state.stay && state.items.length) {
+        enterBrowse();
+      }
+      send({ v: 1, type: "opened", face: state.front, stay: state.stay });
       state.opening = false;
     }
   }
@@ -1063,6 +1388,13 @@
     const type = data && data.type ? String(data.type).toLowerCase() : "state";
     if (type === "open") {
       startOpen(data);
+      return;
+    }
+    if (type === "focus") {
+      if (typeof data.focus === "number") {
+        state.focus = data.focus;
+        if (state.browse) applyFocus();
+      }
       return;
     }
     if (type === "reset") {
@@ -1164,6 +1496,8 @@
     const now = performance.now();
     if (state.opening) {
       tickOpen(dt);
+    } else if (state.browse) {
+      state.idle = 0;
     } else if (state.motion && !state.dragging) {
       const y = spring(state.visualYaw, state.yaw, state.yawVel, dt);
       const p = spring(state.visualPitch, state.pitch, state.pitchVel, dt);
@@ -1191,7 +1525,7 @@
 
     floor.pool.material.color.copy(state.accent);
 
-    motes.visible = state.motion && !state.opening;
+    motes.visible = state.motion && !state.opening && !state.browse;
     if (state.motion) {
       motes.rotation.y += dt * 0.02;
       for (const h of haze) {
@@ -1300,6 +1634,10 @@
 
   function onPointerDown(ev) {
     if (state.opening) return;
+    if (state.browse) {
+      pickBrowse(ev.clientX, ev.clientY);
+      return;
+    }
     state.dragging = true;
     state.moved = false;
     state.pressX = ev.clientX;
@@ -1380,6 +1718,10 @@
 
   function pick(x, y) {
     if (state.opening) return;
+    if (state.browse) {
+      pickBrowse(x, y);
+      return;
+    }
     const rect = canvas.getBoundingClientRect();
     pointer.x = ((x - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((y - rect.top) / rect.height) * 2 + 1;
@@ -1423,16 +1765,60 @@
     }
   }
 
+  function pickBrowse(x, y) {
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = ((x - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((y - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(playableBricks(), true);
+    if (!hits.length) return;
+    let obj = hits[0].object;
+    while (obj && obj.userData.itemIndex == null) obj = obj.parent;
+    const idx = obj && typeof obj.userData.itemIndex === "number" ? obj.userData.itemIndex : -1;
+    if (idx < 0) return;
+    if (idx === state.focus) {
+      selectFocused();
+      return;
+    }
+    state.focus = idx;
+    applyFocus();
+    send({ v: 1, type: "cycle", index: state.focus, item: state.items[state.focus].id });
+  }
+
   function onKey(ev) {
     if (state.opening) {
       ev.preventDefault();
+      return;
+    }
+    if (state.browse) {
+      if (ev.key === "Escape") {
+        ev.preventDefault();
+        send({ v: 1, type: "back" });
+        if (!hosted) resetAssembly();
+        return;
+      }
+      if (ev.key === "Enter" || ev.key === " ") {
+        ev.preventDefault();
+        selectFocused();
+        return;
+      }
+      if (ev.key === "ArrowLeft" || ev.key === "ArrowUp") {
+        ev.preventDefault();
+        cycleFocus(-1);
+        return;
+      }
+      if (ev.key === "ArrowRight" || ev.key === "ArrowDown") {
+        ev.preventDefault();
+        cycleFocus(1);
+        return;
+      }
       return;
     }
     const map = { ArrowLeft: "Left", ArrowRight: "Right", ArrowUp: "Up", ArrowDown: "Down" };
     if (ev.key === "Enter" || ev.key === " ") {
       ev.preventDefault();
       if (hosted) send({ v: 1, type: "activate" });
-      else startOpen({ front: state.front, motion: state.motion });
+      else startOpen({ front: state.front, motion: state.motion, stay: state.front === "Session" || state.front === "Tools", mode: state.front === "Session" ? "carousel" : state.front === "Tools" ? "mosaic" : "list" });
       return;
     }
     const turn = map[ev.key];
@@ -1449,6 +1835,11 @@
 
   function onWheel(ev) {
     if (state.opening) return;
+    if (state.browse) {
+      ev.preventDefault();
+      cycleFocus(ev.deltaY < 0 ? -1 : 1);
+      return;
+    }
     ev.preventDefault();
     const turn = ev.deltaY < 0 ? "Left" : "Right";
     if (hosted) {
