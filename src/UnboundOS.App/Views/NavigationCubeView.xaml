@@ -7,80 +7,67 @@
     XYFocusKeyboardNavigation="Disabled"
     AllowFocusOnInteraction="True"
     KeyDown="OnKeyDown"
-    HorizontalAlignment="Center"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch"
     AutomationProperties.Name="UnboundOS navigation cube"
-    AutomationProperties.HelpText="Arrow keys rotate. Enter opens the front face. Drag or click a plate to turn. Settings and Profiles stay in the top bar.">
+    AutomationProperties.HelpText="Arrow keys rotate. Enter opens the front face. Drag or click a plate to turn. Settings and Profiles are the corner glyphs.">
 
-    <StackPanel Spacing="14">
-        <TextBlock Style="{StaticResource TileRowLabelText}" Text="NAVIGATE" />
-        <Grid
-            x:Name="PerspectiveHost"
-            Style="{StaticResource CubeHostStyle}"
-            AutomationProperties.Name="3D navigation cube">
-            <WebView2
-                x:Name="CubeWeb"
-                DefaultBackgroundColor="#FF05070A"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                IsTabStop="False"
-                AllowFocusOnInteraction="False"
-                AutomationProperties.AccessibilityView="Raw" />
-            <Border
-                x:Name="FallbackCard"
-                Visibility="Collapsed"
-                Background="{StaticResource TileFieldHeroBrush}"
-                BorderBrush="{StaticResource CyanPulseBrush}"
-                BorderThickness="1"
-                CornerRadius="8"
-                Width="280"
-                Height="280"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                PointerPressed="OnFallbackPressed">
-                <Grid>
-                    <TextBlock
-                        x:Name="FallbackKicker"
-                        Style="{StaticResource MicroLabelText}"
-                        Margin="16,14"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Text="SYS" />
-                    <TextBlock
-                        x:Name="FallbackMonogram"
-                        Style="{StaticResource TileMonogramText}"
-                        FontSize="84"
-                        Text="S" />
-                    <StackPanel VerticalAlignment="Bottom" Padding="18,16">
-                        <TextBlock x:Name="FallbackTitle" Style="{StaticResource TileCaptionText}" FontSize="22" Text="Session" />
-                        <TextBlock Style="{StaticResource TileMetaText}" Text="ENTER" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-            <Border
-                x:Name="FocusRing"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                BorderBrush="{StaticResource CyanPulseBrush}"
-                BorderThickness="1"
-                CornerRadius="12"
-                Opacity="0"
-                IsHitTestVisible="False" />
-        </Grid>
-        <StackPanel Spacing="4" MaxWidth="560">
-            <TextBlock
-                x:Name="FrontCaption"
-                Style="{StaticResource TileCaptionText}"
-                FontSize="22"
-                Text="Session"
-                AutomationProperties.LiveSetting="Polite" />
-            <TextBlock
-                x:Name="FrontHint"
-                Style="{StaticResource BodyMutedText}"
-                Text="Enter or exit the gaming posture." />
-            <TextBlock
-                Style="{StaticResource BodyMutedText}"
-                FontSize="13"
-                Text="Arrows rotate · Enter opens · drag the cube or click a plate. Settings and Profiles stay in the top bar." />
-        </StackPanel>
-    </StackPanel>
+    <Grid
+        x:Name="PerspectiveHost"
+        Style="{StaticResource CubeHostStyle}"
+        AutomationProperties.Name="3D navigation cube">
+        <WebView2
+            x:Name="CubeWeb"
+            DefaultBackgroundColor="#FF05070A"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            IsTabStop="False"
+            AllowFocusOnInteraction="False"
+            AutomationProperties.AccessibilityView="Raw" />
+        <Border
+            x:Name="FallbackCard"
+            Visibility="Collapsed"
+            Background="{StaticResource TileFieldHeroBrush}"
+            BorderBrush="{StaticResource CyanPulseBrush}"
+            BorderThickness="1"
+            CornerRadius="2"
+            Width="280"
+            Height="280"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            PointerPressed="OnFallbackPressed">
+            <Grid>
+                <TextBlock
+                    x:Name="FallbackKicker"
+                    Style="{StaticResource MicroLabelText}"
+                    Margin="16,14"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Text="SYS" />
+                <TextBlock
+                    x:Name="FallbackMonogram"
+                    Style="{StaticResource TileMonogramText}"
+                    FontSize="84"
+                    Text="S" />
+                <StackPanel VerticalAlignment="Bottom" Padding="18,16">
+                    <TextBlock x:Name="FallbackTitle" Style="{StaticResource TileCaptionText}" FontSize="22" Text="Session" />
+                    <TextBlock Style="{StaticResource TileMetaText}" Text="ENTER" />
+                </StackPanel>
+            </Grid>
+        </Border>
+        <TextBlock
+            x:Name="FrontCaption"
+            Visibility="Collapsed"
+            Style="{StaticResource TileCaptionText}"
+            Text="Session"
+            AutomationProperties.LiveSetting="Polite" />
+        <Border
+            x:Name="FocusRing"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            BorderBrush="{StaticResource CyanPulseBrush}"
+            BorderThickness="1"
+            Opacity="0"
+            IsHitTestVisible="False" />
+    </Grid>
 </UserControl>

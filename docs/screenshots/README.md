@@ -13,15 +13,19 @@ dotnet run --project src\UnboundOS.App\UnboundOS.App.csproj -c Debug -p:Platform
 
 Visual check:
 
-- Slim top chrome (HOME / SESSION / NETWORK / TOOLS / FILES / HARDWARE /
-  MODS / PROFILES / SETTINGS). Settings and Profiles are **not** cube faces.
-- Home hero is a **3D cube** in classic 3/4 (three faces readable at
-  rest), not a flat START tile or a face-on CSS cube. The old Settings
-  tile monogram “I” must not return.
-- Obsidian metal plates, cyan/cobalt seams, circuit etch. On a turn:
-  short electric arcs, then settle; accent hue drifts per destination.
-- Interface motion On: springy rotate, arcs, optional tiny idle yaw.
-  Off (or a live session): instant snap, no arcs, no idle. Still angled.
+- **Home is cube-only** — no top chrome, brand block, tagline, or START
+  row. Settings / Profiles are discreet corner glyphs, not cube faces.
+  Inner pages restore HOME / SESSION / NETWORK / TOOLS / FILES /
+  HARDWARE / MODS / PROFILES / SETTINGS.
+- Home hero is a **volcanic 3/4 cube** on a wet floor (recessed glowing
+  grooves, haze, no face letters), not a flat START tile or a CSS cube.
+  The old Settings tile monogram “I” must not return.
+- Enter / front-click **disassembles** the cube into an uneven gunmetal
+  block assembly with iridescent seam light, then lands in that page.
+- On a turn: short electric arcs, then settle; accent hue drifts per
+  destination (cyan / cobalt; magenta and amber as seasoning).
+- Interface motion On: springy rotate, arcs, idle, open transform.
+  Off (or a live session): instant snap, no arcs, no idle, no open FX.
 - Obsidian `#05070A`, cyan pulse `#00F0FF`, circuit amber `#E4B53C` spare,
   Inter UI + JetBrains Mono telemetry — matching
   [unboundinfotech.com](https://unboundinfotech.com).

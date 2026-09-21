@@ -137,7 +137,8 @@ public sealed class NavigationCubeTests
         Assert.Contains("Explorer stays", files.Hint, StringComparison.Ordinal);
         Assert.DoesNotContain("Night City", files.Hint, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", CubeCatalog.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("top bar", CubeCatalog.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("corner glyphs", CubeCatalog.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("top bar", CubeCatalog.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
         Assert.InRange(CubeLayout.FaceOpacity(1), 0.95f, 1.01f);
         Assert.True(CubeLayout.FaceOpacity(-1) < 0.4f);
         Assert.True(CubeLayout.Perspective().M34 < 0);
@@ -219,5 +220,17 @@ public sealed class NavigationCubeTests
         Assert.Equal(40, drag.Dx);
         Assert.False(CubeBridge.TryRead("not-json", out _));
         Assert.Equal(CubeBridge.IndexUrl, "https://unboundos.cube/Cube/index.html");
+
+        var open = CubeBridge.ToJson(CubeBridge.Open(CubeDestination.Tools, true));
+        Assert.Contains("\"type\":\"open\"", open, StringComparison.Ordinal);
+        Assert.Contains("\"front\":\"Tools\"", open, StringComparison.Ordinal);
+        Assert.Contains("\"motion\":true", open, StringComparison.Ordinal);
+        var reset = CubeBridge.ToJson(CubeBridge.Reset(CubeDestination.Session, false));
+        Assert.Contains("\"type\":\"reset\"", reset, StringComparison.Ordinal);
+        Assert.Contains("\"motion\":false", reset, StringComparison.Ordinal);
+        Assert.InRange(CubeAtmosphere.OpenDurationMs, 800, 2000);
+        Assert.True(CubeBridge.TryRead("""{"type":"opened","face":"Session"}""", out var opened));
+        Assert.Equal("opened", opened.Type);
+        Assert.Equal(CubeDestination.Session, CubeBridge.ParseFace(opened.Face));
     }
 }

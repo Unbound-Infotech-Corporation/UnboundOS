@@ -3,8 +3,8 @@ using System.Numerics;
 namespace UnboundOS.Core.Navigation;
 
 /// <summary>
-/// Six Home destinations on a physical cube. Settings, Profiles, and Overlay
-/// stay in the top chrome so the cube is not overloaded.
+/// Six Home destinations on a physical cube. Settings and Profiles are the
+/// discreet Home corner glyphs; Overlay stays in inner-page chrome.
 /// </summary>
 public enum CubeDestination
 {
@@ -129,7 +129,7 @@ public static class CubeCatalog
     public static string NavTag(CubeDestination destination) => Info(destination).NavTag;
 
     public static string Announce(CubeDestination destination) =>
-        $"Front face {Info(destination).Title}. Enter opens it. Arrow keys rotate. Settings and Profiles stay in the top bar.";
+        $"Front face {Info(destination).Title}. Enter opens it into that section. Arrow keys rotate. Settings and Profiles are the corner glyphs.";
 }
 
 /// <summary>Pointer, keyboard, and gamepad mapping for the Home cube.</summary>

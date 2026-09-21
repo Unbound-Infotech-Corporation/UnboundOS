@@ -15,8 +15,11 @@ public sealed partial class NavigationCubeView : UserControl
     private IUiMotionPolicy? _motion;
     private CubePose _pose = CubePose.Home;
     private CubeDestination _announced = CubeDestination.Session;
+    private CubeDestination? _pendingOpen;
     private bool _sceneReady;
     private bool _wired;
+    private bool _opening;
+    private int _openToken;
 
     public NavigationCubeView()
     {
@@ -66,6 +69,8 @@ public sealed partial class NavigationCubeView : UserControl
 
         _sceneReady = false;
         _wired = false;
+        _opening = false;
+        _pendingOpen = null;
     }
 
     private async Task StartSceneAsync()
@@ -141,7 +146,15 @@ public sealed partial class NavigationCubeView : UserControl
             case "activate":
                 ActivateFront();
                 break;
+            case "opened":
+                CompleteActivation();
+                break;
             case "turn":
+                if (_opening)
+                {
+                    break;
+                }
+
                 if (CubeBridge.ParseTurn(message.Turn) is { } turn)
                 {
                     Rotate(turn);
@@ -149,6 +162,11 @@ public sealed partial class NavigationCubeView : UserControl
 
                 break;
             case "pick":
+                if (_opening)
+                {
+                    break;
+                }
+
                 if (CubeBridge.ParseFace(message.Face) is { } face)
                 {
                     if (face == _pose.Front)
@@ -163,6 +181,11 @@ public sealed partial class NavigationCubeView : UserControl
 
                 break;
             case "dragend":
+                if (_opening)
+                {
+                    break;
+                }
+
                 FinishDrag(message.Dx, message.Dy, message.Vx, message.Vy);
                 break;
         }
@@ -170,6 +193,12 @@ public sealed partial class NavigationCubeView : UserControl
 
     private void OnKeyDown(object sender, KeyRoutedEventArgs e)
     {
+        if (_opening)
+        {
+            e.Handled = true;
+            return;
+        }
+
         var name = e.Key.ToString();
         if (CubeInput.IsActivateKey(name) || e.Key is Windows.System.VirtualKey.Enter or Windows.System.VirtualKey.Space)
         {
@@ -195,9 +224,71 @@ public sealed partial class NavigationCubeView : UserControl
         e.Handled = true;
     }
 
-    public void Rotate(CubeTurn turn) => SetPose(_pose.Turn(turn));
+    public void Rotate(CubeTurn turn)
+    {
+        if (_opening)
+        {
+            return;
+        }
 
-    public void ActivateFront() => FaceActivated?.Invoke(this, _pose.Front);
+        SetPose(_pose.Turn(turn));
+    }
+
+    public void ActivateFront()
+    {
+        if (_opening)
+        {
+            return;
+        }
+
+        var destination = _pose.Front;
+        if (!AllowMotion || !_sceneReady || CubeWeb.CoreWebView2 is null)
+        {
+            FaceActivated?.Invoke(this, destination);
+            return;
+        }
+
+        _opening = true;
+        _pendingOpen = destination;
+        var token = ++_openToken;
+        CubeWeb.CoreWebView2.PostWebMessageAsJson(CubeBridge.ToJson(CubeBridge.Open(destination, true)));
+        _ = CompleteActivationAfterAsync(token);
+    }
+
+    public void ResetScene()
+    {
+        _opening = false;
+        _pendingOpen = null;
+        _openToken++;
+        if (_sceneReady && CubeWeb.CoreWebView2 is not null)
+        {
+            CubeWeb.CoreWebView2.PostWebMessageAsJson(CubeBridge.ToJson(CubeBridge.Reset(_pose.Front, AllowMotion)));
+            PushState(burst: false);
+        }
+    }
+
+    private async Task CompleteActivationAfterAsync(int token)
+    {
+        await Task.Delay(CubeAtmosphere.OpenDurationMs + 220);
+        if (token != _openToken)
+        {
+            return;
+        }
+
+        _ = DispatcherQueue.TryEnqueue(CompleteActivation);
+    }
+
+    private void CompleteActivation()
+    {
+        if (_pendingOpen is not { } destination)
+        {
+            return;
+        }
+
+        _pendingOpen = null;
+        _opening = false;
+        FaceActivated?.Invoke(this, destination);
+    }
 
     private void FinishDrag(float dx, float dy, float vx, float vy)
     {
@@ -232,7 +323,6 @@ public sealed partial class NavigationCubeView : UserControl
     {
         var info = CubeCatalog.Info(front);
         FrontCaption.Text = info.Title;
-        FrontHint.Text = info.Hint;
         AutomationProperties.SetName(this, CubeCatalog.Announce(front));
         AutomationProperties.SetName(FrontCaption, $"Front face {info.Title}");
         if (_announced != front)

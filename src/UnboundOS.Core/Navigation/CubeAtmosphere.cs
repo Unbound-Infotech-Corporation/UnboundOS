@@ -24,6 +24,9 @@ public static class CubeAtmosphere
 
     public const float CameraFovDegrees = 36f;
 
+    /// <summary>WebGL open/disassemble duration. Motion-off skips this.</summary>
+    public const int OpenDurationMs = 1080;
+
     public static CubeAccent Palette(CubeDestination destination) =>
         destination switch
         {

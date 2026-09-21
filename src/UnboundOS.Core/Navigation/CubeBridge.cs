@@ -55,6 +55,8 @@ public sealed record CubeSceneState
 
     public string Hint { get; init; } = "";
 
+    public string Phase { get; init; } = "idle";
+
     public IReadOnlyList<CubeFacePayload> Faces { get; init; } = [];
 }
 
@@ -75,6 +77,17 @@ public sealed record CubeHostMessage
     public float Vx { get; init; }
 
     public float Vy { get; init; }
+}
+
+public sealed record CubeHostCommand
+{
+    public int V { get; init; } = 1;
+
+    public string Type { get; init; } = "open";
+
+    public string Front { get; init; } = nameof(CubeDestination.Session);
+
+    public bool Motion { get; init; } = true;
 }
 
 public static class CubeBridge
@@ -144,6 +157,15 @@ public static class CubeBridge
 
     public static string ToJson(CubeSceneState state) =>
         JsonSerializer.Serialize(state, JsonOptions);
+
+    public static string ToJson(CubeHostCommand command) =>
+        JsonSerializer.Serialize(command, JsonOptions);
+
+    public static CubeHostCommand Open(CubeDestination front, bool motion) =>
+        new() { Type = "open", Front = front.ToString(), Motion = motion };
+
+    public static CubeHostCommand Reset(CubeDestination front, bool motion) =>
+        new() { Type = "reset", Front = front.ToString(), Motion = motion };
 
     public static bool TryRead(string? json, out CubeHostMessage message)
     {

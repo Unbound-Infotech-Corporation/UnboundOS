@@ -365,11 +365,13 @@
         </Grid.RowDefinitions>
 
         <Border
+            x:Name="ChromeBar"
             Grid.Row="0"
             Padding="28,14,28,12"
             BorderBrush="{StaticResource LineSubtleBrush}"
             BorderThickness="0,0,0,1"
             Background="{StaticResource TelemetryStripBrush}"
+            Visibility="Collapsed"
             AutomationProperties.Name="Console chrome">
             <Grid ColumnSpacing="20">
                 <Grid.ColumnDefinitions>
@@ -508,15 +510,18 @@
                 <StaticResource ResourceKey="HeroAtmosphereBrush" />
             </Grid.Background>
             <Rectangle
+                x:Name="HeroScan"
                 IsHitTestVisible="False"
                 Fill="{StaticResource HeroScanBrush}"
                 Opacity="0.55"
                 AutomationProperties.AccessibilityView="Raw" />
             <Rectangle
+                x:Name="HeroGrid"
                 IsHitTestVisible="False"
                 Fill="{StaticResource HeroGridBrush}"
                 Opacity="0.7"
                 AutomationProperties.AccessibilityView="Raw" />
+            <Grid x:Name="HeroTicks" IsHitTestVisible="False">
             <Rectangle
                 Width="1"
                 Height="36"
@@ -525,7 +530,6 @@
                 VerticalAlignment="Top"
                 Fill="{StaticResource CyanPulseBrush}"
                 Opacity="0.28"
-                IsHitTestVisible="False"
                 AutomationProperties.AccessibilityView="Raw" />
             <Rectangle
                 Width="88"
@@ -535,36 +539,39 @@
                 VerticalAlignment="Top"
                 Fill="{StaticResource CircuitAmberBrush}"
                 Opacity="0.45"
-                IsHitTestVisible="False"
                 AutomationProperties.AccessibilityView="Raw" />
+            </Grid>
 
-            <ScrollViewer x:Name="HomeView" Padding="48,36,48,28" HorizontalScrollBarVisibility="Disabled">
-                <StackPanel Spacing="28">
-                    <StackPanel Spacing="8" MaxWidth="920">
-                        <TextBlock Style="{StaticResource KickerText}" Text="CONSOLE-STYLE SESSION SHELL" />
-                        <TextBlock Style="{StaticResource BrandDisplayText}" FontSize="52" Text="UnboundOS" Foreground="{StaticResource PaperBrush}" />
-                        <TextBlock
-                            Text="{x:Bind ViewModel.Tagline}"
-                            FontSize="22"
-                            FontFamily="{StaticResource UiFontSemiboldFamily}"
-                            Foreground="{StaticResource CyanPulseBrush}" />
-                        <TextBlock
-                            Style="{StaticResource BodyMutedText}"
-                            MaxWidth="720"
-                            Text="From Unbound Infotech Corporation. UnboundOS does not replace Windows — it applies a focused gaming or streaming posture, then restores the desktop when you exit. Rotate the cube to move around the shell. Settings and Profiles stay in the top bar." />
-                        <TextBlock
-                            FontFamily="{StaticResource UiFontFamily}"
-                            FontSize="16"
-                            Foreground="{StaticResource PaperBrush}"
-                            Text="{x:Bind ViewModel.StatusLine, Mode=OneWay}" />
-                    </StackPanel>
-
-                    <views:NavigationCubeView
-                        x:Name="HomeCube"
-                        FaceActivated="OnCubeActivated"
-                        FrontChanged="OnCubeFrontChanged" />
-                </StackPanel>
-            </ScrollViewer>
+            <Grid x:Name="HomeView">
+                <views:NavigationCubeView
+                    x:Name="HomeCube"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    FaceActivated="OnCubeActivated"
+                    FrontChanged="OnCubeFrontChanged" />
+                <Button
+                    x:Name="HomeProfilesGlyph"
+                    Tag="Profiles"
+                    Style="{StaticResource HomeGlyphButtonStyle}"
+                    Content="PRFL"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Margin="28,0,0,28"
+                    Click="Nav_Click"
+                    AutomationProperties.Name="Profiles"
+                    AutomationProperties.HelpText="Open session profiles. Hidden chrome on Home; this glyph is the path." />
+                <Button
+                    x:Name="HomeSettingsGlyph"
+                    Tag="Settings"
+                    Style="{StaticResource HomeGlyphButtonStyle}"
+                    Content="SET"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,28,28"
+                    Click="Nav_Click"
+                    AutomationProperties.Name="Settings"
+                    AutomationProperties.HelpText="Open Settings. Hidden chrome on Home; this glyph is the path." />
+            </Grid>
 
             <Frame x:Name="ContentFrame" Visibility="Collapsed" />
         </Grid>

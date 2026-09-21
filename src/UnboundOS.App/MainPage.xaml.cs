@@ -24,8 +24,9 @@ public sealed partial class MainPage : Page
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         await ViewModel.InitializeAsync();
-        ViewModel.StatusLine = "Rotate the cube. Enter opens the front face. Settings and Profiles stay in the top bar.";
-        ApplyNavState(ViewModel.SelectedNav);
+        ApplyHomeChrome(home: true);
+        ApplyNavState("Home");
+        HomeCube.Focus(FocusState.Programmatic);
     }
 
     private void Nav_Click(object sender, RoutedEventArgs e)
@@ -44,7 +45,7 @@ public sealed partial class MainPage : Page
     private void OnCubeFrontChanged(object sender, CubeDestination destination)
     {
         var info = CubeCatalog.Info(destination);
-        ViewModel.StatusLine = $"{info.Title} faces you. Enter opens it. Settings and Profiles stay in the top bar.";
+        ViewModel.StatusLine = $"{info.Title} faces you. Enter opens it.";
     }
 
     private void Navigate(string tag)
@@ -52,7 +53,7 @@ public sealed partial class MainPage : Page
         ViewModel.SelectedNav = tag;
         ViewModel.StatusLine = tag switch
         {
-            "Home" => "Rotate the cube. Enter opens the front face. Settings and Profiles stay in the top bar.",
+            "Home" => "Cube home.",
             "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
             "Tools" => "Tools marketplace ready.",
@@ -66,16 +67,14 @@ public sealed partial class MainPage : Page
         };
 
         ApplyNavState(tag);
+        ApplyHomeChrome(home: tag == "Home");
 
         if (tag == "Home")
         {
-            HomeView.Visibility = Visibility.Visible;
-            ContentFrame.Visibility = Visibility.Collapsed;
+            HomeCube.ResetScene();
+            HomeCube.Focus(FocusState.Programmatic);
             return;
         }
-
-        HomeView.Visibility = Visibility.Collapsed;
-        ContentFrame.Visibility = Visibility.Visible;
 
         var pageType = tag switch
         {
@@ -92,6 +91,16 @@ public sealed partial class MainPage : Page
         };
 
         ContentFrame.Navigate(pageType);
+    }
+
+    private void ApplyHomeChrome(bool home)
+    {
+        ChromeBar.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
+        HeroTicks.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
+        HeroScan.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
+        HeroGrid.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
+        HomeView.Visibility = home ? Visibility.Visible : Visibility.Collapsed;
+        ContentFrame.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void ApplyNavState(string tag)

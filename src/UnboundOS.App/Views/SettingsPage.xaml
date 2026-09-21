@@ -11,7 +11,7 @@
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="Settings" />
                 <TextBlock
                     Style="{StaticResource BodyMutedText}"
-                    Text="Interface motion is on by default. Turn it off for instant cyan states — including a snap-not-spring cube with arcs and idle disabled (cheaper while gaming). Windows Animation effects also pause it. A live session pauses it without hiding this toggle, and the cube will not idle-spin or emit arcs." />
+                    Text="Interface motion is on by default. Turn it off for instant cyan states — including a snap-not-spring cube with arcs, idle, and the open/disassemble transform disabled (cheaper while gaming). Windows Animation effects also pause it. A live session pauses it without hiding this toggle, and the cube will not idle-spin, emit arcs, or play the open FX." />
             </StackPanel>
 
             <Border Style="{StaticResource PanelBorderStyle}">
@@ -22,9 +22,9 @@
                         IsOn="{x:Bind ViewModel.InterfaceMotionEnabled, Mode=TwoWay}"
                         OnContent="On"
                         OffContent="Off"
-                        Header="A few-percent scale and a 1px cyan hairline on the focused tile. The Home cube uses a springy 3/4 rotate, restrained electric arcs on a turn, and a quiet idle. Press is a short opacity change."
+                        Header="A few-percent scale and a 1px cyan hairline on the focused tile. The Home cube uses a springy 3/4 rotate, restrained electric arcs on a turn, a quiet idle, and a block-assembly open. Press is a short opacity change."
                         AutomationProperties.Name="Interface motion"
-                        AutomationProperties.HelpText="When off, tiles, buttons, and the navigation cube use instant visual states only. Cube arcs and idle stop. Keyboard focus and narrator stay available either way." />
+                        AutomationProperties.HelpText="When off, tiles, buttons, and the navigation cube use instant visual states only. Cube arcs, idle, and the open transform stop. Keyboard focus and narrator stay available either way." />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
                         Text="{x:Bind ViewModel.MotionStatus, Mode=OneWay}"
@@ -35,7 +35,7 @@
                         Text="{x:Bind ViewModel.SessionNote}" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Tile motion runs on the compositor. The Home cube is a packaged WebGL scene. Unfocused tiles stay still. Off is instant states with no animation, no cube idle, and no electric arcs." />
+                        Text="Tile motion runs on the compositor. The Home cube is a packaged WebGL scene. Unfocused tiles stay still. Off is instant states with no animation, no cube idle, no electric arcs, and no open/disassemble transform." />
                 </StackPanel>
             </Border>
 
