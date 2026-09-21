@@ -15,6 +15,10 @@ circuit amber. Restrained professional buttons. A hint of cyberpunk
 atmosphere — not a neon costume. No ads. No silent overclock. Treat
 **x64** as the WinUI platform.
 
+Home navigation is a **3D cube** (WinUI Composition, not Unreal). Faces:
+Session, Tools, Network, Mods, Files, Hardware. Settings, Profiles, and
+Overlay stay in the top chrome.
+
 ## 1. OOBE / initial setup last step
 
 **Image / OOBE (source of the real wipe):** after a successful online

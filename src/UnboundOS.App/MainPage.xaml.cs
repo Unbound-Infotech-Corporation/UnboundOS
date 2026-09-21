@@ -4,6 +4,7 @@ using UnboundOS.App.Services;
 using UnboundOS.App.ViewModels;
 using UnboundOS.App.Views;
 using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Navigation;
 
 namespace UnboundOS.App;
 
@@ -23,7 +24,7 @@ public sealed partial class MainPage : Page
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         await ViewModel.InitializeAsync();
-        ViewModel.StatusLine = "Shell online. Pick a lane.";
+        ViewModel.StatusLine = "Rotate the cube. Enter opens the front face. Settings and Profiles stay in the top bar.";
         ApplyNavState(ViewModel.SelectedNav);
     }
 
@@ -37,25 +38,21 @@ public sealed partial class MainPage : Page
         Navigate(tag);
     }
 
-    private void GoSession_Click(object sender, RoutedEventArgs e) => Navigate("Session");
-    private void GoTools_Click(object sender, RoutedEventArgs e) => Navigate("Tools");
-    private void GoNetwork_Click(object sender, RoutedEventArgs e) => Navigate("Network");
-    private void GoMods_Click(object sender, RoutedEventArgs e) => Navigate("Mods");
+    private void OnCubeActivated(object sender, CubeDestination destination) =>
+        Navigate(CubeCatalog.NavTag(destination));
 
-    private void GoProfiles_Click(object sender, RoutedEventArgs e) => Navigate("Profiles");
-
-    private void GoSettings_Click(object sender, RoutedEventArgs e) => Navigate("Settings");
-
-    private void GoFiles_Click(object sender, RoutedEventArgs e) => Navigate("Files");
-
-    private void GoHardware_Click(object sender, RoutedEventArgs e) => Navigate("Hardware");
+    private void OnCubeFrontChanged(object sender, CubeDestination destination)
+    {
+        var info = CubeCatalog.Info(destination);
+        ViewModel.StatusLine = $"{info.Title} faces you. Enter opens it. Settings and Profiles stay in the top bar.";
+    }
 
     private void Navigate(string tag)
     {
         ViewModel.SelectedNav = tag;
         ViewModel.StatusLine = tag switch
         {
-            "Home" => "Shell online. Pick a lane.",
+            "Home" => "Rotate the cube. Enter opens the front face. Settings and Profiles stay in the top bar.",
             "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
             "Tools" => "Tools marketplace ready.",

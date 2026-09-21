@@ -3,6 +3,7 @@
     x:Class="UnboundOS.App.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:views="using:UnboundOS.App.Views"
     Background="{StaticResource ObsidianBrush}">
 
     <Grid>
@@ -550,7 +551,7 @@
                         <TextBlock
                             Style="{StaticResource BodyMutedText}"
                             MaxWidth="720"
-                            Text="From Unbound Infotech Corporation. UnboundOS does not replace Windows — it applies a focused gaming or streaming posture, then restores the desktop when you exit." />
+                            Text="From Unbound Infotech Corporation. UnboundOS does not replace Windows — it applies a focused gaming or streaming posture, then restores the desktop when you exit. Rotate the cube to move around the shell. Settings and Profiles stay in the top bar." />
                         <TextBlock
                             FontFamily="{StaticResource UiFontFamily}"
                             FontSize="16"
@@ -558,99 +559,10 @@
                             Text="{x:Bind ViewModel.StatusLine, Mode=OneWay}" />
                     </StackPanel>
 
-                    <StackPanel Spacing="4">
-                        <TextBlock Style="{StaticResource TileRowLabelText}" Text="START" />
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" XYFocusKeyboardNavigation="Enabled">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Button Style="{StaticResource ConsoleHeroTileStyle}" Click="GoSession_Click" AutomationProperties.Name="Start session">
-                                    <Grid>
-                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldHeroBrush}" />
-                                        <TextBlock
-                                            Style="{StaticResource MicroLabelText}"
-                                            Margin="16,12"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Top"
-                                            Text="SYS" />
-                                        <TextBlock Style="{StaticResource TileMonogramText}" FontSize="72" Text="S" />
-                                        <StackPanel VerticalAlignment="Bottom" Padding="20,16">
-                                            <TextBlock Style="{StaticResource TileCaptionText}" FontSize="22" Text="Session" />
-                                            <TextBlock Style="{StaticResource TileMetaText}" Text="ENTER" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoTools_Click" AutomationProperties.Name="Open tools marketplace">
-                                    <Grid>
-                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldBrush}" />
-                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="T" />
-                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Tools" />
-                                            <TextBlock Style="{StaticResource TileMetaText}" Text="KIT" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoNetwork_Click" AutomationProperties.Name="Open network director">
-                                    <Grid>
-                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldAltBrush}" />
-                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="N" />
-                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Network" />
-                                            <TextBlock Style="{StaticResource TileMetaText}" Text="SPLIT" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoMods_Click" AutomationProperties.Name="Open mods and Workshop">
-                                    <Grid>
-                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldBrush}" />
-                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="M" />
-                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Mods" />
-                                            <TextBlock Style="{StaticResource TileMetaText}" Text="OPEN" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoProfiles_Click" AutomationProperties.Name="Open profiles">
-                                    <Grid>
-                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldAltBrush}" />
-                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="P" />
-                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Profiles" />
-                                            <TextBlock Style="{StaticResource TileMetaText}" Text="LIBRARY" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoSettings_Click" AutomationProperties.Name="Open settings">
-                                    <Grid>
-                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldBrush}" />
-                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="I" />
-                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Settings" />
-                                            <TextBlock Style="{StaticResource TileMetaText}" Text="HUB" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoFiles_Click" AutomationProperties.Name="Open Unbound Files">
-                                    <Grid>
-                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldAltBrush}" />
-                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="F" />
-                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Files" />
-                                            <TextBlock Style="{StaticResource TileMetaText}" Text="BROWSE" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                                <Button Style="{StaticResource ConsoleTileButtonStyle}" Click="GoHardware_Click" AutomationProperties.Name="Open hardware">
-                                    <Grid>
-                                        <Border Style="{StaticResource ConsoleTileCardStyle}" Background="{StaticResource TileFieldBrush}" />
-                                        <TextBlock Style="{StaticResource TileMonogramText}" Text="H" />
-                                        <StackPanel VerticalAlignment="Bottom" Padding="18,14">
-                                            <TextBlock Style="{StaticResource TileCaptionText}" Text="Hardware" />
-                                            <TextBlock Style="{StaticResource TileMetaText}" Text="READ" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </StackPanel>
+                    <views:NavigationCubeView
+                        x:Name="HomeCube"
+                        FaceActivated="OnCubeActivated"
+                        FrontChanged="OnCubeFrontChanged" />
                 </StackPanel>
             </ScrollViewer>
 

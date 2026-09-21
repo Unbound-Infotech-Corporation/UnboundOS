@@ -47,7 +47,7 @@ public partial class ShellViewModel : ObservableObject
     [ObservableProperty] private string _sessionStateText = SessionState.Idle.ToString();
     [ObservableProperty] private bool _isSessionActive;
     [ObservableProperty] private string _activeProfileName = "None";
-    [ObservableProperty] private string _statusLine = "Shell online. Pick a lane.";
+    [ObservableProperty] private string _statusLine = "Rotate the cube. Enter opens the front face.";
     [ObservableProperty] private double _cpuUsage;
     [ObservableProperty] private string _memoryText = "—";
     [ObservableProperty] private int _processCount;

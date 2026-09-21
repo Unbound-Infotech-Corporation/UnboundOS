@@ -11,7 +11,7 @@
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="Settings" />
                 <TextBlock
                     Style="{StaticResource BodyMutedText}"
-                    Text="Interface motion is on by default. Turn it off for instant cyan states. Windows Animation effects also pause it. A live session pauses it without hiding this toggle." />
+                    Text="Interface motion is on by default. Turn it off for instant cyan states — including a snap-not-spring cube. Windows Animation effects also pause it. A live session pauses it without hiding this toggle, and the cube will not idle-spin." />
             </StackPanel>
 
             <Border Style="{StaticResource PanelBorderStyle}">
@@ -22,9 +22,9 @@
                         IsOn="{x:Bind ViewModel.InterfaceMotionEnabled, Mode=TwoWay}"
                         OnContent="On"
                         OffContent="Off"
-                        Header="A few-percent scale and a 1px cyan hairline on the focused tile. Press is a short opacity change."
+                        Header="A few-percent scale and a 1px cyan hairline on the focused tile. The Home cube uses a springy rotate and a quiet idle hint. Press is a short opacity change."
                         AutomationProperties.Name="Interface motion"
-                        AutomationProperties.HelpText="When off, tiles and buttons use instant visual states only. Keyboard focus and narrator stay available either way." />
+                        AutomationProperties.HelpText="When off, tiles, buttons, and the navigation cube use instant visual states only. Keyboard focus and narrator stay available either way." />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
                         Text="{x:Bind ViewModel.MotionStatus, Mode=OneWay}"
@@ -35,7 +35,7 @@
                         Text="{x:Bind ViewModel.SessionNote}" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Motion runs on the compositor. Unfocused tiles stay still. Off is instant states with no animation." />
+                        Text="Motion runs on the compositor. Unfocused tiles stay still. Off is instant states with no animation and no cube idle spin." />
                 </StackPanel>
             </Border>
 

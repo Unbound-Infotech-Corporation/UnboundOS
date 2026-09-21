@@ -8,9 +8,10 @@
         UnboundOS — Unbound Infotech brand tokens (unboundinfotech.com).
         Obsidian + cyan pulse + cobalt. Circuit amber is a spare seasoning,
         never a second primary. No signal lime, no generic WinUI purple.
-        Motion is compositor-driven (ConsoleMotion): a few-percent focus
-        scale on the active tile and a short press opacity. Instant when
-        Settings, Windows animations, or a live session say off.
+        Motion is compositor-driven (ConsoleMotion + Home cube): a few-percent
+        focus scale on tiles, a springy 3D cube rotate, and a short press
+        opacity. Instant when Settings, Windows animations, or a live session
+        say off. The cube never idle-spins during a session.
         Focus tiles use a 1px cyan hairline and L-ticks (one amber corner).
         No glow bloom, sheen, squash, or looping scan.
     -->
@@ -613,5 +614,24 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="MinWidth" Value="88" />
         <Setter Property="Padding" Value="14,10" />
+    </Style>
+
+    <Style x:Key="CubeHostStyle" TargetType="Grid">
+        <Setter Property="Width" Value="460" />
+        <Setter Property="Height" Value="460" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="UseLayoutRounding" Value="False" />
+    </Style>
+
+    <Style x:Key="CubeFaceStyle" TargetType="Border">
+        <Setter Property="Width" Value="248" />
+        <Setter Property="Height" Value="248" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{StaticResource LineSubtleBrush}" />
+        <Setter Property="Background" Value="{StaticResource CardSurfaceBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
 </ResourceDictionary>
