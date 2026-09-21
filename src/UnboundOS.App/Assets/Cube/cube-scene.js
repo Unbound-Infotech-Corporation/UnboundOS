@@ -5,6 +5,8 @@
   const PX_PER_TURN = 96;
   const SPRING_K = 86;
   const SPRING_D = 15;
+  const LAYOUT_K = 72;
+  const LAYOUT_D = 15;
   const DEFAULT_FACES = [
     { id: "Session", title: "Games", kicker: "PLAY", monogram: "G", meta: "PLAY", hint: "Installed library. Cycle the blocks, Enter launches.", accent: "#00F0FF", seam: "#00D0E8", core: "#1E40AF", plate: "#0B121D", glyph: "games" },
     { id: "Tools", title: "Tools", kicker: "KIT", monogram: "T", meta: "OPEN", hint: "OBS, Vortex, Discord, Playnite, utilities.", accent: "#00D4F0", seam: "#0098C8", core: "#1E3A8A", plate: "#0A1018", glyph: "tools" },
@@ -81,6 +83,7 @@
     mode: "list",
     items: [],
     focus: 0,
+    lastFocus: -1,
     camZ: 3.95,
     camY: 1.28
   };
@@ -119,6 +122,8 @@
   const camera = new THREE.PerspectiveCamera(28, 1, 0.08, 48);
   camera.position.set(0, 1.28, 3.95);
   camera.lookAt(0, -0.22, 0);
+  const _out = new THREE.Vector3();
+  const _away = new THREE.Vector3();
 
   const restRig = new THREE.Group();
   const spinRig = new THREE.Group();
@@ -885,6 +890,7 @@
       group.userData.size = size;
       group.userData.item = null;
       group.userData.itemIndex = -1;
+      initBrickLayout(group, target, group.userData.targetScale);
       artifact.add(group);
       list.push(group);
 
@@ -910,6 +916,7 @@
         slit.userData.glow = true;
         slit.userData.restScale = 1;
         slit.userData.targetScale = 1;
+        initBrickLayout(slit, slit.userData.target, 1);
         artifact.add(slit);
         list.push(slit);
       }
@@ -961,6 +968,7 @@
     swirl.userData.core = true;
     swirl.userData.restScale = 0.6;
     swirl.userData.targetScale = 1.05;
+    initBrickLayout(swirl, swirl.userData.target, 1.05);
     artifact.add(swirl);
     list.push(swirl);
 
@@ -1051,6 +1059,7 @@
       b.position.copy(b.userData.rest);
       b.rotation.set(0, 0, 0);
       b.scale.setScalar(b.userData.restScale || 1);
+      clearBrickMotion(b, b.userData.target);
       if (b.userData.glow && b.material) b.material.opacity = 0;
     }
     for (const s of shafts) s.visible = true;
@@ -1134,30 +1143,166 @@
       b.add(plane);
       b.userData.label = plane;
     }
+    state.lastFocus = state.focus;
     applyFocus();
+  }
+
+  function initBrickLayout(obj, pos, scale) {
+    obj.userData.layoutPos = pos.clone();
+    obj.userData.pendingPos = pos.clone();
+    obj.userData.layoutScale = scale;
+    obj.userData.pendingScale = scale;
+    obj.userData.posVel = new THREE.Vector3();
+    obj.userData.scaleVel = 0;
+    obj.userData.delayLeft = 0;
+    obj.userData.lit = 0;
+    obj.userData.layoutLit = 0;
+    obj.userData.pendingLit = 0;
+  }
+
+  function clearBrickMotion(b, pose) {
+    const p = pose || b.userData.rest;
+    if (b.userData.layoutPos && p) b.userData.layoutPos.copy(p);
+    if (b.userData.pendingPos && p) b.userData.pendingPos.copy(p);
+    b.userData.layoutScale = b.userData.targetScale || 1;
+    b.userData.pendingScale = b.userData.layoutScale;
+    if (b.userData.posVel) b.userData.posVel.set(0, 0, 0);
+    b.userData.scaleVel = 0;
+    b.userData.delayLeft = 0;
+    b.userData.lit = 0;
+    b.userData.layoutLit = 0;
+    b.userData.pendingLit = 0;
+  }
+
+  function rearrangeDelay(distance, isFocus) {
+    if (isFocus) return 0;
+    return 0.022 + Math.min(Math.max(distance, 0), 1.8) * 0.048;
+  }
+
+  function rearrangePush(distance, carousel) {
+    const mag = carousel ? 0.18 : 0.10;
+    return mag * (0.35 + Math.exp(-(distance * distance) / 0.55));
+  }
+
+  function paintBoundLabel(index, focused) {
+    if (index == null || index < 0 || !state.items[index]) return;
+    for (const b of bricks) {
+      if (b.userData.itemIndex !== index || !b.userData.label) continue;
+      b.userData.label.material.map?.dispose();
+      b.userData.label.material.map = paintItemLabel(state.items[index], focused);
+      b.userData.label.material.needsUpdate = true;
+      break;
+    }
+  }
+
+  function applyBrickLit(b, amount) {
+    const want = Math.max(0, amount);
+    b.traverse((child) => {
+      if (!child.isMesh || !child.material) return;
+      const m = child.material;
+      if (m.emissive) {
+        m.emissive.copy(state.accent);
+        m.emissiveIntensity = 0.03 + want * 0.26;
+        if (m.envMapIntensity != null) m.envMapIntensity = 1.35 + want * 0.45;
+      }
+      if (child === b.userData.label) {
+        m.opacity = 0.78 + want * 0.2;
+      }
+    });
+  }
+
+  function commitLayout(b) {
+    if (!b.userData.layoutPos || !b.userData.pendingPos) return;
+    b.userData.layoutPos.copy(b.userData.pendingPos);
+    b.userData.layoutScale = b.userData.pendingScale;
+    b.userData.layoutLit = b.userData.pendingLit;
+  }
+
+  function snapBrickLayout(b) {
+    commitLayout(b);
+    if (b.userData.layoutPos) b.position.copy(b.userData.layoutPos);
+    b.scale.setScalar(b.userData.layoutScale || 1);
+    if (b.userData.posVel) b.userData.posVel.set(0, 0, 0);
+    b.userData.scaleVel = 0;
+    b.userData.delayLeft = 0;
+    b.userData.lit = b.userData.layoutLit || 0;
+    applyBrickLit(b, b.userData.lit);
   }
 
   function applyFocus() {
     const carousel = state.mode === "carousel";
+    let focusBase = null;
     for (const b of bricks) {
-      if (b.userData.glow || b.userData.core) continue;
-      const idx = b.userData.itemIndex;
-      const focused = idx === state.focus && idx >= 0;
-      const pop = focused ? (carousel ? 0.38 : 0.16) : 0;
-      const base = b.userData.target || b.userData.rest;
-      if (base && state.browse) {
-        const out = base.clone();
-        if (out.lengthSq() < 0.01) out.set(0, 0.3, 0.6);
-        else out.normalize();
-        b.position.copy(base).addScaledVector(out, pop);
-        b.scale.setScalar((b.userData.targetScale || 1) * (focused ? 1.18 : 0.96));
-      }
-      if (b.userData.label && idx >= 0) {
-        b.userData.label.material.map?.dispose();
-        b.userData.label.material.map = paintItemLabel(state.items[idx], focused);
-        b.userData.label.material.needsUpdate = true;
+      if (b.userData.itemIndex === state.focus && state.focus >= 0) {
+        focusBase = b.userData.target || b.userData.rest;
+        break;
       }
     }
+
+    for (const b of bricks) {
+      if (b.userData.glow || b.userData.core) continue;
+      const base = b.userData.target || b.userData.rest;
+      if (!base) continue;
+      if (!b.userData.layoutPos) initBrickLayout(b, base, b.userData.targetScale || 1);
+
+      const idx = b.userData.itemIndex;
+      const focused = idx === state.focus && idx >= 0;
+      const playable = idx >= 0;
+      const dist = focusBase ? base.distanceTo(focusBase) : 0;
+
+      _out.copy(base);
+      if (_out.lengthSq() < 0.01) _out.set(0, 0.3, 0.6);
+      else _out.normalize();
+
+      const pending = b.userData.pendingPos;
+      pending.copy(base);
+
+      if (focused) {
+        pending.addScaledVector(_out, carousel ? 0.42 : 0.22);
+        pending.z += carousel ? 0.06 : 0.03;
+        b.userData.pendingScale = (b.userData.targetScale || 1) * (carousel ? 1.2 : 1.12);
+        b.userData.pendingLit = 1;
+        b.userData.delayLeft = 0;
+      } else if (playable) {
+        if (focusBase && dist > 0.001) {
+          _away.copy(base).sub(focusBase);
+          if (_away.lengthSq() < 1e-6) _away.copy(_out);
+          else _away.normalize();
+          pending.addScaledVector(_away, rearrangePush(dist, carousel));
+        }
+        pending.addScaledVector(_out, carousel ? -0.045 : -0.022);
+        pending.y -= 0.012 * Math.min(dist, 1.2);
+        pending.z -= carousel ? 0.02 : 0.01;
+        b.userData.pendingScale = (b.userData.targetScale || 1) * (carousel ? 0.96 : 0.98);
+        b.userData.pendingLit = Math.exp(-(dist * dist) / 1.1) * 0.18;
+        b.userData.delayLeft = state.motion ? rearrangeDelay(dist, false) : 0;
+      } else {
+        if (focusBase && dist > 0.001) {
+          _away.copy(base).sub(focusBase);
+          if (_away.lengthSq() < 1e-6) _away.copy(_out);
+          else _away.normalize();
+          pending.addScaledVector(_away, rearrangePush(dist, carousel) * 0.55);
+        }
+        pending.addScaledVector(_out, -0.03);
+        pending.z -= 0.02;
+        b.userData.pendingScale = (b.userData.targetScale || 1) * 0.97;
+        b.userData.pendingLit = 0;
+        b.userData.delayLeft = state.motion ? 0.03 + Math.min(dist, 1.6) * 0.04 : 0;
+      }
+
+      if (!state.motion) {
+        snapBrickLayout(b);
+      } else if (b.userData.delayLeft <= 0) {
+        commitLayout(b);
+      }
+    }
+
+    if (state.lastFocus !== state.focus) {
+      if (state.lastFocus >= 0) paintBoundLabel(state.lastFocus, false);
+      paintBoundLabel(state.focus, true);
+      state.lastFocus = state.focus;
+    }
+
     const item = state.items[state.focus];
     if (item) {
       const title = document.getElementById("previewTitle");
@@ -1165,6 +1310,84 @@
       if (title) title.textContent = item.title;
       if (hint) hint.textContent = `${item.meta || ""} · arrows cycle · Enter launches · Esc returns`;
     }
+
+    if (!state.motion) {
+      aimBrowseCamera(true);
+    }
+  }
+
+  function tickBrowse(dt) {
+    state.idle = 0;
+    const step = Math.min(Math.max(dt, 0), 0.033);
+    if (!state.motion) {
+      for (const b of bricks) {
+        if (b.userData.glow || b.userData.core) continue;
+        snapBrickLayout(b);
+      }
+      aimBrowseCamera(true);
+      return;
+    }
+
+    for (const b of bricks) {
+      if (b.userData.glow || b.userData.core) continue;
+      if (!b.userData.layoutPos || !b.userData.pendingPos) continue;
+      if (!b.userData.posVel) b.userData.posVel = new THREE.Vector3();
+
+      if (b.userData.delayLeft > 0) {
+        b.userData.delayLeft -= step;
+        if (b.userData.delayLeft <= 0) {
+          b.userData.delayLeft = 0;
+          commitLayout(b);
+        }
+      } else {
+        commitLayout(b);
+      }
+
+      const target = b.userData.layoutPos;
+      const vel = b.userData.posVel;
+      vel.x += ((target.x - b.position.x) * LAYOUT_K - vel.x * LAYOUT_D) * step;
+      vel.y += ((target.y - b.position.y) * LAYOUT_K - vel.y * LAYOUT_D) * step;
+      vel.z += ((target.z - b.position.z) * LAYOUT_K - vel.z * LAYOUT_D) * step;
+      b.position.x += vel.x * step;
+      b.position.y += vel.y * step;
+      b.position.z += vel.z * step;
+
+      const sTarget = b.userData.layoutScale || 1;
+      const sVel = b.userData.scaleVel || 0;
+      const nextVel = sVel + ((sTarget - b.scale.x) * LAYOUT_K - sVel * LAYOUT_D) * step;
+      b.userData.scaleVel = nextVel;
+      b.scale.setScalar(Math.max(0.2, b.scale.x + nextVel * step));
+
+      const want = b.userData.layoutLit || 0;
+      const lit = b.userData.lit || 0;
+      b.userData.lit = lit + (want - lit) * Math.min(1, step * 7);
+      applyBrickLit(b, b.userData.lit);
+    }
+
+    aimBrowseCamera(false, step);
+  }
+
+  function aimBrowseCamera(immediate, step) {
+    let fx = 0;
+    let fy = 0;
+    for (const b of bricks) {
+      if (b.userData.itemIndex === state.focus && state.focus >= 0) {
+        fx = b.position.x * 0.07;
+        fy = b.position.y * 0.04;
+        break;
+      }
+    }
+    const ty = state.camY - 0.12 + fy;
+    const tz = state.camZ - 0.18;
+    if (immediate || !state.motion) {
+      camera.position.set(fx, ty, tz);
+    } else {
+      const a = 1 - Math.exp(-(step || 0.016) * 4.2);
+      camera.position.x += (fx - camera.position.x) * a;
+      camera.position.y += (ty - camera.position.y) * a;
+      camera.position.z += (tz - camera.position.z) * a;
+    }
+    camera.lookAt(fx * 0.35, -0.06 + fy, 0);
   }
 
   function snapBrowse() {
@@ -1183,6 +1406,7 @@
       b.visible = true;
       if (b.userData.target) b.position.copy(b.userData.target);
       b.scale.setScalar(b.userData.targetScale || 1);
+      clearBrickMotion(b, b.userData.target);
       if (b.userData.glow && b.material) b.material.opacity = 0.45;
     }
     bindItems();
@@ -1216,6 +1440,7 @@
     state.stay = false;
     state.items = [];
     state.focus = 0;
+    state.lastFocus = -1;
     state.openT = 0;
     renderer.toneMappingExposure = 1.05;
     scene.fog.density = 0.078;
@@ -1242,6 +1467,9 @@
       b.visible = false;
       b.position.copy(b.userData.rest);
       b.rotation.set(0, 0, 0);
+      b.scale.setScalar(b.userData.restScale || 1);
+      clearBrickMotion(b, b.userData.rest);
+      if (!b.userData.glow && !b.userData.core) applyBrickLit(b, 0);
     }
     for (const s of shafts) {
       s.visible = false;
@@ -1497,7 +1725,7 @@
     if (state.opening) {
       tickOpen(dt);
     } else if (state.browse) {
-      state.idle = 0;
+      tickBrowse(dt);
     } else if (state.motion && !state.dragging) {
       const y = spring(state.visualYaw, state.yaw, state.yawVel, dt);
       const p = spring(state.visualPitch, state.pitch, state.pitchVel, dt);

@@ -28,6 +28,11 @@ Motion-off skips the heavy transform and goes straight to that destination
 (browse pose for Games, list page for Settings/Files/…). Escape (or
 Gamepad B) returns from a cube browse to rest.
 
+Open Games (and Tools/Mods mosaic) cycling does **not** snap like a
+carousel reel. The focused block eases forward, slightly larger and
+brighter; neighbors stagger aside with overlapping springs so the
+assembly redistributes mass. Motion-off copies the new layout instantly.
+
 Games come from the local Steam `appmanifest_*.acf` scan
 (`IGameLibraryCatalog` / `SteamGameLibraryCatalog`). Launch is
 `steam://rungameid/{id}` via `ILibraryLaunchService` — SessionEngine is

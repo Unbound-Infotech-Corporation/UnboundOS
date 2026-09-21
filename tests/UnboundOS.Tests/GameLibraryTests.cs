@@ -77,6 +77,19 @@ public sealed class GameLibraryTests
     }
 
     [Fact]
+    public void Browse_Rearrange_StaggersNeighbors_AndPushesNearBlocksMore()
+    {
+        Assert.Equal(0, CubeBrowse.RearrangeDelaySeconds(1.2, isFocus: true));
+        Assert.InRange(CubeBrowse.RearrangeDelaySeconds(0, isFocus: false), 0.020, 0.026);
+        Assert.True(CubeBrowse.RearrangeDelaySeconds(1.8, false) > CubeBrowse.RearrangeDelaySeconds(0.2, false));
+        Assert.InRange(CubeBrowse.RearrangeDelaySeconds(12, false), 0.10, 0.12);
+
+        Assert.True(CubeBrowse.RearrangePush(0, carousel: true) > CubeBrowse.RearrangePush(1.4, carousel: true));
+        Assert.True(CubeBrowse.RearrangePush(0.4, carousel: true) > CubeBrowse.RearrangePush(0.4, carousel: false));
+        Assert.InRange(CubeBrowse.RearrangePush(0, carousel: true), 0.22, 0.28);
+    }
+
+    [Fact]
     public async Task Launch_OpensSafeSteamUri()
     {
         var opened = "";

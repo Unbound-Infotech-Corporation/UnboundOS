@@ -5,6 +5,7 @@ namespace UnboundOS.Core.Navigation;
 /// <summary>
 /// Maps discovered library/tools/mods into cube browse blocks.
 /// Games stay a carousel. Tools and Mods become a mosaic when items exist.
+/// Focus cycling uses staggered springs (see RearrangeDelaySeconds / RearrangePush).
 /// </summary>
 public static class CubeBrowse
 {
@@ -51,6 +52,30 @@ public static class CubeBrowse
         }
 
         return ((index % count) + count) % count;
+    }
+
+    /// <summary>
+    /// Stagger before a neighbor brick springs to its new packed pose.
+    /// Focused brick starts immediately. Keep in sync with cube-scene.js.
+    /// </summary>
+    public static double RearrangeDelaySeconds(double distanceFromFocus, bool isFocus)
+    {
+        if (isFocus)
+        {
+            return 0;
+        }
+
+        return 0.022 + Math.Clamp(distanceFromFocus, 0, 1.8) * 0.048;
+    }
+
+    /// <summary>
+    /// How far a neighbor yields aside as the focused brick takes mass.
+    /// Carousel (Games) pushes more than mosaic. Keep in sync with cube-scene.js.
+    /// </summary>
+    public static double RearrangePush(double distanceFromFocus, bool carousel)
+    {
+        var mag = carousel ? 0.18 : 0.10;
+        return mag * (0.35 + Math.Exp(-(distanceFromFocus * distanceFromFocus) / 0.55));
     }
 
     private static CubeBrowseItem GameItem(LibraryGame game) =>
