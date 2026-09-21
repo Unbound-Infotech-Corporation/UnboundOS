@@ -114,12 +114,12 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.9;
+  renderer.toneMappingExposure = 0.68;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(CAVITY, 0.052);
+  scene.fog = new THREE.FogExp2(CAVITY, 0.068);
   scene.environment = makeEnvMap();
 
   const camera = new THREE.PerspectiveCamera(26, 1, 0.08, 48);
@@ -146,19 +146,19 @@
   const boneShared = paintBoneStack(0x6b0a11);
   const oxidizedShared = paintOxidized(0x4a2e18);
 
-  const marrowLight = new THREE.PointLight(0xc48a3c, 0.55, 5.5, 1.6);
+  const marrowLight = new THREE.PointLight(0xc48a3c, 0.35, 5.5, 1.6);
   marrowLight.position.set(0, -0.08, 0.12);
   artifact.add(marrowLight);
 
-  const veinLight = new THREE.PointLight(0x6fa896, 0.28, 4.2, 1.8);
+  const veinLight = new THREE.PointLight(0x6fa896, 0.16, 4.2, 1.8);
   veinLight.position.set(0.18, 0.12, 0.22);
   artifact.add(veinLight);
 
-  const bruiseKick = new THREE.PointLight(0x6a5a78, 0.18, 5.2, 2.1);
+  const bruiseKick = new THREE.PointLight(0x6a5a78, 0.22, 5.2, 2.1);
   bruiseKick.position.set(-0.45, -0.15, 0.55);
   artifact.add(bruiseKick);
 
-  const key = new THREE.DirectionalLight(0xf2e4c8, 1.42);
+  const key = new THREE.DirectionalLight(0xe8d4b0, 0.62);
   key.position.set(-2.8, 5.1, 3.6);
   key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
@@ -175,16 +175,16 @@
   fill.position.set(2.6, 0.15, 4.2);
   scene.add(fill);
 
-  const rim = new THREE.DirectionalLight(0xc5d0d4, 0.95);
+  const rim = new THREE.DirectionalLight(0xc5d4d8, 1.85);
   rim.position.set(3.8, 1.6, -3.1);
   scene.add(rim);
 
-  const cavityGlow = new THREE.PointLight(0xc48a3c, 1.15, 7.2, 1.35);
-  cavityGlow.position.set(0, -0.82, 0.2);
+  const cavityGlow = new THREE.PointLight(0xc48a3c, 2.6, 8.5, 1.15);
+  cavityGlow.position.set(0.15, -0.62, 0.85);
   scene.add(cavityGlow);
 
-  scene.add(new THREE.HemisphereLight(0xc8b8a0, 0x140e0c, 0.28));
-  scene.add(new THREE.AmbientLight(0x1a120e, 0.12));
+  scene.add(new THREE.HemisphereLight(0x8a7a68, 0x0c0806, 0.16));
+  scene.add(new THREE.AmbientLight(0x140e0c, 0.06));
 
   const openSpot = new THREE.SpotLight(0xe8c9a0, 0, 16, 0.5, 0.7, 1.25);
   openSpot.position.set(-1.4, 4.8, 3.4);
@@ -202,7 +202,7 @@
 
   const chassis = new THREE.Mesh(
     new THREE.BoxGeometry(1.58, 1.58, 1.58),
-    boneMat(boneShared.map, boneShared.bump, { color: 0xe4d4b8 })
+    boneMat(boneShared.map, boneShared.bump, { color: 0x8a7358, roughness: 0.7 })
   );
   chassis.castShadow = true;
   chassis.receiveShadow = true;
@@ -229,14 +229,14 @@
       bumpMap: bump,
       bumpScale: 0.042,
       color: 0xe8dcc4,
-      roughness: 0.5,
-      metalness: 0.07,
-      clearcoat: 0.46,
-      clearcoatRoughness: 0.36,
+      roughness: 0.58,
+      metalness: 0.08,
+      clearcoat: 0.62,
+      clearcoatRoughness: 0.28,
       sheen: 0.38,
       sheenColor: new THREE.Color(0xc4a090),
       sheenRoughness: 0.52,
-      envMapIntensity: 1.05
+      envMapIntensity: 0.55
     }, extra || {}));
   }
 
@@ -245,10 +245,10 @@
       map: map || oxidizedShared.map,
       bumpMap: oxidizedShared.bump,
       bumpScale: 0.03,
-      color: 0x6a5848,
-      roughness: 0.58,
-      metalness: 0.74,
-      clearcoat: 0.14,
+      color: 0x3a2e26,
+      roughness: 0.48,
+      metalness: 0.82,
+      clearcoat: 0.22,
       clearcoatRoughness: 0.72,
       envMapIntensity: 1.18
     }, extra || {}));
@@ -349,12 +349,12 @@
   }
 
   function fillIvory(ctx, size, rng) {
-    ctx.fillStyle = "#CDBBA0";
+    ctx.fillStyle = "#8A7358";
     ctx.fillRect(0, 0, size, size);
     const vg = ctx.createRadialGradient(size * 0.38, size * 0.28, 10, size * 0.5, size * 0.52, size * 0.82);
-    vg.addColorStop(0, "rgba(236, 222, 196, 0.7)");
-    vg.addColorStop(0.45, "rgba(196, 168, 132, 0.18)");
-    vg.addColorStop(1, "rgba(72, 52, 40, 0.55)");
+    vg.addColorStop(0, "rgba(196, 176, 148, 0.55)");
+    vg.addColorStop(0.4, "rgba(110, 86, 64, 0.22)");
+    vg.addColorStop(1, "rgba(28, 18, 14, 0.72)");
     ctx.fillStyle = vg;
     ctx.fillRect(0, 0, size, size);
     gritWarm(ctx, size, rng, 6400);
@@ -500,35 +500,35 @@
 
   function carveSocket(ctx, hx, ex, size, info) {
     const cx = size * 0.5;
-    const cy = size * 0.44;
+    const cy = size * 0.66;
     ctx.save();
-    ctx.strokeStyle = "rgba(32, 22, 18, 0.78)";
-    ctx.lineWidth = 18;
-    for (let r = 210; r >= 78; r -= 28) {
+    ctx.strokeStyle = "rgba(22, 14, 12, 0.82)";
+    ctx.lineWidth = 14;
+    for (let r = 118; r >= 52; r -= 22) {
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.stroke();
-      hx.strokeStyle = "#1a1a1a";
-      hx.lineWidth = 10;
+      hx.strokeStyle = "#141414";
+      hx.lineWidth = 8;
       hx.beginPath();
       hx.arc(cx, cy, r, 0, Math.PI * 2);
       hx.stroke();
     }
-    ctx.fillStyle = "rgba(18, 12, 10, 0.55)";
+    ctx.fillStyle = "rgba(8, 6, 5, 0.88)";
     ctx.beginPath();
-    ctx.arc(cx, cy, 70, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 44, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = hexAlpha(info.seam || "#8A6B4A", 0.45);
-    ctx.lineWidth = 5;
+    ctx.strokeStyle = hexAlpha(info.seam || "#8A6B4A", 0.55);
+    ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.arc(cx, cy, 96, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 64, 0, Math.PI * 2);
     ctx.stroke();
     ctx.restore();
     ex.save();
-    ex.strokeStyle = hexAlpha(info.accent || "#6FA896", 0.55);
-    ex.lineWidth = 3;
+    ex.strokeStyle = hexAlpha(info.accent || "#6FA896", 0.7);
+    ex.lineWidth = 2.4;
     ex.beginPath();
-    ex.arc(cx, cy, 96, 0, Math.PI * 2);
+    ex.arc(cx, cy, 64, 0, Math.PI * 2);
     ex.stroke();
     ex.restore();
   }
@@ -565,12 +565,12 @@
   function etchGlyph(ctx, hx, ex, size, info) {
     const glyph = String(info.glyph || info.id || "games").toLowerCase();
     ctx.save();
-    ctx.translate(size * 0.5, size * 0.44);
+    ctx.translate(size * 0.5, size * 0.3);
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.strokeStyle = "rgba(28, 18, 14, 0.92)";
     ctx.fillStyle = "rgba(22, 14, 12, 0.35)";
-    ctx.lineWidth = 11;
+    ctx.lineWidth = 13;
     drawGlyph(ctx, glyph);
     ctx.strokeStyle = "rgba(214, 196, 164, 0.28)";
     ctx.lineWidth = 3;
@@ -578,7 +578,7 @@
     ctx.restore();
 
     hx.save();
-    hx.translate(size * 0.5, size * 0.44);
+    hx.translate(size * 0.5, size * 0.3);
     hx.lineCap = "round";
     hx.strokeStyle = "#101010";
     hx.lineWidth = 14;
@@ -586,7 +586,7 @@
     hx.restore();
 
     ex.save();
-    ex.translate(size * 0.5, size * 0.44);
+    ex.translate(size * 0.5, size * 0.3);
     ex.lineCap = "round";
     ex.strokeStyle = hexAlpha(info.accent || "#6FA896", 0.7);
     ex.lineWidth = 2.2;
@@ -597,7 +597,7 @@
     if (!label) return;
     ctx.save();
     ctx.textAlign = "center";
-    ctx.font = "600 28px 'Segoe UI', serif";
+    ctx.font = "600 32px 'Segoe UI', serif";
     const spaced = label.split("").join("  ");
     ctx.fillStyle = "rgba(42, 32, 24, 0.78)";
     ctx.fillText(spaced, size * 0.5, size * 0.82);
@@ -738,7 +738,7 @@
     for (const x of [-h, h]) {
       for (const y of [-h, h]) {
         for (const z of [-h, h]) {
-          const boss = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 10), boneMat(boneShared.map, boneShared.bump, { color: 0xd8c4a4 }));
+          const boss = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 10), cartilageMat({ color: 0x6a5044, roughness: 0.62 }));
           boss.position.set(x, y, z);
           boss.castShadow = true;
           hullGroup.add(boss);
@@ -777,11 +777,11 @@
       const up = new THREE.Vector3(...layout.up);
       const maps = paintPlate(info);
       const mat = boneMat(maps.map, maps.bump, {
-        color: 0xf0e4cc,
+        color: 0xc4b090,
         emissive: new THREE.Color(info.accent || "#6FA896"),
         emissiveMap: maps.emissive,
-        emissiveIntensity: info.id === state.front ? 0.32 : 0.14,
-        roughness: 0.48
+        emissiveIntensity: info.id === state.front ? 0.22 : 0.08,
+        roughness: 0.56
       });
       const plate = new THREE.Mesh(geom, mat);
       plate.position.copy(dir).multiplyScalar(0.84);
@@ -800,32 +800,41 @@
   }
 
   function addSocket(plate, info) {
-    const ox = oxidizedMat(null, { color: 0x5a4638 });
-    const cart = cartilageMat({ color: 0xa89078 });
-    const lip = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.048, 10, 28), ox);
+    const ox = oxidizedMat(null, { color: 0x2e261e });
+    const cart = cartilageMat({ color: 0x6a5048 });
+    const socket = new THREE.Group();
+    socket.position.set(0, -0.28, 0);
+    plate.add(socket);
+    const lip = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.042, 10, 28), ox);
     lip.position.z = 0.042;
-    plate.add(lip);
-    const iris = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.018, 8, 22), cart);
+    socket.add(lip);
+    const iris = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.016, 8, 22), cart);
     iris.position.z = 0.05;
-    plate.add(iris);
+    socket.add(iris);
     const well = new THREE.Mesh(
-      new THREE.CircleGeometry(0.2, 20),
+      new THREE.RingGeometry(0.09, 0.155, 24),
       new THREE.MeshPhysicalMaterial({
-        color: 0x140e0c,
-        roughness: 0.82,
-        metalness: 0.2,
+        color: 0x080605,
+        roughness: 0.55,
+        metalness: 0.35,
         emissive: new THREE.Color(info.accent || "#6FA896"),
         emissiveIntensity: 0.12
       })
     );
-    well.position.z = 0.03;
-    plate.add(well);
+    well.position.z = 0.036;
+    socket.add(well);
+    const voidCap = new THREE.Mesh(
+      new THREE.CircleGeometry(0.09, 20),
+      new THREE.MeshPhysicalMaterial({ color: 0x050403, roughness: 1, metalness: 0 })
+    );
+    voidCap.position.z = 0.03;
+    socket.add(voidCap);
     for (let i = 0; i < 8; i++) {
       const a = (i / 8) * Math.PI * 2;
-      const rivet = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.03, 8), ox);
+      const rivet = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.028, 8), ox);
       rivet.rotation.x = Math.PI / 2;
-      rivet.position.set(Math.cos(a) * 0.52, Math.sin(a) * 0.52, 0.04);
-      plate.add(rivet);
+      rivet.position.set(Math.cos(a) * 0.34, Math.sin(a) * 0.34, 0.04);
+      socket.add(rivet);
     }
     const duct = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.034, 0.22, 8), ox);
     duct.rotation.z = Math.PI / 2;
@@ -949,7 +958,7 @@
 
     const pedestal = new THREE.Group();
     const ox = oxidizedMat();
-    const bone = boneMat(boneShared.map, boneShared.bump, { color: 0xd4c2a4 });
+    const bone = boneMat(boneShared.map, boneShared.bump, { color: 0x5a4a3a, roughness: 0.78 });
     const base = new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.55, 0.18, 28), bone);
     base.position.y = -0.86;
     base.castShadow = true;
@@ -1706,10 +1715,10 @@
     state.browse = true;
     setHullVisible(false);
     setFloorVisible(0.35);
-    renderer.toneMappingExposure = 1.12;
-    key.intensity = 1.7;
-    fill.intensity = 0.32;
-    rim.intensity = 1.15;
+    renderer.toneMappingExposure = 0.92;
+    key.intensity = 0.95;
+    fill.intensity = 0.28;
+    rim.intensity = 1.2;
     creviceVein.intensity = 0.85;
     creviceBruise.intensity = 0.55;
     creviceAmber.intensity = 0.9;
@@ -1757,15 +1766,15 @@
     state.focus = 0;
     state.lastFocus = -1;
     state.openT = 0;
-    renderer.toneMappingExposure = 0.9;
-    scene.fog.density = 0.052;
+    renderer.toneMappingExposure = 0.68;
+    scene.fog.density = 0.068;
     openSpot.intensity = 0;
     creviceVein.intensity = 0;
     creviceBruise.intensity = 0;
     creviceAmber.intensity = 0;
-    key.intensity = 1.42;
+    key.intensity = 0.62;
     fill.intensity = 0.2;
-    rim.intensity = 0.95;
+    rim.intensity = 1.35;
     camera.position.set(0, state.camY, state.camZ);
     camera.lookAt(0, -0.28, 0);
     restoreHull();
@@ -1832,12 +1841,12 @@
     camera.position.z = state.camZ - e * 0.18;
     camera.position.y = state.camY - e * 0.12;
     camera.lookAt(0, -0.12 + e * 0.06, 0);
-    renderer.toneMappingExposure = 0.9 + e * 0.28;
-    scene.fog.density = 0.052 - e * 0.018;
+    renderer.toneMappingExposure = 0.68 + e * 0.28;
+    scene.fog.density = 0.068 - e * 0.018;
     setFloorVisible(1 - e * 0.55);
-    key.intensity = 1.42 + e * 0.45;
+    key.intensity = 0.62 + e * 0.45;
     fill.intensity = 0.2 + e * 0.18;
-    rim.intensity = 0.95 + e * 0.35;
+    rim.intensity = 1.35 + e * 0.2;
     openSpot.color.set(0xe8c9a0);
     openSpot.intensity = 3.4 * (0.25 + 0.75 * Math.sin(e * Math.PI));
     marrowLight.intensity = 0.55 + e * 1.1;
@@ -2069,16 +2078,16 @@
     const burst = Math.max(0, (state.burstUntil - now) / 520);
     const pulse = state.motion ? 0.86 + 0.14 * Math.sin(now * 0.0018) : 0.84;
     marrowLight.color.set(0xc48a3c);
-    marrowLight.intensity = state.opening ? marrowLight.intensity : (state.motion ? 0.5 + burst * 0.9 : 0.38);
+    marrowLight.intensity = state.opening ? marrowLight.intensity : (state.motion ? 0.32 + burst * 0.5 : 0.26);
     veinLight.color.copy(state.accent);
-    veinLight.intensity = state.motion ? 0.22 + pulse * 0.16 : 0.16;
-    bruiseKick.intensity = state.motion ? 0.16 + pulse * 0.08 : 0.1;
-    cavityGlow.intensity = state.motion ? 1.05 + pulse * 0.18 : 0.9;
+    veinLight.intensity = state.motion ? 0.14 + pulse * 0.1 : 0.12;
+    bruiseKick.intensity = state.motion ? 0.18 + pulse * 0.08 : 0.14;
+    cavityGlow.intensity = state.motion ? 2.4 + pulse * 0.3 : 2.2;
 
     for (const plate of plates) {
       const front = plate.userData.face === state.front;
       if (plate.material && plate.material.emissiveIntensity != null) {
-        plate.material.emissiveIntensity = (front ? 0.34 : 0.14) * pulse + burst * 0.08;
+        plate.material.emissiveIntensity = (front ? 0.22 : 0.08) * pulse + burst * 0.05;
       }
     }
 
@@ -2468,7 +2477,7 @@
   }
 
   function makeEnvMap() {
-    const colors = ["#c8b49a", "#140e0c", "#6a5a78", "#1a120e", "#c4a46a", "#080605"];
+    const colors = ["#2a241c", "#080605", "#1a1418", "#0a0806", "#3a2a18", "#080605"];
     const images = colors.map((color) => {
       const c = document.createElement("canvas");
       c.width = c.height = 16;
