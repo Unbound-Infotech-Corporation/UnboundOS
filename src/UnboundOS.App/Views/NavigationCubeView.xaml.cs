@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Windows.Foundation;
 using UnboundOS.App.Services;
 using UnboundOS.Core.Abstractions;
 using UnboundOS.Core.Navigation;
@@ -25,8 +26,8 @@ public sealed partial class NavigationCubeView : UserControl
     private float _idle;
     private bool _dragging;
     private bool _moved;
-        private Point _press;
-        private Point _lastPoint;
+    private Point _press;
+    private Point _lastPoint;
     private DateTimeOffset _lastMoveAt;
     private DateTimeOffset _idleOrigin = DateTimeOffset.UtcNow;
     private CubeDestination _announced = CubeDestination.Session;
