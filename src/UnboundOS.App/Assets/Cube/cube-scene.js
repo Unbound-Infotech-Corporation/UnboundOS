@@ -1158,6 +1158,11 @@
     obj.userData.lit = 0;
     obj.userData.layoutLit = 0;
     obj.userData.pendingLit = 0;
+    obj.userData.rotVel = new THREE.Vector3();
+    obj.userData.layoutRot = obj.userData.targetRot
+      ? new THREE.Euler(obj.userData.targetRot.x, obj.userData.targetRot.y, obj.userData.targetRot.z)
+      : new THREE.Euler();
+    obj.userData.pendingRot = obj.userData.layoutRot.clone();
   }
 
   function clearBrickMotion(b, pose) {
@@ -1167,11 +1172,19 @@
     b.userData.layoutScale = b.userData.targetScale || 1;
     b.userData.pendingScale = b.userData.layoutScale;
     if (b.userData.posVel) b.userData.posVel.set(0, 0, 0);
+    if (b.userData.rotVel) b.userData.rotVel.set(0, 0, 0);
     b.userData.scaleVel = 0;
     b.userData.delayLeft = 0;
     b.userData.lit = 0;
     b.userData.layoutLit = 0;
     b.userData.pendingLit = 0;
+    const rot = b.userData.targetRot;
+    if (rot) {
+      if (!b.userData.layoutRot) b.userData.layoutRot = new THREE.Euler();
+      if (!b.userData.pendingRot) b.userData.pendingRot = new THREE.Euler();
+      b.userData.layoutRot.set(rot.x, rot.y, rot.z);
+      b.userData.pendingRot.set(rot.x, rot.y, rot.z);
+    }
   }
 
   function rearrangeDelay(distance, isFocus) {
@@ -1180,7 +1193,7 @@
   }
 
   function rearrangePush(distance, carousel) {
-    const mag = carousel ? 0.18 : 0.10;
+    const mag = carousel ? 0.12 : 0.07;
     return mag * (0.35 + Math.exp(-(distance * distance) / 0.55));
   }
 
@@ -1202,8 +1215,8 @@
       const m = child.material;
       if (m.emissive) {
         m.emissive.copy(state.accent);
-        m.emissiveIntensity = 0.03 + want * 0.26;
-        if (m.envMapIntensity != null) m.envMapIntensity = 1.35 + want * 0.45;
+        m.emissiveIntensity = 0.02 + want * 0.42;
+        if (m.envMapIntensity != null) m.envMapIntensity = 1.28 + want * 0.7;
       }
       if (child === b.userData.label) {
         m.opacity = 0.78 + want * 0.2;
@@ -1216,13 +1229,21 @@
     b.userData.layoutPos.copy(b.userData.pendingPos);
     b.userData.layoutScale = b.userData.pendingScale;
     b.userData.layoutLit = b.userData.pendingLit;
+    if (b.userData.pendingRot) {
+      if (!b.userData.layoutRot) b.userData.layoutRot = new THREE.Euler();
+      b.userData.layoutRot.copy(b.userData.pendingRot);
+    }
   }
 
   function snapBrickLayout(b) {
     commitLayout(b);
     if (b.userData.layoutPos) b.position.copy(b.userData.layoutPos);
     b.scale.setScalar(b.userData.layoutScale || 1);
+    if (b.userData.layoutRot) {
+      b.rotation.set(b.userData.layoutRot.x, b.userData.layoutRot.y, b.userData.layoutRot.z);
+    }
     if (b.userData.posVel) b.userData.posVel.set(0, 0, 0);
+    if (b.userData.rotVel) b.userData.rotVel.set(0, 0, 0);
     b.userData.scaleVel = 0;
     b.userData.delayLeft = 0;
     b.userData.lit = b.userData.layoutLit || 0;
@@ -1258,11 +1279,13 @@
       pending.copy(base);
 
       if (focused) {
-        pending.addScaledVector(_out, carousel ? 0.42 : 0.22);
-        pending.z += carousel ? 0.06 : 0.03;
-        b.userData.pendingScale = (b.userData.targetScale || 1) * (carousel ? 1.2 : 1.12);
+        pending.addScaledVector(_out, carousel ? 0.54 : 0.28);
+        pending.z += carousel ? 0.11 : 0.05;
+        b.userData.pendingScale = (b.userData.targetScale || 1) * (carousel ? 1.28 : 1.16);
         b.userData.pendingLit = 1;
         b.userData.delayLeft = 0;
+        if (!b.userData.pendingRot) b.userData.pendingRot = new THREE.Euler();
+        b.userData.pendingRot.set(0, 0, 0);
       } else if (playable) {
         if (focusBase && dist > 0.001) {
           _away.copy(base).sub(focusBase);
@@ -1270,24 +1293,34 @@
           else _away.normalize();
           pending.addScaledVector(_away, rearrangePush(dist, carousel));
         }
-        pending.addScaledVector(_out, carousel ? -0.045 : -0.022);
-        pending.y -= 0.012 * Math.min(dist, 1.2);
-        pending.z -= carousel ? 0.02 : 0.01;
-        b.userData.pendingScale = (b.userData.targetScale || 1) * (carousel ? 0.96 : 0.98);
-        b.userData.pendingLit = Math.exp(-(dist * dist) / 1.1) * 0.18;
+        pending.addScaledVector(_out, carousel ? -0.028 : -0.014);
+        pending.y -= 0.008 * Math.min(dist, 1.2);
+        pending.z -= carousel ? 0.012 : 0.006;
+        b.userData.pendingScale = (b.userData.targetScale || 1) * (carousel ? 0.97 : 0.985);
+        b.userData.pendingLit = Math.exp(-(dist * dist) / 1.1) * 0.14;
         b.userData.delayLeft = state.motion ? rearrangeDelay(dist, false) : 0;
+        const rot = b.userData.targetRot;
+        if (rot) {
+          if (!b.userData.pendingRot) b.userData.pendingRot = new THREE.Euler();
+          b.userData.pendingRot.set(rot.x, rot.y, rot.z);
+        }
       } else {
         if (focusBase && dist > 0.001) {
           _away.copy(base).sub(focusBase);
           if (_away.lengthSq() < 1e-6) _away.copy(_out);
           else _away.normalize();
-          pending.addScaledVector(_away, rearrangePush(dist, carousel) * 0.55);
+          pending.addScaledVector(_away, rearrangePush(dist, carousel) * 0.32);
         }
-        pending.addScaledVector(_out, -0.03);
-        pending.z -= 0.02;
-        b.userData.pendingScale = (b.userData.targetScale || 1) * 0.97;
+        pending.addScaledVector(_out, -0.016);
+        pending.z -= 0.012;
+        b.userData.pendingScale = (b.userData.targetScale || 1) * 0.985;
         b.userData.pendingLit = 0;
         b.userData.delayLeft = state.motion ? 0.03 + Math.min(dist, 1.6) * 0.04 : 0;
+        const rot = b.userData.targetRot;
+        if (rot) {
+          if (!b.userData.pendingRot) b.userData.pendingRot = new THREE.Euler();
+          b.userData.pendingRot.set(rot.x, rot.y, rot.z);
+        }
       }
 
       if (!state.motion) {
@@ -1358,6 +1391,18 @@
       b.userData.scaleVel = nextVel;
       b.scale.setScalar(Math.max(0.2, b.scale.x + nextVel * step));
 
+      if (!b.userData.rotVel) b.userData.rotVel = new THREE.Vector3();
+      const rot = b.userData.layoutRot;
+      if (rot) {
+        const rv = b.userData.rotVel;
+        rv.x += ((rot.x - b.rotation.x) * LAYOUT_K - rv.x * LAYOUT_D) * step;
+        rv.y += ((rot.y - b.rotation.y) * LAYOUT_K - rv.y * LAYOUT_D) * step;
+        rv.z += ((rot.z - b.rotation.z) * LAYOUT_K - rv.z * LAYOUT_D) * step;
+        b.rotation.x += rv.x * step;
+        b.rotation.y += rv.y * step;
+        b.rotation.z += rv.z * step;
+      }
+
       const want = b.userData.layoutLit || 0;
       const lit = b.userData.lit || 0;
       b.userData.lit = lit + (want - lit) * Math.min(1, step * 7);
@@ -1372,8 +1417,8 @@
     let fy = 0;
     for (const b of bricks) {
       if (b.userData.itemIndex === state.focus && state.focus >= 0) {
-        fx = b.position.x * 0.07;
-        fy = b.position.y * 0.04;
+        fx = b.position.x * 0.12;
+        fy = b.position.y * 0.06;
         break;
       }
     }
@@ -1387,7 +1432,7 @@
       camera.position.y += (ty - camera.position.y) * a;
       camera.position.z += (tz - camera.position.z) * a;
     }
-    camera.lookAt(fx * 0.35, -0.06 + fy, 0);
+    camera.lookAt(fx * 0.55, -0.04 + fy, 0);
   }
 
   function snapBrowse() {
@@ -1944,6 +1989,13 @@
     return vy > 0 ? "Up" : "Down";
   }
 
+  function previewOpen(front) {
+    const face = front || state.front;
+    const stay = face === "Session" || face === "Tools" || face === "Mods";
+    const mode = face === "Session" ? "carousel" : stay ? "mosaic" : "list";
+    startOpen({ front: face, motion: state.motion, stay, mode });
+  }
+
   function pick(x, y) {
     if (state.opening) return;
     if (state.browse) {
@@ -1962,7 +2014,7 @@
         return;
       }
       if (face === state.front) {
-        startOpen({ front: face, motion: state.motion });
+        previewOpen(face);
         return;
       }
       const next = aimedAt(face);
@@ -1982,7 +2034,7 @@
     const ny = -pointer.y;
     if (Math.abs(nx) < 0.32 && Math.abs(ny) < 0.32) {
       if (hosted) send({ v: 1, type: "activate" });
-      else startOpen({ front: state.front, motion: state.motion });
+      else previewOpen(state.front);
       return;
     }
     const turn = Math.abs(nx) >= Math.abs(ny) ? (nx < 0 ? "Left" : "Right") : (ny < 0 ? "Up" : "Down");
@@ -2046,7 +2098,7 @@
     if (ev.key === "Enter" || ev.key === " ") {
       ev.preventDefault();
       if (hosted) send({ v: 1, type: "activate" });
-      else startOpen({ front: state.front, motion: state.motion, stay: state.front === "Session" || state.front === "Tools", mode: state.front === "Session" ? "carousel" : state.front === "Tools" ? "mosaic" : "list" });
+      else previewOpen(state.front);
       return;
     }
     const turn = map[ev.key];

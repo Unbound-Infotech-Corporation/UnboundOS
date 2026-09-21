@@ -74,7 +74,7 @@ public static class CubeBrowse
     /// </summary>
     public static double RearrangePush(double distanceFromFocus, bool carousel)
     {
-        var mag = carousel ? 0.18 : 0.10;
+        var mag = carousel ? 0.12 : 0.07;
         return mag * (0.35 + Math.Exp(-(distanceFromFocus * distanceFromFocus) / 0.55));
     }
 

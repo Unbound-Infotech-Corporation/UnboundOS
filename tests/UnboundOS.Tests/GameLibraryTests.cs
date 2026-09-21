@@ -86,7 +86,7 @@ public sealed class GameLibraryTests
 
         Assert.True(CubeBrowse.RearrangePush(0, carousel: true) > CubeBrowse.RearrangePush(1.4, carousel: true));
         Assert.True(CubeBrowse.RearrangePush(0.4, carousel: true) > CubeBrowse.RearrangePush(0.4, carousel: false));
-        Assert.InRange(CubeBrowse.RearrangePush(0, carousel: true), 0.22, 0.28);
+        Assert.InRange(CubeBrowse.RearrangePush(0, carousel: true), 0.15, 0.18);
     }
 
     [Fact]
