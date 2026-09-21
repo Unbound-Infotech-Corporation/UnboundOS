@@ -12,14 +12,15 @@ slice** only (called out per section). Image/OOBE owners pick up the rest.
 
 Brand stays Unbound Infotech first: obsidian, cyan pulse, cobalt, spare
 circuit amber on **inner pages**. Home is a separate bay — original
-biomechanical craft (Scorn-inspired, no third-party assets). Restrained
-professional buttons. No ads. No silent overclock. Treat **x64** as the
-WinUI platform.
+procedural linear galaxy on a black field (no third-party plates).
+Restrained professional buttons. No ads. No silent overclock. Treat
+**x64** as the WinUI platform.
 
-Home navigation is a **3D cube** (WebView2 hosting packaged Three.js, not
-Unreal in-process). Faces: Session, Tools, Network, Mods, Files,
-Hardware. Front face is **Games** (library carousel). Settings is a list
-via the SET glyph. Home is cube-only. Architecture: [docs/cube-nav.md](cube-nav.md).
+Home navigation is a **linear galaxy** (WebView2 hosting packaged
+Three.js, not Unreal in-process). Nodes: Session (Games), Tools, Mods,
+Network, Files, Hardware. **Up** opens the library list over the galaxy.
+**Down** opens Settings. Left/right shift nodes. Architecture:
+[docs/cube-nav.md](cube-nav.md).
 
 ## 1. OOBE / initial setup last step
 

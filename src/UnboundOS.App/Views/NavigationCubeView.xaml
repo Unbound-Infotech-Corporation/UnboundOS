@@ -9,16 +9,16 @@
     KeyDown="OnKeyDown"
     HorizontalAlignment="Stretch"
     VerticalAlignment="Stretch"
-    AutomationProperties.Name="UnboundOS navigation cube"
-    AutomationProperties.HelpText="Arrow keys rotate. Enter opens the front group. Games stay as a block carousel. Settings and Profiles are the corner glyphs.">
+    AutomationProperties.Name="UnboundOS Home galaxy"
+    AutomationProperties.HelpText="Up opens the games list over the galaxy. Down opens Settings. Left and right shift nodes. Enter opens the focused node. Settings and Profiles are the corner glyphs.">
 
     <Grid
         x:Name="PerspectiveHost"
         Style="{StaticResource CubeHostStyle}"
-        AutomationProperties.Name="3D navigation cube">
+        AutomationProperties.Name="Linear galaxy">
         <WebView2
             x:Name="CubeWeb"
-            DefaultBackgroundColor="#FF080605"
+            DefaultBackgroundColor="#FF000000"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             IsTabStop="False"

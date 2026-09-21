@@ -4,8 +4,8 @@ using System.Text.Json.Serialization;
 namespace UnboundOS.Core.Navigation;
 
 /// <summary>
-/// JSON contract between the WinUI shell and the packaged WebGL cube host.
-/// C# owns pose, snapping, and page navigation. The scene owns rendering.
+/// JSON contract between the WinUI shell and the packaged WebGL Home host.
+/// C# owns node focus, overlay, and page navigation. The scene owns rendering.
 /// </summary>
 public sealed record CubeFacePayload(
     string Id,
@@ -63,6 +63,10 @@ public sealed record CubeSceneState
 
     public int Focus { get; init; }
 
+    public int Node { get; init; }
+
+    public string Overlay { get; init; } = "none";
+
     public IReadOnlyList<CubeFacePayload> Faces { get; init; } = [];
 
     public IReadOnlyList<CubeBrowseItem> Items { get; init; } = [];
@@ -113,6 +117,8 @@ public sealed record CubeHostCommand
     public bool Stay { get; init; }
 
     public int Focus { get; init; }
+
+    public int Node { get; init; }
 
     public IReadOnlyList<CubeBrowseItem> Items { get; init; } = [];
 }
@@ -181,6 +187,8 @@ public static class CubeBridge
             Monogram = info.Monogram,
             Hint = info.Hint,
             Mode = info.OpenKind.ToString().ToLowerInvariant(),
+            Node = HomeGalaxy.IndexOf(pose.Front),
+            Overlay = "none",
             Faces = CatalogPayload()
         };
     }
@@ -206,6 +214,7 @@ public static class CubeBridge
             Mode = kind.ToString().ToLowerInvariant(),
             Stay = CubeCatalog.StaysInCube(front),
             Focus = focus,
+            Node = HomeGalaxy.IndexOf(front),
             Items = items ?? []
         };
     }
@@ -214,7 +223,13 @@ public static class CubeBridge
         new() { Type = "focus", Focus = index };
 
     public static CubeHostCommand Reset(CubeDestination front, bool motion) =>
-        new() { Type = "reset", Front = front.ToString(), Motion = motion };
+        new()
+        {
+            Type = "reset",
+            Front = front.ToString(),
+            Motion = motion,
+            Node = HomeGalaxy.IndexOf(front)
+        };
 
     public static bool TryRead(string? json, out CubeHostMessage message)
     {

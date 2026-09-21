@@ -44,13 +44,16 @@ public sealed partial class MainPage : Page
     private void OnCubeActivated(object sender, CubeDestination destination) =>
         Navigate(CubeCatalog.NavTag(destination));
 
+    private void OnGalaxySettingsRequested(object sender, EventArgs e) =>
+        Navigate("Settings");
+
     private void OnCubeNotice(object sender, string message) =>
         ViewModel.StatusLine = message;
 
     private void OnCubeFrontChanged(object sender, CubeDestination destination)
     {
         var info = CubeCatalog.Info(destination);
-        ViewModel.StatusLine = $"{info.Title} faces you. Enter opens it.";
+        ViewModel.StatusLine = $"{info.Title} node. Up opens games. Down opens Settings.";
     }
 
     private void Navigate(string tag)
@@ -58,7 +61,7 @@ public sealed partial class MainPage : Page
         ViewModel.SelectedNav = tag;
         ViewModel.StatusLine = tag switch
         {
-            "Home" => "Cube home. Games face: cycle blocks, Enter launches.",
+            "Home" => "Galaxy home. Up: games list. Down: Settings. Left/right: shift nodes.",
             "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
             "Tools" => "Tools marketplace ready.",

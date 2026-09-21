@@ -4,7 +4,8 @@ using System.Numerics;
 namespace UnboundOS.Core.Navigation;
 
 /// <summary>
-/// Rest pose, destination palettes, and visual helpers for the Home cube.
+/// Rest pose, destination palettes, and visual helpers (legacy cube math
+/// still used to aim HomeGalaxy nodes).
 /// Logical pose stays 90° snaps; the rest yaw/pitch is a product-shot 3/4 so
 /// three faces read at once. Accents stay inside the organic Home family
 /// (bone, bruise, bile, blood, ash, sparse vein light) — not electric cyan.

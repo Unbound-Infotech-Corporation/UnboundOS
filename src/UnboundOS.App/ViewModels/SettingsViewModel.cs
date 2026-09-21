@@ -55,8 +55,8 @@ public partial class SettingsViewModel : ObservableObject
 
     public ObservableCollection<SettingsGroup> Groups { get; } =
     [
-        new("motion", "Interface motion", "Springy cube, filaments, idle, and the unfold transform."),
-        new("hud", "Home HUD", "Clock, system temps, and the Home readout strip. Cube stays the focal point."),
+        new("motion", "Interface motion", "Living galaxy, star drift, and tile focus motion."),
+        new("hud", "Home HUD", "Clock, system temps, and the Home readout strip. The galaxy stays the focal point."),
         new("display", "Display", "Launch the GPU vendor app. UnboundOS does not write display settings."),
         new("overclock", "Overclocking", "Launch-only vendor OC hubs. No silent clocks."),
         new("startup", "Startup audit", "Pin allowlist. Never silently kill anticheat or GPU vendor."),

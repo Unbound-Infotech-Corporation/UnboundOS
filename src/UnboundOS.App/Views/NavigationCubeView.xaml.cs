@@ -45,6 +45,8 @@ public sealed partial class NavigationCubeView : UserControl
 
     public event EventHandler<string>? Notice;
 
+    public event EventHandler? SettingsRequested;
+
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (_wired)
@@ -88,7 +90,7 @@ public sealed partial class NavigationCubeView : UserControl
     {
         try
         {
-            CubeWeb.DefaultBackgroundColor = Windows.UI.Color.FromArgb(255, 5, 7, 10);
+            CubeWeb.DefaultBackgroundColor = Windows.UI.Color.FromArgb(255, 0, 0, 0);
             await CubeWeb.EnsureCoreWebView2Async();
             var core = CubeWeb.CoreWebView2;
             if (core is null)
@@ -164,7 +166,6 @@ public sealed partial class NavigationCubeView : UserControl
                 ActivateFront();
                 break;
             case "opened":
-                CompleteActivation();
                 break;
             case "cycle":
                 if (_browsing)
@@ -196,7 +197,7 @@ public sealed partial class NavigationCubeView : UserControl
 
                 if (CubeBridge.ParseTurn(message.Turn) is { } turn)
                 {
-                    Rotate(turn);
+                    ApplyIdleTurn(turn);
                 }
 
                 break;
@@ -256,16 +257,23 @@ public sealed partial class NavigationCubeView : UserControl
             }
 
             var browseTurn = CubeInput.FromKey(name);
-            if (browseTurn is CubeTurn.Left or CubeTurn.Up)
+            if (browseTurn is CubeTurn.Left)
             {
                 Cycle(_focus - 1, fromScene: false);
                 e.Handled = true;
                 return;
             }
 
-            if (browseTurn is CubeTurn.Right or CubeTurn.Down)
+            if (browseTurn is CubeTurn.Right)
             {
                 Cycle(_focus + 1, fromScene: false);
+                e.Handled = true;
+                return;
+            }
+
+            if (browseTurn is CubeTurn.Down)
+            {
+                ResetScene();
                 e.Handled = true;
             }
 
@@ -285,7 +293,7 @@ public sealed partial class NavigationCubeView : UserControl
             return;
         }
 
-        Rotate(turn.Value);
+        ApplyIdleTurn(turn.Value);
         e.Handled = true;
     }
 
@@ -296,14 +304,52 @@ public sealed partial class NavigationCubeView : UserControl
         e.Handled = true;
     }
 
-    public void Rotate(CubeTurn turn)
+    public void Rotate(CubeTurn turn) => ApplyIdleTurn(turn);
+
+    public void ApplyIdleTurn(CubeTurn turn)
     {
         if (_opening || _browsing)
         {
             return;
         }
 
-        SetPose(_pose.Turn(turn));
+        switch (HomeGalaxy.FromTurn(turn))
+        {
+            case HomeIdleAction.PanLeft:
+                PanNode(-1);
+                break;
+            case HomeIdleAction.PanRight:
+                PanNode(1);
+                break;
+            case HomeIdleAction.OpenGames:
+                OpenGamesOverlay();
+                break;
+            case HomeIdleAction.OpenSettings:
+                SettingsRequested?.Invoke(this, EventArgs.Empty);
+                break;
+        }
+    }
+
+    public void PanNode(int delta)
+    {
+        if (_opening || _browsing)
+        {
+            return;
+        }
+
+        var next = HomeGalaxy.Neighbor(_pose.Front, delta);
+        SetPose(CubeAtmosphere.AimedAt(next, _pose));
+    }
+
+    public void OpenGamesOverlay()
+    {
+        if (_opening || _browsing)
+        {
+            return;
+        }
+
+        SetPose(CubeAtmosphere.AimedAt(CubeDestination.Session, _pose));
+        ActivateFront();
     }
 
     public void ActivateFront()
@@ -316,32 +362,28 @@ public sealed partial class NavigationCubeView : UserControl
         var destination = _pose.Front;
         _items = ItemsFor(destination);
         _focus = 0;
-        var stay = CubeCatalog.StaysInCube(destination) && _items.Count > 0;
+        var stay = destination == CubeDestination.Session && _items.Count > 0;
 
         if (!_sceneReady || CubeWeb.CoreWebView2 is null)
         {
+            if (stay)
+            {
+                Notice?.Invoke(this, "Games list needs WebGL. Enter still opens Session.");
+            }
+
             FaceActivated?.Invoke(this, destination);
             return;
         }
 
-        if (!stay && !AllowMotion)
+        if (!stay)
         {
             FaceActivated?.Invoke(this, destination);
             return;
         }
 
-        _opening = true;
-        _pendingOpen = destination;
-        var token = ++_openToken;
         CubeWeb.CoreWebView2.PostWebMessageAsJson(
             CubeBridge.ToJson(CubeBridge.Open(destination, AllowMotion, _items, _focus)));
-        if (stay && !AllowMotion)
-        {
-            EnterBrowse(destination);
-            return;
-        }
-
-        _ = CompleteActivationAfterAsync(token);
+        EnterBrowse(destination);
     }
 
     public void ResetScene()
@@ -547,10 +589,23 @@ public sealed partial class NavigationCubeView : UserControl
 
     private void FinishDrag(float dx, float dy, float vx, float vy)
     {
-        var preview = CubeInput.PreviewDrag(_pose, dx, dy);
-        var snapped = CubeInput.SnapFromDegrees(preview.Yaw, preview.Pitch);
         var flick = CubeInput.FlickTurn(vx, vy);
-        SetPose(flick is null ? snapped : snapped.Turn(flick.Value));
+        if (flick is not null)
+        {
+            ApplyIdleTurn(flick.Value);
+            return;
+        }
+
+        if (Math.Abs(dx) >= Math.Abs(dy) && Math.Abs(dx) > 48)
+        {
+            ApplyIdleTurn(dx < 0 ? CubeTurn.Right : CubeTurn.Left);
+            return;
+        }
+
+        if (Math.Abs(dy) > 48)
+        {
+            ApplyIdleTurn(dy > 0 ? CubeTurn.Down : CubeTurn.Up);
+        }
     }
 
     private void SetPose(CubePose pose)
@@ -579,7 +634,7 @@ public sealed partial class NavigationCubeView : UserControl
         var info = CubeCatalog.Info(front);
         FrontCaption.Text = info.Title;
         AutomationProperties.SetName(this, CubeCatalog.Announce(front));
-        AutomationProperties.SetName(FrontCaption, $"Front face {info.Title}");
+        AutomationProperties.SetName(FrontCaption, $"Focused node {info.Title}");
         if (_announced != front)
         {
             _announced = front;

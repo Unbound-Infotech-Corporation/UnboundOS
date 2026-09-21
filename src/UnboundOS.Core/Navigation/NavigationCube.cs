@@ -3,8 +3,8 @@ using System.Numerics;
 namespace UnboundOS.Core.Navigation;
 
 /// <summary>
-/// Six Home destinations on a physical cube. Settings and Profiles are the
-/// discreet Home corner glyphs; Overlay stays in inner-page chrome.
+/// Six Home destinations. On Home they sit as galaxy nodes. Settings and
+/// Profiles remain the discreet corner glyphs; Overlay stays inner-page chrome.
 /// </summary>
 public enum CubeDestination
 {
@@ -25,8 +25,8 @@ public enum CubeTurn
 }
 
 /// <summary>
-/// How a face opens. Games stay in the cube as a block carousel.
-/// Tools/Mods stay as a mosaic when items exist. Config faces land on a list page.
+/// How a destination opens. Games stay as a translucent list over the galaxy.
+/// Tools/Mods stay as a mosaic when items exist. Config nodes land on a list page.
 /// </summary>
 public enum CubeOpenKind
 {
@@ -120,7 +120,7 @@ public static class CubeCatalog
         {
             CubeDestination.Session => new(
                 destination, "Session", "Games", "PLAY", "G", "PLAY",
-                "Installed library. Cycle the blocks, Enter launches.",
+                "Installed library. Up opens the list over the galaxy. Enter launches.",
                 "games", CubeOpenKind.Carousel),
             CubeDestination.Tools => new(
                 destination, "Tools", "Tools", "KIT", "T", "OPEN",
@@ -152,23 +152,14 @@ public static class CubeCatalog
     public static bool StaysInCube(CubeDestination destination) =>
         OpenKind(destination) is CubeOpenKind.Carousel or CubeOpenKind.Mosaic;
 
-    public static string Announce(CubeDestination destination)
-    {
-        var info = Info(destination);
-        var open = info.OpenKind switch
-        {
-            CubeOpenKind.Carousel => "Enter opens the library. Cycle blocks to pick a game.",
-            CubeOpenKind.Mosaic => "Enter opens the group as blocks. Cycle to pick an item.",
-            _ => "Enter opens the list for this group."
-        };
-        return $"Front face {info.Title}. {open} Arrow keys rotate. Settings and Profiles are the corner glyphs.";
-    }
+    public static string Announce(CubeDestination destination) =>
+        HomeGalaxy.Announce(destination);
 
     public static string AnnounceItem(CubeBrowseItem item, int index, int total) =>
-        $"{item.Title}, {item.Meta}, {index + 1} of {total}. Enter launches. Escape returns to the cube.";
+        HomeGalaxy.AnnounceOverlay(item, index, total);
 }
 
-/// <summary>Pointer, keyboard, and gamepad mapping for the Home cube.</summary>
+/// <summary>Pointer, keyboard, and gamepad mapping for Home (galaxy nodes).</summary>
 public static class CubeInput
 {
     public const float DefaultPixelsPerQuarterTurn = 96f;

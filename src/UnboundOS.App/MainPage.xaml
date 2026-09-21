@@ -554,6 +554,7 @@
                     VerticalAlignment="Stretch"
                     FaceActivated="OnCubeActivated"
                     FrontChanged="OnCubeFrontChanged"
+                    SettingsRequested="OnGalaxySettingsRequested"
                     Notice="OnCubeNotice" />
                 <Border
                     x:Name="HomeTempsHud"
