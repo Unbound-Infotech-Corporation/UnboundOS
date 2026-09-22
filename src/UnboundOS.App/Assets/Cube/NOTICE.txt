@@ -15,8 +15,10 @@ all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
-Home plate
-----------
-`home-plate.png` is the user-supplied Home background (edge-on linear
-galaxy). Packaged as shipped. No NASA or observatory credit is claimed;
-the source of the plate is the UnboundOS owner.
+Home look-dev plate
+-------------------
+`home-plate.png` is an owner-supplied look-dev reference (edge-on linear
+galaxy). It is inspiration only and is not loaded as the runtime Home
+background. Runtime Home is an original procedural living galaxy
+(canvas-painted disk + moving starfield). No NASA or observatory credit
+is claimed.

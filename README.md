@@ -6,7 +6,7 @@ A public Windows 11 **console-style shell** by **[Unbound Infotech Corporation](
 
 UnboundOS does **not** replace Windows. It applies a focused gaming / streaming posture — snapshot NICs, clear denylist junk, protect games and anticheat — then restores the desktop when you exit.
 
-The shell is a living-room home: on Home the **edge-on galaxy** is the only focal point (user-supplied plate + living Three.js stars in WebView2). **Left/Right** shift the nodes along the disk. **Up** opens that node’s list from the bottom; **Down** opens it from the top — the galaxy stays visible underneath. Games uses the Steam library when present. Settings and Profiles stay discreet Home corner glyphs. A quiet Home HUD can show local time and CPU/GPU temps; hide them in Settings. The old Settings tile that showed the letter “I” is gone.
+The shell is a living-room home: on Home the **edge-on galaxy** is the only focal point (original procedural living Three.js galaxy in WebView2 — not a static photo). **Left/Right** shift the nodes along the disk. **Up** opens that node’s list from the bottom; **Down** opens it from the top — the galaxy stays visible underneath. Games uses the Steam library when present. Settings and Profiles stay discreet Home corner glyphs. A quiet Home HUD can show local time and CPU/GPU temps; hide them in Settings. The old Settings tile that showed the letter “I” is gone.
 
 OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
 
@@ -20,7 +20,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 
 | Module | Purpose |
 |--------|---------|
-| **Home galaxy** | Black-field Home: user-supplied edge-on galaxy plate, living stars. Left/right shift nodes. Up/Down open that node’s list (bottom/top) over the galaxy. Games launches via `steam://rungameid`. Optional Home HUD. See [docs/cube-nav.md](docs/cube-nav.md) |
+| **Home galaxy** | Black-field Home: original procedural edge-on galaxy, all stars in gentle motion. Left/right shift nodes. Up/Down open that node’s list (bottom/top) on the left half over a vanishing scrim. Games launches via `steam://rungameid`. Optional Home HUD. See [docs/cube-nav.md](docs/cube-nav.md) |
 | **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
 | **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam) plus utilities (Notepad++, 7-Zip). Launch or official Get. Ultrawide crop recipe lives on the OBS tile |
@@ -152,7 +152,7 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 - Console-style shell: **Home galaxy** (WebView2 + packaged Three.js, not Unreal/Unity in-process) plus inner-page tile rows. Home hides top chrome so the galaxy is the only focal point
 - Galaxy motion: differential rotation around the disk, parallax layers, and silky category lists on Up/Down. Instant when Settings, Windows animations, or a live session say off
 - Keyboard: Left/Right shift nodes, Up/Down open that list from bottom/top, Enter opens, Escape returns. Mouse: drag / flick / click a node. Gamepad D-pad / A is mapped in Core for a later stub
-- Atmosphere: Home is the owner-supplied edge-on galaxy plate on a filmic black field. Inner pages keep Unbound cyan / cobalt chrome. Circuit amber remains a seasoning on tiles
+- Atmosphere: Home is an original procedural edge-on galaxy on a filmic black field. Inner pages keep Unbound cyan / cobalt chrome. Circuit amber remains a seasoning on tiles
 - Settings → Interface motion Off (or Windows animations off, or a live session) snaps back to instant states
 - Preferences live at `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\settings.json`
 - CommunityToolkit.Mvvm + Microsoft.Extensions.DependencyInjection

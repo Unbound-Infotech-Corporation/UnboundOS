@@ -11,9 +11,11 @@ This document is the full spec. The current UnboundOS PR ships a **first
 slice** only (called out per section). Image/OOBE owners pick up the rest.
 
 Brand stays Unbound Infotech first: obsidian, cyan pulse, cobalt, spare
-circuit amber on **inner pages**. Home is a separate bay — user-supplied
-edge-on galaxy plate plus living stars. Restrained professional buttons.
-No ads. No silent overclock. Treat **x64** as the WinUI platform.
+circuit amber on **inner pages**. Home is a separate bay — an original
+procedural edge-on galaxy with living stars (look-dev plate is
+inspiration only, never the runtime wallpaper). Restrained professional
+buttons. No ads. No silent overclock. Treat **x64** as the WinUI
+platform.
 
 Home navigation is a **linear galaxy** (WebView2 hosting packaged
 Three.js, not Unreal in-process). Nodes along the disk: Games (core),

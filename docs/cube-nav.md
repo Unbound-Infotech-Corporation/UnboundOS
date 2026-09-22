@@ -1,25 +1,34 @@
 # Home navigation galaxy
 
-UnboundOS Home is an **edge-on linear galaxy** on a true-black field —
-the user-supplied plate brought to life — not a spiral sticker and not a
-3D cube as the hero. Bright clusters along the disk are the menu nodes.
-The WinUI 3 shell stays the product. Category lists ease in over the
-living galaxy so the field stays visible.
+UnboundOS Home is an **original procedural edge-on galaxy** on a
+true-black field — not a static photograph, not a spiral sticker, and
+not a 3D cube as the hero. Bright clusters along the disk are the menu
+nodes. The WinUI 3 shell stays the product. Category lists ease in over
+the living galaxy so the field stays visible.
 
 ## Art direction
 
-**User plate + living stars.** `Assets/Cube/home-plate.png` is the
-owner-supplied Home background (creamy core, dust lanes, cooler blue
-outer arms, dense halo). It is packaged as shipped. **No NASA or
-observatory credit is claimed**; do not invent one. Procedural Three.js
-layers sit on top: parallax starfields, slow differential rotation /
-orbital shear around the plane, and gentle drift toward the locked
-node cores. Never random twinkle spam.
+**Procedural living galaxy.** Runtime Home is handcrafted in Three.js:
+a canvas-painted luminous bar (creamy core, dust-lane gaps, cooler
+outer arms) plus dense halo / disk / shear starfields. **Every star
+moves a little** — differential rotation, orbital shear, and slow
+parallax. Motion-off freezes that drift. Never a locked plate with a
+few twinkles.
+
+`Assets/Cube/home-plate.png` may remain as a look-dev reference. It is
+**not** the runtime wallpaper. **No NASA or observatory credit is
+claimed**; do not invent one.
 
 Games sits on the bright core. Tools and Mods lock to the right-hand
 clusters; Network, Files, and Hardware lock to the left-hand arm.
-Nodes stay on the horizontal. Company cyan (`#00F0FF`) stays a brand
-token for **inner pages**.
+Nodes stay on the horizontal. Focused node: a quiet star-select
+(soft core lift, slight local dust, no neon rings). Labels under
+nodes use restrained film-credits type with a dark pill scrim.
+Company cyan (`#00F0FF`) stays a brand token for **inner pages**.
+
+Category lists sit on the **left half** of the screen over a
+translucent scrim. The scrim **vanishes completely** when Escape
+collapses back to the node bar.
 
 Motion-off (or a live session) freezes star drift and heavy postFX;
 lists still open (instant or a short fade). The previous control-altar
@@ -64,7 +73,8 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
 ```
 
 - **Not Unreal.** UE is not a runtime dependency.
-- **WebView2 + Three.js r158** plus `home-plate.png`.
+- **WebView2 + Three.js r158.** Original procedural galaxy at runtime.
+  `home-plate.png` is look-dev only.
 - If WebView2 or WebGL is missing, Enter still opens the WinUI page.
 - Quiet Home HUD (clock / temps) and SET / PRFL glyphs stay optional.
 

@@ -43,48 +43,59 @@
       inset: 0;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
+      pointer-events: none;
+    }
+    #overlay.show { pointer-events: auto; }
+    #scrim {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 46%;
       pointer-events: none;
       opacity: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.18), transparent 28%, transparent 72%, rgba(0,0,0,0.22));
+      background: linear-gradient(90deg, rgba(0, 2, 8, 0.64) 0%, rgba(0, 2, 8, 0.36) 58%, rgba(0, 2, 8, 0) 100%);
     }
-    #overlay.show {
-      pointer-events: auto;
-    }
-    #overlay.from-bottom { transform: translate3d(0, 36vh, 0); }
-    #overlay.from-top { transform: translate3d(0, -36vh, 0); }
-    #overlay.show.ready {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
-    }
-    #overlay.motion {
-      transition: opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.78s cubic-bezier(0.16, 1, 0.3, 1);
+    #overlay.show.ready #scrim { opacity: 1; }
+    #overlay.motion #scrim {
+      transition: opacity 0.68s cubic-bezier(0.16, 1, 0.3, 1);
     }
     #track {
+      position: relative;
+      z-index: 1;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      width: min(560px, 72vw);
+      width: min(400px, 36vw);
+      margin-left: 7vw;
       will-change: transform;
+      opacity: 0;
     }
-    #track.motion {
-      transition: transform 0.62s cubic-bezier(0.16, 1, 0.3, 1);
+    #track.from-bottom { transform: translate3d(0, 34vh, 0); }
+    #track.from-top { transform: translate3d(0, -34vh, 0); }
+    #overlay.show.ready #track {
+      opacity: 1;
+      transform: translate3d(0, var(--track-y, 0px), 0);
+    }
+    #overlay.motion #track {
+      transition: opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.78s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .row {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      gap: 18px;
-      padding: 12px 8px;
+      gap: 16px;
+      padding: 12px 4px;
       border: 0;
       background: transparent;
       color: var(--star);
       font: inherit;
       text-align: left;
-      opacity: 0.22;
-      transform: scale(0.96);
-      text-shadow: 0 2px 18px #000;
+      opacity: 0.28;
+      transform: scale(0.97);
+      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.85);
     }
     .row.motion {
       transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
@@ -92,10 +103,10 @@
     }
     .row.focus {
       opacity: 0.96;
-      transform: scale(1.04);
+      transform: scale(1.03);
     }
     .row .title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 600;
       letter-spacing: 0.01em;
     }
@@ -133,6 +144,7 @@
     <canvas id="gl" aria-hidden="true"></canvas>
     <div id="fallback" hidden>Galaxy needs WebGL.</div>
     <div id="overlay">
+      <div id="scrim" aria-hidden="true"></div>
       <div id="track"></div>
     </div>
   </div>

@@ -17,9 +17,11 @@ Visual check:
   row. Settings / Profiles are discreet corner glyphs, not galaxy nodes.
   Inner pages restore HOME / SESSION / NETWORK / TOOLS / FILES /
   HARDWARE / MODS / PROFILES / SETTINGS.
-- Home hero matches the **user-supplied edge-on plate**: black void,
+- Home hero is an **original procedural edge-on galaxy**: black void,
   creamy core, dust-lane ribbon, cooler blue arms, dense halo.
-  Living stars shear/orbit; node clusters stay locked on the bar.
+  All stars move a little (shear / differential rotation / parallax);
+  node clusters stay locked on the bar. Focused node lifts like a
+  selected star. Lists sit on the left half; the scrim vanishes on Escape.
 - **Left/Right** shift nodes. **Up** opens that node’s list from the
   bottom; **Down** opens it from the top. The galaxy stays visible.
 - Interface motion On: differential rotation, parallax, silky list ease.
