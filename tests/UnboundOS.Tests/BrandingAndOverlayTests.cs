@@ -8,6 +8,7 @@ using UnboundOS.Infrastructure.Hardware;
 using UnboundOS.Infrastructure.Home;
 using UnboundOS.Infrastructure.Overlay;
 using UnboundOS.Infrastructure.Settings;
+using UnboundOS.Infrastructure.Tools;
 
 namespace UnboundOS.Tests;
 
@@ -98,15 +99,61 @@ public sealed class BrandingAndOverlayTests
     }
 
     [Fact]
-    public void AddUnboundOs_RegistersDisabledOverlayByDefault()
+    public async Task RainmeterOverlayHost_StaysOffUntilOptionsEnabled()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "unboundos-rainmeter-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        var exe = Path.Combine(root, "Rainmeter.exe");
+        await File.WriteAllTextAsync(exe, "stub");
+        string? started = null;
+        try
+        {
+            var rainmeter = new RainmeterLauncher(
+                new DesktopToolDiscoverySettings
+                {
+                    UseDefaultWindowsLocations = false,
+                    ForcedExecutables = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase)
+                    {
+                        [DesktopToolIds.Rainmeter] = exe
+                    }
+                },
+                (path, args) =>
+                {
+                    started = path;
+                    Assert.Equal(string.Empty, args);
+                    return true;
+                });
+
+            var off = new RainmeterDesktopOverlayHost(OverlayHostOptions.Disabled, rainmeter);
+            Assert.False(off.IsEnabled);
+            await off.StartAsync();
+            Assert.Null(started);
+
+            var on = new RainmeterDesktopOverlayHost(new OverlayHostOptions { Enabled = true }, rainmeter);
+            Assert.True(on.IsEnabled);
+            Assert.Contains(on.Widgets, widget => widget.Id == "phenix");
+            Assert.Contains(on.Widgets, widget => widget.Id == "clock-temps");
+            await on.StartAsync();
+            Assert.Equal(exe, started);
+        }
+        finally
+        {
+            try { Directory.Delete(root, true); } catch { /* best-effort */ }
+        }
+    }
+
+    [Fact]
+    public void AddUnboundOs_RegistersRainmeterOverlayOffByDefault()
     {
         var services = new ServiceCollection();
         services.AddUnboundOs();
         using var provider = services.BuildServiceProvider();
 
         var host = provider.GetRequiredService<IDesktopOverlayHost>();
-        Assert.IsType<DisabledDesktopOverlayHost>(host);
+        Assert.IsType<RainmeterDesktopOverlayHost>(host);
         Assert.False(host.IsEnabled);
+        Assert.Contains(host.Widgets, widget => widget.Id == "phenix");
+        Assert.Contains(host.Widgets, widget => widget.Id == "monstercat");
 
         var motion = provider.GetRequiredService<IUiMotionPolicy>();
         Assert.IsType<UiMotionPolicy>(motion);

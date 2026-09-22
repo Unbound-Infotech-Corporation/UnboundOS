@@ -13,10 +13,10 @@ public sealed class OverlayViewModel
         IsEnabled = host.IsEnabled;
         DisplayName = host.DisplayName;
         Widgets = host.Widgets;
-        Headline = host.IsEnabled ? "Overlay host connected" : "Overlay addon is optional";
+        Headline = host.IsEnabled ? "Rainmeter overlay connected" : "Rainmeter overlay is optional";
         Detail = host.IsEnabled
-            ? "Widgets render in the addon process. Session, network, and process engines stay independent."
-            : "No desktop overlay is installed. This page is a reserved hook — skins stay off until an addon registers IDesktopOverlayHost. Recommended Rainmeter starter over Home is Phenix (Tools → Phenix Get), not a clock-only skin. UnboundOS does not ship .rmskin files.";
+            ? "Rainmeter skins sit over galaxy Home. UnboundOS opens Rainmeter; it does not rewrite rainmeter.ini. Built-in Home widgets stay as the fallback."
+            : "Rainmeter is the overlay path (Tools → Rainmeter / Phenix / Visualizer pack). This host stays off until OverlayHostOptions.Enabled. Built-in Home widgets are the fallback. UnboundOS does not ship .rmskin files.";
     }
 
     public bool IsEnabled { get; }

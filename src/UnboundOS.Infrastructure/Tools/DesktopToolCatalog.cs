@@ -41,6 +41,22 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
     public static ToolGetPath PhenixGetPath { get; } =
         new("Phenix theme", "https://visualskins.com/skin/phenix");
 
+    public static ToolGetPath MusicBeeGetPath { get; } =
+        new("Official downloads", "https://getmusicbee.com/downloads/");
+
+    /// <summary>Official free Rainmeter visualizer pack. Link only — do not ship the repo.</summary>
+    public static ToolGetPath VisualizersGetPath { get; } =
+        new("Monstercat Visualizer", "https://github.com/MarcoPixel/Monstercat-Visualizer");
+
+    public static ToolGetPath StoreGetPath { get; } =
+        new("Microsoft Store", "ms-windows-store://home");
+
+    public static ToolGetPath XboxGetPath { get; } =
+        new("Xbox on Microsoft Store", "ms-windows-store://pdp/?ProductId=9MV0B5HZVK9Z");
+
+    public static ToolGetPath XboxLaunchPath { get; } =
+        new("Xbox app", "xbox:");
+
     private readonly DesktopToolDiscoverySettings _settings = settings ?? new DesktopToolDiscoverySettings();
 
     public Task<IReadOnlyList<DesktopTool>> DiscoverAsync(CancellationToken cancellationToken = default) =>
@@ -121,7 +137,39 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
             "Recommended Rainmeter starter over Home (not a clock-only skin). Get opens the official Phenix page. UnboundOS does not redistribute the .rmskin.",
             null,
             [],
-            PhenixGetPath)
+            PhenixGetPath),
+        Create(
+            DesktopToolIds.MusicBee,
+            "MusicBee",
+            "Third-party music player. Open launches MusicBee if installed. Get is the official downloads page — UnboundOS does not ship it.",
+            FindMusicBee(),
+            ["MusicBee"],
+            MusicBeeGetPath),
+        Create(
+            DesktopToolIds.Visualizers,
+            "Visualizer pack",
+            "Free Rainmeter visualizers that sit over the galaxy (Monstercat Visualizer). Get the official GitHub page. Pair with MusicBee or another player. UnboundOS does not ship paid or redistributed packs.",
+            null,
+            [],
+            VisualizersGetPath),
+        Create(
+            DesktopToolIds.Store,
+            "Microsoft Store",
+            "Open the Microsoft Store home. Uses the official ms-windows-store URI.",
+            null,
+            [],
+            StoreGetPath,
+            OpensViaUri: true,
+            LaunchPath: StoreGetPath),
+        Create(
+            DesktopToolIds.Xbox,
+            "Xbox",
+            "Open the Xbox app (xbox: URI). Get is the official Store product page if the app is missing.",
+            null,
+            [],
+            XboxGetPath,
+            OpensViaUri: true,
+            LaunchPath: XboxLaunchPath)
     ];
 
     private DesktopTool Create(
@@ -132,7 +180,9 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
         IReadOnlyList<string> processNames,
         ToolGetPath getPath,
         DesktopToolGroup group = DesktopToolGroup.Kit,
-        bool HasObsRecipe = false)
+        bool HasObsRecipe = false,
+        bool OpensViaUri = false,
+        ToolGetPath? LaunchPath = null)
     {
         var installed = !string.IsNullOrWhiteSpace(executable) && File.Exists(executable);
         return new DesktopTool(
@@ -144,7 +194,9 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
             processNames,
             getPath,
             group,
-            HasObsRecipe);
+            HasObsRecipe,
+            OpensViaUri,
+            LaunchPath);
     }
 
     private string? FindForcedOr(Func<string?> fallback)
@@ -356,6 +408,27 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
                 .Concat(DesktopAppLocator.UninstallExecutables("Rainmeter")
                     .SelectMany(path => DesktopAppLocator.ExpandInstallLocation(path, "Rainmeter.exe")))
                 .Concat(DesktopAppLocator.StartMenuExecutables("Rainmeter.exe")));
+    }
+
+    private string? FindMusicBee()
+    {
+        if (TryForced(DesktopToolIds.MusicBee, out var forced))
+        {
+            return forced;
+        }
+
+        if (!_settings.UseDefaultWindowsLocations)
+        {
+            return null;
+        }
+
+        return DesktopAppLocator.FindFirstExisting(
+            DesktopAppLocator.Combine(
+                    DesktopAppLocator.ProgramRoots(),
+                    Path.Combine("MusicBee", "MusicBee.exe"))
+                .Concat(DesktopAppLocator.UninstallExecutables("MusicBee")
+                    .SelectMany(path => DesktopAppLocator.ExpandInstallLocation(path, "MusicBee.exe")))
+                .Concat(DesktopAppLocator.StartMenuExecutables("MusicBee.exe")));
     }
 
     private bool TryForced(string id, out string? path)

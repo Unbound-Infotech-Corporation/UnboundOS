@@ -18,7 +18,7 @@ public partial class ToolsViewModel(
     [ObservableProperty] private bool _isBusy;
     [ObservableProperty] private string _status = "Scanning local kit…";
 
-    public bool CanLaunch => SelectedTool?.IsInstalled == true;
+    public bool CanLaunch => SelectedTool?.CanOpen == true;
 
     public bool CanGet => SelectedTool is not null;
 

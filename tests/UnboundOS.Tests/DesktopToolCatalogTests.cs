@@ -28,8 +28,8 @@ public sealed class DesktopToolCatalogTests
         });
 
         var tools = catalog.Discover();
-        Assert.Equal(10, tools.Count);
-        Assert.Equal(7, tools.Count(tool => tool.Group == DesktopToolGroup.Kit));
+        Assert.Equal(14, tools.Count);
+        Assert.Equal(11, tools.Count(tool => tool.Group == DesktopToolGroup.Kit));
         Assert.Equal(3, tools.Count(tool => tool.Group == DesktopToolGroup.Utility));
 
         var obsTool = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Obs);
@@ -67,6 +67,31 @@ public sealed class DesktopToolCatalogTests
         Assert.Contains("Phenix", phenix.Job, StringComparison.Ordinal);
         Assert.DoesNotContain("Minimalistic", phenix.Job, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(".rmskin", phenix.GetPath.Uri, StringComparison.OrdinalIgnoreCase);
+
+        var musicBee = Assert.Single(tools, tool => tool.Id == DesktopToolIds.MusicBee);
+        Assert.False(musicBee.IsInstalled);
+        Assert.Equal(DesktopToolCatalog.MusicBeeGetPath.Uri, musicBee.GetPath.Uri);
+        Assert.Equal("https://getmusicbee.com/downloads/", musicBee.GetPath.Uri);
+
+        var visualizers = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Visualizers);
+        Assert.False(visualizers.IsInstalled);
+        Assert.False(visualizers.CanOpen);
+        Assert.Equal(DesktopToolCatalog.VisualizersGetPath.Uri, visualizers.GetPath.Uri);
+        Assert.Contains("github.com/MarcoPixel/Monstercat-Visualizer", visualizers.GetPath.Uri, StringComparison.Ordinal);
+
+        var store = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Store);
+        Assert.False(store.IsInstalled);
+        Assert.True(store.OpensViaUri);
+        Assert.True(store.CanOpen);
+        Assert.Equal("OPEN", store.StatusLabel);
+        Assert.Equal("ms-windows-store://home", store.OpenPath.Uri);
+
+        var xbox = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Xbox);
+        Assert.False(xbox.IsInstalled);
+        Assert.True(xbox.OpensViaUri);
+        Assert.True(xbox.CanOpen);
+        Assert.Equal("xbox:", xbox.OpenPath.Uri);
+        Assert.Equal("ms-windows-store://pdp/?ProductId=9MV0B5HZVK9Z", xbox.GetPath.Uri);
     }
 
     [Fact]
@@ -102,7 +127,16 @@ public sealed class DesktopToolCatalogTests
         Assert.All(catalog.Discover(), tool =>
         {
             Assert.False(tool.IsInstalled);
-            Assert.Equal("Get", tool.AvailabilityLabel);
+            if (tool.OpensViaUri)
+            {
+                Assert.True(tool.CanOpen);
+                Assert.Equal("OPEN", tool.StatusLabel);
+            }
+            else
+            {
+                Assert.Equal("Get", tool.AvailabilityLabel);
+                Assert.False(tool.CanOpen);
+            }
         });
     }
 
@@ -119,8 +153,14 @@ public sealed class DesktopToolCatalogTests
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.HwInfoGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.RainmeterGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.PhenixGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.MusicBeeGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.VisualizersGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.StoreGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.XboxGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.XboxLaunchPath.Uri));
         Assert.Equal("https://visualskins.com/skin/phenix", DesktopToolCatalog.PhenixGetPath.Uri);
         Assert.True(DesktopToolLauncher.IsSafeGetUri("ms-windows-store://pdp/?ProductId=9nblggh4v2k6"));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri("xbox:"));
         Assert.False(DesktopToolLauncher.IsSafeGetUri("http://obsproject.com/download"));
         Assert.False(DesktopToolLauncher.IsSafeGetUri(@"C:\setup.exe"));
         Assert.False(DesktopToolLauncher.IsSafeGetUri("file:///tmp/obs.exe"));
@@ -227,6 +267,97 @@ public sealed class DesktopToolCatalogTests
     }
 
     [Fact]
+    public async Task Launch_Rainmeter_UsesRainmeterHandoff()
+    {
+        using var temp = new TempTree();
+        var exe = temp.File("Rainmeter.exe");
+        string? started = null;
+        var rainmeter = new RainmeterLauncher(
+            new DesktopToolDiscoverySettings
+            {
+                UseDefaultWindowsLocations = false,
+                ForcedExecutables = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase)
+                {
+                    [DesktopToolIds.Rainmeter] = exe
+                }
+            },
+            (path, args) =>
+            {
+                started = path;
+                Assert.Equal(string.Empty, args);
+                return true;
+            });
+        var launcher = new DesktopToolLauncher(
+            new VortexLauncher(IsolatedVortex()),
+            rainmeter,
+            (_, _) => throw new InvalidOperationException("should use RainmeterLauncher"),
+            _ => true);
+
+        var result = await launcher.LaunchAsync(new DesktopTool(
+            DesktopToolIds.Rainmeter,
+            "Rainmeter",
+            "Skins",
+            true,
+            exe,
+            ["Rainmeter"],
+            DesktopToolCatalog.RainmeterGetPath));
+
+        Assert.True(result.Succeeded);
+        Assert.Equal(exe, started);
+        Assert.Contains("does not rewrite", result.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Launch_StoreUri_OpensOfficialScheme()
+    {
+        string? opened = null;
+        var launcher = new DesktopToolLauncher(new VortexLauncher(IsolatedVortex()), (_, _) => true, uri =>
+        {
+            opened = uri;
+            return true;
+        });
+
+        var result = await launcher.LaunchAsync(new DesktopTool(
+            DesktopToolIds.Store,
+            "Microsoft Store",
+            "Store",
+            false,
+            null,
+            [],
+            DesktopToolCatalog.StoreGetPath,
+            OpensViaUri: true,
+            LaunchPath: DesktopToolCatalog.StoreGetPath));
+
+        Assert.True(result.Succeeded);
+        Assert.Equal("ms-windows-store://home", opened);
+    }
+
+    [Fact]
+    public async Task Launch_XboxUri_OpensXboxScheme()
+    {
+        string? opened = null;
+        var launcher = new DesktopToolLauncher(new VortexLauncher(IsolatedVortex()), (_, _) => true, uri =>
+        {
+            opened = uri;
+            return true;
+        });
+
+        var result = await launcher.LaunchAsync(new DesktopTool(
+            DesktopToolIds.Xbox,
+            "Xbox",
+            "Xbox",
+            false,
+            null,
+            [],
+            DesktopToolCatalog.XboxGetPath,
+            OpensViaUri: true,
+            LaunchPath: DesktopToolCatalog.XboxLaunchPath));
+
+        Assert.True(result.Succeeded);
+        Assert.Equal("xbox:", opened);
+    }
+
+    [Fact]
     public async Task Get_OpensOfficialUri()
     {
         string? opened = null;
@@ -271,6 +402,14 @@ public sealed class DesktopToolCatalogTests
 
         Assert.Contains("Playnite.DesktopApp", living.ProtectProcessNames, StringComparer.OrdinalIgnoreCase);
         Assert.Contains("Steam", living.ProtectProcessNames, StringComparer.OrdinalIgnoreCase);
+        Assert.Contains("Rainmeter", living.ProtectProcessNames, StringComparer.OrdinalIgnoreCase);
+        Assert.Contains("MusicBee", living.ProtectProcessNames, StringComparer.OrdinalIgnoreCase);
+
+        Assert.Contains("Rainmeter", competitive.TerminateProcessNames, StringComparer.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Rainmeter", competitive.ProtectProcessNames, StringComparer.OrdinalIgnoreCase);
+        Assert.Contains("Rainmeter", streamer.ProtectProcessNames, StringComparer.OrdinalIgnoreCase);
+        Assert.Contains("MusicBee", streamer.ProtectProcessNames, StringComparer.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Rainmeter", streamer.TerminateProcessNames, StringComparer.OrdinalIgnoreCase);
     }
 
     private static VortexDiscoverySettings IsolatedVortex() => new()

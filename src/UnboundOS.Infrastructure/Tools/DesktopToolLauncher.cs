@@ -11,11 +11,17 @@ namespace UnboundOS.Infrastructure.Tools;
 public sealed class DesktopToolLauncher : IDesktopToolLauncher
 {
     private readonly VortexLauncher _vortex;
+    private readonly RainmeterLauncher _rainmeter;
     private readonly Func<string, string, bool> _start;
     private readonly Func<string, bool> _openUri;
 
-    public DesktopToolLauncher(VortexLauncher? vortex = null)
-        : this(vortex ?? new VortexLauncher(), DefaultStart, DefaultOpenUri)
+    public DesktopToolLauncher()
+        : this(new VortexLauncher(), new RainmeterLauncher(), DefaultStart, DefaultOpenUri)
+    {
+    }
+
+    public DesktopToolLauncher(VortexLauncher vortex, RainmeterLauncher rainmeter)
+        : this(vortex, rainmeter, DefaultStart, DefaultOpenUri)
     {
     }
 
@@ -23,8 +29,18 @@ public sealed class DesktopToolLauncher : IDesktopToolLauncher
         VortexLauncher vortex,
         Func<string, string, bool> start,
         Func<string, bool> openUri)
+        : this(vortex, new RainmeterLauncher(), start, openUri)
+    {
+    }
+
+    public DesktopToolLauncher(
+        VortexLauncher vortex,
+        RainmeterLauncher rainmeter,
+        Func<string, string, bool> start,
+        Func<string, bool> openUri)
     {
         _vortex = vortex;
+        _rainmeter = rainmeter;
         _start = start;
         _openUri = openUri;
     }
@@ -38,6 +54,16 @@ public sealed class DesktopToolLauncher : IDesktopToolLauncher
         {
             var vortex = _vortex.Open(null, null);
             return Task.FromResult(new ToolLaunchResult(vortex.Succeeded, vortex.Message));
+        }
+
+        if (string.Equals(tool.Id, DesktopToolIds.Rainmeter, StringComparison.OrdinalIgnoreCase))
+        {
+            return Task.FromResult(_rainmeter.Open());
+        }
+
+        if (tool.OpensViaUri)
+        {
+            return OpenLaunchUri(tool);
         }
 
         if (!tool.IsInstalled ||
@@ -99,7 +125,32 @@ public sealed class DesktopToolLauncher : IDesktopToolLauncher
 
         return parsed.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase) ||
                parsed.Scheme.Equals("ms-windows-store", StringComparison.OrdinalIgnoreCase) ||
+               parsed.Scheme.Equals("xbox", StringComparison.OrdinalIgnoreCase) ||
                parsed.Scheme.Equals("winget", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private Task<ToolLaunchResult> OpenLaunchUri(DesktopTool tool)
+    {
+        var path = tool.OpenPath;
+        if (!IsSafeGetUri(path.Uri))
+        {
+            return Task.FromResult(ToolLaunchResult.Fail(
+                "Refusing to open an unofficial or unsafe launch path."));
+        }
+
+        try
+        {
+            if (!_openUri(path.Uri))
+            {
+                return Task.FromResult(ToolLaunchResult.Fail($"Could not open {tool.DisplayName}."));
+            }
+        }
+        catch (Exception error)
+        {
+            return Task.FromResult(ToolLaunchResult.Fail($"Could not open {tool.DisplayName}: {error.Message}"));
+        }
+
+        return Task.FromResult(ToolLaunchResult.Ok($"Opened {tool.DisplayName}."));
     }
 
     private static bool DefaultStart(string executable, string arguments)

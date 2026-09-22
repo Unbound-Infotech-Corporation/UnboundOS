@@ -33,6 +33,7 @@ public static class DependencyInjection
         services.AddSingleton<IStreamCanvas, StreamCanvasService>();
         services.AddSingleton<DesktopToolDiscoverySettings>();
         services.AddSingleton<IDesktopToolCatalog, DesktopToolCatalog>();
+        services.AddSingleton<RainmeterLauncher>();
         services.AddSingleton<IDesktopToolLauncher, DesktopToolLauncher>();
         services.AddSingleton<IProfileStore, JsonProfileStore>();
         services.TryAddSingleton<ISystemAnimationPreference, AlwaysOnSystemAnimationPreference>();
@@ -68,8 +69,10 @@ public static class DependencyInjection
         services.AddSingleton<IModProfileManager, ModProfileManager>();
         services.AddSingleton<SteamExternalModHandoff>();
         services.AddSingleton<IExternalModHandoff, CompositeExternalModHandoff>();
-        // Overlay is optional and off. Register IDesktopOverlayHost before AddUnboundOs() to replace this.
-        services.TryAddSingleton<IDesktopOverlayHost, DisabledDesktopOverlayHost>();
+        // Rainmeter is the overlay path over Home. Off unless OverlayHostOptions.Enabled.
+        // Register IDesktopOverlayHost before AddUnboundOs() to replace this.
+        services.TryAddSingleton<OverlayHostOptions>();
+        services.TryAddSingleton<IDesktopOverlayHost, RainmeterDesktopOverlayHost>();
         return services;
     }
 }

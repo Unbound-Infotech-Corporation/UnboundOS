@@ -12,6 +12,10 @@ public static class DesktopToolIds
     public const string HwInfo = "hwinfo";
     public const string Rainmeter = "rainmeter";
     public const string Phenix = "phenix";
+    public const string MusicBee = "musicbee";
+    public const string Visualizers = "visualizers";
+    public const string Store = "store";
+    public const string Xbox = "xbox";
 }
 
 public enum DesktopToolGroup
@@ -31,11 +35,17 @@ public sealed record DesktopTool(
     IReadOnlyList<string> ProcessNames,
     ToolGetPath GetPath,
     DesktopToolGroup Group = DesktopToolGroup.Kit,
-    bool HasObsRecipe = false)
+    bool HasObsRecipe = false,
+    bool OpensViaUri = false,
+    ToolGetPath? LaunchPath = null)
 {
-    public string AvailabilityLabel => IsInstalled ? "Installed" : "Get";
+    public bool CanOpen => IsInstalled || OpensViaUri;
 
-    public string StatusLabel => IsInstalled ? "OPEN" : "GET";
+    public string AvailabilityLabel => CanOpen ? "Installed" : "Get";
+
+    public string StatusLabel => CanOpen ? "OPEN" : "GET";
+
+    public ToolGetPath OpenPath => LaunchPath ?? GetPath;
 
     public string Monogram =>
         string.IsNullOrWhiteSpace(DisplayName)

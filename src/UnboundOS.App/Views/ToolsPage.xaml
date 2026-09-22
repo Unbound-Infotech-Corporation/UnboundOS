@@ -19,7 +19,7 @@
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
                         MaxWidth="820"
-                        Text="A living-room row of capture, launchers, chat, and Rainmeter. Select a tile. Open launches the real app. Get opens the official page — UnboundOS never ships an installer or .rmskin. Recommended Rainmeter starter over Home is Phenix." />
+                        Text="A living-room row of capture, launchers, chat, Rainmeter, MusicBee, Store, and Xbox. Select a tile. Open launches the real app or a Windows URI. Get opens the official page — UnboundOS never ships an installer or .rmskin. Recommended Rainmeter starter over Home is Phenix." />
                 </StackPanel>
                 <Button
                     Grid.Column="1"

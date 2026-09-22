@@ -125,6 +125,9 @@ clocks, RAM, disks, GPU — as much as we can read via **WMI**,
 (registry CPU/GPU/BIOS, DriveInfo disks, GC memory). Live sensor graphs,
 WMI depth, and LibreHardwareMonitor are **later**. Tools catalog:
 optional **Open HWiNFO** if installed (official Get otherwise).
+Rainmeter is the overlay-widget path over Home (discover / Open /
+protect; no config rewrite). MusicBee + official free visualizer
+pack, plus Microsoft Store and Xbox URI tiles.
 
 ## What this UnboundOS PR must keep
 

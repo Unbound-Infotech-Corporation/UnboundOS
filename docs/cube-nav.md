@@ -56,7 +56,7 @@ Settings (`SET`) and Profiles (`PRFL`) stay discreet Home corner glyphs.
 | Node | List |
 |------|------|
 | Games | Steam library (`steam://rungameid`) via `IGameLibraryCatalog` / `ILibraryLaunchService`. Empty library pads with Session engine + Steam/Playnite. |
-| Tools | Desktop kit catalog. |
+| Tools | Desktop kit catalog (including Rainmeter, MusicBee, Store, Xbox). |
 | Mods | Workshop / Vortex discovery. |
 | Network, Files, Hardware | Honest page rows over the galaxy; Enter lands on the native WinUI list. |
 
@@ -107,8 +107,9 @@ do not fight the scrim. Master visibility is Settings → Home HUD.
 
 Custom widgets later: implement `IHomeWidgetSource` and register it
 before `AddUnboundOs()`. First-party catalog is
-`IHomeWidgetCatalog`. This is not a Rainmeter clone. Desktop skins
-stay on the optional `IDesktopOverlayHost` addon — see
-[overlay-addon.md](overlay-addon.md). Recommended Rainmeter starter
-over this galaxy is **Phenix** (Get the official page; do not ship
-the `.rmskin`).
+`IHomeWidgetCatalog`. This is not a Rainmeter clone. **Rainmeter** is
+the customizable overlay path over this galaxy (Tools → Rainmeter /
+Phenix / Visualizer pack). The in-tree host is
+`RainmeterDesktopOverlayHost`, off until `OverlayHostOptions.Enabled`.
+See [overlay-addon.md](overlay-addon.md). Recommended starter is
+**Phenix** (Get the official page; do not ship the `.rmskin`).
