@@ -412,7 +412,7 @@
 
     const nebula = new THREE.Mesh(
       new THREE.PlaneGeometry(13.8, 3.7),
-      softMat(nebulaMap, { opacity: 0.86 })
+      softMat(nebulaMap, { opacity: 0.94 })
     );
     nebula.position.z = -0.18;
     group.add(nebula);
@@ -1360,7 +1360,7 @@
   }
 
   function finishSoftTexture(canvas, margin) {
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const ctx = canvas.getContext("2d", { willReadFrequently: true }) || canvas.getContext("2d");
     featherPremul(ctx, canvas.width, canvas.height, margin);
     const tex = new THREE.CanvasTexture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;
