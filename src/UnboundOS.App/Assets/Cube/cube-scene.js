@@ -77,10 +77,10 @@
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.06;
 
-  const CAM_Y = 1.16;
-  const CAM_Z = 8.55;
-  const RIG_PITCH = 0.22;
-  const RIG_ROLL = 0.042;
+  const CAM_Y = 1.48;
+  const CAM_Z = 8.4;
+  const RIG_PITCH = 0.3;
+  const RIG_ROLL = 0.05;
   const lookTarget = new THREE.Vector3(0, 0.05, -0.85);
 
   const scene = new THREE.Scene();
@@ -131,10 +131,10 @@
   const indigo = new THREE.Color(0x4a5c92);
   const lavender = new THREE.Color(0xc4b4e0);
 
-  const farStars = buildHalo(8200, 78, 0.74, 0x6e82b8, 0x51f, 0.94, 0.0000048, 0);
-  const midStars = buildHalo(3800, 28, 0.98, 0xc8d4ec, 0x77a, 0.78, -0.000009, -1.2);
-  const nearStars = buildHalo(1400, 13, 1.18, 0xf4ead8, 0x91c, 0.52, 0.000016, 1.4);
-  const deepField = buildColoredField(7200, 92, 0.62, 0xdef1, 0.98, 0.0000032);
+  const farStars = buildHalo(8200, 78, 1.45, 0x9aacd8, 0x51f, 0.94, 0.0000048, 0);
+  const midStars = buildHalo(3800, 28, 1.8, 0xdce4f4, 0x77a, 0.86, -0.000009, 0);
+  const nearStars = buildHalo(1600, 16, 2.15, 0xf7efe0, 0x91c, 0.7, 0.000016, 2.2);
+  const deepField = buildColoredField(9000, 96, 1.35, 0xdef1, 0.98, 0.0000032);
   const diskRings = buildDiskRings();
   const shear = buildShear(1500);
   const orbiters = buildOrbiters(180);
@@ -199,17 +199,17 @@
       ctx.restore();
     }
 
-    oval(w * 0.5, h * 0.042, [
+    oval(w * 0.5, h * 0.07, [
       [0, "rgba(90, 118, 186, 0.2)"],
       [0.55, "rgba(58, 78, 140, 0.08)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.38, h * 0.03, [
+    oval(w * 0.38, h * 0.048, [
       [0, "rgba(212, 132, 74, 0.22)"],
       [0.5, "rgba(168, 96, 52, 0.08)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.34, h * 0.026, [
+    oval(w * 0.34, h * 0.04, [
       [0, "rgba(255, 226, 176, 0.4)"],
       [0.42, "rgba(214, 154, 88, 0.16)"],
       [1, "rgba(0,0,0,0)"]
@@ -315,7 +315,7 @@
   function buildDiskGlow() {
     const group = new THREE.Group();
     const plate = new THREE.Mesh(
-      new THREE.PlaneGeometry(14.2, 4.4),
+      new THREE.PlaneGeometry(15.2, 5.2),
       new THREE.MeshBasicMaterial({
         map: diskMap,
         transparent: true,
@@ -323,7 +323,7 @@
         blending: THREE.NormalBlending
       })
     );
-    plate.position.z = -2.7;
+    plate.position.z = -0.12;
     group.add(plate);
 
     const bar = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -334,8 +334,8 @@
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    bar.scale.set(6.4, 0.52, 1);
-    bar.position.z = -2.35;
+    bar.scale.set(6.6, 0.82, 1);
+    bar.position.z = 0.02;
     group.add(bar);
 
     const nucleus = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -346,8 +346,8 @@
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    nucleus.scale.set(0.95, 0.38, 1);
-    nucleus.position.z = -2.2;
+    nucleus.scale.set(1.15, 0.52, 1);
+    nucleus.position.z = 0.06;
     group.add(nucleus);
 
     const wings = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -358,8 +358,8 @@
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    wings.scale.set(13.4, 0.42, 1);
-    wings.position.z = -2.55;
+    wings.scale.set(13.8, 0.62, 1);
+    wings.position.z = -0.18;
     group.add(wings);
 
     group.userData = { plate, bar, nucleus, wings };
@@ -381,7 +381,7 @@
           blending: THREE.NormalBlending
         })
       );
-      mesh.position.set((rng() - 0.5) * 0.8, (rng() - 0.5) * 0.04, -2.45 - i * 0.08);
+      mesh.position.set((rng() - 0.5) * 0.8, (rng() - 0.5) * 0.04, -0.16 - i * 0.05);
       mesh.userData.drift = (rng() - 0.5) * 0.012;
       rig.add(mesh);
       list.push(mesh);
@@ -441,8 +441,8 @@
         const n2 = valueNoise(nx * 8.5, ny * 11.2, seed + 17);
         const ridge = Math.pow(Math.abs(n1 - 0.48), 0.55);
         const veil = n2 * (0.35 + n1 * 0.65);
-        const band = Math.exp(-Math.pow((ny - 0.5) / 0.42, 2));
-        const a = Math.min(1, (0.22 + veil * 0.55) * (1 - ridge * 0.7) * band);
+        const cliff = Math.exp(-Math.pow((nx * 0.7 + ny * 0.55 - 0.55) / 0.38, 2));
+        const a = Math.min(1, (0.18 + veil * 0.62) * (1 - ridge * 0.55) * (0.35 + cliff));
         if (a < 0.03) continue;
         const t = Math.min(1, veil * 1.15);
         const c0 = pal[0];
@@ -490,10 +490,10 @@
 
   function buildDiskRings() {
     const rings = [
-      { count: 900, r0: 0.2, r1: 1.15, omega: 0.018, seed: 0xa01, flatten: 0.055 },
-      { count: 1100, r0: 1.0, r1: 2.4, omega: 0.012, seed: 0xa02, flatten: 0.048 },
-      { count: 1200, r0: 2.1, r1: 3.8, omega: 0.008, seed: 0xa03, flatten: 0.042 },
-      { count: 900, r0: 3.4, r1: 5.6, omega: 0.0052, seed: 0xa04, flatten: 0.036 }
+      { count: 900, r0: 0.2, r1: 1.15, omega: 0.018, seed: 0xa01, flatten: 0.08 },
+      { count: 1100, r0: 1.0, r1: 2.4, omega: 0.012, seed: 0xa02, flatten: 0.07 },
+      { count: 1200, r0: 2.1, r1: 3.8, omega: 0.008, seed: 0xa03, flatten: 0.062 },
+      { count: 900, r0: 3.4, r1: 5.6, omega: 0.0052, seed: 0xa04, flatten: 0.055 }
     ];
     return rings.map((spec) => {
       const rng = mulberry(spec.seed);
@@ -648,10 +648,10 @@
   function buildFilaments() {
     const list = [];
     const specs = [
-      { map: 0, x: -6, y: 4.6, z: -22, sx: 28, sy: 10, rz: -0.18, op: 0.13, drift: 0.004 },
-      { map: 1, x: 7, y: -4.2, z: -20, sx: 24, sy: 9, rz: 0.14, op: 0.11, drift: -0.0035 },
-      { map: 2, x: -2, y: 6.4, z: -26, sx: 22, sy: 8, rz: 0.08, op: 0.09, drift: 0.0028 },
-      { map: 3, x: 3, y: -6.1, z: -24, sx: 30, sy: 12, rz: -0.06, op: 0.1, drift: -0.0022 }
+      { map: 0, x: -7, y: 5.2, z: -18, sx: 26, sy: 14, rx: 0.32, rz: -0.22, op: 0.2, drift: 0.004 },
+      { map: 1, x: 8, y: -5.0, z: -16, sx: 22, sy: 12, rx: -0.28, rz: 0.16, op: 0.17, drift: -0.0035 },
+      { map: 2, x: -3, y: 6.8, z: -24, sx: 20, sy: 11, rx: 0.18, rz: 0.1, op: 0.14, drift: 0.0028 },
+      { map: 3, x: 2, y: -6.6, z: -21, sx: 28, sy: 15, rx: -0.2, rz: -0.08, op: 0.16, drift: -0.0022 }
     ];
     for (const spec of specs) {
       const mesh = new THREE.Mesh(
@@ -666,6 +666,7 @@
       );
       mesh.position.set(spec.x, spec.y, spec.z);
       mesh.scale.set(spec.sx, spec.sy, 1);
+      mesh.rotation.x = spec.rx;
       mesh.rotation.z = spec.rz;
       mesh.userData.drift = spec.drift;
       mesh.userData.baseX = spec.x;
