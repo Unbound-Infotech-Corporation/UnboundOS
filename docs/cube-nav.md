@@ -80,3 +80,19 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
 
 Look-dev: `Assets/Cube/index.html?preview=1`.
 `docs/screenshots/README.md` still wants a Windows `Debug|x64` capture.
+
+## Home widgets
+
+Light-grey **movable** plaques for honest basics: clock, CPU temp, GPU
+temp, and package temp when it differs from CPU. Drag to reposition.
+Positions and appearance persist in `settings.json`. Looks: **glass**
+(default), **dim**, **compact** — not rainbow skins. Motion-off still
+lets you drag; no fancy drag animation is required.
+
+Widgets stay visible while a category list is open so they do not fight
+the left scrim by vanishing. Master visibility is Settings → Home HUD.
+
+Custom widgets later: implement `IHomeWidgetSource` and register it
+before `AddUnboundOs()`. This is not a Rainmeter clone. Desktop skins
+stay on the optional `IDesktopOverlayHost` addon — see
+[overlay-addon.md](overlay-addon.md).

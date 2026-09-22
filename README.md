@@ -29,7 +29,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
 | **Files** | Daily folder UI (Home, Desktop, Downloads, drives). Explorer stays for EAC / BattlEye / Vanguard |
 | **Hardware** | CPU, GPU, disks, RAM from this PC. Live sensors later; optional Open HWiNFO in Tools |
-| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Home HUD (clock / temps), Interface motion On / Off |
+| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Home widgets (movable clock / temps, glass/dim/compact), Interface motion On / Off |
 
 ## Solution layout
 

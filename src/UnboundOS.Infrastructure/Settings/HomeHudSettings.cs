@@ -1,4 +1,5 @@
 using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Home;
 using UnboundOS.Core.Models;
 
 namespace UnboundOS.Infrastructure.Settings;
@@ -19,6 +20,11 @@ public sealed class HomeHudSettings : IHomeHudSettings
 
     public bool TempsEnabled => _settings.ShowHomeTemps;
 
+    public HomeWidgetAppearance Appearance => _settings.WidgetLook;
+
+    public IReadOnlyList<HomeWidgetPlacement> Placements =>
+        HomeWidgets.Merge(_settings.HomeWidgetPlacements);
+
     public event EventHandler? Changed;
 
     public async Task InitializeAsync(CancellationToken ct = default)
@@ -35,6 +41,24 @@ public sealed class HomeHudSettings : IHomeHudSettings
 
     public Task SetTempsEnabledAsync(bool enabled, CancellationToken ct = default) =>
         MutateAsync(current => current with { HomeTempsEnabled = enabled }, ct);
+
+    public Task SetAppearanceAsync(HomeWidgetAppearance appearance, CancellationToken ct = default) =>
+        MutateAsync(current => current with { HomeWidgetAppearance = HomeWidgets.AppearanceToken(appearance) }, ct);
+
+    public Task SetPlacementAsync(string id, double x, double y, CancellationToken ct = default) =>
+        MutateAsync(
+            current => current with
+            {
+                HomeWidgetPlacements = HomeWidgets.WithPosition(
+                    HomeWidgets.Merge(current.HomeWidgetPlacements),
+                    id,
+                    x,
+                    y).ToList()
+            },
+            ct);
+
+    public Task ResetPlacementsAsync(CancellationToken ct = default) =>
+        MutateAsync(current => current with { HomeWidgetPlacements = HomeWidgets.Defaults.ToList() }, ct);
 
     private async Task MutateAsync(Func<ShellSettings, ShellSettings> mutate, CancellationToken ct)
     {

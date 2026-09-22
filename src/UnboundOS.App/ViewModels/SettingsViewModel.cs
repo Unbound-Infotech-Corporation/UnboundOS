@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UnboundOS.Core;
 using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Home;
 using UnboundOS.Core.Models;
 
 namespace UnboundOS.App.ViewModels;
@@ -42,6 +43,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool _homeHudEnabled = true;
     [ObservableProperty] private bool _homeClockEnabled = true;
     [ObservableProperty] private bool _homeTempsEnabled = true;
+    [ObservableProperty] private string _homeWidgetLook = "Glass";
     [ObservableProperty] private string _motionStatus = string.Empty;
     [ObservableProperty] private string _sessionNote =
         "A live session always pauses motion so frame time stays clean. This toggle is not hidden.";
@@ -56,7 +58,7 @@ public partial class SettingsViewModel : ObservableObject
     public ObservableCollection<SettingsGroup> Groups { get; } =
     [
         new("motion", "Interface motion", "Living galaxy, star drift, and tile focus motion."),
-        new("hud", "Home HUD", "Clock, system temps, and the Home readout strip. The galaxy stays the focal point."),
+        new("hud", "Home HUD", "Movable clock and temp widgets. The galaxy stays the focal point."),
         new("display", "Display", "Launch the GPU vendor app. UnboundOS does not write display settings."),
         new("overclock", "Overclocking", "Launch-only vendor OC hubs. No silent clocks."),
         new("startup", "Startup audit", "Pin allowlist. Never silently kill anticheat or GPU vendor."),
@@ -66,6 +68,7 @@ public partial class SettingsViewModel : ObservableObject
     public ObservableCollection<StartupEntry> StartupEntries { get; } = [];
     public ObservableCollection<VendorApp> DisplayApps { get; } = [];
     public ObservableCollection<VendorApp> OverclockApps { get; } = [];
+    public IReadOnlyList<string> WidgetLooks { get; } = ["Glass", "Dim", "Compact"];
 
     public string DisplayHonesty => OsProductCopy.DisplayHonesty;
     public string OverclockHonesty => OsProductCopy.OverclockHonesty;
@@ -146,6 +149,19 @@ public partial class SettingsViewModel : ObservableObject
 
         _ = _hud.SetTempsEnabledAsync(value);
     }
+
+    partial void OnHomeWidgetLookChanged(string value)
+    {
+        if (_suppressHudToggle)
+        {
+            return;
+        }
+
+        _ = _hud.SetAppearanceAsync(HomeWidgets.ParseAppearance(value));
+    }
+
+    [RelayCommand]
+    private Task ResetWidgetPositionsAsync() => _hud.ResetPlacementsAsync();
 
     partial void OnSelectedStartupChanged(StartupEntry? value)
     {
@@ -314,6 +330,12 @@ public partial class SettingsViewModel : ObservableObject
         HomeHudEnabled = _hud.HudEnabled;
         HomeClockEnabled = _hud.ClockEnabled;
         HomeTempsEnabled = _hud.TempsEnabled;
+        HomeWidgetLook = _hud.Appearance switch
+        {
+            HomeWidgetAppearance.Dim => "Dim",
+            HomeWidgetAppearance.Compact => "Compact",
+            _ => "Glass"
+        };
         _suppressHudToggle = false;
     }
 }

@@ -1,9 +1,11 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using UnboundOS.App.Services;
 using UnboundOS.App.ViewModels;
 using UnboundOS.App.Views;
 using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Home;
 using UnboundOS.Core.Navigation;
 
 namespace UnboundOS.App;
@@ -13,6 +15,12 @@ public sealed partial class MainPage : Page
     public ShellViewModel ViewModel { get; } = AppServices.Get<ShellViewModel>();
     public HomeHudViewModel Hud { get; } = AppServices.Get<HomeHudViewModel>();
 
+    private FrameworkElement? _dragWidget;
+    private double _dragStartX;
+    private double _dragStartY;
+    private double _widgetStartLeft;
+    private double _widgetStartTop;
+
     public MainPage()
     {
         InitializeComponent();
@@ -20,12 +28,22 @@ public sealed partial class MainPage : Page
             ? Visibility.Visible
             : Visibility.Collapsed;
         Loaded += OnLoaded;
+        Hud.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName is nameof(Hud.AppearanceToken) or nameof(Hud.LayoutRevision) or null)
+            {
+                ApplyWidgetLook();
+                ApplyWidgetPositions();
+            }
+        };
     }
 
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         await ViewModel.InitializeAsync();
         await Hud.InitializeAsync();
+        ApplyWidgetLook();
+        ApplyWidgetPositions();
         ApplyHomeChrome(home: true);
         ApplyNavState("Home");
         HomeCube.Focus(FocusState.Programmatic);
@@ -69,7 +87,7 @@ public sealed partial class MainPage : Page
             "Hardware" => "CPU, GPU, disks, RAM from this PC. Sensors wait on the image.",
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
-            "Settings" => "Display, overclocking launch, startup audit, Home HUD, motion.",
+            "Settings" => "Display, overclocking launch, startup audit, Home widgets, motion.",
             "Overlay" => "Overlay addon hook — optional and off unless a host is registered.",
             _ => ViewModel.StatusLine
         };
@@ -115,5 +133,115 @@ public sealed partial class MainPage : Page
     {
         var motion = AppServices.Get<IUiMotionPolicy>();
         VisualStateManager.GoToState(this, tag, useTransitions: motion.AllowMotion);
+    }
+
+    private void OnHomeWidgetLayerSizeChanged(object sender, SizeChangedEventArgs e) =>
+        ApplyWidgetPositions();
+
+    private void OnWidgetPointerPressed(object sender, PointerRoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement el)
+        {
+            return;
+        }
+
+        _dragWidget = el;
+        var point = e.GetCurrentPoint(HomeWidgetLayer).Position;
+        _dragStartX = point.X;
+        _dragStartY = point.Y;
+        _widgetStartLeft = Canvas.GetLeft(el);
+        _widgetStartTop = Canvas.GetTop(el);
+        if (double.IsNaN(_widgetStartLeft))
+        {
+            _widgetStartLeft = 0;
+        }
+
+        if (double.IsNaN(_widgetStartTop))
+        {
+            _widgetStartTop = 0;
+        }
+
+        el.CapturePointer(e.Pointer);
+        e.Handled = true;
+    }
+
+    private void OnWidgetPointerMoved(object sender, PointerRoutedEventArgs e)
+    {
+        if (_dragWidget is null || sender is not FrameworkElement el)
+        {
+            return;
+        }
+
+        var point = e.GetCurrentPoint(HomeWidgetLayer).Position;
+        var maxX = Math.Max(0, HomeWidgetLayer.ActualWidth - el.ActualWidth);
+        var maxY = Math.Max(0, HomeWidgetLayer.ActualHeight - el.ActualHeight);
+        Canvas.SetLeft(el, Math.Clamp(_widgetStartLeft + point.X - _dragStartX, 0, maxX));
+        Canvas.SetTop(el, Math.Clamp(_widgetStartTop + point.Y - _dragStartY, 0, maxY));
+        e.Handled = true;
+    }
+
+    private async void OnWidgetPointerReleased(object sender, PointerRoutedEventArgs e)
+    {
+        if (_dragWidget is not FrameworkElement el || el.Tag is not string id)
+        {
+            _dragWidget = null;
+            return;
+        }
+
+        el.ReleasePointerCapture(e.Pointer);
+        _dragWidget = null;
+        var w = Math.Max(1, HomeWidgetLayer.ActualWidth - el.ActualWidth);
+        var h = Math.Max(1, HomeWidgetLayer.ActualHeight - el.ActualHeight);
+        var x = Math.Clamp(Canvas.GetLeft(el) / w, 0, 1);
+        var y = Math.Clamp(Canvas.GetTop(el) / h, 0, 1);
+        await Hud.MoveAsync(id, x, y);
+        e.Handled = true;
+    }
+
+    private void ApplyWidgetPositions()
+    {
+        if (HomeWidgetLayer.ActualWidth < 8 || HomeWidgetLayer.ActualHeight < 8)
+        {
+            return;
+        }
+
+        Place(HomeCpuWidget, HomeWidgets.Cpu);
+        Place(HomeGpuWidget, HomeWidgets.Gpu);
+        Place(HomePackageWidget, HomeWidgets.Package);
+        Place(HomeClockWidget, HomeWidgets.Clock);
+    }
+
+    private void Place(FrameworkElement el, string id)
+    {
+        if (_dragWidget == el)
+        {
+            return;
+        }
+
+        var placement = Hud.Placement(id);
+        var maxX = Math.Max(0, HomeWidgetLayer.ActualWidth - Math.Max(el.ActualWidth, 8));
+        var maxY = Math.Max(0, HomeWidgetLayer.ActualHeight - Math.Max(el.ActualHeight, 8));
+        Canvas.SetLeft(el, placement.X * maxX);
+        Canvas.SetTop(el, placement.Y * maxY);
+    }
+
+    private void ApplyWidgetLook()
+    {
+        var key = Hud.Appearance switch
+        {
+            HomeWidgetAppearance.Dim => "HomeWidgetDimPlaqueStyle",
+            HomeWidgetAppearance.Compact => "HomeWidgetCompactPlaqueStyle",
+            _ => "HomeWidgetPlaqueStyle"
+        };
+
+        if (Application.Current?.Resources.TryGetValue(key, out var found) != true || found is not Style style)
+        {
+            return;
+        }
+
+        HomeCpuWidget.Style = style;
+        HomeGpuWidget.Style = style;
+        HomePackageWidget.Style = style;
+        HomeClockWidget.Style = style;
     }
 }

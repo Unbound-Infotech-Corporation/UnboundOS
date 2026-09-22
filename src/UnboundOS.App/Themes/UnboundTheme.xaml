@@ -71,6 +71,11 @@
     <SolidColorBrush x:Key="HomeAshBrush" Color="{StaticResource HomeAsh}" />
     <SolidColorBrush x:Key="HomePlaqueFillBrush" Color="#66101018" />
     <SolidColorBrush x:Key="HomePlaqueStrokeBrush" Color="#3A3A48" />
+    <SolidColorBrush x:Key="HomeWidgetGlassFillBrush" Color="#8CC8D0D8" />
+    <SolidColorBrush x:Key="HomeWidgetDimFillBrush" Color="#559098A0" />
+    <SolidColorBrush x:Key="HomeWidgetStrokeBrush" Color="#66E4E8EC" />
+    <SolidColorBrush x:Key="HomeWidgetInkBrush" Color="#1C2228" />
+    <SolidColorBrush x:Key="HomeWidgetMutedBrush" Color="#4A5560" />
 
     <!-- WinUI chrome — keep ComboBox / ListView / NumberBox on-brand -->
     <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="{StaticResource CyanPulse}" />
@@ -235,6 +240,42 @@
         <Setter Property="CornerRadius" Value="1" />
         <Setter Property="Padding" Value="12,8" />
         <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style x:Key="HomeWidgetPlaqueStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource HomeWidgetGlassFillBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource HomeWidgetStrokeBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="IsHitTestVisible" Value="True" />
+        <Setter Property="MinWidth" Value="72" />
+    </Style>
+
+    <Style x:Key="HomeWidgetDimPlaqueStyle" TargetType="Border" BasedOn="{StaticResource HomeWidgetPlaqueStyle}">
+        <Setter Property="Background" Value="{StaticResource HomeWidgetDimFillBrush}" />
+        <Setter Property="Opacity" Value="0.78" />
+    </Style>
+
+    <Style x:Key="HomeWidgetCompactPlaqueStyle" TargetType="Border" BasedOn="{StaticResource HomeWidgetPlaqueStyle}">
+        <Setter Property="Padding" Value="8,5" />
+        <Setter Property="MinWidth" Value="56" />
+        <Setter Property="CornerRadius" Value="3" />
+    </Style>
+
+    <Style x:Key="HomeWidgetKickerText" TargetType="TextBlock" BasedOn="{StaticResource HomeHudKickerText}">
+        <Setter Property="Foreground" Value="{StaticResource HomeWidgetMutedBrush}" />
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <Style x:Key="HomeWidgetValueText" TargetType="TextBlock" BasedOn="{StaticResource HomeHudValueText}">
+        <Setter Property="Foreground" Value="{StaticResource HomeWidgetInkBrush}" />
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <Style x:Key="HomeWidgetClockText" TargetType="TextBlock" BasedOn="{StaticResource HomeHudClockText}">
+        <Setter Property="Foreground" Value="{StaticResource HomeWidgetInkBrush}" />
+        <Setter Property="Opacity" Value="1" />
     </Style>
 
     <Style x:Key="PanelLabelText" TargetType="TextBlock">

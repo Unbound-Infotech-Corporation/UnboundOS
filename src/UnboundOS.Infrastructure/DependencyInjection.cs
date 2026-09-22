@@ -12,6 +12,7 @@ using UnboundOS.Infrastructure.Session;
 using UnboundOS.Infrastructure.Settings;
 using UnboundOS.Infrastructure.Files;
 using UnboundOS.Infrastructure.Hardware;
+using UnboundOS.Infrastructure.Home;
 using UnboundOS.Infrastructure.Setup;
 using UnboundOS.Infrastructure.Startup;
 using UnboundOS.Infrastructure.Stream;
@@ -38,6 +39,7 @@ public static class DependencyInjection
         services.AddSingleton<IShellSettingsStore, JsonShellSettingsStore>();
         services.AddSingleton<IUiMotionPolicy, UiMotionPolicy>();
         services.AddSingleton<IHomeHudSettings, HomeHudSettings>();
+        services.AddSingleton<IHomeWidgetCatalog, HomeWidgetCatalog>();
         services.AddSingleton<IStartupInventory, WindowsStartupInventory>();
         services.AddSingleton<IStartupAllowlistStore, JsonStartupAllowlistStore>();
         services.AddSingleton<IStartupMutator, WindowsStartupMutator>();

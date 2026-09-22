@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Home;
 
 namespace UnboundOS.App.ViewModels;
 
@@ -11,6 +12,7 @@ public partial class HomeHudViewModel : ObservableObject
     private readonly DispatcherTimer _clockTimer;
     private readonly DispatcherTimer _tempTimer;
     private bool _tempsBusy;
+    private bool _packageHasReading;
 
     public HomeHudViewModel(IHomeHudSettings hud, IThermalProbe thermal)
     {
@@ -31,7 +33,16 @@ public partial class HomeHudViewModel : ObservableObject
     [ObservableProperty] private string _packageTempText = "—";
     [ObservableProperty] private Visibility _clockStripVisibility = Visibility.Visible;
     [ObservableProperty] private Visibility _tempsStripVisibility = Visibility.Visible;
+    [ObservableProperty] private Visibility _cpuWidgetVisibility = Visibility.Visible;
+    [ObservableProperty] private Visibility _gpuWidgetVisibility = Visibility.Visible;
     [ObservableProperty] private Visibility _packageVisibility = Visibility.Collapsed;
+    [ObservableProperty] private HomeWidgetAppearance _appearance = HomeWidgetAppearance.Glass;
+    [ObservableProperty] private string _appearanceToken = "glass";
+    [ObservableProperty] private int _layoutRevision;
+
+    public IReadOnlyList<HomeWidgetPlacement> Placements => _hud.Placements;
+
+    public HomeWidgetPlacement Placement(string id) => HomeWidgets.Place(_hud.Placements, id);
 
     public async Task InitializeAsync()
     {
@@ -42,6 +53,10 @@ public partial class HomeHudViewModel : ObservableObject
         _tempTimer.Start();
         await RefreshTempsAsync();
     }
+
+    public Task MoveAsync(string id, double x, double y) => _hud.SetPlacementAsync(id, x, y);
+
+    public Task ResetLayoutAsync() => _hud.ResetPlacementsAsync();
 
     private void OnHudChanged(object? sender, EventArgs e)
     {
@@ -58,8 +73,18 @@ public partial class HomeHudViewModel : ObservableObject
     private void ApplyVisibility()
     {
         var hud = _hud.HudEnabled;
-        ClockStripVisibility = hud && _hud.ClockEnabled ? Visibility.Visible : Visibility.Collapsed;
-        TempsStripVisibility = hud && _hud.TempsEnabled ? Visibility.Visible : Visibility.Collapsed;
+        var clockOn = hud && _hud.ClockEnabled && Placement(HomeWidgets.Clock).IsVisible;
+        var tempsOn = hud && _hud.TempsEnabled;
+        ClockStripVisibility = clockOn ? Visibility.Visible : Visibility.Collapsed;
+        TempsStripVisibility = tempsOn ? Visibility.Visible : Visibility.Collapsed;
+        CpuWidgetVisibility = tempsOn && Placement(HomeWidgets.Cpu).IsVisible ? Visibility.Visible : Visibility.Collapsed;
+        GpuWidgetVisibility = tempsOn && Placement(HomeWidgets.Gpu).IsVisible ? Visibility.Visible : Visibility.Collapsed;
+        PackageVisibility = tempsOn && _packageHasReading && Placement(HomeWidgets.Package).IsVisible
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        Appearance = _hud.Appearance;
+        AppearanceToken = HomeWidgets.AppearanceToken(_hud.Appearance);
+        LayoutRevision++;
     }
 
     private void TickClock() =>
@@ -79,17 +104,17 @@ public partial class HomeHudViewModel : ObservableObject
             CpuTempText = FormatTemp(snap.CpuCelsius);
             GpuTempText = FormatTemp(snap.GpuCelsius);
             PackageTempText = FormatTemp(snap.PackageCelsius);
-            PackageVisibility = snap.PackageCelsius is not null &&
-                snap.PackageCelsius != snap.CpuCelsius
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            _packageHasReading = snap.PackageCelsius is not null &&
+                snap.PackageCelsius != snap.CpuCelsius;
+            ApplyVisibility();
         }
         catch
         {
             CpuTempText = "—";
             GpuTempText = "—";
             PackageTempText = "—";
-            PackageVisibility = Visibility.Collapsed;
+            _packageHasReading = false;
+            ApplyVisibility();
         }
         finally
         {

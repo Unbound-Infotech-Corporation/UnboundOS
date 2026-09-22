@@ -78,31 +78,43 @@
                     <TextBlock Style="{StaticResource PanelLabelText}" Text="HOME HUD" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Quiet readouts on Home only. The galaxy stays the focal navigation. This does not restore the top menu." />
+                        Text="Light-grey movable widgets on Home. Drag them on the galaxy. Positions and look persist. This does not restore the top menu." />
                     <ToggleSwitch
                         MinHeight="48"
                         IsOn="{x:Bind ViewModel.HomeHudEnabled, Mode=TwoWay}"
                         OnContent="On"
                         OffContent="Off"
-                        Header="Home HUD strip"
-                        AutomationProperties.Name="Home HUD strip"
-                        AutomationProperties.HelpText="Hides both the clock and the temperature readouts on Home." />
+                        Header="Home widgets"
+                        AutomationProperties.Name="Home widgets"
+                        AutomationProperties.HelpText="Hides the clock and temperature widgets on Home." />
                     <ToggleSwitch
                         MinHeight="48"
                         IsOn="{x:Bind ViewModel.HomeClockEnabled, Mode=TwoWay}"
                         OnContent="On"
                         OffContent="Off"
-                        Header="Clock (top right)"
+                        Header="Clock widget"
                         AutomationProperties.Name="Home clock"
-                        AutomationProperties.HelpText="Local time on Home. Independent of system temps." />
+                        AutomationProperties.HelpText="Local time widget. Drag it on Home. Independent of system temps." />
                     <ToggleSwitch
                         MinHeight="48"
                         IsOn="{x:Bind ViewModel.HomeTempsEnabled, Mode=TwoWay}"
                         OnContent="On"
                         OffContent="Off"
-                        Header="System temps (top left)"
+                        Header="Temperature widgets"
                         AutomationProperties.Name="Home system temps"
-                        AutomationProperties.HelpText="CPU and GPU temperatures when sensors are available. Shows a dash until then." />
+                        AutomationProperties.HelpText="CPU and GPU temperature widgets when sensors are available. Shows a dash until then." />
+                    <ComboBox
+                        Header="Appearance"
+                        MinWidth="220"
+                        ItemsSource="{x:Bind ViewModel.WidgetLooks}"
+                        SelectedItem="{x:Bind ViewModel.HomeWidgetLook, Mode=TwoWay}"
+                        AutomationProperties.Name="Home widget appearance"
+                        AutomationProperties.HelpText="Glass is light grey. Dim is quieter. Compact is denser. Not skins." />
+                    <Button
+                        Content="Reset widget positions"
+                        Command="{x:Bind ViewModel.ResetWidgetPositionsCommand}"
+                        AutomationProperties.Name="Reset widget positions"
+                        AutomationProperties.HelpText="Return clock and temperature widgets to the default corners." />
                 </StackPanel>
             </Border>
 

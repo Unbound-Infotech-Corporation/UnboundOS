@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using UnboundOS.Core.Home;
 
 namespace UnboundOS.Core.Models;
 
@@ -14,6 +15,11 @@ public sealed record ShellSettings
 
     public bool? HomeTempsEnabled { get; init; }
 
+    /// <summary>glass (default), dim, or compact. Unknown values fall back to glass.</summary>
+    public string? HomeWidgetAppearance { get; init; }
+
+    public List<HomeWidgetPlacement>? HomeWidgetPlacements { get; init; }
+
     [JsonIgnore]
     public bool ShowHomeHud => HomeHudEnabled ?? true;
 
@@ -22,6 +28,9 @@ public sealed record ShellSettings
 
     [JsonIgnore]
     public bool ShowHomeTemps => HomeTempsEnabled ?? true;
+
+    [JsonIgnore]
+    public HomeWidgetAppearance WidgetLook => HomeWidgets.ParseAppearance(HomeWidgetAppearance);
 
     public static ShellSettings CreateDefault() => new();
 }

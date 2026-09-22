@@ -1,6 +1,8 @@
+using UnboundOS.Core.Home;
+
 namespace UnboundOS.Core.Abstractions;
 
-/// <summary>Persisted Home HUD strip: clock, temps, and the strip itself.</summary>
+/// <summary>Persisted Home HUD: master strip, clock/temps, widget look and positions.</summary>
 public interface IHomeHudSettings
 {
     bool HudEnabled { get; }
@@ -8,6 +10,10 @@ public interface IHomeHudSettings
     bool ClockEnabled { get; }
 
     bool TempsEnabled { get; }
+
+    HomeWidgetAppearance Appearance { get; }
+
+    IReadOnlyList<HomeWidgetPlacement> Placements { get; }
 
     event EventHandler? Changed;
 
@@ -18,4 +24,10 @@ public interface IHomeHudSettings
     Task SetClockEnabledAsync(bool enabled, CancellationToken ct = default);
 
     Task SetTempsEnabledAsync(bool enabled, CancellationToken ct = default);
+
+    Task SetAppearanceAsync(HomeWidgetAppearance appearance, CancellationToken ct = default);
+
+    Task SetPlacementAsync(string id, double x, double y, CancellationToken ct = default);
+
+    Task ResetPlacementsAsync(CancellationToken ct = default);
 }

@@ -556,51 +556,80 @@
                     FrontChanged="OnCubeFrontChanged"
                     SettingsRequested="OnGalaxySettingsRequested"
                     Notice="OnCubeNotice" />
-                <Border
-                    x:Name="HomeTempsHud"
-                    Style="{StaticResource HomePlaqueStyle}"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Margin="28,20,0,0"
-                    Visibility="{x:Bind Hud.TempsStripVisibility, Mode=OneWay}"
-                    AutomationProperties.Name="System temperatures">
-                    <StackPanel Spacing="6">
-                    <TextBlock Style="{StaticResource HomeHudKickerText}" Text="THERM" />
-                    <StackPanel Orientation="Horizontal" Spacing="14">
+                <Canvas
+                    x:Name="HomeWidgetLayer"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    SizeChanged="OnHomeWidgetLayerSizeChanged">
+                    <Border
+                        x:Name="HomeCpuWidget"
+                        Tag="cpu"
+                        Style="{StaticResource HomeWidgetPlaqueStyle}"
+                        Visibility="{x:Bind Hud.CpuWidgetVisibility, Mode=OneWay}"
+                        PointerPressed="OnWidgetPointerPressed"
+                        PointerMoved="OnWidgetPointerMoved"
+                        PointerReleased="OnWidgetPointerReleased"
+                        PointerCanceled="OnWidgetPointerReleased"
+                        PointerCaptureLost="OnWidgetPointerReleased"
+                        AutomationProperties.Name="CPU temperature"
+                        AutomationProperties.HelpText="Drag to reposition. Honest CPU temp when a sensor is available.">
                         <StackPanel Spacing="0">
-                            <TextBlock Style="{StaticResource HomeHudLabelText}" Text="CPU" />
-                            <TextBlock Style="{StaticResource HomeHudValueText}" Text="{x:Bind Hud.CpuTempText, Mode=OneWay}" />
+                            <TextBlock Style="{StaticResource HomeWidgetKickerText}" Text="CPU" />
+                            <TextBlock Style="{StaticResource HomeWidgetValueText}" Text="{x:Bind Hud.CpuTempText, Mode=OneWay}" />
                         </StackPanel>
+                    </Border>
+                    <Border
+                        x:Name="HomeGpuWidget"
+                        Tag="gpu"
+                        Style="{StaticResource HomeWidgetPlaqueStyle}"
+                        Visibility="{x:Bind Hud.GpuWidgetVisibility, Mode=OneWay}"
+                        PointerPressed="OnWidgetPointerPressed"
+                        PointerMoved="OnWidgetPointerMoved"
+                        PointerReleased="OnWidgetPointerReleased"
+                        PointerCanceled="OnWidgetPointerReleased"
+                        PointerCaptureLost="OnWidgetPointerReleased"
+                        AutomationProperties.Name="GPU temperature"
+                        AutomationProperties.HelpText="Drag to reposition. Honest GPU temp when a sensor is available.">
                         <StackPanel Spacing="0">
-                            <TextBlock Style="{StaticResource HomeHudLabelText}" Text="GPU" />
-                            <TextBlock Style="{StaticResource HomeHudValueText}" Text="{x:Bind Hud.GpuTempText, Mode=OneWay}" />
+                            <TextBlock Style="{StaticResource HomeWidgetKickerText}" Text="GPU" />
+                            <TextBlock Style="{StaticResource HomeWidgetValueText}" Text="{x:Bind Hud.GpuTempText, Mode=OneWay}" />
                         </StackPanel>
-                        <StackPanel Spacing="0" Visibility="{x:Bind Hud.PackageVisibility, Mode=OneWay}">
-                            <TextBlock Style="{StaticResource HomeHudLabelText}" Text="PKG" />
-                            <TextBlock Style="{StaticResource HomeHudValueText}" Text="{x:Bind Hud.PackageTempText, Mode=OneWay}" />
+                    </Border>
+                    <Border
+                        x:Name="HomePackageWidget"
+                        Tag="package"
+                        Style="{StaticResource HomeWidgetPlaqueStyle}"
+                        Visibility="{x:Bind Hud.PackageVisibility, Mode=OneWay}"
+                        PointerPressed="OnWidgetPointerPressed"
+                        PointerMoved="OnWidgetPointerMoved"
+                        PointerReleased="OnWidgetPointerReleased"
+                        PointerCanceled="OnWidgetPointerReleased"
+                        PointerCaptureLost="OnWidgetPointerReleased"
+                        AutomationProperties.Name="Package temperature"
+                        AutomationProperties.HelpText="Drag to reposition. Shown only when package temp differs from CPU.">
+                        <StackPanel Spacing="0">
+                            <TextBlock Style="{StaticResource HomeWidgetKickerText}" Text="PKG" />
+                            <TextBlock Style="{StaticResource HomeWidgetValueText}" Text="{x:Bind Hud.PackageTempText, Mode=OneWay}" />
                         </StackPanel>
-                    </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border
-                    x:Name="HomeClockHud"
-                    Style="{StaticResource HomePlaqueStyle}"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Margin="0,20,28,0"
-                    Visibility="{x:Bind Hud.ClockStripVisibility, Mode=OneWay}"
-                    AutomationProperties.Name="Local time">
-                    <StackPanel Spacing="2">
-                    <TextBlock
-                        Style="{StaticResource HomeHudKickerText}"
-                        HorizontalAlignment="Right"
-                        Text="TIME" />
-                    <TextBlock
-                        Style="{StaticResource HomeHudClockText}"
-                        HorizontalAlignment="Right"
-                        Text="{x:Bind Hud.ClockText, Mode=OneWay}" />
-                    </StackPanel>
-                </Border>
+                    </Border>
+                    <Border
+                        x:Name="HomeClockWidget"
+                        Tag="clock"
+                        Style="{StaticResource HomeWidgetPlaqueStyle}"
+                        Visibility="{x:Bind Hud.ClockStripVisibility, Mode=OneWay}"
+                        PointerPressed="OnWidgetPointerPressed"
+                        PointerMoved="OnWidgetPointerMoved"
+                        PointerReleased="OnWidgetPointerReleased"
+                        PointerCanceled="OnWidgetPointerReleased"
+                        PointerCaptureLost="OnWidgetPointerReleased"
+                        AutomationProperties.Name="Local time"
+                        AutomationProperties.HelpText="Drag to reposition. Local clock.">
+                        <StackPanel Spacing="0">
+                            <TextBlock Style="{StaticResource HomeWidgetKickerText}" Text="TIME" />
+                            <TextBlock Style="{StaticResource HomeWidgetClockText}" Text="{x:Bind Hud.ClockText, Mode=OneWay}" />
+                        </StackPanel>
+                    </Border>
+                </Canvas>
                 <Button
                     x:Name="HomeProfilesGlyph"
                     Tag="Profiles"

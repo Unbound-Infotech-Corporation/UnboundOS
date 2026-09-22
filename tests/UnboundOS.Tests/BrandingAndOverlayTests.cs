@@ -5,6 +5,7 @@ using UnboundOS.Core.Models;
 using UnboundOS.Core.Overlay;
 using UnboundOS.Infrastructure;
 using UnboundOS.Infrastructure.Hardware;
+using UnboundOS.Infrastructure.Home;
 using UnboundOS.Infrastructure.Overlay;
 using UnboundOS.Infrastructure.Settings;
 
@@ -111,6 +112,7 @@ public sealed class BrandingAndOverlayTests
         Assert.IsType<UiMotionPolicy>(motion);
         Assert.True(motion.UserWantsMotion);
         Assert.IsType<HomeHudSettings>(provider.GetRequiredService<IHomeHudSettings>());
+        Assert.IsType<HomeWidgetCatalog>(provider.GetRequiredService<IHomeWidgetCatalog>());
         Assert.IsType<OsThermalProbe>(provider.GetRequiredService<IThermalProbe>());
     }
 

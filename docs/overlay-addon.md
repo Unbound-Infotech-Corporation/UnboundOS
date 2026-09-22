@@ -40,6 +40,11 @@ services.AddUnboundOs();
    internals.
 4. Leave `IsEnabled` false unless the user opts in.
 
+Home already ships first-party **movable** clock/temp widgets
+(`IHomeWidgetCatalog` / `IHomeWidgetSource`). That is shell chrome on
+the galaxy, not this desktop overlay. An addon can append extra Home
+widgets through `IHomeWidgetSource` without enabling this host.
+
 ## What not to do
 
 - Do not start the overlay from `SessionEngine`.
