@@ -96,7 +96,7 @@
   scene.add(rig);
 
   const starMap = spriteTex(64, (ctx, s) => {
-    const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s * 0.46);
     g.addColorStop(0, "rgba(255,255,255,1)");
     g.addColorStop(0.16, "rgba(255,246,220,0.9)");
     g.addColorStop(0.4, "rgba(176,198,255,0.24)");
@@ -106,7 +106,7 @@
   });
 
   const glowMap = spriteTex(256, (ctx, s) => {
-    const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s * 0.46);
     g.addColorStop(0, "rgba(255,252,236,0.98)");
     g.addColorStop(0.18, "rgba(255,226,168,0.42)");
     g.addColorStop(0.48, "rgba(150,176,230,0.1)");
@@ -175,7 +175,7 @@
     ctx.clearRect(0, 0, s, s);
     ctx.translate(s / 2, s / 2);
     ctx.scale(1, 0.32);
-    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, s / 2);
+    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 0.44);
     g.addColorStop(0, "rgba(255,248,236,0.82)");
     g.addColorStop(0.16, "rgba(230,190,200,0.32)");
     g.addColorStop(0.42, "rgba(120,110,180,0.12)");
@@ -282,12 +282,7 @@
       ctx.fillRect(x, y, s, s);
     }
 
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    return tex;
+    return finishSoftTexture(c, 72);
   }
 
   function paintDustSheet(w, h) {
@@ -297,8 +292,8 @@
     const ctx = c.getContext("2d");
     ctx.clearRect(0, 0, w, h);
     for (let i = 0; i < 160; i++) {
-      const x = (i / 160) * w + (valueNoise(i * 0.2, 0.4, 3) - 0.5) * 40;
-      const y = h * 0.5 + (valueNoise(i * 0.31, 1.2, 5) - 0.5) * h * 0.32;
+      const x = w * 0.12 + (i / 160) * w * 0.76 + (valueNoise(i * 0.2, 0.4, 3) - 0.5) * 28;
+      const y = h * 0.5 + (valueNoise(i * 0.31, 1.2, 5) - 0.5) * h * 0.22;
       const rw = 20 + valueNoise(i, 2, 7) * 80;
       const rh = 6 + valueNoise(i, 3, 8) * 18;
       const g = ctx.createRadialGradient(x, y, 0, x, y, rw);
@@ -313,9 +308,7 @@
       ctx.fill();
       ctx.restore();
     }
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    return tex;
+    return finishSoftTexture(c, 48);
   }
 
   function paintNebulaVolume(w, h) {
@@ -329,15 +322,16 @@
     const cy = h * 0.5;
     for (let y = 0; y < h; y++) {
       const ny = (y - cy) / h;
-      const band = Math.exp(-ny * ny * 22);
+      const band = Math.exp(-ny * ny * 28);
       if (band < 0.03) continue;
       for (let x = 0; x < w; x++) {
         const nx = (x - cx) / w;
+        const edgeX = Math.exp(-nx * nx * 7.2);
         const n1 = valueNoise(nx * 3.6 + 0.4, ny * 7.2, 0xb1);
         const n2 = valueNoise(nx * 8.2 - 1.1, ny * 14, 0xb2);
         const n3 = valueNoise(nx * 16, ny * 22, 0xb3);
         const cloud = n1 * 0.55 + n2 * 0.32 + n3 * 0.13;
-        const a = band * cloud * 0.7;
+        const a = band * edgeX * cloud * 0.7;
         if (a < 0.03) continue;
         const t = Math.min(1, cloud * 1.2);
         const i = (y * w + x) * 4;
@@ -348,11 +342,7 @@
       }
     }
     ctx.putImageData(img, 0, 0);
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    return tex;
+    return finishSoftTexture(c, 64);
   }
 
   function paintEnergyTrail(w, h) {
@@ -371,9 +361,10 @@
         + Math.sin(t * 9.4 + 1.6) * h * 0.05
         + (valueNoise(t * 7.2, 0.22, 0xee) - 0.5) * h * 0.07;
     };
-    const fade = (x) => {
-      const u = Math.abs((x - cx) / (w * 0.46));
-      return Math.max(0, 1 - u * u);
+    const fade = (x, y) => {
+      const ux = Math.abs((x - cx) / (w * 0.4));
+      const uy = Math.abs((y - cy) / (h * 0.36));
+      return Math.max(0, 1 - ux * ux) * Math.max(0, 1 - uy * uy);
     };
     const passes = [
       { width: 56, color: [90, 36, 120], alpha: 0.08 },
@@ -387,7 +378,7 @@
       ctx.lineWidth = pass.width;
       ctx.beginPath();
       let started = false;
-      for (let x = w * 0.05; x <= w * 0.95; x += 2) {
+      for (let x = w * 0.12; x <= w * 0.88; x += 2) {
         const y = trailY(x);
         if (!started) {
           ctx.moveTo(x, y);
@@ -403,109 +394,53 @@
       for (let x = 0; x < w; x++) {
         const i = (y * w + x) * 4;
         if (!d[i + 3]) continue;
-        d[i + 3] = Math.round(d[i + 3] * fade(x));
+        d[i + 3] = Math.round(d[i + 3] * fade(x, y));
       }
     }
     ctx.putImageData(veil, 0, 0);
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    return tex;
+    return finishSoftTexture(c, 56);
   }
 
   function buildDiskGlow() {
     const group = new THREE.Group();
     const plate = new THREE.Mesh(
       new THREE.PlaneGeometry(14.6, 5.15),
-      new THREE.MeshBasicMaterial({
-        map: diskMap,
-        transparent: true,
-        depthWrite: false,
-        blending: THREE.NormalBlending
-      })
+      softMat(diskMap)
     );
     plate.position.z = -0.1;
     group.add(plate);
 
     const nebula = new THREE.Mesh(
       new THREE.PlaneGeometry(13.8, 3.7),
-      new THREE.MeshBasicMaterial({
-        map: nebulaMap,
-        transparent: true,
-        opacity: 0.86,
-        depthWrite: false,
-        blending: THREE.NormalBlending
-      })
+      softMat(nebulaMap, { opacity: 0.86 })
     );
     nebula.position.z = -0.18;
     group.add(nebula);
 
-    const nebulaFore = new THREE.Mesh(
-      new THREE.PlaneGeometry(12.2, 2.6),
-      new THREE.MeshBasicMaterial({
-        map: nebulaMap,
-        transparent: true,
-        opacity: 0.4,
-        depthWrite: false,
-        blending: THREE.NormalBlending
-      })
-    );
-    nebulaFore.position.set(0.25, 0.06, -0.06);
-    nebulaFore.rotation.z = 0.04;
-    group.add(nebulaFore);
-
     const trail = new THREE.Mesh(
       new THREE.PlaneGeometry(12.6, 2.4),
-      new THREE.MeshBasicMaterial({
-        map: trailMap,
-        transparent: true,
-        opacity: 0.38,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-      })
+      softMat(trailMap, { opacity: 0.38, blending: THREE.AdditiveBlending })
     );
     trail.position.set(0.12, 0.03, 0.01);
     trail.rotation.z = -0.05;
     group.add(trail);
 
-    const bar = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: barMap,
-      color: 0xffe8d0,
-      transparent: true,
-      opacity: 0.2,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    }));
+    const bar = new THREE.Sprite(softSprite(barMap, { color: 0xffe8d0, opacity: 0.2 }));
     bar.scale.set(6.2, 0.92, 1);
     bar.position.z = 0.02;
     group.add(bar);
 
-    const nucleus = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: glowMap,
-      color: 0xfff6dc,
-      transparent: true,
-      opacity: 0.4,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    }));
+    const nucleus = new THREE.Sprite(softSprite(glowMap, { color: 0xfff6dc, opacity: 0.4 }));
     nucleus.scale.set(1.7, 0.92, 1);
     nucleus.position.z = 0.06;
     group.add(nucleus);
 
-    const wings = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: barMap,
-      color: 0x6a78c8,
-      transparent: true,
-      opacity: 0.26,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    }));
-    wings.scale.set(13.4, 1.35, 1);
+    const wings = new THREE.Sprite(softSprite(barMap, { color: 0x6a78c8, opacity: 0.2 }));
+    wings.scale.set(12.2, 1.15, 1);
     wings.position.z = -0.22;
     group.add(wings);
 
-    group.userData = { plate, nebula, nebulaFore, trail, bar, nucleus, wings };
+    group.userData = { plate, nebula, trail, bar, nucleus, wings };
     rig.add(group);
     return group;
   }
@@ -513,17 +448,10 @@
   function buildDustSheets() {
     const list = [];
     const rng = mulberry(0xd05);
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 2; i++) {
       const mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(8.6 + i * 0.95, 0.95 + i * 0.14),
-        new THREE.MeshBasicMaterial({
-          map: dustMap,
-          color: 0xb8b0d8,
-          transparent: true,
-          opacity: 0.34 - i * 0.05,
-          depthWrite: false,
-          blending: THREE.NormalBlending
-        })
+        new THREE.PlaneGeometry(8.2 + i * 0.7, 0.88 + i * 0.1),
+        softMat(dustMap, { color: 0xb8b0d8, opacity: 0.26 - i * 0.06 })
       );
       mesh.position.set((rng() - 0.5) * 0.7, (rng() - 0.5) * 0.05, -0.14 - i * 0.04);
       mesh.userData.drift = (rng() - 0.5) * 0.012;
@@ -586,7 +514,8 @@
         const ridge = Math.pow(Math.abs(n1 - 0.48), 0.55);
         const veil = n2 * (0.35 + n1 * 0.65);
         const cliff = Math.exp(-Math.pow((nx * 0.7 + ny * 0.55 - 0.55) / 0.38, 2));
-        const a = Math.min(1, (0.18 + veil * 0.62) * (1 - ridge * 0.55) * (0.35 + cliff));
+        const edge = Math.pow(Math.sin(nx * Math.PI), 1.35) * Math.pow(Math.sin(ny * Math.PI), 1.35);
+        const a = Math.min(1, (0.18 + veil * 0.62) * (1 - ridge * 0.55) * (0.35 + cliff) * edge);
         if (a < 0.03) continue;
         const t = Math.min(1, veil * 1.15);
         const c0 = pal[0];
@@ -600,11 +529,7 @@
       }
     }
     ctx.putImageData(img, 0, 0);
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    return tex;
+    return finishSoftTexture(c, 36);
   }
 
   function buildHalo(count, spread, size, color, seed, flatten, spin, zBias) {
@@ -623,6 +548,7 @@
       color,
       size,
       transparent: true,
+      premultipliedAlpha: true,
       opacity: 0.9,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
@@ -671,6 +597,7 @@
         size: 0.09,
         vertexColors: true,
         transparent: true,
+        premultipliedAlpha: true,
         opacity: 0.64,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
@@ -716,6 +643,7 @@
       size: 0.082,
       vertexColors: true,
       transparent: true,
+      premultipliedAlpha: true,
       opacity: 0.8,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
@@ -731,12 +659,8 @@
     const list = [];
     for (let i = 0; i < count; i++) {
       const node = i % NODE_IDS.length;
-      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: starMap,
+      const sprite = new THREE.Sprite(softSprite(starMap, {
         color: rng() > 0.55 ? 0xc9d8ff : 0xfff1d0,
-        transparent: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
         opacity: 0.5
       }));
       sprite.scale.setScalar(0.04 + rng() * 0.036);
@@ -780,6 +704,7 @@
       size,
       vertexColors: true,
       transparent: true,
+      premultipliedAlpha: true,
       opacity: 0.9,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
@@ -792,21 +717,13 @@
   function buildFilaments() {
     const list = [];
     const specs = [
-      { map: 0, x: -3.4, y: 0.42, z: -3.4, sx: 11.5, sy: 3.2, rx: 0.12, rz: -0.08, op: 0.22, drift: 0.003 },
-      { map: 1, x: 3.1, y: -0.32, z: -3.0, sx: 10.4, sy: 2.7, rx: -0.1, rz: 0.06, op: 0.18, drift: -0.0026 },
-      { map: 2, x: -1.1, y: 0.58, z: -4.6, sx: 9.2, sy: 2.4, rx: 0.08, rz: 0.04, op: 0.14, drift: 0.002 },
-      { map: 3, x: 0.35, y: 0.06, z: -2.1, sx: 12.2, sy: 2.05, rx: -0.04, rz: -0.05, op: 0.2, drift: -0.0018 }
+      { map: 0, x: -3.2, y: 0.38, z: -3.4, sx: 10.4, sy: 2.8, rx: 0.1, rz: -0.06, op: 0.16, drift: 0.003 },
+      { map: 3, x: 0.3, y: 0.05, z: -2.1, sx: 11.2, sy: 1.9, rx: -0.04, rz: -0.04, op: 0.15, drift: -0.0018 }
     ];
     for (const spec of specs) {
       const mesh = new THREE.Mesh(
         new THREE.PlaneGeometry(1, 1),
-        new THREE.MeshBasicMaterial({
-          map: filamentMaps[spec.map],
-          transparent: true,
-          opacity: spec.op,
-          depthWrite: false,
-          blending: THREE.NormalBlending
-        })
+        softMat(filamentMaps[spec.map], { opacity: spec.op })
       );
       mesh.position.set(spec.x, spec.y, spec.z);
       mesh.scale.set(spec.sx, spec.sy, 1);
@@ -824,13 +741,9 @@
     const rng = mulberry(0x5b1);
     const list = [];
     for (let i = 0; i < count; i++) {
-      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: spikeMap,
+      const sprite = new THREE.Sprite(softSprite(spikeMap, {
         color: rng() > 0.45 ? 0xe8d8ff : 0xc8d4ff,
-        transparent: true,
-        opacity: 0.14 + rng() * 0.16,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
+        opacity: 0.14 + rng() * 0.16
       }));
       const y = (rng() > 0.5 ? 1 : -1) * (2.4 + rng() * 8);
       sprite.position.set((rng() - 0.5) * 20, y, -8 - rng() * 24);
@@ -851,34 +764,22 @@
       group.position.set(nodeX(i), 0.04, 0.12);
       const info = faceInfo(NODE_IDS[i]);
       const coreCol = new THREE.Color(info.core || "#FFE9B0");
-      const bloom = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: glowMap,
+      const bloom = new THREE.Sprite(softSprite(glowMap, {
         color: coreCol,
-        transparent: true,
-        opacity: i === 0 ? 0.26 : 0.14,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
+        opacity: i === 0 ? 0.26 : 0.14
       }));
       bloom.scale.set(i === 0 ? 3.35 : 2.2, i === 0 ? 1.28 : 0.9, 1);
       bloom.userData.base = bloom.scale.clone();
       group.add(bloom);
-      const core = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: starMap,
+      const core = new THREE.Sprite(softSprite(starMap, {
         color: 0xffffff,
-        transparent: true,
-        opacity: i === 0 ? 0.58 : 0.4,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
+        opacity: i === 0 ? 0.58 : 0.4
       }));
       core.scale.set(i === 0 ? 0.3 : 0.2, i === 0 ? 0.3 : 0.2, 1);
       group.add(core);
-      const dust = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: glowMap,
+      const dust = new THREE.Sprite(softSprite(glowMap, {
         color: 0xc8b8e0,
-        transparent: true,
-        opacity: 0.05,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
+        opacity: 0.05
       }));
       dust.scale.set(i === 0 ? 2.15 : 1.35, i === 0 ? 0.58 : 0.42, 1);
       group.add(dust);
@@ -897,17 +798,27 @@
   }
 
   function buildVignette() {
-    const tex = spriteTex(256, (ctx, s) => {
-      const g = ctx.createRadialGradient(s / 2, s / 2, s * 0.22, s / 2, s / 2, s * 0.62);
-      g.addColorStop(0, "rgba(0,0,0,0)");
-      g.addColorStop(0.55, "rgba(0,0,0,0.18)");
-      g.addColorStop(1, "rgba(0,0,0,0.62)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, s, s);
-    });
+    const c = document.createElement("canvas");
+    c.width = c.height = 256;
+    const ctx = c.getContext("2d");
+    const g = ctx.createRadialGradient(128, 128, 56, 128, 128, 168);
+    g.addColorStop(0, "rgba(0,0,0,0)");
+    g.addColorStop(0.55, "rgba(0,0,0,0.18)");
+    g.addColorStop(1, "rgba(0,0,0,0.62)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 256, 256);
+    const tex = new THREE.CanvasTexture(c);
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
     const mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(2, 2),
-      new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false })
+      new THREE.MeshBasicMaterial({
+        map: tex,
+        transparent: true,
+        depthTest: false,
+        depthWrite: false
+      })
     );
     mesh.frustumCulled = false;
     mesh.renderOrder = 10;
@@ -1408,10 +1319,77 @@
   function spriteTex(size, draw) {
     const c = document.createElement("canvas");
     c.width = c.height = size;
-    draw(c.getContext("2d"), size);
-    const tex = new THREE.CanvasTexture(c);
+    const ctx = c.getContext("2d");
+    draw(ctx, size);
+    return finishSoftTexture(c, Math.max(6, size * 0.06));
+  }
+
+  function smooth01(t) {
+    const x = Math.min(1, Math.max(0, t));
+    return x * x * (3 - 2 * x);
+  }
+
+  function featherPremul(ctx, w, h, margin) {
+    const img = ctx.getImageData(0, 0, w, h);
+    const d = img.data;
+    const mx = Math.max(8, margin | 0);
+    const my = Math.max(8, Math.round(margin * (h / Math.max(1, w))));
+    for (let y = 0; y < h; y++) {
+      const ey = smooth01(y < my ? y / my : y > h - 1 - my ? (h - 1 - y) / my : 1);
+      for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4;
+        const a0 = d[i + 3];
+        if (!a0) {
+          d[i] = d[i + 1] = d[i + 2] = 0;
+          continue;
+        }
+        const ex = smooth01(x < mx ? x / mx : x > w - 1 - mx ? (w - 1 - x) / mx : 1);
+        const a = a0 * ex * ey;
+        if (a < 1.4) {
+          d[i] = d[i + 1] = d[i + 2] = d[i + 3] = 0;
+          continue;
+        }
+        const pa = a / 255;
+        d[i] = Math.round(d[i] * pa);
+        d[i + 1] = Math.round(d[i + 1] * pa);
+        d[i + 2] = Math.round(d[i + 2] * pa);
+        d[i + 3] = Math.round(a);
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  function finishSoftTexture(canvas, margin) {
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    featherPremul(ctx, canvas.width, canvas.height, margin);
+    const tex = new THREE.CanvasTexture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;
+    tex.wrapS = THREE.ClampToEdgeWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
     return tex;
+  }
+
+  function softMat(map, extra) {
+    return new THREE.MeshBasicMaterial(Object.assign({
+      map,
+      transparent: true,
+      premultipliedAlpha: true,
+      depthWrite: false,
+      blending: THREE.NormalBlending
+    }, extra || {}));
+  }
+
+  function softSprite(map, extra) {
+    return new THREE.SpriteMaterial(Object.assign({
+      map,
+      transparent: true,
+      premultipliedAlpha: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
+    }, extra || {}));
   }
 
   function mulberry(a) {
