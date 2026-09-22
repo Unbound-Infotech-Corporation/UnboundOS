@@ -28,8 +28,8 @@ public sealed class DesktopToolCatalogTests
         });
 
         var tools = catalog.Discover();
-        Assert.Equal(14, tools.Count);
-        Assert.Equal(11, tools.Count(tool => tool.Group == DesktopToolGroup.Kit));
+        Assert.Equal(15, tools.Count);
+        Assert.Equal(12, tools.Count(tool => tool.Group == DesktopToolGroup.Kit));
         Assert.Equal(3, tools.Count(tool => tool.Group == DesktopToolGroup.Utility));
 
         var obsTool = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Obs);
@@ -67,6 +67,13 @@ public sealed class DesktopToolCatalogTests
         Assert.Contains("Phenix", phenix.Job, StringComparison.Ordinal);
         Assert.DoesNotContain("Minimalistic", phenix.Job, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(".rmskin", phenix.GetPath.Uri, StringComparison.OrdinalIgnoreCase);
+
+        var clock = Assert.Single(tools, tool => tool.Id == DesktopToolIds.MinimalisticClock);
+        Assert.False(clock.IsInstalled);
+        Assert.Equal(DesktopToolCatalog.MinimalisticClockGetPath.Uri, clock.GetPath.Uri);
+        Assert.Equal("https://visualskins.com/skin/minimalistic-clock", clock.GetPath.Uri);
+        Assert.Contains("clock", clock.Job, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(".rmskin", clock.GetPath.Uri, StringComparison.OrdinalIgnoreCase);
 
         var musicBee = Assert.Single(tools, tool => tool.Id == DesktopToolIds.MusicBee);
         Assert.False(musicBee.IsInstalled);
@@ -153,6 +160,7 @@ public sealed class DesktopToolCatalogTests
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.HwInfoGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.RainmeterGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.PhenixGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.MinimalisticClockGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.MusicBeeGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.VisualizersGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.StoreGetPath.Uri));

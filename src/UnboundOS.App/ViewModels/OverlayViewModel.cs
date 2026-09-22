@@ -16,7 +16,7 @@ public sealed class OverlayViewModel
         Headline = host.IsEnabled ? "Rainmeter overlay connected" : "Rainmeter overlay is optional";
         Detail = host.IsEnabled
             ? "Rainmeter skins sit over galaxy Home. UnboundOS opens Rainmeter; it does not rewrite rainmeter.ini. Built-in Home widgets stay as the fallback."
-            : "Rainmeter is the overlay path (Tools → Rainmeter / Phenix / Visualizer pack). This host stays off until OverlayHostOptions.Enabled. Built-in Home widgets are the fallback. UnboundOS does not ship .rmskin files.";
+            : "Rainmeter is the overlay path (Tools → Rainmeter / Phenix / Minimalistic Clock / Visualizer pack). This host stays off until OverlayHostOptions.Enabled. Built-in Home widgets are the fallback. UnboundOS does not ship .rmskin files.";
     }
 
     public bool IsEnabled { get; }

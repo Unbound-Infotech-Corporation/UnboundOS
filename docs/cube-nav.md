@@ -111,5 +111,6 @@ before `AddUnboundOs()`. First-party catalog is
 the customizable overlay path over this galaxy (Tools → Rainmeter /
 Phenix / Visualizer pack). The in-tree host is
 `RainmeterDesktopOverlayHost`, off until `OverlayHostOptions.Enabled`.
-See [overlay-addon.md](overlay-addon.md). Recommended starter is
-**Phenix** (Get the official page; do not ship the `.rmskin`).
+See [overlay-addon.md](overlay-addon.md). Recommended theme is
+**Phenix**; recommended clock skin is **Minimalistic Clock**
+(Get the official pages; do not ship the `.rmskin`).

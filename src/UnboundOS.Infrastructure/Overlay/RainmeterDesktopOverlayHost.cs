@@ -31,8 +31,9 @@ public sealed class RainmeterDesktopOverlayHost : IDesktopOverlayHost
 
     public IReadOnlyList<OverlayWidgetDescriptor> Widgets { get; } =
     [
-        new("phenix", "Phenix", "skin", "Recommended starter over Home. Get the official page — do not ship the .rmskin."),
-        new("clock-temps", "Clock + temps", "skin", "Use Phenix or another official skin. Built-in Home widgets remain if Rainmeter is off."),
+        new("phenix", "Phenix", "skin", "Recommended starter theme over Home. Get the official page — do not ship the .rmskin."),
+        new("minimalistic-clock", "Minimalistic Clock", "skin", "Recommended clock skin over Home. Get the official VisualSkins page — do not ship the .rmskin."),
+        new("clock-temps", "Clock + temps", "skin", "Use Minimalistic Clock plus Phenix or built-in Home widgets if Rainmeter is off."),
         new("monstercat", "Monstercat Visualizer", "visualizer", "Free Rainmeter visualizer pack. Official GitHub handoff only.")
     ];
 

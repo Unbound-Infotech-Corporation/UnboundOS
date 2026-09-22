@@ -42,17 +42,20 @@ its state alone.
 1. Tools → **Rainmeter** — Open launches `Rainmeter.exe` if found
    (Program Files, uninstall registry, Start Menu). Get is
    [https://www.rainmeter.net/](https://www.rainmeter.net/).
-2. Tools → **Phenix** — recommended starter skin over Home. Get
+2. Tools → **Phenix** — recommended starter **theme** over Home. Get
    [https://visualskins.com/skin/phenix](https://visualskins.com/skin/phenix).
-3. Rainmeter stays in charge of which skins load and where they sit.
-4. Streamer and Living Room **protect** `Rainmeter`. Competitive
+3. Tools → **Minimalistic Clock** — recommended **clock** skin over Home.
+   Get [https://visualskins.com/skin/minimalistic-clock](https://visualskins.com/skin/minimalistic-clock).
+4. Rainmeter stays in charge of which skins load and where they sit.
+5. Streamer and Living Room **protect** `Rainmeter`. Competitive
    **terminates** it (strip overlays). Rainmeter is not HardProtect.
 
 ## How to add skins
 
 1. Install Rainmeter from the official site (Tools → Rainmeter → Get).
-2. Get a skin page (Phenix, Monstercat Visualizer, or any license-clear
-   skin). Download the `.rmskin` **from that site**, not from this repo.
+2. Get a skin page (Phenix, Minimalistic Clock, Monstercat Visualizer,
+   or any license-clear skin). Download the `.rmskin` **from that site**,
+   not from this repo.
 3. Double-click the `.rmskin`. Rainmeter's installer applies it.
 4. In Rainmeter, load / unload / drag skins as usual.
 5. Tools → Rainmeter → Open brings the host back if it was closed.
@@ -62,11 +65,12 @@ clearly allows redistribution. None are bundled today.
 
 ## Starter Rainmeter skin
 
-Recommended / default Get-Open over galaxy Home is **Phenix**, not a
-clock-only skin:
+Recommended / default **theme** over galaxy Home is **Phenix**.
+Recommended **clock** skin is **Minimalistic Clock**:
 
 - Rainmeter (host): [https://www.rainmeter.net/](https://www.rainmeter.net/)
 - Phenix theme: [https://visualskins.com/skin/phenix](https://visualskins.com/skin/phenix)
+- Minimalistic Clock: [https://visualskins.com/skin/minimalistic-clock](https://visualskins.com/skin/minimalistic-clock)
 
 Link / Get / Open only.
 

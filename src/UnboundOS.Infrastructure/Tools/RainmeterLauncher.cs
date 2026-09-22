@@ -49,7 +49,7 @@ public sealed class RainmeterLauncher
         if (string.IsNullOrWhiteSpace(executable) || !File.Exists(executable))
         {
             return ToolLaunchResult.Fail(
-                "Rainmeter not found. Use Get for the official Rainmeter page, then Get Phenix for the starter skin.");
+                "Rainmeter not found. Use Get for the official Rainmeter page, then Get Phenix or Minimalistic Clock.");
         }
 
         try

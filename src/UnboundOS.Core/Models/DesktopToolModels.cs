@@ -12,6 +12,7 @@ public static class DesktopToolIds
     public const string HwInfo = "hwinfo";
     public const string Rainmeter = "rainmeter";
     public const string Phenix = "phenix";
+    public const string MinimalisticClock = "minimalistic-clock";
     public const string MusicBee = "musicbee";
     public const string Visualizers = "visualizers";
     public const string Store = "store";

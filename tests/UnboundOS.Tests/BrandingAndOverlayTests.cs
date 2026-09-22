@@ -132,6 +132,7 @@ public sealed class BrandingAndOverlayTests
             var on = new RainmeterDesktopOverlayHost(new OverlayHostOptions { Enabled = true }, rainmeter);
             Assert.True(on.IsEnabled);
             Assert.Contains(on.Widgets, widget => widget.Id == "phenix");
+            Assert.Contains(on.Widgets, widget => widget.Id == "minimalistic-clock");
             Assert.Contains(on.Widgets, widget => widget.Id == "clock-temps");
             await on.StartAsync();
             Assert.Equal(exe, started);
@@ -153,6 +154,7 @@ public sealed class BrandingAndOverlayTests
         Assert.IsType<RainmeterDesktopOverlayHost>(host);
         Assert.False(host.IsEnabled);
         Assert.Contains(host.Widgets, widget => widget.Id == "phenix");
+        Assert.Contains(host.Widgets, widget => widget.Id == "minimalistic-clock");
         Assert.Contains(host.Widgets, widget => widget.Id == "monstercat");
 
         var motion = provider.GetRequiredService<IUiMotionPolicy>();

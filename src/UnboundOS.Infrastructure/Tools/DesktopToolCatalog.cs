@@ -41,6 +41,10 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
     public static ToolGetPath PhenixGetPath { get; } =
         new("Phenix theme", "https://visualskins.com/skin/phenix");
 
+    /// <summary>Recommended Rainmeter clock skin over Home. Link only — do not ship the .rmskin.</summary>
+    public static ToolGetPath MinimalisticClockGetPath { get; } =
+        new("Minimalistic Clock", "https://visualskins.com/skin/minimalistic-clock");
+
     public static ToolGetPath MusicBeeGetPath { get; } =
         new("Official downloads", "https://getmusicbee.com/downloads/");
 
@@ -134,10 +138,17 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
         Create(
             DesktopToolIds.Phenix,
             "Phenix",
-            "Recommended Rainmeter starter over Home (not a clock-only skin). Get opens the official Phenix page. UnboundOS does not redistribute the .rmskin.",
+            "Recommended Rainmeter starter theme over Home (not a clock-only skin). Get opens the official Phenix page. UnboundOS does not redistribute the .rmskin.",
             null,
             [],
             PhenixGetPath),
+        Create(
+            DesktopToolIds.MinimalisticClock,
+            "Minimalistic Clock",
+            "Recommended Rainmeter clock skin over Home. Get opens the official VisualSkins page. Pair with built-in temps if you only want a clock. UnboundOS does not redistribute the .rmskin.",
+            null,
+            [],
+            MinimalisticClockGetPath),
         Create(
             DesktopToolIds.MusicBee,
             "MusicBee",

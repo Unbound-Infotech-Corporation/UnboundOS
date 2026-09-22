@@ -23,7 +23,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Home galaxy** | Deep-field Home: original procedural tilted OS galaxy, JWST-class star density (not observatory plates), all stars in gentle motion. Left/right shift nodes. Up/Down open that node’s list (bottom/top) on the left half over a vanishing scrim. Games launches via `steam://rungameid`. Optional Home HUD. See [docs/cube-nav.md](docs/cube-nav.md) |
 | **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
-| **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam, Rainmeter, MusicBee, visualizer pack, Store, Xbox) plus utilities (Notepad++, 7-Zip). Launch, Windows URI, or official Get. Recommended Rainmeter starter over Home is [Phenix](https://visualskins.com/skin/phenix) (link only — no .rmskin in tree). Ultrawide crop recipe lives on the OBS tile |
+| **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam, Rainmeter, MusicBee, visualizer pack, Store, Xbox) plus utilities (Notepad++, 7-Zip). Launch, Windows URI, or official Get. Recommended Rainmeter theme is [Phenix](https://visualskins.com/skin/phenix); clock skin is [Minimalistic Clock](https://visualskins.com/skin/minimalistic-clock) (link only — no .rmskin in tree). Ultrawide crop recipe lives on the OBS tile |
 | **Profiles** | JSON profiles in LocalAppData (`Competitive`, `Streamer`, `Living Room`) |
 | **Mods + Workshop** | Local Steam Workshop discovery, per-game mod profiles, safe adapter-based apply/restore |
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
@@ -75,7 +75,7 @@ The **Tools** page is a local kit catalog presented as a media row of large tile
 - Detects the kit (OBS Studio, Vortex, Discord, Playnite, Steam, Rainmeter, MusicBee) plus a short Utilities row (Notepad++, 7-Zip, HWiNFO) from install paths, Start Menu, and uninstall registry. Store and Xbox Open via official Windows URIs (`ms-windows-store://home`, `xbox:`).
 - **Launch** starts the real app. Vortex uses the same read-only Vortex handoff as Mods. Rainmeter uses the same empty-args handoff as the overlay host — UnboundOS does not rewrite skins.
 - **Get** opens an official HTTPS page (or a `ms-windows-store` / `xbox` / `winget` URI). UnboundOS does not download or bundle those binaries — including HWiNFO, Phenix, or visualizer packs.
-- Recommended Rainmeter starter over Home is [Phenix](https://visualskins.com/skin/phenix). Visualizers: official free [Monstercat Visualizer](https://github.com/MarcoPixel/Monstercat-Visualizer). See [docs/overlay-addon.md](docs/overlay-addon.md).
+- Recommended Rainmeter theme over Home is [Phenix](https://visualskins.com/skin/phenix). Recommended clock skin is [Minimalistic Clock](https://visualskins.com/skin/minimalistic-clock). Visualizers: official free [Monstercat Visualizer](https://github.com/MarcoPixel/Monstercat-Visualizer). See [docs/overlay-addon.md](docs/overlay-addon.md).
 - If OBS is missing, the tile says Get. The ultrawide crop recipe still explains the filters and that they need OBS. Play native — never lower monitor resolution.
 - Streamer and Living Room protect Rainmeter and MusicBee. Competitive terminates Rainmeter (strip overlays) and can still terminate Discord. Those lists are not merged.
 
