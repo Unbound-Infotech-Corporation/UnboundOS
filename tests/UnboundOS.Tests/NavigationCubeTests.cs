@@ -1,4 +1,5 @@
 using System.Numerics;
+using UnboundOS.Core.Models;
 using UnboundOS.Core.Navigation;
 
 namespace UnboundOS.Tests;
@@ -146,8 +147,8 @@ public sealed class NavigationCubeTests
         Assert.DoesNotContain("Night City", files.Hint, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", CubeCatalog.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("galaxy", CubeCatalog.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("games list", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Settings", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("this list from the bottom", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("this list from the top", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("corner glyphs", CubeCatalog.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("top bar", CubeCatalog.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
         Assert.InRange(CubeLayout.FaceOpacity(1), 0.95f, 1.01f);
@@ -245,6 +246,15 @@ public sealed class NavigationCubeTests
         Assert.Contains("\"mode\":\"carousel\"", gamesOpen, StringComparison.Ordinal);
         Assert.Contains("\"stay\":true", gamesOpen, StringComparison.Ordinal);
         Assert.Contains("\"node\":0", gamesOpen, StringComparison.Ordinal);
+        Assert.Contains("\"origin\":\"top\"", gamesOpen, StringComparison.Ordinal);
+        var fromBottom = CubeBridge.ToJson(CubeBridge.Open(
+            CubeDestination.Tools,
+            true,
+            [new CubeBrowseItem("obs", "OBS", "KIT", "tool", "O")],
+            0,
+            "bottom"));
+        Assert.Contains("\"origin\":\"bottom\"", fromBottom, StringComparison.Ordinal);
+        Assert.Contains("\"stay\":true", fromBottom, StringComparison.Ordinal);
         Assert.Contains("\"title\":\"Dota 2\"", gamesOpen, StringComparison.Ordinal);
         Assert.Contains("\"glyph\":\"games\"", json, StringComparison.Ordinal);
         Assert.Contains("\"openKind\":\"carousel\"", json, StringComparison.Ordinal);
@@ -287,33 +297,54 @@ public sealed class HomeGalaxyTests
         Assert.Equal(0, HomeGalaxy.IndexOf(CubeDestination.Session));
         Assert.Equal(2, HomeGalaxy.IndexOf(CubeDestination.Mods));
         Assert.Equal(5, HomeGalaxy.IndexOf(CubeDestination.Hardware));
-        Assert.Equal(0f, HomeGalaxy.NodeX(0) + HomeGalaxy.NodeX(HomeGalaxy.Count - 1), 3);
-        Assert.True(HomeGalaxy.NodeX(0) < HomeGalaxy.NodeX(1));
+        Assert.Equal(0f, HomeGalaxy.NodeX(0), 3);
+        Assert.True(HomeGalaxy.NodeX(1) > 0f);
+        Assert.True(HomeGalaxy.NodeX(3) < 0f);
     }
 
     [Fact]
-    public void IdleKeys_MapToPanGamesAndSettings()
+    public void IdleKeys_MapToPanAndCategoryLists()
     {
         Assert.Equal(HomeIdleAction.PanLeft, HomeGalaxy.FromTurn(CubeTurn.Left));
         Assert.Equal(HomeIdleAction.PanRight, HomeGalaxy.FromTurn(CubeTurn.Right));
-        Assert.Equal(HomeIdleAction.OpenGames, HomeGalaxy.FromTurn(CubeTurn.Up));
-        Assert.Equal(HomeIdleAction.OpenSettings, HomeGalaxy.FromTurn(CubeTurn.Down));
-        Assert.Equal(CubeDestination.Hardware, HomeGalaxy.Neighbor(CubeDestination.Session, -1));
+        Assert.Equal(HomeIdleAction.OpenListFromBottom, HomeGalaxy.FromTurn(CubeTurn.Up));
+        Assert.Equal(HomeIdleAction.OpenListFromTop, HomeGalaxy.FromTurn(CubeTurn.Down));
+        Assert.Equal(CubeDestination.Network, HomeGalaxy.Neighbor(CubeDestination.Session, -1));
         Assert.Equal(CubeDestination.Tools, HomeGalaxy.Neighbor(CubeDestination.Session, 1));
-        Assert.Equal(CubeDestination.Session, HomeGalaxy.Neighbor(CubeDestination.Hardware, 1));
+        Assert.Equal(CubeDestination.Mods, HomeGalaxy.Neighbor(CubeDestination.Hardware, -1));
+        Assert.Equal(CubeDestination.Hardware, HomeGalaxy.Neighbor(CubeDestination.Mods, 1));
         Assert.Equal(CubeDestination.Mods, HomeGalaxy.DestinationAt(8));
+        Assert.Equal(2, HomeGalaxy.ListStartIndex(3, fromBottom: true));
+        Assert.Equal(0, HomeGalaxy.ListStartIndex(3, fromBottom: false));
     }
 
     [Fact]
     public void Announce_NamesTheGalaxyAndOverlay()
     {
         Assert.Contains("Games node", HomeGalaxy.Announce(CubeDestination.Session), StringComparison.Ordinal);
-        Assert.Contains("games list over the galaxy", HomeGalaxy.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Down opens Settings", HomeGalaxy.Announce(CubeDestination.Tools), StringComparison.Ordinal);
+        Assert.Contains("from the bottom", HomeGalaxy.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("from the top", HomeGalaxy.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
         var overlay = HomeGalaxy.AnnounceOverlay(new CubeBrowseItem("570", "Dota 2", "STEAM", "game", "D"), 0, 3);
         Assert.Contains("Dota 2", overlay, StringComparison.Ordinal);
         Assert.Contains("1 of 3", overlay, StringComparison.Ordinal);
         Assert.Contains("returns to the galaxy", overlay, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", overlay, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void CategoryLists_CoverEveryNode()
+    {
+        var games = Array.Empty<LibraryGame>();
+        var tools = Array.Empty<DesktopTool>();
+        var mods = Array.Empty<ModGame>();
+        foreach (var node in HomeGalaxy.Nodes)
+        {
+            var items = CubeBrowse.ForNode(node, games, tools, mods);
+            Assert.NotEmpty(items);
+        }
+
+        var network = CubeBrowse.ForNode(CubeDestination.Network, games, tools, mods);
+        Assert.Contains(network, item => item.Kind == "page");
+        Assert.Equal(2, HomeGalaxy.ListStartIndex(network.Count, true));
     }
 }

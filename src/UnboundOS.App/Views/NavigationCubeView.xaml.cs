@@ -257,23 +257,16 @@ public sealed partial class NavigationCubeView : UserControl
             }
 
             var browseTurn = CubeInput.FromKey(name);
-            if (browseTurn is CubeTurn.Left)
+            if (browseTurn is CubeTurn.Up)
             {
                 Cycle(_focus - 1, fromScene: false);
                 e.Handled = true;
                 return;
             }
 
-            if (browseTurn is CubeTurn.Right)
-            {
-                Cycle(_focus + 1, fromScene: false);
-                e.Handled = true;
-                return;
-            }
-
             if (browseTurn is CubeTurn.Down)
             {
-                ResetScene();
+                Cycle(_focus + 1, fromScene: false);
                 e.Handled = true;
             }
 
@@ -321,11 +314,11 @@ public sealed partial class NavigationCubeView : UserControl
             case HomeIdleAction.PanRight:
                 PanNode(1);
                 break;
-            case HomeIdleAction.OpenGames:
-                OpenGamesOverlay();
+            case HomeIdleAction.OpenListFromBottom:
+                OpenCategoryList(fromBottom: true);
                 break;
-            case HomeIdleAction.OpenSettings:
-                SettingsRequested?.Invoke(this, EventArgs.Empty);
+            case HomeIdleAction.OpenListFromTop:
+                OpenCategoryList(fromBottom: false);
                 break;
         }
     }
@@ -341,18 +334,7 @@ public sealed partial class NavigationCubeView : UserControl
         SetPose(CubeAtmosphere.AimedAt(next, _pose));
     }
 
-    public void OpenGamesOverlay()
-    {
-        if (_opening || _browsing)
-        {
-            return;
-        }
-
-        SetPose(CubeAtmosphere.AimedAt(CubeDestination.Session, _pose));
-        ActivateFront();
-    }
-
-    public void ActivateFront()
+    public void OpenCategoryList(bool fromBottom)
     {
         if (_opening || _browsing)
         {
@@ -361,30 +343,26 @@ public sealed partial class NavigationCubeView : UserControl
 
         var destination = _pose.Front;
         _items = ItemsFor(destination);
-        _focus = 0;
-        var stay = destination == CubeDestination.Session && _items.Count > 0;
+        if (_items.Count == 0)
+        {
+            FaceActivated?.Invoke(this, destination);
+            return;
+        }
 
+        _focus = HomeGalaxy.ListStartIndex(_items.Count, fromBottom);
         if (!_sceneReady || CubeWeb.CoreWebView2 is null)
         {
-            if (stay)
-            {
-                Notice?.Invoke(this, "Games list needs WebGL. Enter still opens Session.");
-            }
-
             FaceActivated?.Invoke(this, destination);
             return;
         }
 
-        if (!stay)
-        {
-            FaceActivated?.Invoke(this, destination);
-            return;
-        }
-
+        var origin = fromBottom ? "bottom" : "top";
         CubeWeb.CoreWebView2.PostWebMessageAsJson(
-            CubeBridge.ToJson(CubeBridge.Open(destination, AllowMotion, _items, _focus)));
+            CubeBridge.ToJson(CubeBridge.Open(destination, AllowMotion, _items, _focus, origin)));
         EnterBrowse(destination);
     }
+
+    public void ActivateFront() => OpenCategoryList(fromBottom: false);
 
     public void ResetScene()
     {
@@ -579,13 +557,7 @@ public sealed partial class NavigationCubeView : UserControl
     }
 
     private IReadOnlyList<CubeBrowseItem> ItemsFor(CubeDestination destination) =>
-        destination switch
-        {
-            CubeDestination.Session => CubeBrowse.Games(_games, _tools),
-            CubeDestination.Tools => CubeBrowse.Tools(_tools),
-            CubeDestination.Mods => CubeBrowse.Mods(_mods),
-            _ => []
-        };
+        CubeBrowse.ForNode(destination, _games, _tools, _mods);
 
     private void FinishDrag(float dx, float dy, float vx, float vy)
     {

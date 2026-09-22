@@ -7,9 +7,8 @@
   <style>
     :root {
       --void: #000000;
-      --star: #F4F1EA;
+      --star: #F4EFE2;
       --muted: #8A8A96;
-      --veil: rgba(4, 6, 12, 0.18);
     }
     html, body {
       margin: 0;
@@ -41,66 +40,77 @@
     #fallback[hidden] { display: none; }
     #overlay {
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 18%;
-      height: 176px;
-      display: none;
+      inset: 0;
+      display: flex;
       align-items: center;
+      justify-content: center;
       pointer-events: none;
-      background: linear-gradient(180deg, transparent, var(--veil) 40%, transparent);
+      opacity: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.18), transparent 28%, transparent 72%, rgba(0,0,0,0.22));
     }
-    #overlay.show { display: flex; }
+    #overlay.show {
+      pointer-events: auto;
+    }
+    #overlay.from-bottom { transform: translate3d(0, 36vh, 0); }
+    #overlay.from-top { transform: translate3d(0, -36vh, 0); }
+    #overlay.show.ready {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+    #overlay.motion {
+      transition: opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.78s cubic-bezier(0.16, 1, 0.3, 1);
+    }
     #track {
       display: flex;
-      gap: 18px;
-      padding: 0 12vw;
+      flex-direction: column;
+      gap: 6px;
+      width: min(560px, 72vw);
       will-change: transform;
     }
-    .game-card {
-      flex: 0 0 220px;
-      height: 124px;
-      border: 1px solid rgba(244, 241, 234, 0.16);
-      background: rgba(8, 10, 16, 0.28);
-      backdrop-filter: blur(10px);
-      color: var(--star);
+    #track.motion {
+      transition: transform 0.62s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .row {
       display: flex;
-      flex-direction: column;
+      align-items: baseline;
       justify-content: space-between;
-      padding: 16px 18px;
-      box-sizing: border-box;
-      opacity: 0.42;
-      transform: scale(0.92);
-      transition: opacity 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
+      gap: 18px;
+      padding: 12px 8px;
+      border: 0;
+      background: transparent;
+      color: var(--star);
+      font: inherit;
+      text-align: left;
+      opacity: 0.22;
+      transform: scale(0.96);
+      text-shadow: 0 2px 18px #000;
     }
-    .game-card.focus {
-      opacity: 0.92;
+    .row.motion {
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .row.focus {
+      opacity: 0.96;
       transform: scale(1.04);
-      border-color: rgba(244, 241, 234, 0.45);
-      background: rgba(12, 14, 22, 0.36);
     }
-    .game-card .meta {
-      font-size: 10px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .game-card .title {
-      font-size: 18px;
+    .row .title {
+      font-size: 26px;
       font-weight: 600;
       letter-spacing: 0.01em;
     }
-    .game-card .mark {
-      font-size: 28px;
-      font-weight: 650;
-      opacity: 0.8;
+    .row .meta {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
     .preview-caption {
       display: none;
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 18px;
+      bottom: 22px;
       text-align: center;
       pointer-events: none;
       text-shadow: 0 2px 18px #000;
@@ -128,7 +138,7 @@
   </div>
   <div class="preview-caption">
     <h1 id="previewTitle">Games</h1>
-    <p id="previewHint">Up opens games · Down opens Settings · Left/Right shift nodes</p>
+    <p id="previewHint">Left/Right shift nodes · Up/Down open this list</p>
   </div>
   <script src="three.min.js"></script>
   <script src="cube-scene.js"></script>

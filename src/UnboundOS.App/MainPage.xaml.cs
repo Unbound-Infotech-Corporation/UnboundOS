@@ -53,7 +53,7 @@ public sealed partial class MainPage : Page
     private void OnCubeFrontChanged(object sender, CubeDestination destination)
     {
         var info = CubeCatalog.Info(destination);
-        ViewModel.StatusLine = $"{info.Title} node. Up opens games. Down opens Settings.";
+        ViewModel.StatusLine = $"{info.Title} node. Up opens this list from the bottom. Down opens this list from the top.";
     }
 
     private void Navigate(string tag)
@@ -61,7 +61,7 @@ public sealed partial class MainPage : Page
         ViewModel.SelectedNav = tag;
         ViewModel.StatusLine = tag switch
         {
-            "Home" => "Galaxy home. Up: games list. Down: Settings. Left/right: shift nodes.",
+            "Home" => "Galaxy home. Left/right: nodes. Up/Down: this node's list (bottom/top).",
             "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
             "Tools" => "Tools marketplace ready.",

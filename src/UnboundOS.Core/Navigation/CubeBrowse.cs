@@ -3,12 +3,25 @@ using UnboundOS.Core.Models;
 namespace UnboundOS.Core.Navigation;
 
 /// <summary>
-/// Maps discovered library/tools/mods into cube browse blocks.
-/// Games stay a carousel. Tools and Mods become a mosaic when items exist.
-/// Focus cycling uses staggered springs (see RearrangeDelaySeconds / RearrangePush).
+/// Maps discovered library/tools/mods into Home category lists.
+/// Games stay the Steam library. Tools and Mods use their catalogs.
+/// Config nodes open an honest page list over the galaxy.
 /// </summary>
 public static class CubeBrowse
 {
+    public static IReadOnlyList<CubeBrowseItem> ForNode(
+        CubeDestination destination,
+        IReadOnlyList<LibraryGame> games,
+        IReadOnlyList<DesktopTool> tools,
+        IReadOnlyList<ModGame> mods) =>
+        destination switch
+        {
+            CubeDestination.Session => Games(games, tools),
+            CubeDestination.Tools => Pad(Tools(tools), destination),
+            CubeDestination.Mods => Pad(Mods(mods), destination),
+            _ => Config(destination)
+        };
+
     public static IReadOnlyList<CubeBrowseItem> Games(
         IReadOnlyList<LibraryGame> games,
         IReadOnlyList<DesktopTool> tools)
@@ -43,6 +56,47 @@ public static class CubeBrowse
             game.ProviderLabel,
             "mod",
             Mark(game.DisplayName))).ToArray();
+
+    public static IReadOnlyList<CubeBrowseItem> Config(CubeDestination destination)
+    {
+        var info = CubeCatalog.Info(destination);
+        return destination switch
+        {
+            CubeDestination.Network =>
+            [
+                new("network", "Network director", "PAGE", "page", "N"),
+                new("split", "Prefer a game NIC", "SPLIT", "page", "S"),
+                new("bulk", "Park bulk traffic", "SPLIT", "page", "B")
+            ],
+            CubeDestination.Files =>
+            [
+                new("files", "Daily folders", "PAGE", "page", "F"),
+                new("explorer", "Explorer stays for anticheat", "SAFE", "page", "E")
+            ],
+            CubeDestination.Hardware =>
+            [
+                new("hardware", "This PC inventory", "PAGE", "page", "H"),
+                new("hwinfo", "Optional official HWiNFO", "READ", "page", "W")
+            ],
+            _ => [PageItem(destination, info.Title, info.Meta)]
+        };
+    }
+
+    private static IReadOnlyList<CubeBrowseItem> Pad(
+        IReadOnlyList<CubeBrowseItem> items,
+        CubeDestination destination)
+    {
+        if (items.Count > 0)
+        {
+            return items;
+        }
+
+        var info = CubeCatalog.Info(destination);
+        return [PageItem(destination, info.Title, "PAGE")];
+    }
+
+    private static CubeBrowseItem PageItem(CubeDestination destination, string title, string meta) =>
+        new(destination.ToString().ToLowerInvariant(), title, meta, "page", Mark(title));
 
     public static int Wrap(int index, int count)
     {

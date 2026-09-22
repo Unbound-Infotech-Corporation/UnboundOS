@@ -120,7 +120,7 @@ public static class CubeCatalog
         {
             CubeDestination.Session => new(
                 destination, "Session", "Games", "PLAY", "G", "PLAY",
-                "Installed library. Up opens the list over the galaxy. Enter launches.",
+                "Installed library. Up or Down opens the list over the galaxy. Enter launches.",
                 "games", CubeOpenKind.Carousel),
             CubeDestination.Tools => new(
                 destination, "Tools", "Tools", "KIT", "T", "OPEN",

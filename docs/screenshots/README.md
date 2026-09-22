@@ -17,14 +17,11 @@ Visual check:
   row. Settings / Profiles are discreet corner glyphs, not galaxy nodes.
   Inner pages restore HOME / SESSION / NETWORK / TOOLS / FILES /
   HARDWARE / MODS / PROFILES / SETTINGS.
-- Home hero is a **linear galaxy** on a true-black field: elongated
-  luminous dust, living stars, six node cores. Original procedural
-  WebGL — not a flat spiral sticker, not a bone cube.
-- **Up** opens a translucent horizontal games list over the galaxy.
-  **Down** opens Settings. Left/right pan nodes.
-- Interface motion On: star drift, orbits around nodes, bloom, god-dust.
-  Off (or a live session): freeze drift / heavy postFX; still navigable.
+- Home hero matches the **user-supplied edge-on plate**: black void,
+  creamy core, dust-lane ribbon, cooler blue arms, dense halo.
+  Living stars shear/orbit; node clusters stay locked on the bar.
+- **Left/Right** shift nodes. **Up** opens that node’s list from the
+  bottom; **Down** opens it from the top. The galaxy stays visible.
+- Interface motion On: differential rotation, parallax, silky list ease.
+  Off (or a live session): freeze drift / heavy postFX; lists still open.
 - Inner-page chrome keeps obsidian `#05070A` and cyan pulse `#00F0FF`.
-  Home HUD/glyphs stay quiet on the black field. Inter UI + JetBrains
-  Mono telemetry — matching [unboundinfotech.com](https://unboundinfotech.com)
-  for the product identity, not the Home materials.

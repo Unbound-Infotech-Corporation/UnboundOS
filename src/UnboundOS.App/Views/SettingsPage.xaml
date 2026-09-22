@@ -12,7 +12,7 @@
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="Settings" />
                 <TextBlock
                     Style="{StaticResource BodyMutedText}"
-                    Text="A list of option groups. Pick one. Down from Home opens Settings here — not as a game list. Interface motion off freezes galaxy star drift and lands on this list." />
+                    Text="A list of option groups. Pick one. The SET glyph on Home opens Settings here — Up/Down on the galaxy open that node's own list. Interface motion off freezes star drift." />
             </StackPanel>
 
             <ListView
@@ -56,7 +56,7 @@
                         IsOn="{x:Bind ViewModel.InterfaceMotionEnabled, Mode=TwoWay}"
                         OnContent="On"
                         OffContent="Off"
-                        Header="A few-percent scale and a 1px cyan hairline on the focused tile. Home is a linear galaxy: star drift under node gravity, bloom, and a translucent games list on Up. Press is a short opacity change."
+                        Header="A few-percent scale and a 1px cyan hairline on the focused tile. Home is a living edge-on galaxy: differential star drift and silky category lists on Up/Down. Press is a short opacity change."
                         AutomationProperties.Name="Interface motion"
                         AutomationProperties.HelpText="When off, tiles, buttons, and the Home galaxy use instant visual states only. Star drift and heavy postFX freeze. Keyboard focus and narrator stay available either way." />
                     <TextBlock

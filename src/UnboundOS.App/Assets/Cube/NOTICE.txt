@@ -14,3 +14,9 @@ The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+
+Home plate
+----------
+`home-plate.png` is the user-supplied Home background (edge-on linear
+galaxy). Packaged as shipped. No NASA or observatory credit is claimed;
+the source of the plate is the UnboundOS owner.

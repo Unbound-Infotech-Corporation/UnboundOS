@@ -120,6 +120,8 @@ public sealed record CubeHostCommand
 
     public int Node { get; init; }
 
+    public string Origin { get; init; } = "top";
+
     public IReadOnlyList<CubeBrowseItem> Items { get; init; } = [];
 }
 
@@ -203,8 +205,10 @@ public static class CubeBridge
         CubeDestination front,
         bool motion,
         IReadOnlyList<CubeBrowseItem>? items = null,
-        int focus = 0)
+        int focus = 0,
+        string origin = "top")
     {
+        var list = items ?? [];
         var kind = CubeCatalog.OpenKind(front);
         return new()
         {
@@ -212,10 +216,11 @@ public static class CubeBridge
             Front = front.ToString(),
             Motion = motion,
             Mode = kind.ToString().ToLowerInvariant(),
-            Stay = CubeCatalog.StaysInCube(front),
+            Stay = list.Count > 0,
             Focus = focus,
             Node = HomeGalaxy.IndexOf(front),
-            Items = items ?? []
+            Origin = origin is "bottom" ? "bottom" : "top",
+            Items = list
         };
     }
 
