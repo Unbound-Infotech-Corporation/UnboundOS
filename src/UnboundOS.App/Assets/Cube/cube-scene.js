@@ -73,7 +73,7 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMappingExposure = 1.04;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.08, 80);
@@ -107,9 +107,13 @@
   const diskMap = paintDiskTexture(2560, 1024);
   const dustMap = paintDustSheet(1024, 256);
 
-  const farStars = buildHalo(5200, 38, 1.15, 0x8ea0c4, 0x51f, 0.94, 0.0000075);
-  const midStars = buildHalo(2800, 20, 1.7, 0xd4dae8, 0x77a, 0.58, -0.000013);
-  const nearStars = buildHalo(900, 10, 2.35, 0xf7f1e4, 0x91c, 0.24, 0.00002);
+  const warm = new THREE.Color(0xffe7b8);
+  const cool = new THREE.Color(0x8aa4d4);
+  const cream = new THREE.Color(0xfff6e0);
+
+  const farStars = buildHalo(6200, 40, 1.08, 0x93a4c8, 0x51f, 0.96, 0.0000075);
+  const midStars = buildHalo(3200, 21, 1.55, 0xd6dcec, 0x77a, 0.6, -0.000013);
+  const nearStars = buildHalo(1100, 11, 2.15, 0xf7f1e4, 0x91c, 0.26, 0.00002);
   const diskRings = buildDiskRings();
   const shear = buildShear(1500);
   const orbiters = buildOrbiters(180);
@@ -124,9 +128,6 @@
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   const nodeMeshes = nodes.map((n) => n.hit);
-  const warm = new THREE.Color(0xffe7b8);
-  const cool = new THREE.Color(0x8aa4d4);
-  const cream = new THREE.Color(0xfff6e0);
 
   function nodeX(i) {
     return NODE_X[wrapNode(i)];
@@ -175,38 +176,38 @@
       ctx.restore();
     }
 
-    oval(w * 0.49, h * 0.07, [
-      [0, "rgba(186, 204, 236, 0.2)"],
-      [0.45, "rgba(120, 154, 210, 0.08)"],
+    oval(w * 0.5, h * 0.038, [
+      [0, "rgba(150, 176, 226, 0.22)"],
+      [0.55, "rgba(96, 132, 196, 0.07)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.36, h * 0.046, [
-      [0, "rgba(255, 226, 186, 0.42)"],
-      [0.4, "rgba(214, 176, 128, 0.2)"],
+    oval(w * 0.34, h * 0.026, [
+      [0, "rgba(255, 228, 188, 0.38)"],
+      [0.42, "rgba(210, 168, 120, 0.16)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.2, h * 0.055, [
-      [0, "rgba(255, 246, 220, 0.88)"],
-      [0.28, "rgba(255, 214, 150, 0.5)"],
-      [0.62, "rgba(232, 176, 110, 0.16)"],
+    oval(w * 0.16, h * 0.032, [
+      [0, "rgba(255, 246, 222, 0.82)"],
+      [0.3, "rgba(255, 214, 152, 0.42)"],
+      [0.68, "rgba(228, 172, 108, 0.12)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.055, h * 0.042, [
-      [0, "rgba(255, 252, 242, 1)"],
-      [0.35, "rgba(255, 232, 176, 0.7)"],
+    oval(w * 0.04, h * 0.024, [
+      [0, "rgba(255, 252, 244, 0.98)"],
+      [0.4, "rgba(255, 230, 176, 0.55)"],
       [1, "rgba(0,0,0,0)"]
     ]);
 
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
     ctx.translate(cx, cy);
-    ctx.scale(1, 0.045);
-    const spike = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.42);
-    spike.addColorStop(0, "rgba(255,248,230,0.55)");
-    spike.addColorStop(0.18, "rgba(255,220,160,0.16)");
+    ctx.scale(1, 0.022);
+    const spike = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.46);
+    spike.addColorStop(0, "rgba(255,248,230,0.42)");
+    spike.addColorStop(0.2, "rgba(255,220,160,0.1)");
     spike.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = spike;
-    ctx.fillRect(-w * 0.42, -w * 0.42, w * 0.84, w * 0.84);
+    ctx.fillRect(-w * 0.46, -w * 0.46, w * 0.92, w * 0.92);
     ctx.restore();
 
     const img = ctx.getImageData(0, 0, w, h);
@@ -236,7 +237,7 @@
     ctx.globalCompositeOperation = "lighter";
     for (let i = 0; i < 9000; i++) {
       const x = cx + gauss(rng) * w * 0.42;
-      const y = cy + gauss(rng) * h * (0.018 + Math.abs(x - cx) / w * 0.03);
+      const y = cy + gauss(rng) * h * (0.012 + Math.abs(x - cx) / w * 0.022);
       const t = Math.min(1, Math.abs(x - cx) / (w * 0.42));
       const r = 255 - t * 40;
       const g = 236 - t * 50;
@@ -286,7 +287,7 @@
   function buildDiskGlow() {
     const group = new THREE.Group();
     const plate = new THREE.Mesh(
-      new THREE.PlaneGeometry(13.4, 5.5),
+      new THREE.PlaneGeometry(14.2, 4.4),
       new THREE.MeshBasicMaterial({
         map: diskMap,
         transparent: true,
@@ -305,7 +306,7 @@
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    bar.scale.set(7.6, 1.15, 1);
+    bar.scale.set(6.4, 0.52, 1);
     bar.position.z = -2.35;
     group.add(bar);
 
@@ -313,23 +314,23 @@
       map: glowMap,
       color: 0xfff6dc,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.58,
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    nucleus.scale.set(1.55, 0.72, 1);
+    nucleus.scale.set(0.95, 0.38, 1);
     nucleus.position.z = -2.2;
     group.add(nucleus);
 
     const wings = new THREE.Sprite(new THREE.SpriteMaterial({
       map: barMap,
-      color: 0x9ab4dc,
+      color: 0x8aa6d4,
       transparent: true,
-      opacity: 0.18,
+      opacity: 0.2,
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    wings.scale.set(12.2, 0.85, 1);
+    wings.scale.set(13.4, 0.42, 1);
     wings.position.z = -2.55;
     group.add(wings);
 
@@ -704,7 +705,7 @@
     if (msg.motion === false) state.motion = false;
     const items = Array.isArray(msg.items) ? msg.items : previewItems(NODE_IDS[state.node]);
     const origin = String(msg.origin || "top").toLowerCase();
-    const focus = typeof msg.focus === "number" ? focus : (origin === "bottom" ? items.length - 1 : 0);
+    const focus = typeof msg.focus === "number" ? msg.focus : (origin === "bottom" ? items.length - 1 : 0);
     if (items.length) showOverlay(items, focus, origin, !state.motion);
     send({ v: 1, type: "opened", face: NODE_IDS[state.node], stay: true });
     setLoop(true);
@@ -990,13 +991,13 @@
       const chars = label.split("");
       const widths = chars.map((ch) => ctx.measureText(ch).width);
       const total = widths.reduce((a, b) => a + b, 0) + tracking * Math.max(0, chars.length - 1);
-      const pillW = Math.min(s * 0.86, total + 72);
-      const pillH = 78;
-      roundRect(ctx, (s - pillW) / 2, (s - pillH) / 2, pillW, pillH, 20);
-      ctx.fillStyle = "rgba(0, 2, 8, 0.52)";
+      const pillW = Math.min(s * 0.82, total + 56);
+      const pillH = 68;
+      roundRect(ctx, (s - pillW) / 2, (s - pillH) / 2, pillW, pillH, 16);
+      ctx.fillStyle = "rgba(0, 2, 8, 0.34)";
       ctx.fill();
-      ctx.strokeStyle = "rgba(0,0,0,0.9)";
-      ctx.lineWidth = 5;
+      ctx.strokeStyle = "rgba(0,0,0,0.82)";
+      ctx.lineWidth = 4.5;
       ctx.lineJoin = "round";
       drawTracked(ctx, chars, widths, tracking, s / 2, s / 2, "stroke");
       ctx.fillStyle = "rgba(244,239,226,0.94)";
@@ -1008,7 +1009,7 @@
       opacity: 0.4,
       depthWrite: false
     }));
-    sprite.scale.set(1.28, 0.26, 1);
+    sprite.scale.set(1.18, 0.22, 1);
     return sprite;
   }
 
