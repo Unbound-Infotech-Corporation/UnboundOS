@@ -40,6 +40,19 @@ services.AddUnboundOs();
    internals.
 4. Leave `IsEnabled` false unless the user opts in.
 
+## Starter Rainmeter skin
+
+Recommended / default Get-Open over galaxy Home is **Phenix**, not a
+clock-only skin:
+
+- Rainmeter (host): [https://www.rainmeter.net/](https://www.rainmeter.net/)
+- Phenix theme: [https://visualskins.com/skin/phenix](https://visualskins.com/skin/phenix)
+
+Tools → **Rainmeter** Opens the installed host or Gets the official
+Rainmeter page. Tools → **Phenix** Gets the official Phenix page.
+Link / Get / Open only. **Do not** redistribute the `.rmskin` in this
+tree unless the license clearly allows it (it is not bundled today).
+
 Home already ships first-party **movable** clock / temp / load widgets
 (`IHomeWidgetCatalog` / `IHomeWidgetSource`). That is shell chrome on
 the galaxy, not this desktop overlay. An addon can append extra Home

@@ -16,7 +16,7 @@ public sealed class OverlayViewModel
         Headline = host.IsEnabled ? "Overlay host connected" : "Overlay addon is optional";
         Detail = host.IsEnabled
             ? "Widgets render in the addon process. Session, network, and process engines stay independent."
-            : "No desktop overlay is installed. This page is a reserved hook — skins stay off until an addon registers IDesktopOverlayHost.";
+            : "No desktop overlay is installed. This page is a reserved hook — skins stay off until an addon registers IDesktopOverlayHost. Recommended Rainmeter starter over Home is Phenix (Tools → Phenix Get), not a clock-only skin. UnboundOS does not ship .rmskin files.";
     }
 
     public bool IsEnabled { get; }

@@ -23,7 +23,7 @@
                         Text="{x:Bind ViewModel.DisplayName}" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Register IDesktopOverlayHost before AddUnboundOs() to enable skins. See docs/overlay-addon.md. Session enter/exit does not start this host." />
+                        Text="Register IDesktopOverlayHost before AddUnboundOs() to enable skins. See docs/overlay-addon.md. Session enter/exit does not start this host. Recommended Rainmeter starter is Phenix (visualskins.com/skin/phenix) — Get/Open that page; do not ship the .rmskin." />
                 </StackPanel>
             </Border>
 

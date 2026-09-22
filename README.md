@@ -23,7 +23,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Home galaxy** | Deep-field Home: original procedural tilted OS galaxy, JWST-class star density (not observatory plates), all stars in gentle motion. Left/right shift nodes. Up/Down open that node’s list (bottom/top) on the left half over a vanishing scrim. Games launches via `steam://rungameid`. Optional Home HUD. See [docs/cube-nav.md](docs/cube-nav.md) |
 | **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
-| **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam) plus utilities (Notepad++, 7-Zip). Launch or official Get. Ultrawide crop recipe lives on the OBS tile |
+| **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam, Rainmeter) plus utilities (Notepad++, 7-Zip). Launch or official Get. Recommended Rainmeter starter over Home is [Phenix](https://visualskins.com/skin/phenix) (link only — no .rmskin in tree). Ultrawide crop recipe lives on the OBS tile |
 | **Profiles** | JSON profiles in LocalAppData (`Competitive`, `Streamer`, `Living Room`) |
 | **Mods + Workshop** | Local Steam Workshop discovery, per-game mod profiles, safe adapter-based apply/restore |
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |

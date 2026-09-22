@@ -28,8 +28,8 @@ public sealed class DesktopToolCatalogTests
         });
 
         var tools = catalog.Discover();
-        Assert.Equal(8, tools.Count);
-        Assert.Equal(5, tools.Count(tool => tool.Group == DesktopToolGroup.Kit));
+        Assert.Equal(10, tools.Count);
+        Assert.Equal(7, tools.Count(tool => tool.Group == DesktopToolGroup.Kit));
         Assert.Equal(3, tools.Count(tool => tool.Group == DesktopToolGroup.Utility));
 
         var obsTool = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Obs);
@@ -54,6 +54,19 @@ public sealed class DesktopToolCatalogTests
         Assert.Equal(DesktopToolGroup.Utility, Assert.Single(tools, tool => tool.Id == DesktopToolIds.SevenZip).Group);
         Assert.Equal(DesktopToolGroup.Utility, Assert.Single(tools, tool => tool.Id == DesktopToolIds.HwInfo).Group);
         Assert.False(Assert.Single(tools, tool => tool.Id == DesktopToolIds.HwInfo).IsInstalled);
+
+        var rainmeter = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Rainmeter);
+        Assert.False(rainmeter.IsInstalled);
+        Assert.Equal(DesktopToolCatalog.RainmeterGetPath.Uri, rainmeter.GetPath.Uri);
+        Assert.Equal("https://www.rainmeter.net/", rainmeter.GetPath.Uri);
+
+        var phenix = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Phenix);
+        Assert.False(phenix.IsInstalled);
+        Assert.Equal(DesktopToolCatalog.PhenixGetPath.Uri, phenix.GetPath.Uri);
+        Assert.Equal("https://visualskins.com/skin/phenix", phenix.GetPath.Uri);
+        Assert.Contains("Phenix", phenix.Job, StringComparison.Ordinal);
+        Assert.DoesNotContain("Minimalistic", phenix.Job, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(".rmskin", phenix.GetPath.Uri, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -104,6 +117,9 @@ public sealed class DesktopToolCatalogTests
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.NotepadPlusPlusGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.SevenZipGetPath.Uri));
         Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.HwInfoGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.RainmeterGetPath.Uri));
+        Assert.True(DesktopToolLauncher.IsSafeGetUri(DesktopToolCatalog.PhenixGetPath.Uri));
+        Assert.Equal("https://visualskins.com/skin/phenix", DesktopToolCatalog.PhenixGetPath.Uri);
         Assert.True(DesktopToolLauncher.IsSafeGetUri("ms-windows-store://pdp/?ProductId=9nblggh4v2k6"));
         Assert.False(DesktopToolLauncher.IsSafeGetUri("http://obsproject.com/download"));
         Assert.False(DesktopToolLauncher.IsSafeGetUri(@"C:\setup.exe"));

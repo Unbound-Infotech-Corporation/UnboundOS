@@ -10,6 +10,8 @@ public static class DesktopToolIds
     public const string NotepadPlusPlus = "notepadplusplus";
     public const string SevenZip = "sevenzip";
     public const string HwInfo = "hwinfo";
+    public const string Rainmeter = "rainmeter";
+    public const string Phenix = "phenix";
 }
 
 public enum DesktopToolGroup

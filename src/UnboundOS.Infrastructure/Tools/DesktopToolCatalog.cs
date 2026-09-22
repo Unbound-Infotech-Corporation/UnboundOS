@@ -34,6 +34,13 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
     public static ToolGetPath HwInfoGetPath { get; } =
         new("Official site", "https://www.hwinfo.com/download/");
 
+    public static ToolGetPath RainmeterGetPath { get; } =
+        new("Official site", "https://www.rainmeter.net/");
+
+    /// <summary>Recommended starter skin over galaxy Home. Link only — do not ship the .rmskin.</summary>
+    public static ToolGetPath PhenixGetPath { get; } =
+        new("Phenix theme", "https://visualskins.com/skin/phenix");
+
     private readonly DesktopToolDiscoverySettings _settings = settings ?? new DesktopToolDiscoverySettings();
 
     public Task<IReadOnlyList<DesktopTool>> DiscoverAsync(CancellationToken cancellationToken = default) =>
@@ -100,7 +107,21 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
             FindHwInfo(),
             ["HWiNFO64", "HWiNFO32", "HWiNFO"],
             HwInfoGetPath,
-            DesktopToolGroup.Utility)
+            DesktopToolGroup.Utility),
+        Create(
+            DesktopToolIds.Rainmeter,
+            "Rainmeter",
+            "Desktop skins over the galaxy. Open launches Rainmeter if installed. Get is the official Rainmeter page — UnboundOS does not ship skins.",
+            FindRainmeter(),
+            ["Rainmeter"],
+            RainmeterGetPath),
+        Create(
+            DesktopToolIds.Phenix,
+            "Phenix",
+            "Recommended Rainmeter starter over Home (not a clock-only skin). Get opens the official Phenix page. UnboundOS does not redistribute the .rmskin.",
+            null,
+            [],
+            PhenixGetPath)
     ];
 
     private DesktopTool Create(
@@ -314,6 +335,27 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
                 .Concat(DesktopAppLocator.UninstallExecutables("HWiNFO")
                     .SelectMany(path => DesktopAppLocator.ExpandInstallLocation(path, "HWiNFO64.exe", "HWiNFO32.exe")))
                 .Concat(DesktopAppLocator.StartMenuExecutables("HWiNFO64.exe", "HWiNFO32.exe")));
+    }
+
+    private string? FindRainmeter()
+    {
+        if (TryForced(DesktopToolIds.Rainmeter, out var forced))
+        {
+            return forced;
+        }
+
+        if (!_settings.UseDefaultWindowsLocations)
+        {
+            return null;
+        }
+
+        return DesktopAppLocator.FindFirstExisting(
+            DesktopAppLocator.Combine(
+                    DesktopAppLocator.ProgramRoots(),
+                    Path.Combine("Rainmeter", "Rainmeter.exe"))
+                .Concat(DesktopAppLocator.UninstallExecutables("Rainmeter")
+                    .SelectMany(path => DesktopAppLocator.ExpandInstallLocation(path, "Rainmeter.exe")))
+                .Concat(DesktopAppLocator.StartMenuExecutables("Rainmeter.exe")));
     }
 
     private bool TryForced(string id, out string? path)

@@ -109,4 +109,6 @@ Custom widgets later: implement `IHomeWidgetSource` and register it
 before `AddUnboundOs()`. First-party catalog is
 `IHomeWidgetCatalog`. This is not a Rainmeter clone. Desktop skins
 stay on the optional `IDesktopOverlayHost` addon — see
-[overlay-addon.md](overlay-addon.md).
+[overlay-addon.md](overlay-addon.md). Recommended Rainmeter starter
+over this galaxy is **Phenix** (Get the official page; do not ship
+the `.rmskin`).
