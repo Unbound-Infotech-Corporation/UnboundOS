@@ -29,8 +29,9 @@ one.
 Games sits on the bright core. Tools and Mods lock to the right-hand
 clusters; Network, Files, and Hardware lock to the left-hand arm.
 Nodes stay on the horizontal. Focused node: a quiet star-select
-(soft core lift, slight local dust, no neon rings). Labels under
-nodes use restrained film-credits type with a dark pill scrim.
+(soft core lift, slight local dust, no neon rings). **Only the
+focused node** shows a label — large, high-contrast, screen-aligned
+type that does not follow the disk tilt. Other nodes stay unlabeled.
 Company cyan (`#00F0FF`) stays a brand token for **inner pages**.
 
 Category lists sit on the **left half** of the screen over a

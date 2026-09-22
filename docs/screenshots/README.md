@@ -22,7 +22,8 @@ Visual check:
   starfield (no observatory plates). All stars move a little
   (shear / differential rotation / parallax / filament drift);
   node clusters stay locked on the bar and read larger than a razor
-  edge-on. Focused node lifts like a selected star. Lists sit on the
+  edge-on. Focused node lifts like a selected star; only that node
+  shows a large screen-aligned label. Lists sit on the
   left half; the scrim vanishes on Escape.
 - **Left/Right** shift nodes. **Up** opens that node’s list from the
   bottom; **Down** opens it from the top. The galaxy stays visible.

@@ -23,6 +23,7 @@
   const fallback = document.getElementById("fallback");
   const overlayEl = document.getElementById("overlay");
   const trackEl = document.getElementById("track");
+  const nodeLabelEl = document.getElementById("nodeLabel");
   const hosted = Boolean(window.chrome?.webview);
   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
@@ -738,9 +739,6 @@
       }));
       dust.scale.set(i === 0 ? 2.15 : 1.35, i === 0 ? 0.58 : 0.42, 1);
       group.add(dust);
-      const label = makeLabel(info.title);
-      label.position.y = -0.72;
-      group.add(label);
       const hit = new THREE.Mesh(
         new THREE.SphereGeometry(0.52, 10, 8),
         new THREE.MeshBasicMaterial({ visible: false })
@@ -750,7 +748,7 @@
       group.add(hit);
       group.userData.node = i;
       rig.add(group);
-      list.push({ group, bloom, core, dust, label, hit });
+      list.push({ group, bloom, core, dust, hit });
     }
     return list;
   }
@@ -851,6 +849,7 @@
     renderTrack();
     applyOverlayFocus(true);
     overlayEl.classList.add("show");
+    syncNodeLabel();
     const arm = () => overlayEl.classList.add("ready");
     if (instant || !state.motion) arm();
     else requestAnimationFrame(() => requestAnimationFrame(arm));
@@ -865,6 +864,7 @@
     trackEl.innerHTML = "";
     const info = faceInfo(NODE_IDS[state.node]);
     syncCaption(info.title, info.hint);
+    syncNodeLabel();
   }
 
   function renderTrack() {
@@ -979,6 +979,40 @@
     if (!state.motion) renderFrame(0);
   }
 
+  const labelNdc = new THREE.Vector3();
+
+  function syncNodeLabel() {
+    if (!nodeLabelEl) return;
+    if (state.overlay) {
+      nodeLabelEl.hidden = true;
+      return;
+    }
+    const n = nodes[state.node];
+    if (!n) {
+      nodeLabelEl.hidden = true;
+      return;
+    }
+    const title = faceInfo(NODE_IDS[state.node]).title || NODE_IDS[state.node];
+    if (nodeLabelEl.textContent !== title) nodeLabelEl.textContent = title;
+    n.group.updateWorldMatrix(true, false);
+    n.group.getWorldPosition(labelNdc);
+    camera.updateMatrixWorld();
+    labelNdc.project(camera);
+    if (labelNdc.z < -1 || labelNdc.z > 1) {
+      nodeLabelEl.hidden = true;
+      return;
+    }
+    const w = canvas.clientWidth || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
+    const x = (labelNdc.x * 0.5 + 0.5) * w;
+    const y = (-labelNdc.y * 0.5 + 0.5) * h + Math.max(30, h * 0.04);
+    const pad = 36;
+    const clampedX = Math.min(Math.max(x, pad), w - pad);
+    const clampedY = Math.min(Math.max(y, pad), h - pad - 40);
+    nodeLabelEl.hidden = false;
+    nodeLabelEl.style.transform = `translate3d(${clampedX}px, ${clampedY}px, 0) translate(-50%, 0)`;
+  }
+
   function syncCaption(title, hint) {
     const t = document.getElementById("previewTitle");
     const h = document.getElementById("previewHint");
@@ -1018,8 +1052,8 @@
       n.core.material.opacity = on ? 0.62 : 0.28;
       n.dust.material.opacity = on ? 0.11 : 0.035;
       n.bloom.scale.set(base.x * (on ? 1.08 : 1), base.y * (on ? 1.06 : 1), 1);
-      n.label.material.opacity = on ? 0.94 : 0.4;
     }
+    syncNodeLabel();
     vignette.position.copy(camera.position);
     vignette.quaternion.copy(camera.quaternion);
     vignette.translateZ(-1.15);
@@ -1193,61 +1227,6 @@
   function wrapIndex(i, n) {
     if (n <= 0) return 0;
     return ((i % n) + n) % n;
-  }
-
-  function makeLabel(text) {
-    const tex = spriteTex(1024, (ctx, s) => {
-      ctx.clearRect(0, 0, s, s);
-      const label = String(text || "").toUpperCase();
-      ctx.font = "600 54px 'Segoe UI Variable', 'Segoe UI', sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      const tracking = 7;
-      const chars = label.split("");
-      const widths = chars.map((ch) => ctx.measureText(ch).width);
-      const total = widths.reduce((a, b) => a + b, 0) + tracking * Math.max(0, chars.length - 1);
-      const pillW = Math.min(s * 0.82, total + 56);
-      const pillH = 68;
-      roundRect(ctx, (s - pillW) / 2, (s - pillH) / 2, pillW, pillH, 16);
-      ctx.fillStyle = "rgba(0, 2, 8, 0.34)";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(0,0,0,0.82)";
-      ctx.lineWidth = 4.5;
-      ctx.lineJoin = "round";
-      drawTracked(ctx, chars, widths, tracking, s / 2, s / 2, "stroke");
-      ctx.fillStyle = "rgba(244,239,226,0.94)";
-      drawTracked(ctx, chars, widths, tracking, s / 2, s / 2, "fill");
-    });
-    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: tex,
-      transparent: true,
-      opacity: 0.4,
-      depthWrite: false
-    }));
-    sprite.scale.set(1.36, 0.26, 1);
-    return sprite;
-  }
-
-  function drawTracked(ctx, chars, widths, tracking, x, y, mode) {
-    const total = widths.reduce((a, b) => a + b, 0) + tracking * Math.max(0, chars.length - 1);
-    let cx = x - total / 2;
-    for (let i = 0; i < chars.length; i++) {
-      const at = cx + widths[i] / 2;
-      if (mode === "stroke") ctx.strokeText(chars[i], at, y);
-      else ctx.fillText(chars[i], at, y);
-      cx += widths[i] + tracking;
-    }
-  }
-
-  function roundRect(ctx, x, y, w, h, r) {
-    const rad = Math.min(r, w / 2, h / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + rad, y);
-    ctx.arcTo(x + w, y, x + w, y + h, rad);
-    ctx.arcTo(x + w, y + h, x, y + h, rad);
-    ctx.arcTo(x, y + h, x, y, rad);
-    ctx.arcTo(x, y, x + w, y, rad);
-    ctx.closePath();
   }
 
   function spriteTex(size, draw) {
