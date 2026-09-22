@@ -18,9 +18,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 Home look-dev plate
 -------------------
 `home-plate.png` is an owner-supplied look-dev reference (edge-on linear
-galaxy). Hugging Face Flux schnell stills and JWST-class photographs
-may inform volume, dust lanes, and the creamy-to-blue halo offline.
-None of those plates are loaded as the runtime Home background.
+galaxy). Hugging Face Flux schnell stills, JWST-class photographs, and
+a live Wallpaper Engine desktop may inform volume, nebula color, and
+the winding energy trail offline.
+None of those plates or workshop files are loaded or shipped.
 Runtime Home is an original procedural living galaxy (tilted
-canvas-painted disk + moving starfield + original filaments). No NASA
+canvas-painted disk + in-band nebula + moving starfield). No NASA
 or observatory credit is claimed.

@@ -1,6 +1,6 @@
 /* UnboundOS Home — original procedural living galaxy.
-   Slightly pitched horizontal OS bar + JWST-class deep field.
-   Observatory photos are look-dev only and are never loaded. */
+   Restrained tilted OS band + dense in-band nebula (not a full-bleed
+   wallpaper). Wallpaper Engine / observatory stills are look-dev only. */
 (() => {
   "use strict";
 
@@ -73,17 +73,17 @@
   }
 
   fallback.hidden = true;
-  renderer.setClearColor(0x010208, 1);
+  renderer.setClearColor(0x000104, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMappingExposure = 1.05;
 
-  const CAM_Y = 1.55;
-  const CAM_Z = 8.55;
-  const RIG_PITCH = 0.36;
-  const RIG_ROLL = 0.04;
-  const lookTarget = new THREE.Vector3(0, 0.04, -0.8);
+  const CAM_Y = 1.62;
+  const CAM_Z = 8.95;
+  const RIG_PITCH = 0.34;
+  const RIG_ROLL = 0.035;
+  const lookTarget = new THREE.Vector3(0, 0.03, -0.7);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(26, 1, 0.08, 160);
@@ -118,32 +118,36 @@
   const barMap = spriteTex(512, paintBarGlow);
   const diskMap = paintDiskTexture(2560, 1024);
   const dustMap = paintDustSheet(1024, 256);
+  const nebulaMap = paintNebulaVolume(1600, 640);
+  const trailMap = paintEnergyTrail(2048, 512);
   const spikeMap = spriteTex(256, paintSpikeStar);
   const filamentMaps = [
-    paintFilamentSheet(640, 320, 0xc11, "copper"),
-    paintFilamentSheet(640, 320, 0xc22, "gold"),
+    paintFilamentSheet(640, 320, 0xc11, "indigo"),
+    paintFilamentSheet(640, 320, 0xc22, "violet"),
     paintFilamentSheet(640, 320, 0xc33, "lavender"),
-    paintFilamentSheet(640, 320, 0xc44, "indigo")
+    paintFilamentSheet(640, 320, 0xc44, "magenta")
   ];
 
   const warm = new THREE.Color(0xffe2a8);
-  const copper = new THREE.Color(0xd4844a);
-  const cool = new THREE.Color(0x7a96d0);
+  const copper = new THREE.Color(0xb86a5a);
+  const cool = new THREE.Color(0x6a88c8);
   const cream = new THREE.Color(0xfff4dc);
-  const indigo = new THREE.Color(0x4a5c92);
-  const lavender = new THREE.Color(0xc4b4e0);
+  const indigo = new THREE.Color(0x24306e);
+  const lavender = new THREE.Color(0xa898d0);
+  const violet = new THREE.Color(0x5a4a98);
+  const magenta = new THREE.Color(0xe07098);
 
-  const farStars = buildHalo(9800, 82, 1.5, 0x9aacd8, 0x51f, 0.96, 0.0000048, 0);
-  const midStars = buildHalo(4400, 30, 1.85, 0xdce4f4, 0x77a, 0.88, -0.000009, 0);
-  const nearStars = buildHalo(1900, 17, 2.2, 0xf7efe0, 0x91c, 0.72, 0.000016, 2.2);
-  const deepField = buildColoredField(11000, 100, 1.48, 0xdef1, 0.98, 0.0000032);
+  const farStars = buildHalo(9800, 82, 1.5, 0x8a9ccc, 0x51f, 0.74, 0.0000048, 0);
+  const midStars = buildHalo(4400, 30, 1.85, 0xc8d4f0, 0x77a, 0.66, -0.000009, 0);
+  const nearStars = buildHalo(1900, 17, 2.2, 0xe8e4f4, 0x91c, 0.58, 0.000016, 2.2);
+  const deepField = buildColoredField(11000, 100, 1.42, 0xdef1, 0.72, 0.0000032);
   const diskRings = buildDiskRings();
   const shear = buildShear(1500);
   const orbiters = buildOrbiters(180);
   const diskGlow = buildDiskGlow();
   const dustSheets = buildDustSheets();
   const filaments = buildFilaments();
-  const spikes = buildSpikedStars(42);
+  const spikes = buildSpikedStars(16);
   const nodes = buildNodes();
   scene.add(farStars, midStars, nearStars, deepField);
   const vignette = buildVignette();
@@ -172,10 +176,10 @@
     ctx.translate(s / 2, s / 2);
     ctx.scale(1, 0.32);
     const g = ctx.createRadialGradient(0, 0, 0, 0, 0, s / 2);
-    g.addColorStop(0, "rgba(255,252,236,0.95)");
-    g.addColorStop(0.16, "rgba(255,226,168,0.5)");
-    g.addColorStop(0.42, "rgba(210,170,120,0.14)");
-    g.addColorStop(0.7, "rgba(120,150,210,0.05)");
+    g.addColorStop(0, "rgba(255,248,236,0.82)");
+    g.addColorStop(0.16, "rgba(230,190,200,0.32)");
+    g.addColorStop(0.42, "rgba(120,110,180,0.12)");
+    g.addColorStop(0.7, "rgba(60,80,160,0.05)");
     g.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = g;
     ctx.fillRect(-s / 2, -s / 2, s, s);
@@ -201,30 +205,30 @@
       ctx.restore();
     }
 
-    oval(w * 0.5, h * 0.16, [
-      [0, "rgba(120, 150, 210, 0.22)"],
-      [0.42, "rgba(72, 96, 168, 0.1)"],
+    oval(w * 0.48, h * 0.2, [
+      [0, "rgba(36, 48, 120, 0.42)"],
+      [0.4, "rgba(22, 28, 78, 0.2)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.42, h * 0.12, [
-      [0, "rgba(212, 132, 74, 0.28)"],
-      [0.48, "rgba(150, 86, 48, 0.1)"],
+    oval(w * 0.42, h * 0.15, [
+      [0, "rgba(88, 64, 148, 0.34)"],
+      [0.48, "rgba(42, 36, 96, 0.14)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.36, h * 0.09, [
-      [0, "rgba(255, 226, 176, 0.5)"],
-      [0.4, "rgba(214, 154, 88, 0.2)"],
+    oval(w * 0.34, h * 0.1, [
+      [0, "rgba(168, 96, 140, 0.28)"],
+      [0.42, "rgba(90, 70, 130, 0.12)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.18, h * 0.07, [
-      [0, "rgba(255, 246, 222, 0.9)"],
-      [0.28, "rgba(255, 210, 148, 0.52)"],
-      [0.66, "rgba(228, 160, 88, 0.14)"],
+    oval(w * 0.16, h * 0.065, [
+      [0, "rgba(255, 236, 210, 0.78)"],
+      [0.3, "rgba(255, 200, 150, 0.36)"],
+      [0.7, "rgba(180, 120, 110, 0.1)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.055, h * 0.05, [
-      [0, "rgba(255, 252, 244, 1)"],
-      [0.38, "rgba(255, 232, 180, 0.62)"],
+    oval(w * 0.048, h * 0.042, [
+      [0, "rgba(255, 250, 240, 0.95)"],
+      [0.4, "rgba(255, 226, 176, 0.48)"],
       [1, "rgba(0,0,0,0)"]
     ]);
 
@@ -244,36 +248,36 @@
     const d = img.data;
     for (let y = 0; y < h; y++) {
       const ny = (y - cy) / h;
-      const band = Math.exp(-ny * ny * 72);
+      const band = Math.exp(-ny * ny * 52);
       if (band < 0.02) continue;
       for (let x = 0; x < w; x++) {
         const nx = (x - cx) / w;
-        const n1 = valueNoise(nx * 22 + 2.1, ny * 36, 11);
-        const n2 = valueNoise(nx * 9 - 1.4, ny * 18, 29);
-        const lane = band * (0.35 * n1 + 0.65 * n2);
-        if (lane < 0.14) continue;
+        const n1 = valueNoise(nx * 20 + 2.1, ny * 30, 11);
+        const n2 = valueNoise(nx * 8 - 1.4, ny * 16, 29);
+        const lane = band * (0.32 * n1 + 0.68 * n2);
+        if (lane < 0.13) continue;
         const i = (y * w + x) * 4;
         if (!d[i + 3]) continue;
-        const k = 1 - Math.min(0.7, (lane - 0.14) * 1.45);
-        d[i] = Math.round(d[i] * k * 0.9);
-        d[i + 1] = Math.round(d[i + 1] * k * 0.72);
-        d[i + 2] = Math.round(d[i + 2] * k * 0.42);
-        d[i + 3] = Math.round(d[i + 3] * (0.7 + k * 0.3));
+        const k = 1 - Math.min(0.62, (lane - 0.13) * 1.3);
+        d[i] = Math.round(d[i] * k * 0.72);
+        d[i + 1] = Math.round(d[i + 1] * k * 0.68);
+        d[i + 2] = Math.round(d[i + 2] * (0.85 + k * 0.2));
+        d[i + 3] = Math.round(d[i + 3] * (0.78 + k * 0.22));
       }
     }
     ctx.putImageData(img, 0, 0);
 
     const rng = mulberry(0xc0de);
     ctx.globalCompositeOperation = "lighter";
-    for (let i = 0; i < 12000; i++) {
-      const x = cx + gauss(rng) * w * 0.44;
-      const y = cy + gauss(rng) * h * (0.028 + Math.abs(x - cx) / w * 0.04);
-      const t = Math.min(1, Math.abs(x - cx) / (w * 0.44));
-      const r = 255 - t * 36;
-      const g = 230 - t * 64;
-      const b = 190 + t * 62;
-      const a = 0.14 + rng() * 0.48;
-      const s = rng() < 0.08 ? 1.45 : 0.55 + rng() * 0.75;
+    for (let i = 0; i < 14000; i++) {
+      const x = cx + gauss(rng) * w * 0.42;
+      const y = cy + gauss(rng) * h * (0.034 + Math.abs(x - cx) / w * 0.045);
+      const t = Math.min(1, Math.abs(x - cx) / (w * 0.42));
+      const r = 210 - t * 70;
+      const g = 200 - t * 50;
+      const b = 230 + t * 20;
+      const a = 0.1 + rng() * 0.4;
+      const s = rng() < 0.07 ? 1.35 : 0.5 + rng() * 0.7;
       ctx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${a})`;
       ctx.fillRect(x, y, s, s);
     }
@@ -292,13 +296,13 @@
     c.height = h;
     const ctx = c.getContext("2d");
     ctx.clearRect(0, 0, w, h);
-    for (let i = 0; i < 140; i++) {
-      const x = (i / 140) * w + (valueNoise(i * 0.2, 0.4, 3) - 0.5) * 40;
-      const y = h * 0.5 + (valueNoise(i * 0.31, 1.2, 5) - 0.5) * h * 0.28;
-      const rw = 18 + valueNoise(i, 2, 7) * 70;
-      const rh = 4 + valueNoise(i, 3, 8) * 14;
+    for (let i = 0; i < 160; i++) {
+      const x = (i / 160) * w + (valueNoise(i * 0.2, 0.4, 3) - 0.5) * 40;
+      const y = h * 0.5 + (valueNoise(i * 0.31, 1.2, 5) - 0.5) * h * 0.32;
+      const rw = 20 + valueNoise(i, 2, 7) * 80;
+      const rh = 6 + valueNoise(i, 3, 8) * 18;
       const g = ctx.createRadialGradient(x, y, 0, x, y, rw);
-      g.addColorStop(0, "rgba(28, 18, 12, 0.42)");
+      g.addColorStop(0, "rgba(16, 12, 32, 0.5)");
       g.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = g;
       ctx.save();
@@ -314,10 +318,105 @@
     return tex;
   }
 
+  function paintNebulaVolume(w, h) {
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d");
+    const img = ctx.createImageData(w, h);
+    const d = img.data;
+    const cx = w * 0.5;
+    const cy = h * 0.5;
+    for (let y = 0; y < h; y++) {
+      const ny = (y - cy) / h;
+      const band = Math.exp(-ny * ny * 22);
+      if (band < 0.03) continue;
+      for (let x = 0; x < w; x++) {
+        const nx = (x - cx) / w;
+        const n1 = valueNoise(nx * 3.6 + 0.4, ny * 7.2, 0xb1);
+        const n2 = valueNoise(nx * 8.2 - 1.1, ny * 14, 0xb2);
+        const n3 = valueNoise(nx * 16, ny * 22, 0xb3);
+        const cloud = n1 * 0.55 + n2 * 0.32 + n3 * 0.13;
+        const a = band * cloud * 0.55;
+        if (a < 0.03) continue;
+        const t = Math.min(1, cloud * 1.2);
+        const i = (y * w + x) * 4;
+        d[i] = (28 + t * 90) | 0;
+        d[i + 1] = (24 + t * 70) | 0;
+        d[i + 2] = (72 + t * 110) | 0;
+        d[i + 3] = (a * 200) | 0;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    return tex;
+  }
+
+  function paintEnergyTrail(w, h) {
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, w, h);
+    const cx = w * 0.5;
+    const cy = h * 0.5;
+    ctx.globalCompositeOperation = "lighter";
+    const trailY = (x) => {
+      const t = (x - cx) / w;
+      return cy
+        + Math.sin(t * 4.1 + 0.35) * h * 0.18
+        + Math.sin(t * 9.4 + 1.6) * h * 0.05
+        + (valueNoise(t * 7.2, 0.22, 0xee) - 0.5) * h * 0.07;
+    };
+    const fade = (x) => {
+      const u = Math.abs((x - cx) / (w * 0.46));
+      return Math.max(0, 1 - u * u);
+    };
+    const passes = [
+      { width: 28, color: [120, 40, 110], alpha: 0.07 },
+      { width: 12, color: [220, 90, 150], alpha: 0.16 },
+      { width: 3.2, color: [255, 210, 230], alpha: 0.42 }
+    ];
+    for (const pass of passes) {
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.lineWidth = pass.width;
+      ctx.beginPath();
+      let started = false;
+      for (let x = w * 0.05; x <= w * 0.95; x += 2) {
+        const y = trailY(x);
+        if (!started) {
+          ctx.moveTo(x, y);
+          started = true;
+        } else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(${pass.color[0]},${pass.color[1]},${pass.color[2]},${pass.alpha})`;
+      ctx.stroke();
+    }
+    const veil = ctx.getImageData(0, 0, w, h);
+    const d = veil.data;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4;
+        if (!d[i + 3]) continue;
+        d[i + 3] = Math.round(d[i + 3] * fade(x));
+      }
+    }
+    ctx.putImageData(veil, 0, 0);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    return tex;
+  }
+
   function buildDiskGlow() {
     const group = new THREE.Group();
     const plate = new THREE.Mesh(
-      new THREE.PlaneGeometry(16.2, 6.8),
+      new THREE.PlaneGeometry(14.4, 5.0),
       new THREE.MeshBasicMaterial({
         map: diskMap,
         transparent: true,
@@ -328,15 +427,42 @@
     plate.position.z = -0.1;
     group.add(plate);
 
+    const nebula = new THREE.Mesh(
+      new THREE.PlaneGeometry(13.2, 3.35),
+      new THREE.MeshBasicMaterial({
+        map: nebulaMap,
+        transparent: true,
+        opacity: 0.72,
+        depthWrite: false,
+        blending: THREE.NormalBlending
+      })
+    );
+    nebula.position.z = -0.18;
+    group.add(nebula);
+
+    const trail = new THREE.Mesh(
+      new THREE.PlaneGeometry(12.4, 2.15),
+      new THREE.MeshBasicMaterial({
+        map: trailMap,
+        transparent: true,
+        opacity: 0.55,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+    trail.position.set(0.15, 0.04, 0.01);
+    trail.rotation.z = -0.06;
+    group.add(trail);
+
     const bar = new THREE.Sprite(new THREE.SpriteMaterial({
       map: barMap,
-      color: 0xfff1d4,
+      color: 0xffe8d0,
       transparent: true,
-      opacity: 0.32,
+      opacity: 0.2,
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    bar.scale.set(7.4, 1.18, 1);
+    bar.scale.set(6.2, 0.92, 1);
     bar.position.z = 0.02;
     group.add(bar);
 
@@ -344,27 +470,27 @@
       map: glowMap,
       color: 0xfff6dc,
       transparent: true,
-      opacity: 0.52,
+      opacity: 0.4,
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    nucleus.scale.set(2.05, 1.15, 1);
+    nucleus.scale.set(1.7, 0.92, 1);
     nucleus.position.z = 0.06;
     group.add(nucleus);
 
     const wings = new THREE.Sprite(new THREE.SpriteMaterial({
       map: barMap,
-      color: 0x8aa6d4,
+      color: 0x6a78c8,
       transparent: true,
-      opacity: 0.3,
+      opacity: 0.26,
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    wings.scale.set(15.2, 1.05, 1);
-    wings.position.z = -0.16;
+    wings.scale.set(13.4, 1.35, 1);
+    wings.position.z = -0.22;
     group.add(wings);
 
-    group.userData = { plate, bar, nucleus, wings };
+    group.userData = { plate, nebula, trail, bar, nucleus, wings };
     rig.add(group);
     return group;
   }
@@ -372,18 +498,19 @@
   function buildDustSheets() {
     const list = [];
     const rng = mulberry(0xd05);
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
       const mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(9.4 + i * 1.15, 0.72 + i * 0.12),
+        new THREE.PlaneGeometry(8.6 + i * 0.95, 0.95 + i * 0.14),
         new THREE.MeshBasicMaterial({
           map: dustMap,
+          color: 0xb8b0d8,
           transparent: true,
-          opacity: 0.28 - i * 0.05,
+          opacity: 0.34 - i * 0.05,
           depthWrite: false,
           blending: THREE.NormalBlending
         })
       );
-      mesh.position.set((rng() - 0.5) * 0.8, (rng() - 0.5) * 0.04, -0.16 - i * 0.05);
+      mesh.position.set((rng() - 0.5) * 0.7, (rng() - 0.5) * 0.05, -0.14 - i * 0.04);
       mesh.userData.drift = (rng() - 0.5) * 0.012;
       rig.add(mesh);
       list.push(mesh);
@@ -428,11 +555,11 @@
     const ctx = c.getContext("2d");
     ctx.clearRect(0, 0, w, h);
     const pal = {
-      copper: [[210, 112, 58], [140, 72, 36], [70, 42, 88]],
-      gold: [[255, 214, 140], [214, 154, 78], [90, 70, 120]],
-      lavender: [[196, 168, 230], [120, 96, 168], [40, 50, 96]],
-      indigo: [[90, 118, 186], [48, 64, 120], [20, 24, 48]]
-    }[kind] || [[180, 140, 200], [80, 70, 120], [20, 24, 48]];
+      indigo: [[70, 96, 176], [36, 48, 110], [12, 16, 40]],
+      violet: [[110, 72, 168], [56, 40, 110], [18, 16, 42]],
+      lavender: [[176, 150, 220], [96, 80, 150], [28, 32, 68]],
+      magenta: [[214, 96, 150], [140, 52, 110], [40, 20, 48]]
+    }[kind] || [[120, 100, 180], [50, 40, 90], [12, 14, 32]];
     const img = ctx.createImageData(w, h);
     const d = img.data;
     for (let y = 0; y < h; y++) {
@@ -492,10 +619,10 @@
 
   function buildDiskRings() {
     const rings = [
-      { count: 980, r0: 0.2, r1: 1.15, omega: 0.018, seed: 0xa01, flatten: 0.14 },
-      { count: 1200, r0: 1.0, r1: 2.4, omega: 0.012, seed: 0xa02, flatten: 0.12 },
-      { count: 1280, r0: 2.1, r1: 3.8, omega: 0.008, seed: 0xa03, flatten: 0.1 },
-      { count: 980, r0: 3.4, r1: 5.6, omega: 0.0052, seed: 0xa04, flatten: 0.088 }
+      { count: 1100, r0: 0.2, r1: 1.15, omega: 0.018, seed: 0xa01, flatten: 0.2 },
+      { count: 1400, r0: 1.0, r1: 2.4, omega: 0.012, seed: 0xa02, flatten: 0.17 },
+      { count: 1400, r0: 2.1, r1: 3.8, omega: 0.008, seed: 0xa03, flatten: 0.14 },
+      { count: 1100, r0: 3.4, r1: 5.6, omega: 0.0052, seed: 0xa04, flatten: 0.12 }
     ];
     return rings.map((spec) => {
       const rng = mulberry(spec.seed);
@@ -515,7 +642,7 @@
         pos[wrote * 3 + 1] = y;
         pos[wrote * 3 + 2] = z;
         const t = Math.min(1, radius / 5.2);
-        const c = cream.clone().lerp(warm, (1 - t) * 0.55).lerp(copper, t * 0.32).lerp(cool, t * t * 1.05);
+        const c = cream.clone().lerp(warm, (1 - t) * 0.35).lerp(violet, t * 0.4).lerp(cool, t * t * 1.05);
         col[wrote * 3] = c.r;
         col[wrote * 3 + 1] = c.g;
         col[wrote * 3 + 2] = c.b;
@@ -554,7 +681,7 @@
       pos[i * 3 + 1] = y;
       pos[i * 3 + 2] = Math.sin(phase) * radius * 0.08 + z;
       const t = Math.min(1, radius / 5.2);
-      const c = warm.clone().lerp(copper, t * 0.22).lerp(cool, t * 0.85);
+      const c = warm.clone().lerp(magenta, t * 0.18).lerp(cool, t * 0.9);
       col[i * 3] = c.r;
       col[i * 3 + 1] = c.g;
       col[i * 3 + 2] = c.b;
@@ -616,16 +743,16 @@
     const rng = mulberry(seed);
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
-    const palette = [indigo, cool, cream, copper, lavender, warm];
+    const palette = [indigo, cool, cream, violet, lavender, magenta];
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (rng() - 0.5) * spread;
       pos[i * 3 + 1] = (rng() - 0.5) * spread * flatten;
       pos[i * 3 + 2] = (rng() - 0.5) * spread * 0.9 - 8;
       const roll = rng();
-      const c = roll < 0.62 ? palette[0].clone().lerp(palette[1], rng())
-        : roll < 0.82 ? palette[2].clone().lerp(palette[5], rng())
-          : roll < 0.93 ? palette[3].clone()
-            : palette[4].clone();
+      const c = roll < 0.7 ? palette[0].clone().lerp(palette[1], rng())
+        : roll < 0.86 ? palette[2].clone().lerp(palette[1], rng())
+          : roll < 0.94 ? palette[3].clone()
+            : palette[4].clone().lerp(palette[5], rng());
       col[i * 3] = c.r;
       col[i * 3 + 1] = c.g;
       col[i * 3 + 2] = c.b;
@@ -650,10 +777,10 @@
   function buildFilaments() {
     const list = [];
     const specs = [
-      { map: 0, x: -7, y: 5.2, z: -18, sx: 26, sy: 14, rx: 0.32, rz: -0.22, op: 0.24, drift: 0.004 },
-      { map: 1, x: 8, y: -5.0, z: -16, sx: 22, sy: 12, rx: -0.28, rz: 0.16, op: 0.2, drift: -0.0035 },
-      { map: 2, x: -3, y: 6.8, z: -24, sx: 20, sy: 11, rx: 0.18, rz: 0.1, op: 0.16, drift: 0.0028 },
-      { map: 3, x: 2, y: -6.6, z: -21, sx: 28, sy: 15, rx: -0.2, rz: -0.08, op: 0.19, drift: -0.0022 }
+      { map: 0, x: -3.4, y: 0.42, z: -3.4, sx: 11.5, sy: 3.2, rx: 0.12, rz: -0.08, op: 0.22, drift: 0.003 },
+      { map: 1, x: 3.1, y: -0.32, z: -3.0, sx: 10.4, sy: 2.7, rx: -0.1, rz: 0.06, op: 0.18, drift: -0.0026 },
+      { map: 2, x: -1.1, y: 0.58, z: -4.6, sx: 9.2, sy: 2.4, rx: 0.08, rz: 0.04, op: 0.14, drift: 0.002 },
+      { map: 3, x: 0.35, y: 0.06, z: -2.1, sx: 12.2, sy: 2.05, rx: -0.04, rz: -0.05, op: 0.2, drift: -0.0018 }
     ];
     for (const spec of specs) {
       const mesh = new THREE.Mesh(
@@ -672,7 +799,7 @@
       mesh.rotation.z = spec.rz;
       mesh.userData.drift = spec.drift;
       mesh.userData.baseX = spec.x;
-      scene.add(mesh);
+      rig.add(mesh);
       list.push(mesh);
     }
     return list;
@@ -684,15 +811,15 @@
     for (let i = 0; i < count; i++) {
       const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
         map: spikeMap,
-        color: rng() > 0.35 ? 0xfff1dc : 0xc8d4ff,
+        color: rng() > 0.45 ? 0xe8d8ff : 0xc8d4ff,
         transparent: true,
-        opacity: 0.22 + rng() * 0.28,
+        opacity: 0.14 + rng() * 0.16,
         depthWrite: false,
         blending: THREE.AdditiveBlending
       }));
-      const y = (rng() > 0.5 ? 1 : -1) * (1.6 + rng() * 9);
-      sprite.position.set((rng() - 0.5) * 22, y, -6 - rng() * 28);
-      const s = 0.12 + rng() * 0.22;
+      const y = (rng() > 0.5 ? 1 : -1) * (2.4 + rng() * 8);
+      sprite.position.set((rng() - 0.5) * 20, y, -8 - rng() * 24);
+      const s = 0.08 + rng() * 0.14;
       sprite.scale.set(s, s, 1);
       sprite.userData.base = sprite.material.opacity;
       sprite.userData.phase = rng() * Math.PI * 2;
@@ -732,7 +859,7 @@
       group.add(core);
       const dust = new THREE.Sprite(new THREE.SpriteMaterial({
         map: glowMap,
-        color: 0xe8c898,
+        color: 0xc8b8e0,
         transparent: true,
         opacity: 0.05,
         depthWrite: false,
@@ -756,9 +883,10 @@
 
   function buildVignette() {
     const tex = spriteTex(256, (ctx, s) => {
-      const g = ctx.createRadialGradient(s / 2, s / 2, s * 0.3, s / 2, s / 2, s * 0.64);
+      const g = ctx.createRadialGradient(s / 2, s / 2, s * 0.22, s / 2, s / 2, s * 0.62);
       g.addColorStop(0, "rgba(0,0,0,0)");
-      g.addColorStop(1, "rgba(0,0,0,0.32)");
+      g.addColorStop(0.55, "rgba(0,0,0,0.18)");
+      g.addColorStop(1, "rgba(0,0,0,0.62)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, s, s);
     });
@@ -796,8 +924,15 @@
     }
 
     if (diskGlow.userData.bar) {
-      diskGlow.userData.bar.material.opacity = 0.3 + Math.sin(now * 0.00018) * 0.03;
-      diskGlow.userData.nucleus.material.opacity = 0.5 + Math.sin(now * 0.00022) * 0.04;
+      diskGlow.userData.bar.material.opacity = 0.18 + Math.sin(now * 0.00016) * 0.02;
+      diskGlow.userData.nucleus.material.opacity = 0.38 + Math.sin(now * 0.0002) * 0.03;
+    }
+    if (diskGlow.userData.trail) {
+      diskGlow.userData.trail.material.opacity = 0.48 + Math.sin(now * 0.00028) * 0.06;
+      diskGlow.userData.trail.position.x = 0.15 + Math.sin(now * 0.00012) * 0.12;
+    }
+    if (diskGlow.userData.nebula) {
+      diskGlow.userData.nebula.position.x = Math.sin(now * 0.00008) * 0.18;
     }
 
     for (const s of orbiters) {
