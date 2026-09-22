@@ -76,13 +76,13 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.06;
+  renderer.toneMappingExposure = 1.1;
 
-  const CAM_Y = 1.48;
-  const CAM_Z = 8.4;
-  const RIG_PITCH = 0.3;
-  const RIG_ROLL = 0.05;
-  const lookTarget = new THREE.Vector3(0, 0.05, -0.85);
+  const CAM_Y = 1.55;
+  const CAM_Z = 8.55;
+  const RIG_PITCH = 0.36;
+  const RIG_ROLL = 0.04;
+  const lookTarget = new THREE.Vector3(0, 0.04, -0.8);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(26, 1, 0.08, 160);
@@ -132,10 +132,10 @@
   const indigo = new THREE.Color(0x4a5c92);
   const lavender = new THREE.Color(0xc4b4e0);
 
-  const farStars = buildHalo(8200, 78, 1.45, 0x9aacd8, 0x51f, 0.94, 0.0000048, 0);
-  const midStars = buildHalo(3800, 28, 1.8, 0xdce4f4, 0x77a, 0.86, -0.000009, 0);
-  const nearStars = buildHalo(1600, 16, 2.15, 0xf7efe0, 0x91c, 0.7, 0.000016, 2.2);
-  const deepField = buildColoredField(9000, 96, 1.35, 0xdef1, 0.98, 0.0000032);
+  const farStars = buildHalo(9800, 82, 1.5, 0x9aacd8, 0x51f, 0.96, 0.0000048, 0);
+  const midStars = buildHalo(4400, 30, 1.85, 0xdce4f4, 0x77a, 0.88, -0.000009, 0);
+  const nearStars = buildHalo(1900, 17, 2.2, 0xf7efe0, 0x91c, 0.72, 0.000016, 2.2);
+  const deepField = buildColoredField(11000, 100, 1.48, 0xdef1, 0.98, 0.0000032);
   const diskRings = buildDiskRings();
   const shear = buildShear(1500);
   const orbiters = buildOrbiters(180);
@@ -169,7 +169,7 @@
   function paintBarGlow(ctx, s) {
     ctx.clearRect(0, 0, s, s);
     ctx.translate(s / 2, s / 2);
-    ctx.scale(1, 0.22);
+    ctx.scale(1, 0.32);
     const g = ctx.createRadialGradient(0, 0, 0, 0, 0, s / 2);
     g.addColorStop(0, "rgba(255,252,236,0.95)");
     g.addColorStop(0.16, "rgba(255,226,168,0.5)");
@@ -200,40 +200,40 @@
       ctx.restore();
     }
 
-    oval(w * 0.5, h * 0.07, [
-      [0, "rgba(90, 118, 186, 0.2)"],
-      [0.55, "rgba(58, 78, 140, 0.08)"],
+    oval(w * 0.5, h * 0.16, [
+      [0, "rgba(120, 150, 210, 0.22)"],
+      [0.42, "rgba(72, 96, 168, 0.1)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.38, h * 0.048, [
-      [0, "rgba(212, 132, 74, 0.22)"],
-      [0.5, "rgba(168, 96, 52, 0.08)"],
+    oval(w * 0.42, h * 0.12, [
+      [0, "rgba(212, 132, 74, 0.28)"],
+      [0.48, "rgba(150, 86, 48, 0.1)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.34, h * 0.04, [
-      [0, "rgba(255, 226, 176, 0.4)"],
-      [0.42, "rgba(214, 154, 88, 0.16)"],
+    oval(w * 0.36, h * 0.09, [
+      [0, "rgba(255, 226, 176, 0.5)"],
+      [0.4, "rgba(214, 154, 88, 0.2)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.16, h * 0.032, [
-      [0, "rgba(255, 246, 222, 0.84)"],
-      [0.3, "rgba(255, 208, 140, 0.44)"],
-      [0.68, "rgba(228, 160, 88, 0.12)"],
+    oval(w * 0.18, h * 0.07, [
+      [0, "rgba(255, 246, 222, 0.9)"],
+      [0.28, "rgba(255, 210, 148, 0.52)"],
+      [0.66, "rgba(228, 160, 88, 0.14)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.04, h * 0.024, [
-      [0, "rgba(255, 252, 244, 0.98)"],
-      [0.4, "rgba(255, 230, 176, 0.55)"],
+    oval(w * 0.055, h * 0.05, [
+      [0, "rgba(255, 252, 244, 1)"],
+      [0.38, "rgba(255, 232, 180, 0.62)"],
       [1, "rgba(0,0,0,0)"]
     ]);
 
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
     ctx.translate(cx, cy);
-    ctx.scale(1, 0.022);
+    ctx.scale(1, 0.04);
     const spike = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.46);
-    spike.addColorStop(0, "rgba(255,248,230,0.42)");
-    spike.addColorStop(0.2, "rgba(255,220,160,0.1)");
+    spike.addColorStop(0, "rgba(255,248,230,0.5)");
+    spike.addColorStop(0.2, "rgba(255,220,160,0.12)");
     spike.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = spike;
     ctx.fillRect(-w * 0.46, -w * 0.46, w * 0.92, w * 0.92);
@@ -243,36 +243,36 @@
     const d = img.data;
     for (let y = 0; y < h; y++) {
       const ny = (y - cy) / h;
-      const band = Math.exp(-ny * ny * 220);
+      const band = Math.exp(-ny * ny * 72);
       if (band < 0.02) continue;
       for (let x = 0; x < w; x++) {
         const nx = (x - cx) / w;
-        const n1 = valueNoise(nx * 22 + 2.1, ny * 54, 11);
-        const n2 = valueNoise(nx * 9 - 1.4, ny * 28, 29);
+        const n1 = valueNoise(nx * 22 + 2.1, ny * 36, 11);
+        const n2 = valueNoise(nx * 9 - 1.4, ny * 18, 29);
         const lane = band * (0.35 * n1 + 0.65 * n2);
-        if (lane < 0.16) continue;
+        if (lane < 0.14) continue;
         const i = (y * w + x) * 4;
         if (!d[i + 3]) continue;
-        const k = 1 - Math.min(0.62, (lane - 0.16) * 1.35);
-        d[i] = Math.round(d[i] * k * 0.92);
-        d[i + 1] = Math.round(d[i + 1] * k * 0.78);
-        d[i + 2] = Math.round(d[i + 2] * k * 0.48);
-        d[i + 3] = Math.round(d[i + 3] * (0.72 + k * 0.28));
+        const k = 1 - Math.min(0.7, (lane - 0.14) * 1.45);
+        d[i] = Math.round(d[i] * k * 0.9);
+        d[i + 1] = Math.round(d[i + 1] * k * 0.72);
+        d[i + 2] = Math.round(d[i + 2] * k * 0.42);
+        d[i + 3] = Math.round(d[i + 3] * (0.7 + k * 0.3));
       }
     }
     ctx.putImageData(img, 0, 0);
 
     const rng = mulberry(0xc0de);
     ctx.globalCompositeOperation = "lighter";
-    for (let i = 0; i < 9000; i++) {
-      const x = cx + gauss(rng) * w * 0.42;
-      const y = cy + gauss(rng) * h * (0.012 + Math.abs(x - cx) / w * 0.022);
-      const t = Math.min(1, Math.abs(x - cx) / (w * 0.42));
-      const r = 255 - t * 28;
-      const g = 228 - t * 70;
-      const b = 186 + t * 56;
-      const a = 0.12 + rng() * 0.45;
-      const s = rng() < 0.08 ? 1.35 : 0.55 + rng() * 0.7;
+    for (let i = 0; i < 12000; i++) {
+      const x = cx + gauss(rng) * w * 0.44;
+      const y = cy + gauss(rng) * h * (0.028 + Math.abs(x - cx) / w * 0.04);
+      const t = Math.min(1, Math.abs(x - cx) / (w * 0.44));
+      const r = 255 - t * 36;
+      const g = 230 - t * 64;
+      const b = 190 + t * 62;
+      const a = 0.14 + rng() * 0.48;
+      const s = rng() < 0.08 ? 1.45 : 0.55 + rng() * 0.75;
       ctx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${a})`;
       ctx.fillRect(x, y, s, s);
     }
@@ -316,7 +316,7 @@
   function buildDiskGlow() {
     const group = new THREE.Group();
     const plate = new THREE.Mesh(
-      new THREE.PlaneGeometry(15.2, 5.2),
+      new THREE.PlaneGeometry(16.2, 6.8),
       new THREE.MeshBasicMaterial({
         map: diskMap,
         transparent: true,
@@ -324,18 +324,18 @@
         blending: THREE.NormalBlending
       })
     );
-    plate.position.z = -0.12;
+    plate.position.z = -0.1;
     group.add(plate);
 
     const bar = new THREE.Sprite(new THREE.SpriteMaterial({
       map: barMap,
       color: 0xfff1d4,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.32,
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    bar.scale.set(6.6, 0.82, 1);
+    bar.scale.set(7.4, 1.18, 1);
     bar.position.z = 0.02;
     group.add(bar);
 
@@ -343,11 +343,11 @@
       map: glowMap,
       color: 0xfff6dc,
       transparent: true,
-      opacity: 0.58,
+      opacity: 0.52,
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    nucleus.scale.set(1.15, 0.52, 1);
+    nucleus.scale.set(2.05, 1.15, 1);
     nucleus.position.z = 0.06;
     group.add(nucleus);
 
@@ -355,12 +355,12 @@
       map: barMap,
       color: 0x8aa6d4,
       transparent: true,
-      opacity: 0.2,
+      opacity: 0.3,
       depthWrite: false,
       blending: THREE.AdditiveBlending
     }));
-    wings.scale.set(13.8, 0.62, 1);
-    wings.position.z = -0.18;
+    wings.scale.set(15.2, 1.05, 1);
+    wings.position.z = -0.16;
     group.add(wings);
 
     group.userData = { plate, bar, nucleus, wings };
@@ -373,11 +373,11 @@
     const rng = mulberry(0xd05);
     for (let i = 0; i < 3; i++) {
       const mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(8.8 + i * 1.1, 0.42 + i * 0.08),
+        new THREE.PlaneGeometry(9.4 + i * 1.15, 0.72 + i * 0.12),
         new THREE.MeshBasicMaterial({
           map: dustMap,
           transparent: true,
-          opacity: 0.16 - i * 0.03,
+          opacity: 0.28 - i * 0.05,
           depthWrite: false,
           blending: THREE.NormalBlending
         })
@@ -491,10 +491,10 @@
 
   function buildDiskRings() {
     const rings = [
-      { count: 900, r0: 0.2, r1: 1.15, omega: 0.018, seed: 0xa01, flatten: 0.08 },
-      { count: 1100, r0: 1.0, r1: 2.4, omega: 0.012, seed: 0xa02, flatten: 0.07 },
-      { count: 1200, r0: 2.1, r1: 3.8, omega: 0.008, seed: 0xa03, flatten: 0.062 },
-      { count: 900, r0: 3.4, r1: 5.6, omega: 0.0052, seed: 0xa04, flatten: 0.055 }
+      { count: 980, r0: 0.2, r1: 1.15, omega: 0.018, seed: 0xa01, flatten: 0.14 },
+      { count: 1200, r0: 1.0, r1: 2.4, omega: 0.012, seed: 0xa02, flatten: 0.12 },
+      { count: 1280, r0: 2.1, r1: 3.8, omega: 0.008, seed: 0xa03, flatten: 0.1 },
+      { count: 980, r0: 3.4, r1: 5.6, omega: 0.0052, seed: 0xa04, flatten: 0.088 }
     ];
     return rings.map((spec) => {
       const rng = mulberry(spec.seed);
@@ -508,13 +508,13 @@
         const phase = rng() * Math.PI * 2;
         const lane = Math.abs(Math.sin(phase * 2.2 + radius * 1.15));
         if (lane < 0.2 && rng() < 0.72) continue;
-        const y = gauss(rng) * (spec.flatten + radius * 0.01);
-        const z = Math.sin(phase) * radius * 0.085 + gauss(rng) * 0.05;
+        const y = gauss(rng) * (spec.flatten + radius * 0.014);
+        const z = Math.sin(phase) * radius * 0.14 + gauss(rng) * 0.07;
         pos[wrote * 3] = Math.cos(phase) * radius;
         pos[wrote * 3 + 1] = y;
         pos[wrote * 3 + 2] = z;
         const t = Math.min(1, radius / 5.2);
-        const c = cream.clone().lerp(warm, Math.min(1, t * 0.7)).lerp(copper, t * 0.35).lerp(cool, t);
+        const c = cream.clone().lerp(warm, (1 - t) * 0.55).lerp(copper, t * 0.32).lerp(cool, t * t * 1.05);
         col[wrote * 3] = c.r;
         col[wrote * 3 + 1] = c.g;
         col[wrote * 3 + 2] = c.b;
@@ -528,7 +528,7 @@
         size: 0.09,
         vertexColors: true,
         transparent: true,
-        opacity: 0.82,
+        opacity: 0.64,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
         sizeAttenuation: true
@@ -547,13 +547,13 @@
     for (let i = 0; i < count; i++) {
       const radius = 0.28 + rng() * 5.5;
       const phase = rng() * Math.PI * 2;
-      const y = gauss(rng) * (0.07 + radius * 0.016);
-      const z = gauss(rng) * 0.1;
+      const y = gauss(rng) * (0.11 + radius * 0.022);
+      const z = gauss(rng) * 0.14;
       pos[i * 3] = Math.cos(phase) * radius;
       pos[i * 3 + 1] = y;
       pos[i * 3 + 2] = Math.sin(phase) * radius * 0.08 + z;
       const t = Math.min(1, radius / 5.2);
-      const c = warm.clone().lerp(copper, t * 0.28).lerp(cool, t);
+      const c = warm.clone().lerp(copper, t * 0.22).lerp(cool, t * 0.85);
       col[i * 3] = c.r;
       col[i * 3 + 1] = c.g;
       col[i * 3 + 2] = c.b;
@@ -637,7 +637,7 @@
       size,
       vertexColors: true,
       transparent: true,
-      opacity: 0.78,
+      opacity: 0.9,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       sizeAttenuation: false
@@ -649,10 +649,10 @@
   function buildFilaments() {
     const list = [];
     const specs = [
-      { map: 0, x: -7, y: 5.2, z: -18, sx: 26, sy: 14, rx: 0.32, rz: -0.22, op: 0.2, drift: 0.004 },
-      { map: 1, x: 8, y: -5.0, z: -16, sx: 22, sy: 12, rx: -0.28, rz: 0.16, op: 0.17, drift: -0.0035 },
-      { map: 2, x: -3, y: 6.8, z: -24, sx: 20, sy: 11, rx: 0.18, rz: 0.1, op: 0.14, drift: 0.0028 },
-      { map: 3, x: 2, y: -6.6, z: -21, sx: 28, sy: 15, rx: -0.2, rz: -0.08, op: 0.16, drift: -0.0022 }
+      { map: 0, x: -7, y: 5.2, z: -18, sx: 26, sy: 14, rx: 0.32, rz: -0.22, op: 0.24, drift: 0.004 },
+      { map: 1, x: 8, y: -5.0, z: -16, sx: 22, sy: 12, rx: -0.28, rz: 0.16, op: 0.2, drift: -0.0035 },
+      { map: 2, x: -3, y: 6.8, z: -24, sx: 20, sy: 11, rx: 0.18, rz: 0.1, op: 0.16, drift: 0.0028 },
+      { map: 3, x: 2, y: -6.6, z: -21, sx: 28, sy: 15, rx: -0.2, rz: -0.08, op: 0.19, drift: -0.0022 }
     ];
     for (const spec of specs) {
       const mesh = new THREE.Mesh(
@@ -716,7 +716,7 @@
         depthWrite: false,
         blending: THREE.AdditiveBlending
       }));
-      bloom.scale.set(i === 0 ? 3.15 : 2.05, i === 0 ? 1.18 : 0.82, 1);
+      bloom.scale.set(i === 0 ? 3.35 : 2.2, i === 0 ? 1.28 : 0.9, 1);
       bloom.userData.base = bloom.scale.clone();
       group.add(bloom);
       const core = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -795,8 +795,8 @@
     }
 
     if (diskGlow.userData.bar) {
-      diskGlow.userData.bar.material.opacity = 0.5 + Math.sin(now * 0.00018) * 0.04;
-      diskGlow.userData.nucleus.material.opacity = 0.66 + Math.sin(now * 0.00022) * 0.04;
+      diskGlow.userData.bar.material.opacity = 0.3 + Math.sin(now * 0.00018) * 0.03;
+      diskGlow.userData.nucleus.material.opacity = 0.5 + Math.sin(now * 0.00022) * 0.04;
     }
 
     for (const s of orbiters) {

@@ -14,17 +14,18 @@ in over the living galaxy so the field stays visible.
 ## Art direction
 
 **Procedural living galaxy.** Runtime Home is handcrafted in Three.js:
-a canvas-painted luminous bar (creamy core, dusty copper lanes, cooler
-indigo arms) plus a full-frame deep field, halo / disk / shear
+a canvas-painted luminous disk (creamy bulge, dusty copper lanes, cooler
+blue-white halo) plus a full-frame deep field, halo / disk / shear
 starfields, and slow filament drift. Camera sits back (telephoto) with
-a slight disk pitch/roll. **Every star moves a little** — differential
-rotation, orbital shear, and slow parallax. Motion-off freezes that
-drift. Never a locked plate with a few twinkles.
+a slight disk pitch/roll so the bar has volume without going face-on.
+**Every star moves a little** — differential rotation, orbital shear,
+and slow parallax. Motion-off freezes that drift. Never a locked plate
+with a few twinkles.
 
-`Assets/Cube/home-plate.png` may remain as a look-dev reference. JWST
-imagery may inform color and density offline. Neither is the runtime
-wallpaper. **No NASA or observatory credit is claimed**; do not invent
-one.
+`Assets/Cube/home-plate.png` may remain as a look-dev reference. Flux
+schnell stills and JWST-class imagery may inform volume and halo
+offline. None of those plates are the runtime wallpaper. **No NASA or
+observatory credit is claimed**; do not invent one.
 
 Games sits on the bright core. Tools and Mods lock to the right-hand
 clusters; Network, Files, and Hardware lock to the left-hand arm.

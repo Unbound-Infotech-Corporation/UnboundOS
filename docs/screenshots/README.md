@@ -18,8 +18,8 @@ Visual check:
   Inner pages restore HOME / SESSION / NETWORK / TOOLS / FILES /
   HARDWARE / MODS / PROFILES / SETTINGS.
 - Home hero is an **original procedural tilted OS galaxy**: deep void,
-  creamy core, copper dust lanes, cooler indigo arms, full-frame
-  starfield (no observatory plates). All stars move a little
+  creamy bulge, copper dust lanes, cooler blue-white halo, full-frame
+  starfield (no observatory or Flux plates at runtime). All stars move a little
   (shear / differential rotation / parallax / filament drift);
   node clusters stay locked on the bar and read larger than a razor
   edge-on. Focused node lifts like a selected star; only that node
