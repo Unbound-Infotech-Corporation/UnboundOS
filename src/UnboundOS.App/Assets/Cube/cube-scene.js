@@ -73,7 +73,7 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.92;
+  renderer.toneMappingExposure = 1.02;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.08, 80);
@@ -274,7 +274,7 @@
       core.scale.set(i === 0 ? 0.22 : 0.14, i === 0 ? 0.22 : 0.14, 1);
       group.add(core);
       const label = makeLabel(info.title);
-      label.position.y = -0.42;
+      label.position.y = -0.82;
       group.add(label);
       const hit = new THREE.Mesh(
         new THREE.SphereGeometry(0.38, 10, 8),
@@ -502,7 +502,7 @@
       const on = n.group.userData.node === state.node;
       n.bloom.material.opacity = (on ? 0.38 : 0.12) * pulse;
       n.core.material.opacity = on ? 0.75 : 0.28;
-      n.label.material.opacity = on ? 0.72 : 0.08;
+      n.label.material.opacity = on ? 0.42 : 0;
     }
     vignette.position.copy(camera.position);
     vignette.quaternion.copy(camera.quaternion);
@@ -696,7 +696,7 @@
       opacity: 0.08,
       depthWrite: false
     }));
-    sprite.scale.set(1.45, 0.3, 1);
+    sprite.scale.set(1.1, 0.22, 1);
     return sprite;
   }
 
