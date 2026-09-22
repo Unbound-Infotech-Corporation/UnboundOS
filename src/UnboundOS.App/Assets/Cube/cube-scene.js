@@ -205,19 +205,19 @@
       ctx.restore();
     }
 
-    oval(w * 0.48, h * 0.2, [
-      [0, "rgba(36, 48, 120, 0.42)"],
-      [0.4, "rgba(22, 28, 78, 0.2)"],
+    oval(w * 0.48, h * 0.22, [
+      [0, "rgba(40, 52, 130, 0.55)"],
+      [0.4, "rgba(24, 30, 86, 0.26)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.42, h * 0.15, [
-      [0, "rgba(88, 64, 148, 0.34)"],
-      [0.48, "rgba(42, 36, 96, 0.14)"],
+    oval(w * 0.42, h * 0.16, [
+      [0, "rgba(96, 70, 158, 0.42)"],
+      [0.48, "rgba(46, 38, 104, 0.18)"],
       [1, "rgba(0,0,0,0)"]
     ]);
-    oval(w * 0.34, h * 0.1, [
-      [0, "rgba(168, 96, 140, 0.28)"],
-      [0.42, "rgba(90, 70, 130, 0.12)"],
+    oval(w * 0.34, h * 0.11, [
+      [0, "rgba(168, 96, 140, 0.34)"],
+      [0.42, "rgba(90, 70, 130, 0.14)"],
       [1, "rgba(0,0,0,0)"]
     ]);
     oval(w * 0.16, h * 0.065, [
@@ -337,14 +337,14 @@
         const n2 = valueNoise(nx * 8.2 - 1.1, ny * 14, 0xb2);
         const n3 = valueNoise(nx * 16, ny * 22, 0xb3);
         const cloud = n1 * 0.55 + n2 * 0.32 + n3 * 0.13;
-        const a = band * cloud * 0.55;
+        const a = band * cloud * 0.7;
         if (a < 0.03) continue;
         const t = Math.min(1, cloud * 1.2);
         const i = (y * w + x) * 4;
-        d[i] = (28 + t * 90) | 0;
-        d[i + 1] = (24 + t * 70) | 0;
-        d[i + 2] = (72 + t * 110) | 0;
-        d[i + 3] = (a * 200) | 0;
+        d[i] = (32 + t * 100) | 0;
+        d[i + 1] = (26 + t * 78) | 0;
+        d[i + 2] = (80 + t * 120) | 0;
+        d[i + 3] = (a * 220) | 0;
       }
     }
     ctx.putImageData(img, 0, 0);
@@ -376,9 +376,10 @@
       return Math.max(0, 1 - u * u);
     };
     const passes = [
-      { width: 28, color: [120, 40, 110], alpha: 0.07 },
-      { width: 12, color: [220, 90, 150], alpha: 0.16 },
-      { width: 3.2, color: [255, 210, 230], alpha: 0.42 }
+      { width: 56, color: [90, 36, 120], alpha: 0.08 },
+      { width: 28, color: [170, 70, 140], alpha: 0.12 },
+      { width: 12, color: [230, 140, 180], alpha: 0.16 },
+      { width: 4.5, color: [255, 220, 230], alpha: 0.22 }
     ];
     for (const pass of passes) {
       ctx.lineCap = "round";
@@ -416,7 +417,7 @@
   function buildDiskGlow() {
     const group = new THREE.Group();
     const plate = new THREE.Mesh(
-      new THREE.PlaneGeometry(14.4, 5.0),
+      new THREE.PlaneGeometry(14.6, 5.15),
       new THREE.MeshBasicMaterial({
         map: diskMap,
         transparent: true,
@@ -428,11 +429,11 @@
     group.add(plate);
 
     const nebula = new THREE.Mesh(
-      new THREE.PlaneGeometry(13.2, 3.35),
+      new THREE.PlaneGeometry(13.8, 3.7),
       new THREE.MeshBasicMaterial({
         map: nebulaMap,
         transparent: true,
-        opacity: 0.72,
+        opacity: 0.86,
         depthWrite: false,
         blending: THREE.NormalBlending
       })
@@ -440,18 +441,32 @@
     nebula.position.z = -0.18;
     group.add(nebula);
 
+    const nebulaFore = new THREE.Mesh(
+      new THREE.PlaneGeometry(12.2, 2.6),
+      new THREE.MeshBasicMaterial({
+        map: nebulaMap,
+        transparent: true,
+        opacity: 0.4,
+        depthWrite: false,
+        blending: THREE.NormalBlending
+      })
+    );
+    nebulaFore.position.set(0.25, 0.06, -0.06);
+    nebulaFore.rotation.z = 0.04;
+    group.add(nebulaFore);
+
     const trail = new THREE.Mesh(
-      new THREE.PlaneGeometry(12.4, 2.15),
+      new THREE.PlaneGeometry(12.6, 2.4),
       new THREE.MeshBasicMaterial({
         map: trailMap,
         transparent: true,
-        opacity: 0.55,
+        opacity: 0.38,
         depthWrite: false,
         blending: THREE.AdditiveBlending
       })
     );
-    trail.position.set(0.15, 0.04, 0.01);
-    trail.rotation.z = -0.06;
+    trail.position.set(0.12, 0.03, 0.01);
+    trail.rotation.z = -0.05;
     group.add(trail);
 
     const bar = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -490,7 +505,7 @@
     wings.position.z = -0.22;
     group.add(wings);
 
-    group.userData = { plate, nebula, trail, bar, nucleus, wings };
+    group.userData = { plate, nebula, nebulaFore, trail, bar, nucleus, wings };
     rig.add(group);
     return group;
   }
@@ -928,8 +943,8 @@
       diskGlow.userData.nucleus.material.opacity = 0.38 + Math.sin(now * 0.0002) * 0.03;
     }
     if (diskGlow.userData.trail) {
-      diskGlow.userData.trail.material.opacity = 0.48 + Math.sin(now * 0.00028) * 0.06;
-      diskGlow.userData.trail.position.x = 0.15 + Math.sin(now * 0.00012) * 0.12;
+      diskGlow.userData.trail.material.opacity = 0.34 + Math.sin(now * 0.00028) * 0.05;
+      diskGlow.userData.trail.position.x = 0.12 + Math.sin(now * 0.00012) * 0.1;
     }
     if (diskGlow.userData.nebula) {
       diskGlow.userData.nebula.position.x = Math.sin(now * 0.00008) * 0.18;
