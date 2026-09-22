@@ -629,6 +629,23 @@
                             <TextBlock Style="{StaticResource HomeWidgetClockText}" Text="{x:Bind Hud.ClockText, Mode=OneWay}" />
                         </StackPanel>
                     </Border>
+                    <Border
+                        x:Name="HomeLoadWidget"
+                        Tag="load"
+                        Style="{StaticResource HomeWidgetPlaqueStyle}"
+                        Visibility="{x:Bind Hud.LoadWidgetVisibility, Mode=OneWay}"
+                        PointerPressed="OnWidgetPointerPressed"
+                        PointerMoved="OnWidgetPointerMoved"
+                        PointerReleased="OnWidgetPointerReleased"
+                        PointerCanceled="OnWidgetPointerReleased"
+                        PointerCaptureLost="OnWidgetPointerReleased"
+                        AutomationProperties.Name="CPU load"
+                        AutomationProperties.HelpText="Drag to reposition. Honest CPU utilization when the OS counter is available.">
+                        <StackPanel Spacing="0">
+                            <TextBlock Style="{StaticResource HomeWidgetKickerText}" Text="LOAD" />
+                            <TextBlock Style="{StaticResource HomeWidgetValueText}" Text="{x:Bind Hud.CpuLoadText, Mode=OneWay}" />
+                        </StackPanel>
+                    </Border>
                 </Canvas>
                 <Button
                     x:Name="HomeProfilesGlyph"

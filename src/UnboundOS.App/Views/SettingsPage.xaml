@@ -78,7 +78,7 @@
                     <TextBlock Style="{StaticResource PanelLabelText}" Text="HOME HUD" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Light-grey movable widgets on Home. Drag them on the galaxy. Positions and look persist. This does not restore the top menu." />
+                        Text="Light-grey movable widgets on Home. Drag them on the galaxy. Defaults sit on the right so they stay clear of the category list. Positions and look persist. This does not restore the top menu." />
                     <ToggleSwitch
                         MinHeight="48"
                         IsOn="{x:Bind ViewModel.HomeHudEnabled, Mode=TwoWay}"
@@ -86,7 +86,7 @@
                         OffContent="Off"
                         Header="Home widgets"
                         AutomationProperties.Name="Home widgets"
-                        AutomationProperties.HelpText="Hides the clock and temperature widgets on Home." />
+                        AutomationProperties.HelpText="Hides the clock, temperature, and load widgets on Home." />
                     <ToggleSwitch
                         MinHeight="48"
                         IsOn="{x:Bind ViewModel.HomeClockEnabled, Mode=TwoWay}"
@@ -114,7 +114,7 @@
                         Content="Reset widget positions"
                         Command="{x:Bind ViewModel.ResetWidgetPositionsCommand}"
                         AutomationProperties.Name="Reset widget positions"
-                        AutomationProperties.HelpText="Return clock and temperature widgets to the default corners." />
+                        AutomationProperties.HelpText="Return widgets to the default right-hand stack, clear of the category list." />
                 </StackPanel>
             </Border>
 

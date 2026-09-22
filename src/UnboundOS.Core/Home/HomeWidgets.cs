@@ -39,22 +39,31 @@ public static class HomeWidgets
     public const string Cpu = "cpu";
     public const string Gpu = "gpu";
     public const string Package = "package";
+    public const string Load = "load";
+
+    /// <summary>Left-half category list / scrim. Defaults stay to the right of this.</summary>
+    public const double ListKeepoutX = 0.48;
 
     public static IReadOnlyList<HomeWidgetDefinition> BuiltIn { get; } =
     [
         new(Clock, "Clock", "TIME", "clock"),
         new(Cpu, "CPU temperature", "CPU", "temp"),
         new(Gpu, "GPU temperature", "GPU", "temp"),
-        new(Package, "Package temperature", "PKG", "temp")
+        new(Package, "Package temperature", "PKG", "temp"),
+        new(Load, "CPU load", "LOAD", "load")
     ];
 
     public static IReadOnlyList<HomeWidgetPlacement> Defaults { get; } =
     [
-        new() { Id = Cpu, X = 0.03, Y = 0.04 },
-        new() { Id = Gpu, X = 0.03, Y = 0.16 },
-        new() { Id = Package, X = 0.03, Y = 0.28 },
-        new() { Id = Clock, X = 0.82, Y = 0.04 }
+        new() { Id = Clock, X = 0.84, Y = 0.04 },
+        new() { Id = Cpu, X = 0.84, Y = 0.16 },
+        new() { Id = Gpu, X = 0.84, Y = 0.28 },
+        new() { Id = Package, X = 0.84, Y = 0.40 },
+        new() { Id = Load, X = 0.84, Y = 0.52 }
     ];
+
+    public static bool ClearsList(HomeWidgetPlacement placement) =>
+        Clamp(placement).X >= ListKeepoutX;
 
     public static HomeWidgetPlacement DefaultOf(string id) =>
         Defaults.FirstOrDefault(item => item.Id == id) ?? new() { Id = id, X = 0.4, Y = 0.4 };

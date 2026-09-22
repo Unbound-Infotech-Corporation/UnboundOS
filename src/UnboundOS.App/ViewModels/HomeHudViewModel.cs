@@ -9,15 +9,17 @@ public partial class HomeHudViewModel : ObservableObject
 {
     private readonly IHomeHudSettings _hud;
     private readonly IThermalProbe _thermal;
+    private readonly ITelemetryService _telemetry;
     private readonly DispatcherTimer _clockTimer;
     private readonly DispatcherTimer _tempTimer;
     private bool _tempsBusy;
     private bool _packageHasReading;
 
-    public HomeHudViewModel(IHomeHudSettings hud, IThermalProbe thermal)
+    public HomeHudViewModel(IHomeHudSettings hud, IThermalProbe thermal, ITelemetryService telemetry)
     {
         _hud = hud;
         _thermal = thermal;
+        _telemetry = telemetry;
         _hud.Changed += OnHudChanged;
         _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         _clockTimer.Tick += (_, _) => TickClock();
@@ -31,10 +33,12 @@ public partial class HomeHudViewModel : ObservableObject
     [ObservableProperty] private string _cpuTempText = "—";
     [ObservableProperty] private string _gpuTempText = "—";
     [ObservableProperty] private string _packageTempText = "—";
+    [ObservableProperty] private string _cpuLoadText = "—";
     [ObservableProperty] private Visibility _clockStripVisibility = Visibility.Visible;
     [ObservableProperty] private Visibility _tempsStripVisibility = Visibility.Visible;
     [ObservableProperty] private Visibility _cpuWidgetVisibility = Visibility.Visible;
     [ObservableProperty] private Visibility _gpuWidgetVisibility = Visibility.Visible;
+    [ObservableProperty] private Visibility _loadWidgetVisibility = Visibility.Visible;
     [ObservableProperty] private Visibility _packageVisibility = Visibility.Collapsed;
     [ObservableProperty] private HomeWidgetAppearance _appearance = HomeWidgetAppearance.Glass;
     [ObservableProperty] private string _appearanceToken = "glass";
@@ -79,6 +83,7 @@ public partial class HomeHudViewModel : ObservableObject
         TempsStripVisibility = tempsOn ? Visibility.Visible : Visibility.Collapsed;
         CpuWidgetVisibility = tempsOn && Placement(HomeWidgets.Cpu).IsVisible ? Visibility.Visible : Visibility.Collapsed;
         GpuWidgetVisibility = tempsOn && Placement(HomeWidgets.Gpu).IsVisible ? Visibility.Visible : Visibility.Collapsed;
+        LoadWidgetVisibility = hud && Placement(HomeWidgets.Load).IsVisible ? Visibility.Visible : Visibility.Collapsed;
         PackageVisibility = tempsOn && _packageHasReading && Placement(HomeWidgets.Package).IsVisible
             ? Visibility.Visible
             : Visibility.Collapsed;
@@ -92,7 +97,7 @@ public partial class HomeHudViewModel : ObservableObject
 
     private async Task RefreshTempsAsync()
     {
-        if (_tempsBusy || _hud is { HudEnabled: false } || !_hud.TempsEnabled)
+        if (_tempsBusy || _hud is { HudEnabled: false })
         {
             return;
         }
@@ -100,6 +105,13 @@ public partial class HomeHudViewModel : ObservableObject
         _tempsBusy = true;
         try
         {
+            await RefreshLoadAsync();
+            if (!_hud.TempsEnabled)
+            {
+                ApplyVisibility();
+                return;
+            }
+
             var snap = await _thermal.ReadAsync();
             CpuTempText = FormatTemp(snap.CpuCelsius);
             GpuTempText = FormatTemp(snap.GpuCelsius);
@@ -119,6 +131,19 @@ public partial class HomeHudViewModel : ObservableObject
         finally
         {
             _tempsBusy = false;
+        }
+    }
+
+    private async Task RefreshLoadAsync()
+    {
+        try
+        {
+            var sample = await _telemetry.SampleAsync([]);
+            CpuLoadText = sample.CpuUsageAvailable ? $"{sample.CpuUsagePercent:0}%" : "—";
+        }
+        catch
+        {
+            CpuLoadText = "—";
         }
     }
 

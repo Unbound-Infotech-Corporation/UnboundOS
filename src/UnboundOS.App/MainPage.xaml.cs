@@ -28,6 +28,7 @@ public sealed partial class MainPage : Page
             ? Visibility.Visible
             : Visibility.Collapsed;
         Loaded += OnLoaded;
+        HomeCube.OverlayChanged += OnHomeOverlayChanged;
         Hud.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(Hud.AppearanceToken) or nameof(Hud.LayoutRevision) or null)
@@ -44,6 +45,7 @@ public sealed partial class MainPage : Page
         await Hud.InitializeAsync();
         ApplyWidgetLook();
         ApplyWidgetPositions();
+        ApplyWidgetListDim(HomeCube.OverlayOpen);
         ApplyHomeChrome(home: true);
         ApplyNavState("Home");
         HomeCube.Focus(FocusState.Programmatic);
@@ -209,7 +211,14 @@ public sealed partial class MainPage : Page
         Place(HomeGpuWidget, HomeWidgets.Gpu);
         Place(HomePackageWidget, HomeWidgets.Package);
         Place(HomeClockWidget, HomeWidgets.Clock);
+        Place(HomeLoadWidget, HomeWidgets.Load);
     }
+
+    private void OnHomeOverlayChanged(object? sender, bool open) =>
+        ApplyWidgetListDim(open);
+
+    private void ApplyWidgetListDim(bool listOpen) =>
+        HomeWidgetLayer.Opacity = listOpen ? 0.42 : 1;
 
     private void Place(FrameworkElement el, string id)
     {
@@ -243,5 +252,6 @@ public sealed partial class MainPage : Page
         HomeGpuWidget.Style = style;
         HomePackageWidget.Style = style;
         HomeClockWidget.Style = style;
+        HomeLoadWidget.Style = style;
     }
 }

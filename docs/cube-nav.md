@@ -76,7 +76,7 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
 - **WebView2 + Three.js r158.** Original procedural galaxy at runtime.
   `home-plate.png` is look-dev only.
 - If WebView2 or WebGL is missing, Enter still opens the WinUI page.
-- Quiet Home HUD (clock / temps) and SET / PRFL glyphs stay optional.
+- Quiet Home HUD (movable clock / temps / load) and SET / PRFL glyphs stay optional.
 
 Look-dev: `Assets/Cube/index.html?preview=1`.
 `docs/screenshots/README.md` still wants a Windows `Debug|x64` capture.
@@ -84,15 +84,22 @@ Look-dev: `Assets/Cube/index.html?preview=1`.
 ## Home widgets
 
 Light-grey **movable** plaques for honest basics: clock, CPU temp, GPU
-temp, and package temp when it differs from CPU. Drag to reposition.
-Positions and appearance persist in `settings.json`. Looks: **glass**
-(default), **dim**, **compact** — not rainbow skins. Motion-off still
-lets you drag; no fancy drag animation is required.
+temp, package temp when it differs from CPU, and CPU load when the OS
+counter exists (`CpuUsageAvailable` — a missing counter is `—`, not a
+fake 0%). No invented sensors.
 
-Widgets stay visible while a category list is open so they do not fight
-the left scrim by vanishing. Master visibility is Settings → Home HUD.
+Drag to reposition. Positions and visibility persist in `settings.json`
+(`homeWidgetPlacements`, `homeWidgetAppearance`). Looks: **glass**
+(default light grey), **dim**, **compact** — not rainbow skins.
+Motion-off still lets you drag; no fancy drag animation is required.
+
+Default stack sits on the **right** (`X = 0.84`, past `ListKeepoutX`
+0.48) so plaques stay clear of the left-half category list. Widgets
+stay visible while a list is open and **dim** (layer opacity) so they
+do not fight the scrim. Master visibility is Settings → Home HUD.
 
 Custom widgets later: implement `IHomeWidgetSource` and register it
-before `AddUnboundOs()`. This is not a Rainmeter clone. Desktop skins
+before `AddUnboundOs()`. First-party catalog is
+`IHomeWidgetCatalog`. This is not a Rainmeter clone. Desktop skins
 stay on the optional `IDesktopOverlayHost` addon — see
 [overlay-addon.md](overlay-addon.md).

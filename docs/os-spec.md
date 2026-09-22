@@ -21,8 +21,10 @@ Home navigation is a **linear galaxy** (WebView2 hosting packaged
 Three.js, not Unreal in-process). Nodes along the disk: Games (core),
 Tools, Mods, Network, Files, Hardware. Left/right shift nodes. **Up**
 opens that node’s list from the bottom; **Down** opens it from the top.
-Quiet **movable** light-grey widgets (clock / CPU / GPU) sit over the
-galaxy; positions persist. Architecture: [docs/cube-nav.md](cube-nav.md).
+Quiet **movable** light-grey widgets (clock / CPU / GPU / package /
+honest CPU load) sit over the galaxy on the right by default so they
+do not cover the left category list; positions persist. Architecture:
+[docs/cube-nav.md](cube-nav.md).
 
 ## 1. OOBE / initial setup last step
 

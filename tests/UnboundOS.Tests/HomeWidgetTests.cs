@@ -11,25 +11,28 @@ namespace UnboundOS.Tests;
 public sealed class HomeWidgetTests
 {
     [Fact]
-    public void BuiltIn_AreClockAndHonestTemps()
+    public void BuiltIn_AreClockHonestTempsAndLoad()
     {
-        Assert.Equal(4, HomeWidgets.BuiltIn.Count);
+        Assert.Equal(5, HomeWidgets.BuiltIn.Count);
         Assert.Contains(HomeWidgets.BuiltIn, item => item.Id == HomeWidgets.Clock && item.Kind == "clock");
         Assert.Contains(HomeWidgets.BuiltIn, item => item.Id == HomeWidgets.Cpu && item.Kind == "temp");
         Assert.Contains(HomeWidgets.BuiltIn, item => item.Id == HomeWidgets.Gpu && item.Kind == "temp");
         Assert.Contains(HomeWidgets.BuiltIn, item => item.Id == HomeWidgets.Package && item.Kind == "temp");
+        Assert.Contains(HomeWidgets.BuiltIn, item => item.Id == HomeWidgets.Load && item.Kind == "load");
         Assert.DoesNotContain(HomeWidgets.BuiltIn, item => item.Kind == "fake");
     }
 
     [Fact]
-    public void Defaults_PutTempsLeftAndClockRight()
+    public void Defaults_SitRightOfListKeepout()
     {
-        var cpu = HomeWidgets.DefaultOf(HomeWidgets.Cpu);
+        Assert.All(HomeWidgets.Defaults, item =>
+        {
+            Assert.True(item.X >= HomeWidgets.ListKeepoutX);
+            Assert.True(HomeWidgets.ClearsList(item));
+        });
         var clock = HomeWidgets.DefaultOf(HomeWidgets.Clock);
-        Assert.True(cpu.X < 0.2);
-        Assert.True(clock.X > 0.7);
-        Assert.True(cpu.Y < 0.2);
         Assert.True(clock.Y < 0.2);
+        Assert.False(HomeWidgets.ClearsList(new HomeWidgetPlacement { Id = HomeWidgets.Cpu, X = 0.03, Y = 0.04 }));
     }
 
     [Fact]
@@ -54,7 +57,7 @@ public sealed class HomeWidgetTests
         Assert.Equal(0.6, clock.Y);
         Assert.False(clock.IsVisible);
         Assert.True(HomeWidgets.Place(merged, HomeWidgets.Cpu).IsVisible);
-        Assert.Equal(4, merged.Count);
+        Assert.Equal(5, merged.Count);
     }
 
     [Fact]
@@ -73,7 +76,7 @@ public sealed class HomeWidgetTests
     public void Catalog_AppendsAddonSource()
     {
         var catalog = new HomeWidgetCatalog([new ExtraSource()]);
-        Assert.Equal(5, catalog.Widgets.Count);
+        Assert.Equal(6, catalog.Widgets.Count);
         Assert.Contains(catalog.Widgets, item => item.Id == "custom.ping");
         Assert.Equal(HomeWidgets.Clock, catalog.Widgets[0].Id);
     }

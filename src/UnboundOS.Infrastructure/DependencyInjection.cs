@@ -39,6 +39,7 @@ public static class DependencyInjection
         services.AddSingleton<IShellSettingsStore, JsonShellSettingsStore>();
         services.AddSingleton<IUiMotionPolicy, UiMotionPolicy>();
         services.AddSingleton<IHomeHudSettings, HomeHudSettings>();
+        // First-party Home widgets. Register IHomeWidgetSource before AddUnboundOs() to append extras.
         services.AddSingleton<IHomeWidgetCatalog, HomeWidgetCatalog>();
         services.AddSingleton<IStartupInventory, WindowsStartupInventory>();
         services.AddSingleton<IStartupAllowlistStore, JsonStartupAllowlistStore>();

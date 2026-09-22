@@ -47,6 +47,11 @@ public sealed partial class NavigationCubeView : UserControl
 
     public event EventHandler? SettingsRequested;
 
+    /// <summary>True while a category list is open over the galaxy.</summary>
+    public bool OverlayOpen => _browsing;
+
+    public event EventHandler<bool>? OverlayChanged;
+
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (_wired)
@@ -82,7 +87,7 @@ public sealed partial class NavigationCubeView : UserControl
         _sceneReady = false;
         _wired = false;
         _opening = false;
-        _browsing = false;
+        SetBrowsing(false);
         _pendingOpen = null;
     }
 
@@ -367,7 +372,7 @@ public sealed partial class NavigationCubeView : UserControl
     public void ResetScene()
     {
         _opening = false;
-        _browsing = false;
+        SetBrowsing(false);
         _pendingOpen = null;
         _items = [];
         _focus = 0;
@@ -379,6 +384,17 @@ public sealed partial class NavigationCubeView : UserControl
         }
 
         Announce(_pose.Front);
+    }
+
+    private void SetBrowsing(bool value)
+    {
+        if (_browsing == value)
+        {
+            return;
+        }
+
+        _browsing = value;
+        OverlayChanged?.Invoke(this, value);
     }
 
     private async Task CompleteActivationAfterAsync(int token)
@@ -413,12 +429,12 @@ public sealed partial class NavigationCubeView : UserControl
     private void EnterBrowse(CubeDestination destination)
     {
         _opening = false;
-        _browsing = true;
+        SetBrowsing(true);
         _pendingOpen = null;
         if (_items.Count == 0)
         {
             FaceActivated?.Invoke(this, destination);
-            _browsing = false;
+            SetBrowsing(false);
             return;
         }
 
