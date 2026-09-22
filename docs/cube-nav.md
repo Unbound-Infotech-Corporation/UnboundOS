@@ -1,23 +1,30 @@
 # Home navigation galaxy
 
-UnboundOS Home is an **original procedural edge-on galaxy** on a
-true-black field — not a static photograph, not a spiral sticker, and
-not a 3D cube as the hero. Bright clusters along the disk are the menu
-nodes. The WinUI 3 shell stays the product. Category lists ease in over
-the living galaxy so the field stays visible.
+UnboundOS Home is an **original procedural galaxy** on a deep void —
+not a static photograph, not a spiral sticker, and not a 3D cube as
+the hero. The **horizontal OS bar** is slightly pitched toward the
+camera so nodes read larger, still clearly a nav axis. A JWST-class
+deep field (tiny pinpricks, copper/gold/lavender filaments, spiked
+foreground stars) fills the frame behind it and must never compete
+with node readability. Observatory photos are look-dev only and are
+**not** loaded at runtime. Bright clusters along the disk are the
+menu nodes. The WinUI 3 shell stays the product. Category lists ease
+in over the living galaxy so the field stays visible.
 
 ## Art direction
 
 **Procedural living galaxy.** Runtime Home is handcrafted in Three.js:
-a canvas-painted luminous bar (creamy core, dust-lane gaps, cooler
-outer arms) plus dense halo / disk / shear starfields. **Every star
-moves a little** — differential rotation, orbital shear, and slow
-parallax. Motion-off freezes that drift. Never a locked plate with a
-few twinkles.
+a canvas-painted luminous bar (creamy core, dusty copper lanes, cooler
+indigo arms) plus a full-frame deep field, halo / disk / shear
+starfields, and slow filament drift. Camera sits back (telephoto) with
+a slight disk pitch/roll. **Every star moves a little** — differential
+rotation, orbital shear, and slow parallax. Motion-off freezes that
+drift. Never a locked plate with a few twinkles.
 
-`Assets/Cube/home-plate.png` may remain as a look-dev reference. It is
-**not** the runtime wallpaper. **No NASA or observatory credit is
-claimed**; do not invent one.
+`Assets/Cube/home-plate.png` may remain as a look-dev reference. JWST
+imagery may inform color and density offline. Neither is the runtime
+wallpaper. **No NASA or observatory credit is claimed**; do not invent
+one.
 
 Games sits on the bright core. Tools and Mods lock to the right-hand
 clusters; Network, Files, and Hardware lock to the left-hand arm.

@@ -18,7 +18,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 Home look-dev plate
 -------------------
 `home-plate.png` is an owner-supplied look-dev reference (edge-on linear
-galaxy). It is inspiration only and is not loaded as the runtime Home
-background. Runtime Home is an original procedural living galaxy
-(canvas-painted disk + moving starfield). No NASA or observatory credit
+galaxy). JWST-class photographs may inform the deep-field palette
+offline. Neither is loaded as the runtime Home background. Runtime Home
+is an original procedural living galaxy (tilted canvas-painted disk +
+moving starfield + original filaments). No NASA or observatory credit
 is claimed.

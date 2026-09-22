@@ -1,4 +1,6 @@
-/* UnboundOS Home — original procedural living edge-on galaxy. */
+/* UnboundOS Home — original procedural living galaxy.
+   Slightly pitched horizontal OS bar + JWST-class deep field.
+   Observatory photos are look-dev only and are never loaded. */
 (() => {
   "use strict";
 
@@ -69,18 +71,26 @@
   }
 
   fallback.hidden = true;
-  renderer.setClearColor(0x000000, 1);
+  renderer.setClearColor(0x010208, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.04;
+  renderer.toneMappingExposure = 1.06;
+
+  const CAM_Y = 1.16;
+  const CAM_Z = 8.55;
+  const RIG_PITCH = 0.22;
+  const RIG_ROLL = 0.042;
+  const lookTarget = new THREE.Vector3(0, 0.05, -0.85);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(30, 1, 0.08, 80);
-  camera.position.set(0, 0.018, 6.35);
-  camera.lookAt(0, 0, 0);
+  const camera = new THREE.PerspectiveCamera(26, 1, 0.08, 160);
+  camera.position.set(0, CAM_Y, CAM_Z);
+  camera.lookAt(lookTarget);
 
   const rig = new THREE.Group();
+  rig.rotation.x = RIG_PITCH;
+  rig.rotation.z = RIG_ROLL;
   scene.add(rig);
 
   const starMap = spriteTex(64, (ctx, s) => {
@@ -106,21 +116,34 @@
   const barMap = spriteTex(512, paintBarGlow);
   const diskMap = paintDiskTexture(2560, 1024);
   const dustMap = paintDustSheet(1024, 256);
+  const spikeMap = spriteTex(256, paintSpikeStar);
+  const filamentMaps = [
+    paintFilamentSheet(640, 320, 0xc11, "copper"),
+    paintFilamentSheet(640, 320, 0xc22, "gold"),
+    paintFilamentSheet(640, 320, 0xc33, "lavender"),
+    paintFilamentSheet(640, 320, 0xc44, "indigo")
+  ];
 
-  const warm = new THREE.Color(0xffe7b8);
-  const cool = new THREE.Color(0x8aa4d4);
-  const cream = new THREE.Color(0xfff6e0);
+  const warm = new THREE.Color(0xffe2a8);
+  const copper = new THREE.Color(0xd4844a);
+  const cool = new THREE.Color(0x7a96d0);
+  const cream = new THREE.Color(0xfff4dc);
+  const indigo = new THREE.Color(0x4a5c92);
+  const lavender = new THREE.Color(0xc4b4e0);
 
-  const farStars = buildHalo(6200, 40, 1.08, 0x93a4c8, 0x51f, 0.96, 0.0000075);
-  const midStars = buildHalo(3200, 21, 1.55, 0xd6dcec, 0x77a, 0.6, -0.000013);
-  const nearStars = buildHalo(1100, 11, 2.15, 0xf7f1e4, 0x91c, 0.26, 0.00002);
+  const farStars = buildHalo(8200, 78, 0.74, 0x6e82b8, 0x51f, 0.94, 0.0000048, 0);
+  const midStars = buildHalo(3800, 28, 0.98, 0xc8d4ec, 0x77a, 0.78, -0.000009, -1.2);
+  const nearStars = buildHalo(1400, 13, 1.18, 0xf4ead8, 0x91c, 0.52, 0.000016, 1.4);
+  const deepField = buildColoredField(7200, 92, 0.62, 0xdef1, 0.98, 0.0000032);
   const diskRings = buildDiskRings();
   const shear = buildShear(1500);
   const orbiters = buildOrbiters(180);
   const diskGlow = buildDiskGlow();
   const dustSheets = buildDustSheets();
+  const filaments = buildFilaments();
+  const spikes = buildSpikedStars(42);
   const nodes = buildNodes();
-  scene.add(farStars, midStars, nearStars);
+  scene.add(farStars, midStars, nearStars, deepField);
   const vignette = buildVignette();
   scene.add(vignette);
 
@@ -176,20 +199,25 @@
       ctx.restore();
     }
 
-    oval(w * 0.5, h * 0.038, [
-      [0, "rgba(150, 176, 226, 0.22)"],
-      [0.55, "rgba(96, 132, 196, 0.07)"],
+    oval(w * 0.5, h * 0.042, [
+      [0, "rgba(90, 118, 186, 0.2)"],
+      [0.55, "rgba(58, 78, 140, 0.08)"],
+      [1, "rgba(0,0,0,0)"]
+    ]);
+    oval(w * 0.38, h * 0.03, [
+      [0, "rgba(212, 132, 74, 0.22)"],
+      [0.5, "rgba(168, 96, 52, 0.08)"],
       [1, "rgba(0,0,0,0)"]
     ]);
     oval(w * 0.34, h * 0.026, [
-      [0, "rgba(255, 228, 188, 0.38)"],
-      [0.42, "rgba(210, 168, 120, 0.16)"],
+      [0, "rgba(255, 226, 176, 0.4)"],
+      [0.42, "rgba(214, 154, 88, 0.16)"],
       [1, "rgba(0,0,0,0)"]
     ]);
     oval(w * 0.16, h * 0.032, [
-      [0, "rgba(255, 246, 222, 0.82)"],
-      [0.3, "rgba(255, 214, 152, 0.42)"],
-      [0.68, "rgba(228, 172, 108, 0.12)"],
+      [0, "rgba(255, 246, 222, 0.84)"],
+      [0.3, "rgba(255, 208, 140, 0.44)"],
+      [0.68, "rgba(228, 160, 88, 0.12)"],
       [1, "rgba(0,0,0,0)"]
     ]);
     oval(w * 0.04, h * 0.024, [
@@ -239,9 +267,9 @@
       const x = cx + gauss(rng) * w * 0.42;
       const y = cy + gauss(rng) * h * (0.012 + Math.abs(x - cx) / w * 0.022);
       const t = Math.min(1, Math.abs(x - cx) / (w * 0.42));
-      const r = 255 - t * 40;
-      const g = 236 - t * 50;
-      const b = 200 + t * 40;
+      const r = 255 - t * 28;
+      const g = 228 - t * 70;
+      const b = 186 + t * 56;
       const a = 0.12 + rng() * 0.45;
       const s = rng() < 0.08 ? 1.35 : 0.55 + rng() * 0.7;
       ctx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${a})`;
@@ -361,13 +389,88 @@
     return list;
   }
 
-  function buildHalo(count, spread, size, color, seed, flatten, spin) {
+  function paintSpikeStar(ctx, s) {
+    ctx.clearRect(0, 0, s, s);
+    const c = s / 2;
+    ctx.save();
+    ctx.translate(c, c);
+    ctx.globalCompositeOperation = "lighter";
+    const spike = ctx.createLinearGradient(0, -c, 0, c);
+    spike.addColorStop(0, "rgba(255,246,230,0)");
+    spike.addColorStop(0.46, "rgba(255,236,210,0.55)");
+    spike.addColorStop(0.5, "rgba(255,255,255,0.95)");
+    spike.addColorStop(0.54, "rgba(255,236,210,0.55)");
+    spike.addColorStop(1, "rgba(255,246,230,0)");
+    ctx.fillStyle = spike;
+    ctx.fillRect(-1.1, -c, 2.2, s);
+    ctx.rotate(Math.PI / 2);
+    ctx.fillRect(-1.1, -c, 2.2, s);
+    ctx.rotate(Math.PI / 4);
+    ctx.globalAlpha = 0.35;
+    ctx.fillRect(-0.6, -c * 0.72, 1.2, s * 0.72);
+    ctx.rotate(Math.PI / 2);
+    ctx.fillRect(-0.6, -c * 0.72, 1.2, s * 0.72);
+    ctx.restore();
+    const g = ctx.createRadialGradient(c, c, 0, c, c, s * 0.22);
+    g.addColorStop(0, "rgba(255,252,244,1)");
+    g.addColorStop(0.35, "rgba(255,226,176,0.55)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, s, s);
+  }
+
+  function paintFilamentSheet(w, h, seed, kind) {
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, w, h);
+    const pal = {
+      copper: [[210, 112, 58], [140, 72, 36], [70, 42, 88]],
+      gold: [[255, 214, 140], [214, 154, 78], [90, 70, 120]],
+      lavender: [[196, 168, 230], [120, 96, 168], [40, 50, 96]],
+      indigo: [[90, 118, 186], [48, 64, 120], [20, 24, 48]]
+    }[kind] || [[180, 140, 200], [80, 70, 120], [20, 24, 48]];
+    const img = ctx.createImageData(w, h);
+    const d = img.data;
+    for (let y = 0; y < h; y++) {
+      const ny = y / h;
+      for (let x = 0; x < w; x++) {
+        const nx = x / w;
+        const n1 = valueNoise(nx * 3.2 + seed * 0.01, ny * 5.4, seed);
+        const n2 = valueNoise(nx * 8.5, ny * 11.2, seed + 17);
+        const ridge = Math.pow(Math.abs(n1 - 0.48), 0.55);
+        const veil = n2 * (0.35 + n1 * 0.65);
+        const band = Math.exp(-Math.pow((ny - 0.5) / 0.42, 2));
+        const a = Math.min(1, (0.22 + veil * 0.55) * (1 - ridge * 0.7) * band);
+        if (a < 0.03) continue;
+        const t = Math.min(1, veil * 1.15);
+        const c0 = pal[0];
+        const c1 = pal[1];
+        const mix = t;
+        const i = (y * w + x) * 4;
+        d[i] = (c0[0] + (c1[0] - c0[0]) * mix) | 0;
+        d[i + 1] = (c0[1] + (c1[1] - c0[1]) * mix) | 0;
+        d[i + 2] = (c0[2] + (c1[2] - c0[2]) * mix) | 0;
+        d[i + 3] = (a * 165) | 0;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    return tex;
+  }
+
+  function buildHalo(count, spread, size, color, seed, flatten, spin, zBias) {
     const rng = mulberry(seed);
     const pos = new Float32Array(count * 3);
+    const bias = zBias || 0;
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (rng() - 0.5) * spread;
       pos[i * 3 + 1] = (rng() - 0.5) * spread * flatten;
-      pos[i * 3 + 2] = (rng() - 0.5) * spread * 0.52 - 2.8;
+      pos[i * 3 + 2] = (rng() - 0.5) * spread * 0.88 + bias;
     }
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
@@ -410,7 +513,7 @@
         pos[wrote * 3 + 1] = y;
         pos[wrote * 3 + 2] = z;
         const t = Math.min(1, radius / 5.2);
-        const c = cream.clone().lerp(warm, Math.min(1, t * 1.1)).lerp(cool, t);
+        const c = cream.clone().lerp(warm, Math.min(1, t * 0.7)).lerp(copper, t * 0.35).lerp(cool, t);
         col[wrote * 3] = c.r;
         col[wrote * 3 + 1] = c.g;
         col[wrote * 3 + 2] = c.b;
@@ -449,7 +552,7 @@
       pos[i * 3 + 1] = y;
       pos[i * 3 + 2] = Math.sin(phase) * radius * 0.08 + z;
       const t = Math.min(1, radius / 5.2);
-      const c = warm.clone().lerp(cool, t);
+      const c = warm.clone().lerp(copper, t * 0.28).lerp(cool, t);
       col[i * 3] = c.r;
       col[i * 3 + 1] = c.g;
       col[i * 3 + 2] = c.b;
@@ -507,49 +610,138 @@
     return list;
   }
 
+  function buildColoredField(count, spread, size, seed, flatten, spin) {
+    const rng = mulberry(seed);
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    const palette = [indigo, cool, cream, copper, lavender, warm];
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (rng() - 0.5) * spread;
+      pos[i * 3 + 1] = (rng() - 0.5) * spread * flatten;
+      pos[i * 3 + 2] = (rng() - 0.5) * spread * 0.9 - 8;
+      const roll = rng();
+      const c = roll < 0.62 ? palette[0].clone().lerp(palette[1], rng())
+        : roll < 0.82 ? palette[2].clone().lerp(palette[5], rng())
+          : roll < 0.93 ? palette[3].clone()
+            : palette[4].clone();
+      col[i * 3] = c.r;
+      col[i * 3 + 1] = c.g;
+      col[i * 3 + 2] = c.b;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+    const pts = new THREE.Points(geo, new THREE.PointsMaterial({
+      map: starMap,
+      size,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.78,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      sizeAttenuation: false
+    }));
+    pts.userData.spin = spin;
+    return pts;
+  }
+
+  function buildFilaments() {
+    const list = [];
+    const specs = [
+      { map: 0, x: -6, y: 4.6, z: -22, sx: 28, sy: 10, rz: -0.18, op: 0.13, drift: 0.004 },
+      { map: 1, x: 7, y: -4.2, z: -20, sx: 24, sy: 9, rz: 0.14, op: 0.11, drift: -0.0035 },
+      { map: 2, x: -2, y: 6.4, z: -26, sx: 22, sy: 8, rz: 0.08, op: 0.09, drift: 0.0028 },
+      { map: 3, x: 3, y: -6.1, z: -24, sx: 30, sy: 12, rz: -0.06, op: 0.1, drift: -0.0022 }
+    ];
+    for (const spec of specs) {
+      const mesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1),
+        new THREE.MeshBasicMaterial({
+          map: filamentMaps[spec.map],
+          transparent: true,
+          opacity: spec.op,
+          depthWrite: false,
+          blending: THREE.NormalBlending
+        })
+      );
+      mesh.position.set(spec.x, spec.y, spec.z);
+      mesh.scale.set(spec.sx, spec.sy, 1);
+      mesh.rotation.z = spec.rz;
+      mesh.userData.drift = spec.drift;
+      mesh.userData.baseX = spec.x;
+      scene.add(mesh);
+      list.push(mesh);
+    }
+    return list;
+  }
+
+  function buildSpikedStars(count) {
+    const rng = mulberry(0x5b1);
+    const list = [];
+    for (let i = 0; i < count; i++) {
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: spikeMap,
+        color: rng() > 0.35 ? 0xfff1dc : 0xc8d4ff,
+        transparent: true,
+        opacity: 0.22 + rng() * 0.28,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      }));
+      const y = (rng() > 0.5 ? 1 : -1) * (1.6 + rng() * 9);
+      sprite.position.set((rng() - 0.5) * 22, y, -6 - rng() * 28);
+      const s = 0.12 + rng() * 0.22;
+      sprite.scale.set(s, s, 1);
+      sprite.userData.base = sprite.material.opacity;
+      sprite.userData.phase = rng() * Math.PI * 2;
+      scene.add(sprite);
+      list.push(sprite);
+    }
+    return list;
+  }
+
   function buildNodes() {
     const list = [];
     for (let i = 0; i < NODE_IDS.length; i++) {
       const group = new THREE.Group();
-      group.position.set(nodeX(i), 0, 0.05);
+      group.position.set(nodeX(i), 0.04, 0.12);
       const info = faceInfo(NODE_IDS[i]);
       const coreCol = new THREE.Color(info.core || "#FFE9B0");
       const bloom = new THREE.Sprite(new THREE.SpriteMaterial({
         map: glowMap,
         color: coreCol,
         transparent: true,
-        opacity: i === 0 ? 0.2 : 0.1,
+        opacity: i === 0 ? 0.26 : 0.14,
         depthWrite: false,
         blending: THREE.AdditiveBlending
       }));
-      bloom.scale.set(i === 0 ? 2.15 : 1.2, i === 0 ? 0.78 : 0.48, 1);
+      bloom.scale.set(i === 0 ? 3.15 : 2.05, i === 0 ? 1.18 : 0.82, 1);
       bloom.userData.base = bloom.scale.clone();
       group.add(bloom);
       const core = new THREE.Sprite(new THREE.SpriteMaterial({
         map: starMap,
         color: 0xffffff,
         transparent: true,
-        opacity: i === 0 ? 0.5 : 0.32,
+        opacity: i === 0 ? 0.58 : 0.4,
         depthWrite: false,
         blending: THREE.AdditiveBlending
       }));
-      core.scale.set(i === 0 ? 0.2 : 0.13, i === 0 ? 0.2 : 0.13, 1);
+      core.scale.set(i === 0 ? 0.3 : 0.2, i === 0 ? 0.3 : 0.2, 1);
       group.add(core);
       const dust = new THREE.Sprite(new THREE.SpriteMaterial({
         map: glowMap,
         color: 0xe8c898,
         transparent: true,
-        opacity: 0.04,
+        opacity: 0.05,
         depthWrite: false,
         blending: THREE.AdditiveBlending
       }));
-      dust.scale.set(i === 0 ? 1.6 : 0.95, i === 0 ? 0.42 : 0.3, 1);
+      dust.scale.set(i === 0 ? 2.15 : 1.35, i === 0 ? 0.58 : 0.42, 1);
       group.add(dust);
       const label = makeLabel(info.title);
-      label.position.y = -0.86;
+      label.position.y = -0.72;
       group.add(label);
       const hit = new THREE.Mesh(
-        new THREE.SphereGeometry(0.38, 10, 8),
+        new THREE.SphereGeometry(0.52, 10, 8),
         new THREE.MeshBasicMaterial({ visible: false })
       );
       hit.userData.face = NODE_IDS[i];
@@ -566,7 +758,7 @@
     const tex = spriteTex(256, (ctx, s) => {
       const g = ctx.createRadialGradient(s / 2, s / 2, s * 0.3, s / 2, s / 2, s * 0.64);
       g.addColorStop(0, "rgba(0,0,0,0)");
-      g.addColorStop(1, "rgba(0,0,0,0.58)");
+      g.addColorStop(1, "rgba(0,0,0,0.32)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, s, s);
     });
@@ -618,6 +810,23 @@
       s.position.z = Math.sin(u.phase * 0.7) * u.radius * 0.12;
       const on = u.node === state.node;
       s.material.opacity = u.baseOpacity * (on ? 0.85 : 0.55);
+    }
+
+    for (const sheet of filaments) {
+      sheet.position.x += sheet.userData.drift * dt * 4;
+      if (sheet.position.x > sheet.userData.baseX + 1.4) sheet.userData.drift = -Math.abs(sheet.userData.drift);
+      if (sheet.position.x < sheet.userData.baseX - 1.4) sheet.userData.drift = Math.abs(sheet.userData.drift);
+      sheet.rotation.z += sheet.userData.drift * dt * 0.08;
+    }
+
+    for (const spike of spikes) {
+      spike.userData.phase += dt * 0.35;
+      spike.material.opacity = spike.userData.base * (0.82 + Math.sin(spike.userData.phase) * 0.18);
+    }
+
+    if (deepField.userData.spin) {
+      deepField.rotation.y = now * deepField.userData.spin;
+      deepField.rotation.z = Math.sin(now * 0.00003) * 0.01;
     }
   }
 
@@ -790,11 +999,16 @@
       midStars.rotation.z = Math.sin(now * 0.00006) * 0.018;
     }
     rig.position.x = -state.visualX * 0.82;
-    farStars.position.x = -state.visualX * 0.05;
-    midStars.position.x = -state.visualX * 0.1;
-    nearStars.position.x = -state.visualX * 0.2;
-    camera.position.y = state.motion ? 0.018 + Math.sin(now * 0.00022) * 0.01 : 0.018;
-    camera.lookAt(0, 0, 0);
+    farStars.position.x = -state.visualX * 0.03;
+    midStars.position.x = -state.visualX * 0.07;
+    nearStars.position.x = -state.visualX * 0.16;
+    deepField.position.x = -state.visualX * 0.02;
+    camera.position.set(
+      0,
+      CAM_Y + (state.motion ? Math.sin(now * 0.00018) * 0.028 : 0),
+      CAM_Z
+    );
+    camera.lookAt(lookTarget);
     const breathe = state.motion ? 0.96 + 0.04 * Math.sin(now * 0.0007) : 1;
     for (const n of nodes) {
       const on = n.group.userData.node === state.node;
@@ -1009,7 +1223,7 @@
       opacity: 0.4,
       depthWrite: false
     }));
-    sprite.scale.set(1.18, 0.22, 1);
+    sprite.scale.set(1.36, 0.26, 1);
     return sprite;
   }
 

@@ -12,7 +12,8 @@ slice** only (called out per section). Image/OOBE owners pick up the rest.
 
 Brand stays Unbound Infotech first: obsidian, cyan pulse, cobalt, spare
 circuit amber on **inner pages**. Home is a separate bay — an original
-procedural edge-on galaxy with living stars (look-dev plate is
+procedural tilted horizontal galaxy with a JWST-class deep field
+and living stars (look-dev plate / observatory photos are
 inspiration only, never the runtime wallpaper). Restrained professional
 buttons. No ads. No silent overclock. Treat **x64** as the WinUI
 platform.

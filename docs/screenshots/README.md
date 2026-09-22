@@ -17,11 +17,13 @@ Visual check:
   row. Settings / Profiles are discreet corner glyphs, not galaxy nodes.
   Inner pages restore HOME / SESSION / NETWORK / TOOLS / FILES /
   HARDWARE / MODS / PROFILES / SETTINGS.
-- Home hero is an **original procedural edge-on galaxy**: black void,
-  creamy core, dust-lane ribbon, cooler blue arms, dense halo.
-  All stars move a little (shear / differential rotation / parallax);
-  node clusters stay locked on the bar. Focused node lifts like a
-  selected star. Lists sit on the left half; the scrim vanishes on Escape.
+- Home hero is an **original procedural tilted OS galaxy**: deep void,
+  creamy core, copper dust lanes, cooler indigo arms, full-frame
+  starfield (no observatory plates). All stars move a little
+  (shear / differential rotation / parallax / filament drift);
+  node clusters stay locked on the bar and read larger than a razor
+  edge-on. Focused node lifts like a selected star. Lists sit on the
+  left half; the scrim vanishes on Escape.
 - **Left/Right** shift nodes. **Up** opens that node’s list from the
   bottom; **Down** opens it from the top. The galaxy stays visible.
 - Interface motion On: differential rotation, parallax, silky list ease.
