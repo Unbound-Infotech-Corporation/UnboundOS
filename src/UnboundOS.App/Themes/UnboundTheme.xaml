@@ -98,6 +98,9 @@
     <FontFamily x:Key="UiFontSemiboldFamily">ms-appx:///Assets/Fonts/Inter-SemiBold.ttf#Inter SemiBold</FontFamily>
     <FontFamily x:Key="DisplayFontFamily">ms-appx:///Assets/Fonts/Inter-Bold.ttf#Inter</FontFamily>
     <FontFamily x:Key="MonoFontFamily">ms-appx:///Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono</FontFamily>
+    <FontFamily x:Key="DiavloBookFamily">ms-appx:///Assets/Fonts/Diavlo_BOOK_II_37.otf#Diavlo Book</FontFamily>
+    <FontFamily x:Key="DiavloMediumFamily">ms-appx:///Assets/Fonts/Diavlo_MEDIUM_II_37.otf#Diavlo Medium</FontFamily>
+    <FontFamily x:Key="DiavloBoldFamily">ms-appx:///Assets/Fonts/Diavlo_BOLD_II_37.otf#Diavlo Bold</FontFamily>
 
     <LinearGradientBrush x:Key="HeroAtmosphereBrush" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#05070A" Offset="0" />

@@ -41,7 +41,7 @@ public static class HomeWidgets
     public const string Package = "package";
     public const string Load = "load";
 
-    /// <summary>Left-half category list / scrim. Defaults stay to the right of this.</summary>
+    /// <summary>Left-side titles list. Right-half glass starts here; defaults sit on the glass.</summary>
     public const double ListKeepoutX = 0.48;
 
     public static IReadOnlyList<HomeWidgetDefinition> BuiltIn { get; } =

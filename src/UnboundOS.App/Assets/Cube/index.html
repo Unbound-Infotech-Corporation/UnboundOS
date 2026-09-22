@@ -5,10 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>UnboundOS Home galaxy</title>
   <style>
+    /* A font by Jos Buivenga (exljbris) -> www.exljbris.com */
+    @font-face {
+      font-family: "Diavlo";
+      src: url("../Fonts/Diavlo_BOOK_II_37.otf") format("opentype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Diavlo";
+      src: url("../Fonts/Diavlo_MEDIUM_II_37.otf") format("opentype");
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Diavlo";
+      src: url("../Fonts/Diavlo_BOLD_II_37.otf") format("opentype");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
     :root {
       --void: #000000;
       --star: #F4EFE2;
       --muted: #8A8A96;
+      --cyan: #00F0FF;
+      --list-font: "Diavlo", "Segoe UI Variable", "Segoe UI", sans-serif;
     }
     html, body {
       margin: 0;
@@ -41,81 +65,109 @@
     #overlay {
       position: absolute;
       inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
+      display: block;
       pointer-events: none;
     }
-    #overlay.show { pointer-events: auto; }
     #scrim {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 50%;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate3d(12%, 0, 0);
+      background:
+        linear-gradient(90deg,
+          rgba(0, 2, 8, 0) 0%,
+          rgba(0, 2, 8, 0.22) 14%,
+          rgba(0, 2, 8, 0.48) 38%,
+          rgba(0, 4, 10, 0.58) 72%,
+          rgba(0, 4, 10, 0.64) 100%);
+    }
+    #overlay.ready #scrim {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+    #overlay.motion #scrim {
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.78s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #listPane {
       position: absolute;
       left: 0;
       top: 0;
       bottom: 0;
-      width: 46%;
-      pointer-events: none;
-      opacity: 0;
-      background: linear-gradient(90deg, rgba(0, 2, 8, 0.64) 0%, rgba(0, 2, 8, 0.36) 58%, rgba(0, 2, 8, 0) 100%);
-    }
-    #overlay.show.ready #scrim { opacity: 1; }
-    #overlay.motion #scrim {
-      transition: opacity 0.68s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    #track {
-      position: relative;
+      width: 50%;
       z-index: 1;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      width: min(400px, 36vw);
-      margin-left: 7vw;
-      will-change: transform;
+      justify-content: center;
+      padding: 0 3.4vw 0 7vw;
+      box-sizing: border-box;
       opacity: 0;
+      transform: translate3d(-14px, 0, 0);
     }
-    #track.from-bottom { transform: translate3d(0, 34vh, 0); }
-    #track.from-top { transform: translate3d(0, -34vh, 0); }
-    #overlay.show.ready #track {
+    #overlay.show #listPane { pointer-events: auto; }
+    #overlay.ready #listPane {
       opacity: 1;
-      transform: translate3d(0, var(--track-y, 0px), 0);
+      transform: translate3d(0, 0, 0);
     }
-    #overlay.motion #track {
-      transition: opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.78s cubic-bezier(0.16, 1, 0.3, 1);
+    #overlay.motion #listPane {
+      transition: opacity 0.64s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .row {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 12px 4px;
-      border: 0;
-      background: transparent;
-      color: var(--star);
-      font: inherit;
-      text-align: left;
-      opacity: 0.28;
-      transform: scale(0.97);
-      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.85);
-    }
-    .row.motion {
-      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .row.focus {
-      opacity: 0.96;
-      transform: scale(1.03);
-    }
-    .row .title {
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-    }
-    .row .meta {
-      font-size: 11px;
-      letter-spacing: 0.2em;
+    #listHead {
+      margin: 0 0 18px;
+      font-family: var(--list-font);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--muted);
     }
+    #track {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      width: min(440px, 100%);
+      will-change: transform;
+      transform: translate3d(0, var(--track-y, 0px), 0);
+    }
+    #overlay.motion #track {
+      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .row {
+      display: block;
+      width: 100%;
+      padding: 12px 0;
+      border: 0;
+      background: transparent;
+      color: var(--star);
+      font-family: var(--list-font);
+      font-weight: 400;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: 0.01em;
+      text-align: left;
+      cursor: pointer;
+      opacity: 0.4;
+      text-shadow: 0 1px 16px rgba(0, 0, 0, 0.8);
+    }
+    .row.motion {
+      transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+                  color 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .row.focus {
+      opacity: 1;
+      font-weight: 700;
+      color: var(--cyan);
+      text-shadow:
+        0 0 18px rgba(0, 240, 255, 0.28),
+        0 1px 14px rgba(0, 0, 0, 0.85);
+    }
+    .row .title { display: block; }
     #nodeLabel {
       position: absolute;
       left: 0;
@@ -124,10 +176,11 @@
       margin: 0;
       padding: 0;
       pointer-events: none;
+      font-family: var(--list-font);
+      font-weight: 500;
       color: #F6F1E4;
       font-size: clamp(30px, 3.6vw, 44px);
-      font-weight: 600;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       line-height: 1.1;
       white-space: nowrap;
       text-shadow:
@@ -150,8 +203,9 @@
     body.preview .preview-caption { display: block; }
     .preview-caption h1 {
       margin: 0;
+      font-family: var(--list-font);
       font-size: 20px;
-      font-weight: 600;
+      font-weight: 500;
     }
     .preview-caption p {
       margin: 6px 0 0;
@@ -167,7 +221,10 @@
     <div id="fallback" hidden>Galaxy needs WebGL.</div>
     <div id="overlay">
       <div id="scrim" aria-hidden="true"></div>
-      <div id="track"></div>
+      <div id="listPane">
+        <p id="listHead"></p>
+        <div id="track"></div>
+      </div>
     </div>
   </div>
   <div class="preview-caption">

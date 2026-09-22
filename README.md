@@ -20,7 +20,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 
 | Module | Purpose |
 |--------|---------|
-| **Home galaxy** | Deep-field Home: original procedural tilted OS galaxy, JWST-class star density (not observatory plates), all stars in gentle motion. Left/right shift nodes. Only the focused node is labeled (large, screen-aligned). Up/Down open that node’s list (bottom/top) on the left half over a vanishing scrim. Games launches via `steam://rungameid`. Optional Home HUD. See [docs/cube-nav.md](docs/cube-nav.md) |
+| **Home galaxy** | Deep-field Home: original procedural tilted OS galaxy, JWST-class star density (not observatory plates), all stars in gentle motion. Left/right shift nodes. Only the focused node is labeled (large, screen-aligned). Up/Down open that node’s list (bottom/top): right-half dark glass over the galaxy, Diavlo titles on the left. Games launches via `steam://rungameid`. Optional Home HUD. See [docs/cube-nav.md](docs/cube-nav.md) |
 | **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
 | **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam, Rainmeter, MusicBee, visualizer pack, Store, Xbox) plus utilities (Notepad++, 7-Zip). Launch, Windows URI, or official Get. Recommended Rainmeter theme is [Phenix](https://visualskins.com/skin/phenix); clock skin is [Minimalistic Clock](https://visualskins.com/skin/minimalistic-clock) (link only — no .rmskin in tree). Ultrawide crop recipe lives on the OBS tile |

@@ -35,9 +35,12 @@ focused node** shows a label — large, high-contrast, screen-aligned
 type that does not follow the disk tilt. Other nodes stay unlabeled.
 Company cyan (`#00F0FF`) stays a brand token for **inner pages**.
 
-Category lists sit on the **left half** of the screen over a
-translucent scrim. The scrim **vanishes completely** when Escape
-collapses back to the node bar.
+Opening a category (Games, Tools, …) brings up a **right-half** dark
+glass panel over the living galaxy — soft edge, vanishing toward the
+center, not a hard cut. The **titles-only** list sits to the **left**
+of that glass in Diavlo. Up/Down still choose list origin (bottom/top
+focus); Left/Right still change nodes. The glass and list ease in
+(slide/fade) unless Motion Settings is off. Escape collapses both.
 
 Motion-off (or a live session) freezes star drift and heavy postFX;
 lists still open (instant or a short fade). The previous control-altar
@@ -103,9 +106,15 @@ Drag to reposition. Positions and visibility persist in `settings.json`
 Motion-off still lets you drag; no fancy drag animation is required.
 
 Default stack sits on the **right** (`X = 0.84`, past `ListKeepoutX`
-0.48) so plaques stay clear of the left-half category list. Widgets
-stay visible while a list is open and **dim** (layer opacity) so they
-do not fight the scrim. Master visibility is Settings → Home HUD.
+0.48) so plaques rest on the right-half glass instead of the
+titles list. Widgets stay visible while a list is open and **dim**
+(layer opacity) so they do not fight the glass. Master visibility is
+Settings → Home HUD.
+
+List type is **Diavlo** (Jos Buivenga / exljbris), bundled under
+`Assets/Fonts` for embedding in the shell only. See
+`src/UnboundOS.App/Assets/Fonts/README.md` and `LICENSE-Diavlo.txt`.
+Do not redistribute the font files as a standalone download.
 
 Custom widgets later: implement `IHomeWidgetSource` and register it
 before `AddUnboundOs()`. First-party catalog is

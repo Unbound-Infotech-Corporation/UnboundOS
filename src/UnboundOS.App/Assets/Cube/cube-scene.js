@@ -23,6 +23,7 @@
   const fallback = document.getElementById("fallback");
   const overlayEl = document.getElementById("overlay");
   const trackEl = document.getElementById("track");
+  const listHeadEl = document.getElementById("listHead");
   const nodeLabelEl = document.getElementById("nodeLabel");
   const hosted = Boolean(window.chrome?.webview);
   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
@@ -837,14 +838,23 @@
     syncCaption(info.title, info.hint);
   }
 
+  let hideTimer = 0;
+
+  function cancelHide() {
+    if (hideTimer) {
+      clearTimeout(hideTimer);
+      hideTimer = 0;
+    }
+  }
+
   function showOverlay(items, focus, origin, instant) {
+    cancelHide();
     state.overlay = true;
     state.items = items || [];
     state.focus = typeof focus === "number" ? focus : 0;
     state.origin = origin === "bottom" ? "bottom" : "top";
     overlayEl.classList.remove("show", "ready", "motion");
-    trackEl.classList.remove("from-top", "from-bottom");
-    trackEl.classList.add(state.origin === "bottom" ? "from-bottom" : "from-top");
+    if (listHeadEl) listHeadEl.textContent = faceInfo(NODE_IDS[state.node]).title || "";
     if (!instant && state.motion) overlayEl.classList.add("motion");
     renderTrack();
     applyOverlayFocus(true);
@@ -856,12 +866,26 @@
   }
 
   function hideOverlay() {
+    cancelHide();
+    const fade = state.motion && overlayEl.classList.contains("ready");
     state.overlay = false;
     state.items = [];
-    overlayEl.classList.remove("show", "ready", "motion");
-    trackEl.classList.remove("from-top", "from-bottom");
-    trackEl.style.removeProperty("--track-y");
-    trackEl.innerHTML = "";
+    overlayEl.classList.remove("show");
+    const finish = () => {
+      hideTimer = 0;
+      overlayEl.classList.remove("ready", "motion");
+      trackEl.style.removeProperty("--track-y");
+      trackEl.style.removeProperty("transition");
+      trackEl.innerHTML = "";
+      if (listHeadEl) listHeadEl.textContent = "";
+    };
+    if (fade) {
+      overlayEl.classList.add("motion");
+      overlayEl.classList.remove("ready");
+      hideTimer = setTimeout(finish, 720);
+    } else {
+      finish();
+    }
     const info = faceInfo(NODE_IDS[state.node]);
     syncCaption(info.title, info.hint);
     syncNodeLabel();
@@ -869,12 +893,11 @@
 
   function renderTrack() {
     trackEl.innerHTML = "";
-    trackEl.classList.toggle("motion", state.motion);
     state.items.forEach((item, i) => {
       const el = document.createElement("button");
       el.type = "button";
       el.className = "row" + (state.motion ? " motion" : "") + (i === state.focus ? " focus" : "");
-      el.innerHTML = `<span class="title">${escapeHtml(item.title || "")}</span><span class="meta">${escapeHtml(item.meta || "")}</span>`;
+      el.textContent = item.title || "";
       el.addEventListener("click", (ev) => {
         ev.stopPropagation();
         if (i === state.focus) {
@@ -889,21 +912,24 @@
     });
   }
 
+  function rowStride() {
+    const rows = trackEl.children;
+    if (rows.length >= 2) return rows[1].offsetTop - rows[0].offsetTop;
+    if (rows[0]) return rows[0].offsetHeight + 2;
+    return 56;
+  }
+
   function applyOverlayFocus(instant) {
     const rows = trackEl.children;
     for (let i = 0; i < rows.length; i++) {
       rows[i].classList.toggle("focus", i === state.focus);
     }
     const item = state.items[state.focus];
-    if (item) syncCaption(item.title, `${item.meta || ""} · up/down move · Enter opens · Esc returns`);
-    const rowH = 52;
-    const y = (state.items.length * 0.5 - state.focus - 0.5) * rowH;
+    if (item) syncCaption(item.title, "Up/Down move · Enter opens · Esc returns");
+    const y = (state.items.length * 0.5 - state.focus - 0.5) * rowStride();
+    if (instant || !state.motion) trackEl.style.transition = "none";
+    else trackEl.style.transition = "";
     trackEl.style.setProperty("--track-y", `${y}px`);
-    if (instant || !state.motion) {
-      trackEl.style.transition = "none";
-    } else {
-      trackEl.style.transition = "";
-    }
   }
 
   function startOpen(msg) {
