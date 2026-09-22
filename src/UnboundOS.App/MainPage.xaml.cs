@@ -90,7 +90,7 @@ public sealed partial class MainPage : Page
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
             "Settings" => "Display, overclocking launch, startup audit, Home widgets, motion.",
-            "Overlay" => "Overlay addon hook — optional and off unless a host is registered.",
+            "Overlay" => "Rainmeter overlay. Open the host or Get Phenix.",
             _ => ViewModel.StatusLine
         };
 

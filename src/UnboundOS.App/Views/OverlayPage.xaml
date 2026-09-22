@@ -6,34 +6,59 @@
     xmlns:overlay="using:UnboundOS.Core.Overlay"
     Background="Transparent">
 
-    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Desktop overlay addon">
+    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Rainmeter overlay">
         <StackPanel Spacing="22">
             <StackPanel Spacing="6">
-                <TextBlock Style="{StaticResource KickerText}" Text="OPTIONAL ADDON" />
+                <TextBlock Style="{StaticResource KickerText}" Text="HOME OVERLAY" />
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="{x:Bind ViewModel.Headline}" />
                 <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.Detail}" />
             </StackPanel>
 
             <Border Style="{StaticResource PanelBorderStyle}">
                 <StackPanel Spacing="12">
-                    <TextBlock Style="{StaticResource PanelLabelText}" Text="HOST" />
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="RAINMETER" />
                     <TextBlock
                         FontFamily="{StaticResource MonoFontFamily}"
                         Foreground="{StaticResource PaperBrush}"
                         Text="{x:Bind ViewModel.DisplayName}" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Rainmeter is the overlay path. Set OverlayHostOptions.Enabled or register IDesktopOverlayHost before AddUnboundOs(). See docs/overlay-addon.md. Session enter/exit does not start this host. Get Phenix, Minimalistic Clock, and the visualizer pack from Tools — do not ship .rmskin files." />
+                        Text="Discover and Open the real Rainmeter host. Recommended starter theme is Phenix (visualskins.com/skin/phenix). Session enter/exit does not start this host — Competitive can still strip Rainmeter. Do not ship .rmskin files." />
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Button
+                            Style="{StaticResource SignalButtonStyle}"
+                            Content="OPEN RAINMETER"
+                            Command="{x:Bind ViewModel.OpenRainmeterCommand}"
+                            IsEnabled="{x:Bind ViewModel.CanOpenRainmeter}"
+                            AutomationProperties.Name="Open Rainmeter"
+                            AutomationProperties.HelpText="Starts Rainmeter.exe if installed. UnboundOS does not rewrite skins." />
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="GET PHENIX"
+                            Command="{x:Bind ViewModel.GetPhenixCommand}"
+                            AutomationProperties.Name="Get Phenix starter skin"
+                            AutomationProperties.HelpText="Opens the official Phenix page. UnboundOS does not download the .rmskin." />
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="GET RAINMETER"
+                            Command="{x:Bind ViewModel.GetRainmeterCommand}"
+                            AutomationProperties.Name="Get Rainmeter"
+                            AutomationProperties.HelpText="Opens the official Rainmeter site. UnboundOS does not install it." />
+                    </StackPanel>
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.Status, Mode=OneWay}"
+                        AutomationProperties.LiveSetting="Polite" />
                 </StackPanel>
             </Border>
 
             <Border Style="{StaticResource PanelBorderStyle}">
                 <StackPanel Spacing="12">
-                    <TextBlock Style="{StaticResource PanelLabelText}" Text="WIDGETS" />
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="STARTER SET" />
                     <TextBlock
                         x:Name="EmptyWidgets"
                         Style="{StaticResource BodyMutedText}"
-                        Text="No widgets registered. An addon can publish OverlayWidgetDescriptor entries without touching SessionEngine." />
+                        Text="No widgets registered." />
                     <ItemsControl ItemsSource="{x:Bind ViewModel.Widgets}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="overlay:OverlayWidgetDescriptor">
@@ -44,6 +69,7 @@
                                         <Run Text=" · " />
                                         <Run Text="{x:Bind Id}" />
                                     </TextBlock>
+                                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind Description}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

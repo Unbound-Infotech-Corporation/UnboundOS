@@ -7,8 +7,10 @@ galaxy Home stays the hero. Overlay widgets sit **over** that galaxy.
 user-picked skins, music visualizers). First-party light-grey Home
 widgets (`IHomeWidgetCatalog`) stay as the built-in fallback.
 
-This host is **off by default** (`OverlayHostOptions.Enabled = false`).
-The Overlay nav item stays hidden until the host is enabled.
+This host is **on by default** (`OverlayHostOptions.Enabled = true`).
+The Overlay nav item is the Rainmeter surface: Open Rainmeter, Get Phenix.
+Set `Enabled = false` to hide it. The app window starts/stops the host;
+`SessionEngine` never does.
 
 ## Contract
 
@@ -27,7 +29,7 @@ The shell:
 - Registers Rainmeter as `IDesktopOverlayHost` with `TryAddSingleton`,
   so an addon can register first and win.
 - Starts/stops the host from the app window only when `IsEnabled` is true.
-- Shows an Overlay nav item and stub page only when `IsEnabled` is true.
+- Shows an Overlay nav item (Open Rainmeter / Get Phenix) when `IsEnabled` is true.
 - **Opens** `Rainmeter.exe` with empty arguments. It never writes
   `rainmeter.ini`, never sends Rainmeter bangs, and never rewrites skins.
 
@@ -42,8 +44,8 @@ its state alone.
 1. Tools → **Rainmeter** — Open launches `Rainmeter.exe` if found
    (Program Files, uninstall registry, Start Menu). Get is
    [https://www.rainmeter.net/](https://www.rainmeter.net/).
-2. Tools → **Phenix** — recommended starter **theme** over Home. Get
-   [https://visualskins.com/skin/phenix](https://visualskins.com/skin/phenix).
+2. Tools / Overlay → **Phenix** — recommended starter **theme** over Home.
+   Open or Get [https://visualskins.com/skin/phenix](https://visualskins.com/skin/phenix).
 3. Tools → **Minimalistic Clock** — recommended **clock** skin over Home.
    Get [https://visualskins.com/skin/minimalistic-clock](https://visualskins.com/skin/minimalistic-clock).
 4. Rainmeter stays in charge of which skins load and where they sit.
@@ -96,10 +98,10 @@ Do not pirate paid visualizer packs. UnboundOS does not ship them.
 - Tools → **Xbox** — Open `xbox:`. Get is the official Store product
   page (`ms-windows-store://pdp/?ProductId=9MV0B5HZVK9Z`).
 
-## Enabling the Rainmeter host
+## Disabling the Rainmeter host
 
 ```csharp
-services.AddSingleton(new OverlayHostOptions { Enabled = true });
+services.AddSingleton(OverlayHostOptions.Disabled);
 services.AddUnboundOs();
 ```
 

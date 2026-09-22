@@ -99,6 +99,15 @@ public sealed class BrandingAndOverlayTests
     }
 
     [Fact]
+    public void RainmeterOverlayHost_IsOnByDefault()
+    {
+        var host = new RainmeterDesktopOverlayHost();
+        Assert.True(host.IsEnabled);
+        Assert.Equal("phenix", host.Widgets[0].Id);
+        Assert.Contains(host.Widgets, widget => widget.Title == "Phenix");
+    }
+
+    [Fact]
     public async Task RainmeterOverlayHost_StaysOffUntilOptionsEnabled()
     {
         var root = Path.Combine(Path.GetTempPath(), "unboundos-rainmeter-" + Guid.NewGuid().ToString("N"));
@@ -144,7 +153,7 @@ public sealed class BrandingAndOverlayTests
     }
 
     [Fact]
-    public void AddUnboundOs_RegistersRainmeterOverlayOffByDefault()
+    public void AddUnboundOs_RegistersRainmeterOverlayOnByDefault()
     {
         var services = new ServiceCollection();
         services.AddUnboundOs();
@@ -152,10 +161,11 @@ public sealed class BrandingAndOverlayTests
 
         var host = provider.GetRequiredService<IDesktopOverlayHost>();
         Assert.IsType<RainmeterDesktopOverlayHost>(host);
-        Assert.False(host.IsEnabled);
+        Assert.True(host.IsEnabled);
         Assert.Contains(host.Widgets, widget => widget.Id == "phenix");
         Assert.Contains(host.Widgets, widget => widget.Id == "minimalistic-clock");
         Assert.Contains(host.Widgets, widget => widget.Id == "monstercat");
+        Assert.Equal("phenix", host.Widgets[0].Id);
 
         var motion = provider.GetRequiredService<IUiMotionPolicy>();
         Assert.IsType<UiMotionPolicy>(motion);

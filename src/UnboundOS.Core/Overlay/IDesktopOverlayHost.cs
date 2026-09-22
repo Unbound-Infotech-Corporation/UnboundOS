@@ -1,10 +1,10 @@
 namespace UnboundOS.Core.Overlay;
 
 /// <summary>
-/// Optional desktop overlay / skin host. In-tree path is Rainmeter
-/// (<c>RainmeterDesktopOverlayHost</c>), off unless
-/// <see cref="OverlayHostOptions.Enabled"/>. Session, network, and
-/// process engines must never depend on this type.
+/// Desktop overlay / skin host. In-tree path is Rainmeter
+/// (<c>RainmeterDesktopOverlayHost</c>), on unless
+/// <see cref="OverlayHostOptions.Enabled"/> is set false. Session,
+/// network, and process engines must never depend on this type.
 /// An addon can still replace <see cref="IDesktopOverlayHost"/> in DI
 /// before <c>AddUnboundOs()</c> (or uses <c>TryAdd</c> so the addon wins).
 /// </summary>

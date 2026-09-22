@@ -111,7 +111,8 @@ before `AddUnboundOs()`. First-party catalog is
 `IHomeWidgetCatalog`. This is not a Rainmeter clone. **Rainmeter** is
 the customizable overlay path over this galaxy (Tools → Rainmeter /
 Phenix / Visualizer pack). The in-tree host is
-`RainmeterDesktopOverlayHost`, off until `OverlayHostOptions.Enabled`.
+`RainmeterDesktopOverlayHost`, on unless `OverlayHostOptions.Enabled`
+is set false. Overlay nav Opens Rainmeter and Gets Phenix.
 See [overlay-addon.md](overlay-addon.md). Recommended theme is
 **Phenix**; recommended clock skin is **Minimalistic Clock**
 (Get the official pages; do not ship the `.rmskin`).

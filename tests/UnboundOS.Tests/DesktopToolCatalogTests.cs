@@ -62,8 +62,11 @@ public sealed class DesktopToolCatalogTests
 
         var phenix = Assert.Single(tools, tool => tool.Id == DesktopToolIds.Phenix);
         Assert.False(phenix.IsInstalled);
+        Assert.True(phenix.OpensViaUri);
+        Assert.True(phenix.CanOpen);
+        Assert.Equal("OPEN", phenix.StatusLabel);
         Assert.Equal(DesktopToolCatalog.PhenixGetPath.Uri, phenix.GetPath.Uri);
-        Assert.Equal("https://visualskins.com/skin/phenix", phenix.GetPath.Uri);
+        Assert.Equal("https://visualskins.com/skin/phenix", phenix.OpenPath.Uri);
         Assert.Contains("Phenix", phenix.Job, StringComparison.Ordinal);
         Assert.DoesNotContain("Minimalistic", phenix.Job, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(".rmskin", phenix.GetPath.Uri, StringComparison.OrdinalIgnoreCase);
@@ -363,6 +366,31 @@ public sealed class DesktopToolCatalogTests
 
         Assert.True(result.Succeeded);
         Assert.Equal("xbox:", opened);
+    }
+
+    [Fact]
+    public async Task Launch_Phenix_OpensOfficialPage()
+    {
+        string? opened = null;
+        var launcher = new DesktopToolLauncher(new VortexLauncher(IsolatedVortex()), (_, _) => true, uri =>
+        {
+            opened = uri;
+            return true;
+        });
+
+        var result = await launcher.LaunchAsync(new DesktopTool(
+            DesktopToolIds.Phenix,
+            "Phenix",
+            "Starter",
+            false,
+            null,
+            [],
+            DesktopToolCatalog.PhenixGetPath,
+            OpensViaUri: true,
+            LaunchPath: DesktopToolCatalog.PhenixGetPath));
+
+        Assert.True(result.Succeeded);
+        Assert.Equal("https://visualskins.com/skin/phenix", opened);
     }
 
     [Fact]

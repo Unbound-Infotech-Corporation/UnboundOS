@@ -14,13 +14,13 @@ OS-level product requirements for the shell **and** the WinUnbound image live in
 
 ## What it is
 
-A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic stay in the existing engines. **Rainmeter** is the overlay-widget path over galaxy Home (discover / Open / protect — Rainmeter keeps its configs). First-party Home widgets stay as the fallback. See [docs/overlay-addon.md](docs/overlay-addon.md). The overlay host is **optional and off**.
+A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic stay in the existing engines. **Rainmeter** is the overlay-widget path over galaxy Home (discover / Open / protect — Rainmeter keeps its configs). First-party Home widgets stay as the fallback. See [docs/overlay-addon.md](docs/overlay-addon.md). The Overlay page Opens Rainmeter and Gets Phenix.
 
 ## What it does
 
 | Module | Purpose |
 |--------|---------|
-| **Home galaxy** | Deep-field Home: original procedural tilted OS galaxy, JWST-class star density (not observatory plates), all stars in gentle motion. Left/right shift nodes. Up/Down open that node’s list (bottom/top) on the left half over a vanishing scrim. Games launches via `steam://rungameid`. Optional Home HUD. See [docs/cube-nav.md](docs/cube-nav.md) |
+| **Home galaxy** | Deep-field Home: original procedural tilted OS galaxy, JWST-class star density (not observatory plates), all stars in gentle motion. Left/right shift nodes. Only the focused node is labeled (large, screen-aligned). Up/Down open that node’s list (bottom/top) on the left half over a vanishing scrim. Games launches via `steam://rungameid`. Optional Home HUD. See [docs/cube-nav.md](docs/cube-nav.md) |
 | **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
 | **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam, Rainmeter, MusicBee, visualizer pack, Store, Xbox) plus utilities (Notepad++, 7-Zip). Launch, Windows URI, or official Get. Recommended Rainmeter theme is [Phenix](https://visualskins.com/skin/phenix); clock skin is [Minimalistic Clock](https://visualskins.com/skin/minimalistic-clock) (link only — no .rmskin in tree). Ultrawide crop recipe lives on the OBS tile |
@@ -162,7 +162,7 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 - Tools marketplace does not sell apps, bundle installers, or scrape accounts
 - Unbound Files is the daily file UI; Explorer remains for compatibility (no `Shell=`)
 - Settings Display / Overclocking only **launch** vendor tools — UnboundOS never writes clocks
-- No ads. Rainmeter overlay skins stay optional and off; first-party Home widgets remain the fallback
+- No ads. Rainmeter is the Home overlay path (Open / Get Phenix); first-party Home widgets remain the fallback
 
 ## Files, hardware, and image follow-ups
 

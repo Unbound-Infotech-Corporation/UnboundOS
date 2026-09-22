@@ -5,9 +5,9 @@ namespace UnboundOS.Infrastructure.Overlay;
 
 /// <summary>
 /// Rainmeter is the customizable overlay path over galaxy Home.
-/// Off until <see cref="OverlayHostOptions.Enabled"/> is set.
-/// Does not rewrite Rainmeter configs. First-party Home widgets stay
-/// as the built-in fallback.
+/// On unless <see cref="OverlayHostOptions.Enabled"/> is set false.
+/// Opens Rainmeter.exe with empty args. Does not rewrite configs.
+/// First-party Home widgets stay as the built-in fallback.
 /// </summary>
 public sealed class RainmeterDesktopOverlayHost : IDesktopOverlayHost
 {
@@ -18,7 +18,7 @@ public sealed class RainmeterDesktopOverlayHost : IDesktopOverlayHost
         OverlayHostOptions? options = null,
         RainmeterLauncher? rainmeter = null)
     {
-        _options = options ?? OverlayHostOptions.Disabled;
+        _options = options ?? new OverlayHostOptions();
         _rainmeter = rainmeter ?? new RainmeterLauncher();
     }
 

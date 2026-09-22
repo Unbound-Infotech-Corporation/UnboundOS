@@ -138,10 +138,12 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
         Create(
             DesktopToolIds.Phenix,
             "Phenix",
-            "Recommended Rainmeter starter theme over Home (not a clock-only skin). Get opens the official Phenix page. UnboundOS does not redistribute the .rmskin.",
+            "Recommended Rainmeter starter theme over Home. Open or Get the official Phenix page. UnboundOS does not redistribute the .rmskin.",
             null,
             [],
-            PhenixGetPath),
+            PhenixGetPath,
+            OpensViaUri: true,
+            LaunchPath: PhenixGetPath),
         Create(
             DesktopToolIds.MinimalisticClock,
             "Minimalistic Clock",

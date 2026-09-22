@@ -56,7 +56,7 @@ public partial class ShellViewModel : ObservableObject
 
     public string CpuUsageText => $"{CpuUsage:0}%";
 
-    /// <summary>Overlay nav stays hidden unless an addon host is enabled.</summary>
+    /// <summary>Overlay nav shows when the Rainmeter host is enabled (default on).</summary>
     public bool OverlayNavVisible => _overlay.IsEnabled;
 
     partial void OnCpuUsageChanged(double value) => OnPropertyChanged(nameof(CpuUsageText));
