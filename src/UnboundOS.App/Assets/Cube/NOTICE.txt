@@ -23,7 +23,8 @@ a live Wallpaper Engine desktop may inform volume, nebula color, and
 the winding energy trail offline.
 None of those plates or workshop files are loaded or shipped.
 Runtime Home is an original procedural living galaxy (tilted
-canvas-painted disk + in-band nebula + moving starfield). The zoomed
-category sun is an original shader (granulation, limb darkening,
-restrained gold corona). NASA SDO AIA/HMI stills were look-dev only
-and are not loaded or shipped. No NASA logo is drawn.
+canvas-painted disk + in-band nebula + moving starfield). Zoomed
+category suns are original shaders (per-category color, granulation,
+limb darkening, coronal swirl, occasional limb flares). NASA SDO
+AIA/HMI stills were look-dev only and are not loaded or shipped.
+No NASA logo is drawn.

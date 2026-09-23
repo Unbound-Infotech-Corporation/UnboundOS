@@ -8,6 +8,43 @@
   const NODE_IDS = ["Session", "Tools", "Mods", "Network", "Files", "Hardware"];
   const NODE_X = [0, 1.14, 2.22, -1.14, -2.22, -3.3];
   const OPTIONS_SUN_X = 3.15;
+  const SUN_LOOKS = {
+    Session: {
+      phot: [1.0, 0.78, 0.16], hot: [1.0, 0.94, 0.52], lane: [0.58, 0.22, 0.04],
+      gold: [1.0, 0.8, 0.26], umbra: [0.14, 0.05, 0.02], corona: [1.0, 0.84, 0.36],
+      seed: 11.3, activity: 0.78, gran: 32.0, spots: 0.82, swirl: 0.2, flare: 0.72
+    },
+    Settings: {
+      phot: [1.0, 0.88, 0.3], hot: [1.0, 0.96, 0.62], lane: [0.7, 0.32, 0.06],
+      gold: [1.0, 0.86, 0.32], umbra: [0.18, 0.07, 0.02], corona: [1.0, 0.9, 0.42],
+      seed: 27.8, activity: 1.08, gran: 28.0, spots: 0.7, swirl: 0.34, flare: 1.15
+    },
+    Tools: {
+      phot: [1.0, 0.46, 0.2], hot: [1.0, 0.72, 0.42], lane: [0.52, 0.12, 0.06],
+      gold: [1.0, 0.55, 0.3], umbra: [0.16, 0.04, 0.03], corona: [1.0, 0.5, 0.32],
+      seed: 41.6, activity: 0.92, gran: 36.0, spots: 0.6, swirl: -0.26, flare: 0.95
+    },
+    Mods: {
+      phot: [0.98, 0.62, 0.18], hot: [1.0, 0.82, 0.4], lane: [0.42, 0.14, 0.04],
+      gold: [0.96, 0.58, 0.22], umbra: [0.1, 0.03, 0.015], corona: [1.0, 0.68, 0.28],
+      seed: 63.1, activity: 0.84, gran: 24.0, spots: 1.15, swirl: 0.16, flare: 0.68
+    },
+    Network: {
+      phot: [1.0, 0.86, 0.42], hot: [0.96, 0.96, 0.88], lane: [0.42, 0.28, 0.12],
+      gold: [0.92, 0.9, 0.62], umbra: [0.12, 0.08, 0.06], corona: [0.86, 0.92, 1.0],
+      seed: 8.4, activity: 0.7, gran: 30.0, spots: 0.48, swirl: -0.3, flare: 0.58
+    },
+    Files: {
+      phot: [1.0, 0.84, 0.48], hot: [1.0, 0.94, 0.72], lane: [0.62, 0.38, 0.14],
+      gold: [1.0, 0.88, 0.5], umbra: [0.2, 0.1, 0.04], corona: [1.0, 0.9, 0.58],
+      seed: 19.7, activity: 0.42, gran: 22.0, spots: 0.4, swirl: 0.1, flare: 0.38
+    },
+    Hardware: {
+      phot: [1.0, 0.9, 0.38], hot: [1.0, 0.98, 0.82], lane: [0.7, 0.28, 0.06],
+      gold: [1.0, 0.78, 0.28], umbra: [0.12, 0.04, 0.02], corona: [1.0, 0.86, 0.4],
+      seed: 52.2, activity: 1.0, gran: 38.0, spots: 0.9, swirl: 0.28, flare: 1.05
+    }
+  };
   const OPTIONS_ITEMS = [
     { id: "motion", title: "Interface motion", meta: "SET" },
     { id: "hud", title: "Home HUD", meta: "SET" },
@@ -58,6 +95,10 @@
     zoomKind: "",
     overlayTitle: "",
     overlayFront: "",
+    sunId: "Session",
+    sunFlare: 0,
+    sunFlareGoal: 0,
+    nextSunFlare: 0,
     dragging: false,
     moved: false,
     pressX: 0,
@@ -1253,6 +1294,17 @@
     return `
       uniform float uTime;
       uniform float uFade;
+      uniform float uSeed;
+      uniform float uActivity;
+      uniform float uGran;
+      uniform float uSpotAmt;
+      uniform float uSwirl;
+      uniform float uFlare;
+      uniform vec3 uPhot;
+      uniform vec3 uHot;
+      uniform vec3 uLane;
+      uniform vec3 uGold;
+      uniform vec3 uUmbra;
       varying vec3 vNormal;
       varying vec3 vWorldPos;
       varying vec3 vObjectPos;
@@ -1261,37 +1313,40 @@
         vec3 n = normalize(vNormal);
         vec3 viewDir = normalize(cameraPosition - vWorldPos);
         float mu = clamp(dot(n, viewDir), 0.0, 1.0);
-        float limb = mix(0.28, 1.0, pow(mu, 0.58));
+        float limb = mix(0.2, 1.0, pow(mu, 0.52));
         vec3 p = normalize(vObjectPos);
-        float boil = uTime * 0.018;
-        float superG = fbm(p * 3.6 + 1.7);
-        float cells = worley(p * 26.0 + vec3(0.0, boil * 0.15, 0.0));
-        float gran = smoothstep(0.04, 0.52, cells);
-        float lanes = pow(1.0 - gran, 1.55);
-        float fine = fbm(p * 48.0 + vec3(2.2, boil, 5.1));
-        float relief = fbm(p * 28.0) - fbm(p * 28.0 + vec3(0.045, 0.0, 0.0));
-        float spots = fbm(p * 2.4 + vec3(3.8, 0.6, 1.4));
-        float umbra = smoothstep(0.74, 0.86, spots);
-        float penumbra = smoothstep(0.62, 0.74, spots) * (1.0 - umbra);
-        float fil = fbm(p * 10.5 + vec3(0.4, boil * 0.35, 2.6));
-        float loops = smoothstep(0.5, 0.78, fil);
-        vec3 phot = vec3(1.0, 0.78, 0.22);
-        vec3 hot = vec3(1.0, 0.93, 0.62);
-        vec3 lane = vec3(0.62, 0.24, 0.05);
-        vec3 gold = vec3(1.0, 0.82, 0.32);
-        vec3 umbraC = vec3(0.16, 0.06, 0.02);
-        vec3 col = mix(lane, phot, gran);
-        col = mix(col, hot, gran * fine * 0.55);
-        col = mix(col, gold, loops * 0.38 * (0.35 + 0.65 * mu));
-        col *= mix(0.86, 1.16, superG);
-        col *= 1.0 + relief * 1.35;
-        col = mix(col, lane * 0.5, penumbra);
-        col = mix(col, umbraC, umbra * 0.82);
+        float boil = uTime * (0.02 + uActivity * 0.03);
+        float superG = fbm(p * 3.2 + uSeed);
+        float cellsA = worley(p * uGran + vec3(uSeed, boil * 0.2, 1.4));
+        float cellsB = worley(p * (uGran * 1.7) + vec3(2.2, boil * 0.12, uSeed));
+        float gran = smoothstep(0.03, 0.5, cellsA) * 0.65 + smoothstep(0.02, 0.42, cellsB) * 0.35;
+        float lanes = pow(1.0 - gran, 1.45);
+        float fine = fbm(p * 52.0 + vec3(2.2, boil, uSeed));
+        float relief = fbm(p * 30.0 + uSeed) - fbm(p * 30.0 + vec3(0.04, 0.0, uSeed * 0.1));
+        float spots = fbm(p * (2.1 + uSpotAmt * 0.6) + vec3(uSeed * 0.4, 0.6, 1.4));
+        float umbra = smoothstep(0.72, 0.88, spots) * uSpotAmt;
+        float penumbra = smoothstep(0.58, 0.74, spots) * (1.0 - umbra) * uSpotAmt;
+        float ang = atan(p.z, p.x) + uTime * uSwirl;
+        float fil = fbm(vec3(ang * 1.35, p.y * 3.8, uSeed + boil * 0.4));
+        float loops = smoothstep(0.46, 0.8, fil) * uActivity;
+        float wave = sin(p.x * 7.5 + p.z * 5.5 - uTime * (1.1 + uActivity) + uSeed);
+        wave = smoothstep(0.42, 0.92, wave) * uActivity;
+        vec3 flareDir = normalize(vec3(sin(uSeed * 1.7), 0.28, cos(uSeed * 1.7)));
+        float flarePatch = pow(max(0.0, dot(p, flareDir)), 7.0) * uFlare;
+        vec3 col = mix(uLane, uPhot, gran);
+        col = mix(col, uHot, gran * fine * 0.58);
+        col = mix(col, uGold, loops * 0.42 * (0.3 + 0.7 * mu));
+        col *= mix(0.82, 1.18, superG);
+        col *= 1.0 + relief * 1.45;
+        col = mix(col, uLane * 0.48, penumbra);
+        col = mix(col, uUmbra, umbra * 0.88);
         col *= limb;
-        col += hot * pow(mu, 9.0) * 0.16;
-        col += gold * pow(1.0 - mu, 2.4) * 0.4;
-        col += lane * lanes * 0.06;
-        col *= 1.12 * uFade;
+        col += uHot * pow(mu, 8.5) * 0.15;
+        col += uGold * pow(1.0 - mu, 2.35) * (0.34 + uActivity * 0.12);
+        col += uLane * lanes * 0.07;
+        col += uHot * wave * 0.16;
+        col += uHot * flarePatch * 1.35;
+        col *= 1.14 * uFade;
         gl_FragColor = vec4(col, 1.0);
       }
     `;
@@ -1302,6 +1357,14 @@
       uniform float uTime;
       uniform float uFade;
       uniform float uStrength;
+      uniform float uSeed;
+      uniform float uActivity;
+      uniform float uSwirl;
+      uniform float uFlare;
+      uniform float uMode;
+      uniform vec3 uGold;
+      uniform vec3 uHot;
+      uniform vec3 uCorona;
       varying vec3 vNormal;
       varying vec3 vWorldPos;
       varying vec3 vObjectPos;
@@ -1310,28 +1373,53 @@
         vec3 n = normalize(vNormal);
         vec3 viewDir = normalize(cameraPosition - vWorldPos);
         float mu = clamp(dot(n, viewDir), 0.0, 1.0);
-        float fres = pow(1.0 - mu, 1.45);
+        float fres = pow(1.0 - mu, 1.28 + uMode * 0.2);
         vec3 p = normalize(vObjectPos);
-        float fil = fbm(p * 7.5 + vec3(0.0, uTime * 0.02, 1.8));
-        float tendril = smoothstep(0.38, 0.8, fil);
-        float spike = pow(worley(p * 5.2 + 3.1), 1.4);
-        float haze = fres * (0.22 + 0.62 * tendril) * (0.55 + 0.45 * (1.0 - spike));
-        vec3 gold = vec3(1.0, 0.82, 0.36);
-        vec3 pale = vec3(1.0, 0.93, 0.62);
-        vec3 col = mix(gold, pale, tendril * 0.55);
+        float ang = atan(p.z, p.x) + uTime * uSwirl;
+        float lat = p.y;
+        float swirl = fbm(vec3(ang * 1.8, lat * 3.2, uSeed + uTime * 0.08));
+        float arcade = exp(-abs(lat - 0.18 * sin(uSeed)) * 7.5) * (0.45 + 0.55 * sin(ang * 6.0 + uTime * uSwirl * 2.4));
+        float tendril = smoothstep(0.34, 0.82, swirl);
+        float spike = pow(worley(p * 4.8 + uSeed), 1.35);
+        vec3 d1 = normalize(vec3(sin(uSeed * 1.7), 0.32, cos(uSeed * 1.7)));
+        vec3 d2 = normalize(vec3(sin(uSeed * 2.9 + 2.1), -0.2, cos(uSeed * 2.9 + 2.1)));
+        float prom = pow(max(0.0, dot(p, d1)), 16.0) + pow(max(0.0, dot(p, d2)), 20.0);
+        float haze = fres * (0.16 + 0.55 * tendril + 0.28 * max(0.0, arcade)) * (0.5 + 0.5 * (1.0 - spike));
+        haze += fres * prom * (0.35 + uFlare * 1.6) * uActivity;
+        haze *= mix(0.75, 1.2, uActivity);
+        vec3 col = mix(uCorona, uHot, tendril * 0.45 + uFlare * 0.25);
+        col = mix(col, uGold, arcade * 0.35);
         float alpha = haze * uStrength * uFade;
+        if (uMode > 1.5) alpha *= 0.85 + uFlare * 0.7;
         gl_FragColor = vec4(col * alpha, alpha);
       }
     `;
   }
 
+  function sunUniformSet(extra) {
+    return {
+      uTime: { value: 0 },
+      uFade: { value: 0 },
+      uStrength: { value: extra && extra.strength != null ? extra.strength : 1 },
+      uSeed: { value: 11.3 },
+      uActivity: { value: 0.8 },
+      uGran: { value: 30 },
+      uSpotAmt: { value: 0.8 },
+      uSwirl: { value: 0.2 },
+      uFlare: { value: 0 },
+      uMode: { value: extra && extra.mode != null ? extra.mode : 0 },
+      uPhot: { value: new THREE.Vector3(1, 0.78, 0.18) },
+      uHot: { value: new THREE.Vector3(1, 0.94, 0.55) },
+      uLane: { value: new THREE.Vector3(0.55, 0.2, 0.04) },
+      uGold: { value: new THREE.Vector3(1, 0.82, 0.3) },
+      uUmbra: { value: new THREE.Vector3(0.14, 0.05, 0.02) },
+      uCorona: { value: new THREE.Vector3(1, 0.86, 0.38) }
+    };
+  }
+
   function makeSunMaterial(frag, extra) {
     return new THREE.ShaderMaterial({
-      uniforms: {
-        uTime: { value: 0 },
-        uFade: { value: 0 },
-        uStrength: { value: extra && extra.strength != null ? extra.strength : 1 }
-      },
+      uniforms: sunUniformSet(extra),
       vertexShader: sunVert(),
       fragmentShader: frag,
       transparent: !!(extra && extra.transparent),
@@ -1351,17 +1439,70 @@
       makeSunMaterial(photosphereFrag())
     );
     const chromo = new THREE.Mesh(
-      new THREE.SphereGeometry(1.02, 80, 56),
-      makeSunMaterial(coronaFrag(), { transparent: true, additive: true, strength: 0.55 })
+      new THREE.SphereGeometry(1.018, 80, 56),
+      makeSunMaterial(coronaFrag(), { transparent: true, additive: true, strength: 0.48, mode: 0 })
     );
     const corona = new THREE.Mesh(
-      new THREE.SphereGeometry(1.16, 80, 56),
-      makeSunMaterial(coronaFrag(), { transparent: true, additive: true, strength: 0.85 })
+      new THREE.SphereGeometry(1.14, 80, 56),
+      makeSunMaterial(coronaFrag(), { transparent: true, additive: true, strength: 0.92, mode: 1 })
     );
-    group.add(corona, chromo, body);
-    group.userData = { body, chromo, corona };
+    const prom = new THREE.Mesh(
+      new THREE.SphereGeometry(1.3, 72, 48),
+      makeSunMaterial(coronaFrag(), { transparent: true, additive: true, strength: 0.7, mode: 2 })
+    );
+    group.add(prom, corona, chromo, body);
+    group.userData = { body, chromo, corona, prom };
     scene.add(group);
     return group;
+  }
+
+  function sunMeshes() {
+    const u = heroSun.userData;
+    return [u.body, u.chromo, u.corona, u.prom];
+  }
+
+  function applySunLook(id) {
+    const look = SUN_LOOKS[id] || SUN_LOOKS.Session;
+    state.sunId = SUN_LOOKS[id] ? id : "Session";
+    for (const mesh of sunMeshes()) {
+      const un = mesh.material.uniforms;
+      un.uSeed.value = look.seed;
+      un.uActivity.value = look.activity;
+      un.uGran.value = look.gran;
+      un.uSpotAmt.value = look.spots;
+      un.uSwirl.value = look.swirl;
+      un.uPhot.value.fromArray(look.phot);
+      un.uHot.value.fromArray(look.hot);
+      un.uLane.value.fromArray(look.lane);
+      un.uGold.value.fromArray(look.gold);
+      un.uUmbra.value.fromArray(look.umbra);
+      un.uCorona.value.fromArray(look.corona);
+    }
+    if (preview && state.motion) {
+      state.sunFlare = 0.4;
+      state.sunFlareGoal = 1.05 * look.flare;
+      state.nextSunFlare = performance.now() + 2400;
+    } else {
+      state.sunFlare = 0;
+      state.sunFlareGoal = 0;
+      state.nextSunFlare = performance.now() + (state.motion ? 1800 + Math.random() * 2200 : 1e12);
+    }
+  }
+
+  function tickSunWeather(step, now) {
+    const look = SUN_LOOKS[state.sunId] || SUN_LOOKS.Session;
+    if (!state.motion) return;
+    if (now >= state.nextSunFlare) {
+      state.sunFlareGoal = (0.65 + Math.random() * 0.5) * look.flare;
+      const gap = preview ? 2600 + Math.random() * 1400 : (3200 + Math.random() * 9000) / Math.max(0.35, look.activity);
+      state.nextSunFlare = now + gap;
+    }
+    if (state.sunFlareGoal > 0.02) {
+      state.sunFlare += (state.sunFlareGoal - state.sunFlare) * (1 - Math.exp(-step * 5.4));
+      state.sunFlareGoal *= Math.exp(-step * 1.55);
+    } else {
+      state.sunFlare *= Math.exp(-step * 2.8);
+    }
   }
 
   function getZoomAnchor() {
@@ -1614,6 +1755,7 @@
       : (options ? OPTIONS_ITEMS : previewItems(NODE_IDS[state.node]));
     const origin = String(msg.origin || "top").toLowerCase();
     const focus = typeof msg.focus === "number" ? msg.focus : (origin === "bottom" ? items.length - 1 : 0);
+    applySunLook(options ? "Settings" : NODE_IDS[state.node]);
     if (items.length) showOverlay(items, focus, origin, !state.motion);
     send({ v: 1, type: "opened", face: state.overlayFront || NODE_IDS[state.node], stay: true });
     setLoop(true);
@@ -1775,6 +1917,7 @@
       camera.updateProjectionMatrix();
     }
     const breathe = state.motion ? 0.96 + 0.04 * Math.sin(now * 0.0007) : 1;
+    if (blend > 0.01) tickSunWeather(step, now);
     poseHeroSun(blend, step);
     for (const n of nodes) {
       const on = n.group.userData.node === state.node;
@@ -1818,19 +1961,22 @@
     const fade = smooth01(Math.min(1, blend * 1.15));
     const u = heroSun.userData;
     u.body.scale.setScalar(hr);
-    u.chromo.scale.setScalar(hr * 1.02);
-    u.corona.scale.setScalar(hr * 1.16);
-    u.body.material.uniforms.uFade.value = fade;
-    u.chromo.material.uniforms.uFade.value = fade;
-    u.corona.material.uniforms.uFade.value = fade;
+    u.chromo.scale.setScalar(hr * 1.018);
+    u.corona.scale.setScalar(hr * 1.14);
+    u.prom.scale.setScalar(hr * 1.3);
+    const flare = state.sunFlare;
+    for (const mesh of sunMeshes()) {
+      mesh.material.uniforms.uFade.value = fade;
+      mesh.material.uniforms.uFlare.value = flare;
+    }
     if (state.motion) {
-      u.body.rotation.y += step * 0.032;
-      u.chromo.rotation.y += step * 0.026;
-      u.corona.rotation.y += step * 0.016;
+      u.body.rotation.y += step * 0.03;
+      u.chromo.rotation.y += step * 0.024;
+      u.corona.rotation.y += step * 0.014;
+      u.prom.rotation.y += step * 0.01;
       const t = u.body.material.uniforms.uTime;
       t.value += step;
-      u.chromo.material.uniforms.uTime.value = t.value;
-      u.corona.material.uniforms.uTime.value = t.value;
+      for (const mesh of sunMeshes()) mesh.material.uniforms.uTime.value = t.value;
     }
   }
 
@@ -2192,6 +2338,18 @@
   if (!hosted && (startOpenParam === "options" || startOpenParam === "settings")) {
     window.setTimeout(() => {
       previewOpenOptions();
+      if (!state.motion) renderFrame(0);
+    }, 80);
+  } else if (!hosted && (startOpenParam === "games" || startOpenParam === "session")) {
+    window.setTimeout(() => {
+      previewOpen("top");
+      if (!state.motion) renderFrame(0);
+    }, 80);
+  } else if (!hosted && NODE_IDS.some((id) => id.toLowerCase() === startOpenParam)) {
+    window.setTimeout(() => {
+      const idx = NODE_IDS.findIndex((id) => id.toLowerCase() === startOpenParam);
+      setNode(idx, true);
+      previewOpen("top");
       if (!state.motion) renderFrame(0);
     }, 80);
   }

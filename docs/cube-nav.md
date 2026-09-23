@@ -43,8 +43,10 @@ void (soft silhouette + dim accretion, not a cartoon). Company cyan
 
 Opening a category (Games, Tools, Options, …) **zooms the camera into
 that system's sun** and parks a slow-rotating **procedural photosphere**
-on the **right** (limb darkening, granulation, muted active regions, a
-thin gold corona rim). The universe stays visible around it. A **titles-only**
+on the **right**. Each category has its own star (gold 171-like Options,
+continuum-orange Games, rose-gold Tools, and so on) with limb darkening,
+granulation, swirling coronal loops, and occasional limb flares. Motion-off
+freezes the crawl and bursts. The universe stays visible around it. A **titles-only**
 Diavlo list sits on the **left** over a reasonably transparent black
 wash — not an opaque slab. Options is a dedicated sun just beyond
 Mods (not on the L/R cycle); the Home **SET** glyph opens it instead
@@ -106,6 +108,7 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
 
 Look-dev: `Assets/Cube/index.html?preview=1`.
 Options zoom: `?preview=1&open=options` (KeyO in the browser preview).
+Games / Tools: `?preview=1&open=games` or `?open=tools`.
 `docs/screenshots/README.md` still wants a Windows `Debug|x64` capture.
 
 ## Home widgets
