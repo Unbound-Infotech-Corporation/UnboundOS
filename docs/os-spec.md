@@ -20,7 +20,7 @@ Home navigation is a **tab bar** plus a **packaged first-party HUD**
 (WebView2 hosting HTML, not Unreal). Tabs: Hardware, Files, Network,
 Games, Options, Tools, Mods. Left/right move focus. **Up** opens that
 tab’s list from the bottom; **Down** opens it from the top. The list
-is titles-only on the left over the same Obsidian field and HUD. Quiet
+is titles-only in the center over the same Obsidian field and HUD. Quiet
 **movable** light-grey temp plaques can sit on the right. Architecture:
 [docs/home-nav.md](home-nav.md). Offline NIC pack: [docs/offline-nic-pack.md](offline-nic-pack.md).
 
@@ -136,3 +136,7 @@ pack, plus Microsoft Store and Xbox URI tiles.
 
 - Overlay addon (optional, off): `docs/overlay-addon.md`
 - Daily startup task stub: `docs/startup-audit-task.xml`
+- Competitive landscape: `docs/competitive-landscape.md`
+- Session skinny: `docs/gaming-skinny.md`
+- Theme tokens: `docs/theme-tokens.md`
+- Offline NIC pack: `docs/offline-nic-pack.md`

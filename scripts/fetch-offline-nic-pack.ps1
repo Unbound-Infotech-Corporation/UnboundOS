@@ -25,6 +25,9 @@ $sources = @("# Offline NIC pack sources", "", "Do not scrape unofficial driver 
 foreach ($v in $vendors) {
     $dir = Join-Path $OutDir $v.Id
     New-Item -ItemType Directory -Force -Path $dir | Out-Null
+    foreach ($year in @("2023", "2024", "2025", "2026")) {
+        New-Item -ItemType Directory -Force -Path (Join-Path $dir $year) | Out-Null
+    }
     $readme = @(
         "# $($v.Id)",
         "",
@@ -33,7 +36,8 @@ foreach ($v in $vendors) {
         "Official: $($v.Url)",
         $v.Note,
         "",
-        "Place vendor INF/driver trees here. Keep the whole pack under 5 GB."
+        "Place vendor INF/driver trees under year folders (2023-2026).",
+        "Keep the whole pack under 5 GB. Priority order is the `$vendors` list."
     ) -join "`n"
     Set-Content -Path (Join-Path $dir "README.md") -Value $readme -Encoding utf8
     $sources += "- $($v.Id) (p$($v.Priority) $($v.Kind)): $($v.Url) — $($v.Note)"

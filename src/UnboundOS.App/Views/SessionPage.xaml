@@ -68,7 +68,7 @@
 
             <TextBlock
                 Style="{StaticResource BodyMutedText}"
-                Text="Enter Session switches the Windows power plan and NIC metrics (UAC may prompt). Critical processes stay protected. UnboundOS never lowers the monitor. Play native." />
+                Text="Enter Session switches the Windows power plan, applies reversible Game Mode / Game DVR / visual-effects posture, and NIC metrics (UAC may prompt). Exit / Restore puts the desktop back. Explorer stays. Defender is not disabled. UnboundOS never lowers the monitor. Play native." />
 
             <Grid ColumnSpacing="16">
                 <Grid.ColumnDefinitions>

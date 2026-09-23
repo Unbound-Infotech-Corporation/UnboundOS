@@ -27,12 +27,17 @@
       font-style: normal;
       font-display: swap;
     }
+    /* Theme tokens — tweak here (keep UnboundTokens.cs + UnboundTheme.xaml in sync). */
     :root {
       --void: #05070A;
       --star: #F4EFE2;
+      --paper: #F7FAFC;
       --muted: #8A8A96;
+      --date-ink: #C8D0D8;
+      --weather-ink: #8A96A2;
       --cyan: #00F0FF;
       --list-font: "Diavlo Book", "Diavlo Medium", "Diavlo Bold", "Segoe UI Variable", "Segoe UI", sans-serif;
+      --hud-font: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
       --blade-w: 18px;
     }
     html, body {
@@ -243,7 +248,11 @@
       pointer-events: none;
     }
     .tab.is-focus .tab-label { opacity: 1; }
-    #studio.is-overlay .tab-label { opacity: 0; }
+    #studio.is-overlay .tab-label,
+    body.is-overlay .tab-label {
+      opacity: 0 !important;
+      visibility: hidden;
+    }
     #studio.is-overlay .tab:not(.is-focus) { opacity: 0.36; }
     @keyframes tipBreath {
       0%, 100% { filter: brightness(0.9); }
@@ -311,12 +320,13 @@
       position: absolute;
       left: 50%;
       top: 0;
-      bottom: 0;
+      bottom: 26vh;
       width: min(520px, 42vw);
       z-index: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
       padding: 0;
       box-sizing: border-box;
       opacity: 0;
@@ -339,6 +349,8 @@
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--muted);
+      text-align: center;
+      width: 100%;
     }
     #track {
       position: relative;
@@ -364,7 +376,7 @@
       font-size: 28px;
       line-height: 1.15;
       letter-spacing: 0.01em;
-      text-align: left;
+      text-align: center;
       cursor: pointer;
       opacity: 0.4;
       text-shadow: 0 1px 16px rgba(0, 0, 0, 0.8);
@@ -390,7 +402,7 @@
       inset: 0;
       z-index: 5;
       pointer-events: none;
-      color: #F4F7FA;
+      color: var(--paper);
     }
     body.hud-off #hud { display: none; }
     #hudClock {
@@ -401,24 +413,24 @@
     }
     #clock {
       margin: 0;
-      font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
+      font-family: var(--hud-font);
       font-weight: 200;
       font-size: clamp(72px, 8.6vw, 124px);
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       line-height: 0.88;
-      color: #F7FAFC;
+      color: var(--paper);
       text-shadow: 0 10px 36px rgba(0, 0, 0, 0.55);
     }
     #dateLine, #weatherLine {
       margin: 10px 0 0;
-      font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
+      font-family: var(--hud-font);
       font-weight: 400;
       font-size: clamp(15px, 1.15vw, 18px);
-      letter-spacing: 0.16em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #C8D0D8;
+      color: var(--date-ink);
     }
-    #weatherLine { color: #8A96A2; letter-spacing: 0.14em; }
+    #weatherLine { color: var(--weather-ink); letter-spacing: 0.08em; }
     #hudViz {
       position: absolute;
       left: clamp(28px, 4.2vw, 72px);
@@ -451,7 +463,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
+      font-family: var(--hud-font);
       font-size: 13px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -477,7 +489,7 @@
       border: 0;
       background: transparent;
       color: #E8EEF2;
-      font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
+      font-family: var(--hud-font);
       font-weight: 300;
       font-size: 17px;
       letter-spacing: 0.22em;
@@ -492,8 +504,8 @@
       right: clamp(28px, 4vw, 64px);
       top: clamp(28px, 6vh, 56px);
       width: min(220px, 18vw);
-      font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
-      color: #D8DEE4;
+      font-family: var(--hud-font);
+      color: var(--date-ink);
     }
     #hudCal h2 {
       margin: 0 0 10px;

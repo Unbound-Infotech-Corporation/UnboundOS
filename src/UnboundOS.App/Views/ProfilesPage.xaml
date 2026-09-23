@@ -45,6 +45,11 @@
                 Style="{StaticResource BodyMutedText}"
                 MaxWidth="820"
                 Text="{x:Bind ViewModel.SelectedProfile.Description, Mode=OneWay}" />
+            <TextBlock
+                Style="{StaticResource BodyMutedText}"
+                Foreground="{StaticResource CyanPulseBrush}"
+                MaxWidth="820"
+                Text="{x:Bind ViewModel.SelectedProfile.SkinnySummary, Mode=OneWay}" />
 
             <Grid ColumnSpacing="16">
                 <Grid.ColumnDefinitions>

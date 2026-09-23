@@ -15,7 +15,7 @@ public sealed partial class SettingsPage : Page
         InitializeComponent();
         ViewModel.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName is nameof(ViewModel.SelectedGroup) or nameof(ViewModel.ShowMotion) or nameof(ViewModel.ShowHud) or null)
+            if (e.PropertyName is nameof(ViewModel.SelectedGroup) or nameof(ViewModel.ShowMotion) or nameof(ViewModel.ShowHud) or nameof(ViewModel.ShowSkinny) or null)
             {
                 SyncPanels();
             }
@@ -33,6 +33,7 @@ public sealed partial class SettingsPage : Page
     {
         MotionPanel.Visibility = ViewModel.ShowMotion ? Visibility.Visible : Visibility.Collapsed;
         HudPanel.Visibility = ViewModel.ShowHud ? Visibility.Visible : Visibility.Collapsed;
+        SkinnyPanel.Visibility = ViewModel.ShowSkinny ? Visibility.Visible : Visibility.Collapsed;
         DisplayPanel.Visibility = ViewModel.ShowDisplay ? Visibility.Visible : Visibility.Collapsed;
         OverclockPanel.Visibility = ViewModel.ShowOverclock ? Visibility.Visible : Visibility.Collapsed;
         StartupPanel.Visibility = ViewModel.ShowStartup ? Visibility.Visible : Visibility.Collapsed;

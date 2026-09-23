@@ -57,8 +57,10 @@ public sealed class JsonProfileStore : IProfileStore
         {
             Id = "competitive",
             Name = "Competitive Edge",
-            Description = "Strip overlays and chat apps. Protect the match.",
+            Description = "Strip overlays and chat. Game Mode on, Game DVR off, Ultimate Performance while live. Explorer stays for EAC/Vanguard. Restore on exit.",
             Kind = ProfileKind.Competitive,
+            DisableGameDvr = true,
+            VisualEffectsPerformance = true,
             TerminateProcessNames =
             [
                 "OneDrive", "Microsoft.SharePoint", "SkypeApp", "SkypeBridge",
@@ -74,8 +76,10 @@ public sealed class JsonProfileStore : IProfileStore
         {
             Id = "streamer",
             Name = "Streamer Split",
-            Description = "Game NIC + stream NIC. Ultrawide crop plan for Twitch 1080p60.",
+            Description = "Game NIC + stream NIC. Keep OBS/Discord/capture. Game Mode on; Game DVR stays. Ultrawide crop plan for Twitch 1080p60.",
             Kind = ProfileKind.Streamer,
+            DisableGameDvr = false,
+            VisualEffectsPerformance = true,
             TerminateProcessNames =
             [
                 "OneDrive", "Microsoft.SharePoint", "YourPhone", "Widgets",
@@ -98,8 +102,10 @@ public sealed class JsonProfileStore : IProfileStore
         {
             Id = "living-room",
             Name = "Living Room Shell",
-            Description = "Big-picture calm. Fewer popups, console-like focus.",
+            Description = "Big-picture calm. Game Mode on. Visual effects stay pretty. Fewer popups, console-like focus.",
             Kind = ProfileKind.LivingRoom,
+            DisableGameDvr = false,
+            VisualEffectsPerformance = false,
             TerminateProcessNames =
             [
                 "OneDrive", "Widgets", "YourPhone", "Microsoft.SharePoint",

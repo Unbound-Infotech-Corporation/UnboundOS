@@ -15,6 +15,7 @@
   const OPTIONS_ITEMS = [
     { id: "motion", title: "Interface motion", meta: "SET" },
     { id: "hud", title: "Home HUD", meta: "SET" },
+    { id: "skinny", title: "Session skinny", meta: "SET" },
     { id: "display", title: "Display", meta: "SET" },
     { id: "overclock", title: "Overclocking", meta: "SET" },
     { id: "startup", title: "Startup audit", meta: "SET" },
@@ -307,6 +308,8 @@
       window.setTimeout(() => overlayEl.classList.remove("motion"), 720);
     }
     state.items = [];
+    if (trackEl) trackEl.innerHTML = "";
+    if (listHeadEl) listHeadEl.textContent = "";
     setTab(state.tab, instant || !state.motion);
   }
 

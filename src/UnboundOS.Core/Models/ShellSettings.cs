@@ -20,6 +20,9 @@ public sealed record ShellSettings
 
     public List<HomeWidgetPlacement>? HomeWidgetPlacements { get; init; }
 
+    /// <summary>Null means leave Windows HAGS alone. True/false is an informed toggle.</summary>
+    public bool? HardwareGpuScheduling { get; init; }
+
     [JsonIgnore]
     public bool ShowHomeHud => HomeHudEnabled ?? true;
 

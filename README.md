@@ -8,7 +8,7 @@ UnboundOS does **not** replace Windows. It applies a focused gaming / streaming 
 
 The shell is a living-room home: on Home a **black studio field** holds a row of **narrow vertical tabs** plus a **packaged first-party HUD** (clock, date, viz, calendar — no Rainmeter required). **Left/Right** move focus. The focused tab lifts slightly and shows its **Diavlo** name above. **Up** opens that tab’s list from the bottom; **Down** opens it from the top — titles sit in the center over the same themed field. Games uses the Steam library when present. **SET** opens Options on the same field. Profiles stays a discreet corner glyph. Settings → Home HUD hides the chrome. The old Settings tile that showed the letter “I” is gone.
 
-OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
+OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). How we beat Windows-lite ISOs: [docs/competitive-landscape.md](docs/competitive-landscape.md). Session skinny toggles: [docs/gaming-skinny.md](docs/gaming-skinny.md). Theme hex: [docs/theme-tokens.md](docs/theme-tokens.md). Offline NIC pack: [docs/offline-nic-pack.md](docs/offline-nic-pack.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup, reversible session skinny). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
 
 **Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (black Home, vertical tabs, quiet HUD). Company cyan `#00F0FF` is the tab tip and inner-page token. See [docs/screenshots/README.md](docs/screenshots/README.md).
 
@@ -21,7 +21,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | Module | Purpose |
 |--------|---------|
 | **Home** | Obsidian field with vertical studio tabs and a packaged HUD (clock / date / viz / calendar). Left/right move tabs. Only the focused tab is labeled in Diavlo. Up/Down open that list on the same theme — no sun zoom. SET opens Options. Games launches via `steam://rungameid`. Settings → Home HUD toggles the chrome. Rainmeter is optional. See [docs/home-nav.md](docs/home-nav.md) |
-| **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat |
+| **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat, apply reversible Game Mode / Game DVR / visual-effects posture |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
 | **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam, Rainmeter, MusicBee, visualizer pack, Store, Xbox) plus utilities (Notepad++, 7-Zip). Launch, Windows URI, or official Get. Recommended Rainmeter theme is [Phenix](https://visualskins.com/skin/phenix); clock skin is [Minimalistic Clock](https://visualskins.com/skin/minimalistic-clock) (link only — no .rmskin in tree). Ultrawide crop recipe lives on the OBS tile |
 | **Profiles** | JSON profiles in LocalAppData (`Competitive`, `Streamer`, `Living Room`) |
@@ -29,7 +29,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
 | **Files** | Daily folder UI (Home, Desktop, Downloads, drives). Explorer stays for EAC / BattlEye / Vanguard |
 | **Hardware** | CPU, GPU, disks, RAM from this PC. Live sensors later; optional Open HWiNFO in Tools |
-| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Home widgets (movable clock / temps / load, glass/dim/compact), Interface motion On / Off |
+| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Home HUD, Session skinny (HAGS + Game DVR copy), Interface motion On / Off |
 
 ## Solution layout
 
@@ -64,9 +64,11 @@ Created on first launch at:
 
 `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\profiles.json`
 
-1. **Competitive Edge** — aggressive denylist, anticheat protect list
-2. **Streamer Split** — gentler cleanup + 5110×1400 → 1920×1080 stream plan
-3. **Living Room Shell** — calm big-picture focus
+1. **Competitive Edge** — aggressive denylist, anticheat protect list, Game DVR off, visual effects Performance
+2. **Streamer Split** — gentler cleanup + 5110×1400 → 1920×1080 stream plan; capture stays on
+3. **Living Room Shell** — calm big-picture focus; visual effects stay pretty
+
+HAGS is **not** flipped by Enter Session. Options → Session skinny, then test frametimes. Defender / Update / VBS stay on. See [docs/gaming-skinny.md](docs/gaming-skinny.md).
 
 ## Tools marketplace
 

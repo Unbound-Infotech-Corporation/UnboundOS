@@ -446,6 +446,16 @@ public sealed class DesktopToolCatalogTests
         Assert.Contains("Rainmeter", streamer.ProtectProcessNames, StringComparer.OrdinalIgnoreCase);
         Assert.Contains("MusicBee", streamer.ProtectProcessNames, StringComparer.OrdinalIgnoreCase);
         Assert.DoesNotContain("Rainmeter", streamer.TerminateProcessNames, StringComparer.OrdinalIgnoreCase);
+
+        Assert.True(competitive.DisableGameDvr);
+        Assert.True(competitive.VisualEffectsPerformance);
+        Assert.True(competitive.ApplyGameMode);
+        Assert.False(streamer.DisableGameDvr);
+        Assert.True(streamer.VisualEffectsPerformance);
+        Assert.False(living.DisableGameDvr);
+        Assert.False(living.VisualEffectsPerformance);
+        Assert.Contains("Game DVR off", competitive.SkinnySummary, StringComparison.Ordinal);
+        Assert.Contains("Defender", competitive.SkinnySummary, StringComparison.Ordinal);
     }
 
     private static VortexDiscoverySettings IsolatedVortex() => new()

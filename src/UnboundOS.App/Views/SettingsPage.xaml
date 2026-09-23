@@ -118,6 +118,31 @@
                 </StackPanel>
             </Border>
 
+            <Border x:Name="SkinnyPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="16">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="SESSION SKINNY" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="Living Room, Streamer, and Competitive apply Game Mode, visual effects, and Game DVR as reversible session posture. Exit / Restore puts the desktop back. Defender, Windows Update, and VBS stay on — they are not default-disabled. No HPET or timer BCDEdit hacks." />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.HagsEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Hardware-accelerated GPU scheduling (HAGS)"
+                        AutomationProperties.Name="Hardware-accelerated GPU scheduling"
+                        AutomationProperties.HelpText="Informed toggle. Test frametimes. Not forced when a session starts. May need elevation and a reboot." />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="{x:Bind ViewModel.HagsStatus, Mode=OneWay}"
+                        AutomationProperties.LiveSetting="Polite" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="Competitive turns Game DVR off while live so capture does not sit on the frame. Streamer leaves capture on. See docs/gaming-skinny.md." />
+                </StackPanel>
+            </Border>
+
             <Border x:Name="DisplayPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
                 <StackPanel Spacing="12">
                     <TextBlock Style="{StaticResource PanelLabelText}" Text="DISPLAY" />

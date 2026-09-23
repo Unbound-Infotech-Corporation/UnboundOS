@@ -8,13 +8,19 @@ public sealed class SessionEngine : ISessionEngine
     private readonly IProcessGuardian _processes;
     private readonly INetworkDirector _network;
     private readonly IPowerPlanService _power;
+    private readonly IGamingSkinnyPolicy _skinny;
     private readonly object _gate = new();
 
-    public SessionEngine(IProcessGuardian processes, INetworkDirector network, IPowerPlanService power)
+    public SessionEngine(
+        IProcessGuardian processes,
+        INetworkDirector network,
+        IPowerPlanService power,
+        IGamingSkinnyPolicy skinny)
     {
         _processes = processes;
         _network = network;
         _power = power;
+        _skinny = skinny;
     }
 
     public SessionState State { get; private set; } = SessionState.Idle;
@@ -83,12 +89,24 @@ public sealed class SessionEngine : ISessionEngine
                 ? "No denylist processes were running."
                 : $"Stopped {terminated.Count} background process(es).");
 
+            GamingSkinnySnapshot? skinnySnap = null;
+            try
+            {
+                skinnySnap = await _skinny.ApplyAsync(profile, ct).ConfigureAwait(false);
+                actions.AddRange(skinnySnap.Actions);
+            }
+            catch (Exception skinnyEx)
+            {
+                actions.Add($"Skinny posture skipped: {skinnyEx.Message}");
+            }
+
             var snapshot = new SessionSnapshot
             {
                 ProfileId = profile.Id,
                 TerminatedProcesses = terminated,
                 OriginalAdapterMetrics = metrics,
                 OriginalPowerSchemeGuid = originalPower,
+                Skinny = skinnySnap,
                 Notes = plan.Summary
             };
 
@@ -189,6 +207,9 @@ public sealed class SessionEngine : ISessionEngine
                 var restorePower = await _power.RestoreSchemeAsync(snapshot.OriginalPowerSchemeGuid, ct)
                     .ConfigureAwait(false);
                 actions.Add(restorePower.Message);
+
+                var restoreSkinny = await _skinny.RestoreAsync(snapshot.Skinny, ct).ConfigureAwait(false);
+                actions.Add(restoreSkinny.Message);
 
                 actions.Add(
                     $"Session had cleared {snapshot.TerminatedProcesses.Count} process(es); relaunch apps as needed.");

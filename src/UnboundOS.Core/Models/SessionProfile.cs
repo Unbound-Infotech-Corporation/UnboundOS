@@ -16,12 +16,36 @@ public sealed class SessionProfile
     public bool EnableHighPerformancePowerHint { get; init; } = true;
     public bool PauseWindowsUpdateOrchestrator { get; init; }
 
+    /// <summary>Turn Windows Game Mode on for the session. Default on.</summary>
+    public bool ApplyGameMode { get; init; } = true;
+
+    /// <summary>Competitive: Game DVR / background capture off. Streamer keeps capture.</summary>
+    public bool DisableGameDvr { get; init; }
+
+    /// <summary>Visual effects → Performance while the session is live.</summary>
+    public bool VisualEffectsPerformance { get; init; }
+
     public string Monogram =>
         string.IsNullOrWhiteSpace(Name)
             ? "P"
             : char.ToUpperInvariant(Name.Trim()[0]).ToString();
 
     public string KindLabel => Kind.ToString().ToUpperInvariant();
+
+    public string SkinnySummary
+    {
+        get
+        {
+            var bits = new List<string>
+            {
+                ApplyGameMode ? "Game Mode on" : "Game Mode left alone",
+                DisableGameDvr ? "Game DVR off" : "Game DVR left on",
+                VisualEffectsPerformance ? "visual effects Performance" : "visual effects left pretty",
+                EnableHighPerformancePowerHint ? "Ultimate Performance while live" : "power plan left alone"
+            };
+            return string.Join(" · ", bits) + ". HAGS is an Options toggle, not forced. Defender / Update / VBS stay on.";
+        }
+    }
 
     public SessionProfile WithProcessLists(
         IReadOnlyList<string> terminateProcessNames,
@@ -40,7 +64,10 @@ public sealed class SessionProfile
             StreamProcessHints = StreamProcessHints,
             Stream = Stream,
             EnableHighPerformancePowerHint = EnableHighPerformancePowerHint,
-            PauseWindowsUpdateOrchestrator = PauseWindowsUpdateOrchestrator
+            PauseWindowsUpdateOrchestrator = PauseWindowsUpdateOrchestrator,
+            ApplyGameMode = ApplyGameMode,
+            DisableGameDvr = DisableGameDvr,
+            VisualEffectsPerformance = VisualEffectsPerformance
         };
 }
 

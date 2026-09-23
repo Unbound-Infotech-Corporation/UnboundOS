@@ -56,6 +56,7 @@ public static class DependencyInjection
         services.AddSingleton<IGameLibraryCatalog, SteamGameLibraryCatalog>();
         services.AddSingleton<ILibraryLaunchService, LibraryLaunchService>();
         services.AddSingleton<ITelemetryService, WindowsTelemetryService>();
+        services.AddSingleton<IGamingSkinnyPolicy, WindowsGamingSkinnyPolicy>();
         services.AddSingleton<ISessionEngine, SessionEngine>();
         services.AddSingleton<SteamWorkshopCatalogService>();
         services.AddSingleton<VortexDiscoverySettings>();

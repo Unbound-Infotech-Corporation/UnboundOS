@@ -18,8 +18,11 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IVendorAppCatalog _vendors;
     private readonly IVendorAppLauncher _vendorLauncher;
     private readonly ISetupCleanup _cleanup;
+    private readonly IGamingSkinnyPolicy _skinny;
+    private readonly IShellSettingsStore _shell;
     private bool _suppressToggle;
     private bool _suppressHudToggle;
+    private bool _suppressHagsToggle;
 
     public SettingsViewModel(
         IUiMotionPolicy motion,
@@ -27,7 +30,9 @@ public partial class SettingsViewModel : ObservableObject
         IStartupAuditService startup,
         IVendorAppCatalog vendors,
         IVendorAppLauncher vendorLauncher,
-        ISetupCleanup cleanup)
+        ISetupCleanup cleanup,
+        IGamingSkinnyPolicy skinny,
+        IShellSettingsStore shell)
     {
         _motion = motion;
         _hud = hud;
@@ -35,12 +40,17 @@ public partial class SettingsViewModel : ObservableObject
         _vendors = vendors;
         _vendorLauncher = vendorLauncher;
         _cleanup = cleanup;
+        _skinny = skinny;
+        _shell = shell;
         _motion.Changed += OnMotionChanged;
         _hud.Changed += OnHudChanged;
     }
 
     [ObservableProperty] private bool _interfaceMotionEnabled = true;
     [ObservableProperty] private bool _homeHudEnabled = true;
+    [ObservableProperty] private bool _hagsEnabled;
+    [ObservableProperty] private string _hagsStatus =
+        "HAGS is hardware/game dependent. Test frametimes. Not forced on session enter.";
     [ObservableProperty] private bool _homeClockEnabled = true;
     [ObservableProperty] private bool _homeTempsEnabled = true;
     [ObservableProperty] private string _homeWidgetLook = "Glass";
@@ -60,6 +70,7 @@ public partial class SettingsViewModel : ObservableObject
     [
         new("motion", "Interface motion", "Home tab lift, list ease, and tile focus motion."),
         new("hud", "Home HUD", "Packaged clock, date, viz, and calendar on Home. Off hides that chrome."),
+        new("skinny", "Session skinny", "Game Mode, Game DVR, visual effects, HAGS. Reversible. Defender stays on."),
         new("display", "Display", "Launch the GPU vendor app. UnboundOS does not write display settings."),
         new("overclock", "Overclocking", "Launch-only vendor OC hubs. No silent clocks."),
         new("startup", "Startup audit", "Pin allowlist. Never silently kill anticheat or GPU vendor."),
@@ -87,6 +98,7 @@ public partial class SettingsViewModel : ObservableObject
         await _hud.InitializeAsync();
         SyncFromPolicy();
         SyncFromHud();
+        await SyncFromSkinnyAsync();
         await RefreshVendorsAsync();
         await RefreshStartupAsync();
         SelectedGroup ??= Groups[0];
@@ -111,6 +123,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         OnPropertyChanged(nameof(ShowMotion));
         OnPropertyChanged(nameof(ShowHud));
+        OnPropertyChanged(nameof(ShowSkinny));
         OnPropertyChanged(nameof(ShowDisplay));
         OnPropertyChanged(nameof(ShowOverclock));
         OnPropertyChanged(nameof(ShowStartup));
@@ -120,6 +133,7 @@ public partial class SettingsViewModel : ObservableObject
 
     public bool ShowMotion => SelectedGroup?.Id == "motion";
     public bool ShowHud => SelectedGroup?.Id == "hud";
+    public bool ShowSkinny => SelectedGroup?.Id == "skinny";
     public bool ShowDisplay => SelectedGroup?.Id == "display";
     public bool ShowOverclock => SelectedGroup?.Id == "overclock";
     public bool ShowStartup => SelectedGroup?.Id == "startup";
@@ -164,6 +178,44 @@ public partial class SettingsViewModel : ObservableObject
         }
 
         _ = _hud.SetTempsEnabledAsync(value);
+    }
+
+    partial void OnHagsEnabledChanged(bool value)
+    {
+        if (_suppressHagsToggle)
+        {
+            return;
+        }
+
+        _ = PersistHagsAsync(value);
+    }
+
+    private async Task PersistHagsAsync(bool enabled)
+    {
+        try
+        {
+            var current = await _shell.LoadAsync();
+            await _shell.SaveAsync(current with { HardwareGpuScheduling = enabled });
+            var result = await _skinny.TrySetHagsAsync(enabled);
+            HagsStatus = result.Message;
+        }
+        catch (Exception error)
+        {
+            HagsStatus = error.Message;
+        }
+    }
+
+    private async Task SyncFromSkinnyAsync()
+    {
+        var settings = await _shell.LoadAsync();
+        _suppressHagsToggle = true;
+        HagsEnabled = settings.HardwareGpuScheduling ?? false;
+        _suppressHagsToggle = false;
+        HagsStatus = settings.HardwareGpuScheduling is null
+            ? "HAGS is hardware/game dependent. Test frametimes. Not forced on session enter."
+            : settings.HardwareGpuScheduling.Value
+                ? "HAGS preference is on. Test frametimes in your titles."
+                : "HAGS preference is off. Windows default left unless applied elevated.";
     }
 
     partial void OnHomeWidgetLookChanged(string value)

@@ -88,6 +88,9 @@
                 </StackPanel>
             </Border>
 
+            <TextBlock
+                Style="{StaticResource BodyMutedText}"
+                Text="Hardware-accelerated GPU scheduling (HAGS) is an informed Options → Session skinny toggle. Test frametimes — UnboundOS does not force it on." />
             <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.Status, Mode=OneWay}" />
         </StackPanel>
     </ScrollViewer>
