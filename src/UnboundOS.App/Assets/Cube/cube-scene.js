@@ -85,9 +85,12 @@
   function buildTabs() {
     tabRowEl.innerHTML = TAB_DEFS.map((def, i) => (
       `<button type="button" class="tab" data-index="${i}" role="tab" aria-selected="false" tabindex="-1">` +
-        `<span class="blade">` +
-          `<span class="tip"></span>` +
-          `<span class="tab-label">${escapeHtml(def.title)}</span>` +
+        `<span class="stack">` +
+          `<span class="blade">` +
+            `<span class="tip"><span class="facet"></span></span>` +
+            `<span class="tab-label">${escapeHtml(def.title)}</span>` +
+          `</span>` +
+          `<span class="mirror" aria-hidden="true"></span>` +
         `</span>` +
       `</button>`
     )).join("");

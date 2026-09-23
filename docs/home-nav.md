@@ -11,19 +11,21 @@ opaque WinUI chrome.
 
 ## Art direction
 
-**Studio product shot.** Runtime Home is HTML/CSS in the WebView
+**Machined instruments.** Runtime Home is HTML/CSS in the WebView
 (Three.js stays vendored, unused):
 
-- Background is Obsidian `#05070A` (or true black). Empty and calm.
-- Tabs sit along the **bottom** as tall thin blades that rise toward
-  the top. Soft key + fill drop shadows under/around each blade —
-  grounded product shot, not flat UI chrome.
-- The **tip** of every tab is brand cyan-teal `#00F0FF`. The body is
-  dark metal / charcoal. No neon flood.
-- Focus lifts the blade a few millimeters, strengthens the shadow, and
-  brightens the teal tip. Restrained.
+- Background is Obsidian `#05070A`. Empty museum floor. Calm.
+- Seven blades sit as a compact bottom group in a **shallow arc**
+  (center tallest). Hairline bevels, a vertical metal gradient, and a
+  single drifting specular so they read machined — not flat bars.
+- Each **tip** is a small crystal cap in brand cyan `#00F0FF` (facet
+  highlight, restrained glow). No neon flood.
+- Focus lifts and slightly scales the blade, deepens the studio
+  shadow, and lets the tip breathe. Motion-off freezes breath and
+  sheen; focus still snaps.
+- A short, faint floor ghost sits under each blade (studio, not puddle).
 - Only the **focused** tab shows its name **above** in Diavlo, with a
-  soft drop shadow. Unfocused tabs stay unlabeled.
+  designed drop shadow and open tracking. Unfocused tabs stay unlabeled.
 
 Tabs, left to right: Hardware, Files, Network, Games, Options, Tools,
 Mods. Games is the default. Options is a first-class tab (also opened
