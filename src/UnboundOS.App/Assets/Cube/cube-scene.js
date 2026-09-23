@@ -460,15 +460,15 @@
       color: 0x04040a,
       transparent: true,
       premultipliedAlpha: true,
-      opacity: 0.34,
+      opacity: 0.4,
       depthWrite: false,
       blending: THREE.NormalBlending
     }));
-    shadow.scale.set(2.35, 1.95, 1);
+    shadow.scale.set(2.55, 2.1, 1);
     group.add(shadow);
     const ring = new THREE.Mesh(
-      new THREE.PlaneGeometry(3.15, 0.62),
-      softMat(accretionMap, { opacity: 0.11, blending: THREE.AdditiveBlending })
+      new THREE.PlaneGeometry(3.35, 0.68),
+      softMat(accretionMap, { opacity: 0.16, blending: THREE.AdditiveBlending })
     );
     ring.rotation.x = 1.05;
     ring.rotation.z = 0.38;
@@ -860,14 +860,14 @@
           color: planetPal[p % planetPal.length],
           opacity: 0.26
         }));
-        const ps = 0.015 + rng() * 0.013;
+        const ps = 0.028 + rng() * 0.016;
         spr.scale.set(ps, ps, 1);
         spr.userData = {
-          radius: 0.082 + p * 0.04 + rng() * 0.01,
+          radius: 0.11 + p * 0.055 + rng() * 0.012,
           phase: rng() * Math.PI * 2,
           omega: (0.2 / (0.65 + p * 0.55)) * (rng() > 0.4 ? 1 : -1),
           tilt: 0.26 + rng() * 0.2,
-          baseOpacity: 0.2 + rng() * 0.1
+          baseOpacity: 0.32 + rng() * 0.12
         };
         group.add(spr);
         planets.push(spr);
@@ -968,7 +968,7 @@
     for (const n of nodes) poseSystem(n, dt);
 
     if (blackHole && blackHole.userData.ring) {
-      blackHole.userData.ring.material.opacity = 0.09 + Math.sin(now * 0.00014) * 0.02;
+      blackHole.userData.ring.material.opacity = 0.14 + Math.sin(now * 0.00014) * 0.025;
       blackHole.rotation.z = Math.sin(now * 0.00005) * 0.04;
     }
 
