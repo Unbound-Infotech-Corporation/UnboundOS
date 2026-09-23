@@ -12,37 +12,37 @@
     Session: {
       phot: [1.0, 0.72, 0.12], hot: [1.0, 0.9, 0.42], lane: [0.45, 0.16, 0.03],
       gold: [1.0, 0.74, 0.18], umbra: [0.08, 0.03, 0.01], corona: [1.0, 0.78, 0.28],
-      seed: 11.3, activity: 0.74, gran: 54.0, spots: 0.55, swirl: 0.12, flare: 0.7, style: 0.12
+      seed: 11.3, activity: 0.74, gran: 96.0, spots: 0.72, swirl: 0.12, flare: 0.7, style: 0.1
     },
     Settings: {
-      phot: [1.0, 0.82, 0.16], hot: [1.0, 0.94, 0.48], lane: [0.28, 0.12, 0.03],
-      gold: [1.0, 0.86, 0.22], umbra: [0.1, 0.04, 0.015], corona: [1.0, 0.88, 0.32],
-      seed: 27.8, activity: 1.12, gran: 42.0, spots: 0.62, swirl: 0.22, flare: 1.2, style: 1.0
+      phot: [1.0, 0.82, 0.16], hot: [1.0, 0.94, 0.48], lane: [0.22, 0.1, 0.025],
+      gold: [1.0, 0.88, 0.24], umbra: [0.1, 0.04, 0.015], corona: [1.0, 0.9, 0.34],
+      seed: 27.8, activity: 1.16, gran: 78.0, spots: 0.58, swirl: 0.22, flare: 1.25, style: 1.0
     },
     Tools: {
       phot: [0.98, 0.28, 0.08], hot: [1.0, 0.55, 0.22], lane: [0.38, 0.06, 0.03],
       gold: [1.0, 0.42, 0.16], umbra: [0.12, 0.03, 0.02], corona: [1.0, 0.4, 0.18],
-      seed: 41.6, activity: 0.95, gran: 68.0, spots: 0.42, swirl: -0.16, flare: 0.98, style: 0.55
+      seed: 41.6, activity: 0.98, gran: 88.0, spots: 0.4, swirl: -0.18, flare: 1.02, style: 0.54
     },
     Mods: {
       phot: [0.92, 0.5, 0.12], hot: [1.0, 0.7, 0.28], lane: [0.32, 0.1, 0.03],
       gold: [0.9, 0.48, 0.14], umbra: [0.06, 0.02, 0.01], corona: [1.0, 0.58, 0.2],
-      seed: 63.1, activity: 0.86, gran: 38.0, spots: 1.2, swirl: 0.1, flare: 0.64, style: 0.4
+      seed: 63.1, activity: 0.86, gran: 64.0, spots: 1.2, swirl: 0.1, flare: 0.64, style: 0.4
     },
     Network: {
       phot: [0.92, 0.88, 0.62], hot: [0.96, 0.96, 0.9], lane: [0.28, 0.26, 0.22],
       gold: [0.78, 0.86, 0.95], umbra: [0.08, 0.08, 0.1], corona: [0.72, 0.86, 1.0],
-      seed: 8.4, activity: 0.68, gran: 48.0, spots: 0.35, swirl: -0.2, flare: 0.52, style: 0.7
+      seed: 8.4, activity: 0.68, gran: 82.0, spots: 0.35, swirl: -0.2, flare: 0.52, style: 0.7
     },
     Files: {
       phot: [1.0, 0.8, 0.42], hot: [1.0, 0.92, 0.64], lane: [0.5, 0.3, 0.1],
       gold: [1.0, 0.84, 0.4], umbra: [0.14, 0.08, 0.03], corona: [1.0, 0.86, 0.5],
-      seed: 19.7, activity: 0.38, gran: 36.0, spots: 0.28, swirl: 0.06, flare: 0.32, style: 0.2
+      seed: 19.7, activity: 0.38, gran: 70.0, spots: 0.28, swirl: 0.06, flare: 0.32, style: 0.2
     },
     Hardware: {
       phot: [1.0, 0.84, 0.22], hot: [1.0, 0.96, 0.7], lane: [0.55, 0.2, 0.04],
       gold: [1.0, 0.72, 0.16], umbra: [0.07, 0.02, 0.01], corona: [1.0, 0.8, 0.3],
-      seed: 52.2, activity: 1.04, gran: 58.0, spots: 0.88, swirl: 0.18, flare: 1.08, style: 0.35
+      seed: 52.2, activity: 1.04, gran: 90.0, spots: 0.88, swirl: 0.18, flare: 1.08, style: 0.35
     }
   };
   const OPTIONS_ITEMS = [
@@ -1250,7 +1250,7 @@
       float fbm(vec3 p) {
         float a = 0.5;
         float s = 0.0;
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 5; i++) {
           s += a * vnoise(p);
           p = p * 2.11 + 13.7;
           a *= 0.5;
@@ -1294,6 +1294,20 @@
       vec3 dipoleB(vec3 p, float seed) {
         vec3 m = normalize(vec3(0.22 * sin(seed), 1.0, 0.16 * cos(seed * 1.3)));
         return normalize(3.0 * dot(m, p) * p - m);
+      }
+      float worley2(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        float d = 1.0;
+        for (int x = -1; x <= 1; x++) {
+          for (int y = -1; y <= 1; y++) {
+            vec2 g = vec2(float(x), float(y));
+            vec2 o = vec2(hash2(i + g), hash2(i + g + vec2(17.2, 9.4)));
+            vec2 r = g + o - f;
+            d = min(d, dot(r, r));
+          }
+        }
+        return sqrt(d);
       }
     `;
   }
@@ -1343,71 +1357,101 @@
       varying vec3 vWorldPos;
       varying vec3 vObjectPos;
       ${sunNoiseLib()}
-      float spotMask(vec3 p, float seed, float amt) {
-        float s = 0.0;
-        for (int i = 0; i < 5; i++) {
-          vec3 c = hash3(vec3(seed * 0.37, float(i) * 3.17, 2.41)) * 2.0 - 1.0;
-          c.y *= 0.42;
+      vec2 spotPair(vec3 p, float seed, float amt) {
+        float umbra = 0.0;
+        float pen = 0.0;
+        for (int i = 0; i < 7; i++) {
+          vec3 c = hash3(vec3(seed * 0.41, float(i) * 2.77, 8.2)) * 2.0 - 1.0;
+          c.y *= 0.36;
           c = normalize(c);
           float d = acos(clamp(dot(p, c), -1.0, 1.0));
-          float um = smoothstep(0.055, 0.02, d);
-          float pe = smoothstep(0.125, 0.055, d) * (1.0 - um);
-          s = max(s, um + pe * 0.48);
+          float ru = 0.022 + hash(vec3(float(i), seed, 2.0)) * 0.038;
+          float rp = ru * (2.15 + amt * 0.35);
+          float um = smoothstep(ru, ru * 0.28, d);
+          float pe = smoothstep(rp, ru * 0.92, d) * (1.0 - um);
+          vec3 rel = p - c * 0.92;
+          float fang = atan(rel.z, rel.x);
+          float fil = 0.52 + 0.48 * sin(fang * 13.0 + seed + float(i) * 1.7);
+          pe *= mix(1.0, fil, 0.7);
+          umbra = max(umbra, um);
+          pen = max(pen, pe);
         }
-        return s * amt;
+        return vec2(umbra, pen) * amt;
+      }
+      float loopForest(vec3 p, vec3 B, float seed, float t) {
+        float acc = 0.0;
+        for (int i = 0; i < 10; i++) {
+          vec3 c = hash3(vec3(seed, float(i) * 5.13, 3.7)) * 2.0 - 1.0;
+          c.y *= 0.58;
+          c = normalize(c);
+          float d = acos(clamp(dot(p, c), -1.0, 1.0));
+          float r1 = 0.03 + hash(vec3(float(i), seed, 1.0)) * 0.055;
+          float r2 = r1 * 1.82;
+          float ring = exp(-abs(d - r1) * 95.0) + exp(-abs(d - r2) * 72.0) * 0.62;
+          vec3 axis = normalize(cross(c, B + vec3(0.02, 0.18, 0.0)));
+          float streak = pow(abs(dot(normalize(p - c + 1e-4), axis)), 2.4);
+          acc = max(acc, ring * (0.5 + streak * 0.75));
+        }
+        float threads = pow(max(0.0, fbm(vec3(dot(p, B) * 26.0, length(cross(p, B)) * 10.0, seed + t)) - 0.46), 1.65);
+        return acc + threads * 1.15;
       }
       void main() {
-        vec3 n = normalize(vNormal);
+        vec3 nrm = normalize(vNormal);
         vec3 viewDir = normalize(cameraPosition - vWorldPos);
-        float mu = clamp(dot(n, viewDir), 0.0, 1.0);
-        float limb = clamp(0.18 + 1.05 * mu - 0.28 * mu * mu, 0.12, 1.15);
+        float mu = clamp(dot(nrm, viewDir), 0.0, 1.0);
+        float limb = clamp(0.16 + 1.08 * mu - 0.22 * mu * mu, 0.1, 1.18);
+        float atmos = smoothstep(0.0, 0.07, mu);
         vec3 p = normalize(vObjectPos);
-        float boil = uTime * (0.016 + uActivity * 0.02);
-        vec3 warp = vec3(
-          fbm(p * 3.4 + uSeed) - 0.5,
-          fbm(p * 3.4 + uSeed + 17.0) - 0.5,
-          fbm(p * 3.4 + uSeed + 31.0) - 0.5
-        );
-        vec3 q = normalize(p + warp * (0.12 + boil * 0.015));
-        float meso = worley(q * (uGran * 0.28) + uSeed);
-        float fine = worley(q * uGran + vec3(0.0, boil * 0.25, uSeed));
-        float gran = mix(smoothstep(0.02, 0.46, meso), smoothstep(0.01, 0.38, fine), 0.62);
-        float lanes = pow(1.0 - gran, 1.7);
-        float h0 = gran;
-        float hx = worley(normalize(q + vec3(0.012, 0.0, 0.0)) * uGran);
-        float hy = worley(normalize(q + vec3(0.0, 0.012, 0.0)) * uGran);
-        vec3 nBump = normalize(n + vec3(h0 - hx, h0 - hy, 0.0) * 2.8);
-        float relief = pow(max(0.0, dot(nBump, viewDir)), 1.15);
+        float boil = uTime * (0.02 + uActivity * 0.016);
+        vec3 warp = vec3(fbm(p * 2.9 + uSeed), fbm(p * 2.9 + uSeed + 19.0), fbm(p * 2.9 + uSeed + 41.0)) - 0.5;
+        vec3 q = normalize(p + warp * 0.08);
+        vec2 uv = vec2(atan(q.z, q.x), q.y);
+        float superG = worley2(uv * vec2(8.5, 11.5) + uSeed);
+        float meso = worley2(uv * vec2(uGran * 0.34, uGran * 0.44) + vec2(0.0, boil * 0.18));
+        float fine = worley2(uv * vec2(uGran * 1.05, uGran * 1.28) + vec2(boil * 0.26, uSeed));
+        float micro = hash2(floor(uv * uGran * 3.6 + boil * 0.5));
+        float gran = mix(smoothstep(0.03, 0.52, meso), smoothstep(0.015, 0.4, fine), 0.72);
+        gran = mix(gran, micro, 0.1);
+        float superLane = pow(1.0 - smoothstep(0.04, 0.56, superG), 1.55);
+        float hx = worley2(uv * vec2(uGran, uGran) + vec2(0.01, 0.0));
+        float hy = worley2(uv * vec2(uGran, uGran) + vec2(0.0, 0.01));
+        float relief = clamp(0.48 + (fine - hx) * 9.0 + (fine - hy) * 4.5, 0.22, 1.35);
         vec3 B = dipoleB(q, uSeed);
-        float along = fbm(vec3(dot(q, B) * 14.0, q.y * 3.2, uSeed + boil * 0.5));
-        float filaments = smoothstep(0.38, 0.78, along) * uStyle * uActivity;
-        float darkFil = pow(1.0 - along, 2.2) * uStyle;
-        float spots = spotMask(q, uSeed, uSpotAmt);
-        float umbra = smoothstep(0.55, 0.95, spots);
-        float penumbra = spots * (1.0 - umbra);
-        float bound = smoothstep(0.16, 0.0, abs(gran - 0.32));
-        float faculae = bound * pow(1.0 - mu, 0.85) * (0.35 + uActivity * 0.55);
-        float wave = sin(q.x * 9.0 + q.z * 6.5 - uTime * (0.85 + uActivity) + uSeed);
-        wave = smoothstep(0.55, 0.96, wave) * uActivity * 0.55;
-        vec3 flareDir = normalize(vec3(sin(uSeed * 1.7), 0.22, cos(uSeed * 1.7)));
-        float flarePatch = pow(max(0.0, dot(q, flareDir)), 9.0) * uFlare;
-        vec3 col = mix(uLane, uPhot, gran);
-        col = mix(col, uHot, gran * fine * 0.35);
-        col = mix(col, uLane * 0.55, lanes * (0.25 + uStyle * 0.4));
-        col = mix(col, uGold, filaments * 0.55);
-        col = mix(col, uLane * 0.28, darkFil * 0.7);
-        col *= mix(0.78, 1.22, fbm(q * 2.6 + uSeed));
-        col *= 0.55 + relief * 0.7;
-        col = mix(col, uLane * 0.4, penumbra);
-        col = mix(col, uUmbra, umbra);
-        col += uHot * faculae * 0.85;
-        col += uHot * wave * 0.12;
-        col += uHot * flarePatch * 1.6;
+        float along = fbm(vec3(dot(q, B) * 20.0, q.y * 4.4, uSeed + boil * 0.45));
+        float darkFil = pow(1.0 - along, 2.35);
+        float loops = loopForest(q, B, uSeed, boil) * uActivity;
+        vec2 sp = spotPair(q, uSeed, uSpotAmt);
+        float faculae = superLane * pow(1.0 - mu, 0.75) * (0.28 + uActivity * 0.55);
+        vec3 flareDir = normalize(vec3(sin(uSeed * 1.7), 0.2, cos(uSeed * 1.7)));
+        float flarePatch = pow(max(0.0, dot(q, flareDir)), 8.5) * uFlare;
+        vec3 cont = mix(uLane, uPhot, gran);
+        cont = mix(cont, uHot, gran * fine * 0.3);
+        cont *= mix(0.8, 1.2, fbm(q * 3.2 + uSeed));
+        cont *= 0.46 + relief * 0.78;
+        float mott = pow(meso, 1.25);
+        vec3 chr = mix(uLane * 0.72, uPhot, mott);
+        chr = mix(chr, uHot, pow(fine, 2.1) * 0.48);
+        chr += uHot * superLane * 0.28;
+        chr *= 0.7 + relief * 0.4;
+        vec3 euv = mix(uLane * 0.3, uPhot * 0.62, 0.22 + superG * 0.22);
+        euv = mix(euv, uGold, superLane * 0.82);
+        euv = mix(euv, uHot, pow(1.0 - meso, 2.05) * 0.5);
+        euv += uHot * loops * 1.45;
+        euv += uGold * pow(max(0.0, along - 0.42), 1.6) * uStyle * 0.7;
+        euv = mix(euv, uLane * 0.2, darkFil * 0.58 * uStyle);
+        float s171 = smoothstep(0.32, 0.92, uStyle);
+        float s304 = clamp(1.0 - abs(uStyle - 0.54) * 2.3, 0.0, 1.0);
+        vec3 col = mix(cont, chr, s304 * (1.0 - s171));
+        col = mix(col, euv, s171);
+        col = mix(col, uLane * 0.36, sp.y);
+        col = mix(col, uUmbra, sp.x);
+        col += uHot * faculae * (0.9 - s171 * 0.35);
+        col += uHot * flarePatch * 1.7;
         col *= limb;
-        col += uGold * pow(1.0 - mu, 3.1) * (0.22 + uStyle * 0.28);
-        col *= 1.35;
-        col = col / (vec3(1.0) + col * 0.28);
-        col *= uFade;
+        col += uGold * pow(1.0 - mu, 2.55) * (0.16 + uStyle * 0.5);
+        col *= 1.48;
+        col = col / (vec3(1.0) + col * 0.24);
+        col *= uFade * atmos;
         gl_FragColor = vec4(col, 1.0);
       }
     `;
@@ -1430,15 +1474,18 @@
       varying vec3 vObjectPos;
       ${sunNoiseLib()}
       void main() {
-        vec3 n = normalize(vNormal);
+        vec3 nrm = normalize(vNormal);
         vec3 viewDir = normalize(cameraPosition - vWorldPos);
-        float mu = clamp(dot(n, viewDir), 0.0, 1.0);
-        float rim = pow(1.0 - mu, 3.4);
+        float mu = clamp(dot(nrm, viewDir), 0.0, 1.0);
+        float rim = pow(1.0 - mu, 2.85);
         vec3 p = normalize(vObjectPos);
-        float spic = fbm(p * 28.0 + vec3(0.0, uTime * uSwirl * 0.4, uSeed));
-        float alpha = rim * (0.18 + 0.55 * spic) * (0.55 + uActivity * 0.4) * uFade;
-        alpha += rim * uFlare * 0.35;
-        vec3 col = mix(uCorona, uHot, spic * 0.4 + uStyle * 0.2);
+        vec2 uv = vec2(atan(p.z, p.x), p.y);
+        float spic = worley2(uv * vec2(42.0, 56.0) + vec2(uTime * uSwirl * 0.55, uSeed));
+        float grass = pow(1.0 - spic, 2.4);
+        float alpha = rim * (0.16 + 0.7 * grass) * (0.5 + uActivity * 0.45) * uFade;
+        alpha *= 0.7 + uStyle * 0.55;
+        alpha += rim * uFlare * 0.4;
+        vec3 col = mix(uCorona, uHot, grass * 0.45 + uStyle * 0.2);
         gl_FragColor = vec4(col * alpha, alpha);
       }
     `;
@@ -1458,40 +1505,123 @@
       uniform vec3 uCorona;
       varying vec2 vUv;
       ${sunNoiseLib()}
+      const float EXT = 2.45;
+      float loopArc(vec2 p, float ang, float height, float width, float thick) {
+        float ca = cos(ang);
+        float sa = sin(ang);
+        vec2 rad = vec2(ca, sa);
+        vec2 tang = vec2(-sa, ca);
+        vec2 d = p - rad * 0.97;
+        float u = dot(d, rad);
+        float v = dot(d, tang);
+        float e = (u / max(height, 0.02)) * (u / max(height, 0.02)) + (v / max(width, 0.02)) * (v / max(width, 0.02));
+        float ring = exp(-abs(sqrt(max(e, 1e-4)) - 1.0) * thick);
+        ring *= smoothstep(-0.03, 0.06, u);
+        ring *= smoothstep(height * 1.2, height * 0.18, u);
+        return ring;
+      }
+      float tongue(vec2 p, float ang, float len) {
+        float ca = cos(ang);
+        float sa = sin(ang);
+        vec2 rad = vec2(ca, sa);
+        vec2 tang = vec2(-sa, ca);
+        vec2 d = p - rad;
+        float u = dot(d, rad);
+        float v = dot(d, tang);
+        float body = exp(-abs(v) * (8.0 + 22.0 * max(u, 0.0))) * smoothstep(-0.01, 0.05, u) * smoothstep(len, len * 0.35, u);
+        float curl = fbm2(vec2(v * 16.0, u * 9.0 + uTime * uSwirl));
+        return body * (0.4 + curl);
+      }
       void main() {
         vec2 q = vUv * 2.0 - 1.0;
-        float r = length(q);
-        if (r < 0.992 || r > 1.92) discard;
+        float r = length(q) * EXT;
+        if (r < 0.982 || r > EXT - 0.05) discard;
         float ang = atan(q.y, q.x);
+        vec2 p = q * EXT;
         float t = uTime * uSwirl;
-        float radial = (r - 1.0) / 0.92;
-        float fil = fbm2(vec2(ang * 3.4 + t * 1.6, r * 5.5 + uSeed));
-        float fil2 = fbm2(vec2(ang * 7.2 - t * 0.8, r * 8.0 + 4.1));
-        float stream = pow(max(0.0, fil - 0.42), 1.35);
-        float sheet = pow(max(0.0, fil2 - 0.38), 1.6);
-        float limbGlow = exp(-abs(r - 1.02) * 14.0);
-        float fall = exp(-radial * (2.4 - uActivity * 0.6));
-        float loopR = 1.06 + 0.07 * sin(ang * 5.0 + uSeed + t);
-        float arcade = exp(-abs(r - loopR) * 26.0) * (0.4 + 0.6 * sin(ang * 9.0 + t * 3.0 + uSeed));
-        float loopR2 = 1.14 + 0.05 * cos(ang * 3.0 - uSeed);
-        float arcade2 = exp(-abs(r - loopR2) * 22.0) * (0.3 + 0.7 * sin(ang * 6.0 - t * 2.2));
-        float p1 = exp(-abs(ang - (0.4 + 0.2 * sin(uSeed))) * 7.5) * exp(-abs(r - 1.1) * 16.0);
-        float p2 = exp(-abs(ang + 2.1 + 0.15 * cos(uSeed)) * 8.0) * exp(-abs(r - 1.16) * 14.0);
-        float prom = (p1 + p2) * (0.55 + uFlare * 1.4) * uActivity;
-        float eject = uFlare * exp(-abs(ang - 0.4 - uSeed * 0.05) * 5.0) * exp(-abs(r - (1.08 + uFlare * 0.18)) * 10.0);
+        float fil = fbm2(vec2(ang * 5.4 + t * 1.25, r * 7.0 + uSeed));
+        float fil2 = fbm2(vec2(ang * 12.0 - t * 0.72, r * 11.0 + 5.0));
+        float fil3 = fbm2(vec2(ang * 2.15 + t * 0.32, log(max(r, 1.0)) * 9.0 + uSeed));
+        float stream = pow(max(0.0, fil - 0.34), 1.4);
+        float sheet = pow(max(0.0, fil2 - 0.4), 1.85);
+        float swirl = pow(max(0.0, fil3 - 0.36), 1.28);
+        float radial = r - 1.0;
+        float fall = exp(-radial * (1.85 - uActivity * 0.5));
+        float limbGlow = exp(-abs(r - 1.01) * 18.0);
+        float loops = 0.0;
+        for (int i = 0; i < 12; i++) {
+          float seedi = hash2(vec2(uSeed, float(i) * 3.1));
+          float a0 = (seedi * 2.0 - 1.0) * 3.12 + t * 0.035;
+          float h = mix(0.11, 0.42, hash2(vec2(float(i), uSeed + 2.0))) * (0.72 + uActivity * 0.55);
+          float w = mix(0.055, 0.2, hash2(vec2(uSeed + 4.0, float(i))));
+          float thick = mix(16.0, 34.0, hash2(vec2(float(i) * 2.0, uSeed)));
+          loops += loopArc(p, a0, h, w, thick);
+        }
+        loops *= (0.28 + uStyle * 0.95) * (0.5 + uActivity * 0.65);
+        float prom = 0.0;
+        for (int i = 0; i < 3; i++) {
+          float a0 = hash2(vec2(uSeed + 9.0, float(i))) * 6.28318 - 3.14159;
+          float len = mix(0.14, 0.36, hash2(vec2(float(i), uSeed + 1.4))) * (0.75 + uFlare * 0.7);
+          prom += tongue(p, a0 + t * 0.04, len);
+        }
+        prom *= (0.65 + uStyle * 0.55) * uActivity;
+        float pole = exp(-min(abs(abs(ang) - 1.5708), abs(abs(ang) - 4.7124)) * 2.6);
+        float polar = pole * pow(max(0.0, fbm2(vec2(ang * 9.0, r * 5.5 + t)) - 0.3), 1.35) * fall;
+        float feAng = 0.52 + uSeed * 0.035;
+        float dang = atan(sin(ang - feAng), cos(ang - feAng));
+        float eject = uFlare * exp(-abs(dang) * 3.8) * exp(-abs(r - (1.08 + uFlare * 0.32)) * 6.2) * (0.55 + swirl);
+        float kernel = uFlare * exp(-abs(r - 1.012) * 20.0) * exp(-abs(dang) * 5.4);
         float haze = 0.0;
-        haze += limbGlow * (0.55 + uStyle * 0.25);
-        haze += stream * fall * (0.7 + uActivity * 0.45);
-        haze += sheet * fall * 0.4;
-        haze += arcade * (0.55 + uStyle * 0.5) * uActivity;
-        haze += arcade2 * 0.35 * uActivity;
-        haze += prom;
-        haze += eject;
-        haze *= smoothstep(1.88, 1.35, r);
-        haze *= uFade * (0.7 + uActivity * 0.35);
-        vec3 col = mix(uCorona, uHot, stream * 0.45 + uFlare * 0.3);
-        col = mix(col, uGold, arcade + limbGlow * 0.3);
-        gl_FragColor = vec4(col * haze, haze);
+        haze += limbGlow * (0.38 + uStyle * 0.4);
+        haze += stream * fall * (0.5 + uActivity * 0.55);
+        haze += sheet * fall * 0.22;
+        haze += swirl * fall * 0.2 * uStyle;
+        haze += loops;
+        haze += prom * (0.85 + uFlare);
+        haze += polar * (0.22 + uStyle * 0.4);
+        haze += eject * 1.35 + kernel;
+        haze *= smoothstep(EXT - 0.08, 1.38, r);
+        haze *= uFade * (0.78 + uActivity * 0.42);
+        vec3 col = mix(uCorona, uHot, stream * 0.38 + uFlare * 0.32 + loops * 0.22);
+        col = mix(col, uGold, limbGlow * 0.45 + loops * 0.4);
+        gl_FragColor = vec4(col * haze, clamp(haze, 0.0, 1.2));
+      }
+    `;
+  }
+
+  function coronaShellFrag() {
+    return `
+      uniform float uTime;
+      uniform float uFade;
+      uniform float uSeed;
+      uniform float uActivity;
+      uniform float uSwirl;
+      uniform float uFlare;
+      uniform float uStyle;
+      uniform vec3 uGold;
+      uniform vec3 uHot;
+      uniform vec3 uCorona;
+      varying vec3 vNormal;
+      varying vec3 vWorldPos;
+      varying vec3 vObjectPos;
+      ${sunNoiseLib()}
+      void main() {
+        vec3 nrm = normalize(vNormal);
+        vec3 viewDir = normalize(cameraPosition - vWorldPos);
+        float ndv = abs(dot(nrm, viewDir));
+        float rim = pow(1.0 - ndv, 1.28);
+        vec3 p = normalize(vObjectPos);
+        float t = uTime * uSwirl;
+        vec3 B = dipoleB(p, uSeed);
+        float along = fbm(vec3(dot(p, B) * 18.0, p.y * 7.2, uSeed + t * 0.55));
+        float fil = pow(max(0.0, along - 0.36), 1.45);
+        float plume = pow(abs(p.y), 3.4) * pow(max(0.0, fbm(p * 8.5 + t) - 0.38), 1.25);
+        float alpha = (rim * 0.2 + fil * rim * 1.55 + plume * rim * 0.7) * uFade;
+        alpha *= (0.38 + uActivity * 0.58) * (0.4 + uStyle * 0.75);
+        alpha += rim * uFlare * 0.28;
+        vec3 col = mix(uCorona, uHot, fil * 0.42 + uFlare * 0.22);
+        col = mix(col, uGold, rim * 0.35);
+        gl_FragColor = vec4(col * alpha, alpha);
       }
     `;
   }
@@ -1535,27 +1665,32 @@
     const group = new THREE.Group();
     group.visible = false;
     const body = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 128, 96),
+      new THREE.SphereGeometry(1, 160, 120),
       makeSunMaterial(sunVert(), photosphereFrag())
     );
     const chromo = new THREE.Mesh(
-      new THREE.SphereGeometry(1.008, 96, 64),
+      new THREE.SphereGeometry(1, 96, 64),
       makeSunMaterial(sunVert(), chromoFrag(), { transparent: true, additive: true })
+    );
+    const shell = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 80, 56),
+      makeSunMaterial(sunVert(), coronaShellFrag(), { transparent: true, additive: true, side: THREE.BackSide })
     );
     const sheet = new THREE.Mesh(
       new THREE.PlaneGeometry(2, 2),
       makeSunMaterial(sheetVert(), coronaSheetFrag(), { transparent: true, additive: true, depthTest: false })
     );
+    shell.renderOrder = 1;
     sheet.renderOrder = 2;
-    group.add(sheet, chromo, body);
-    group.userData = { body, chromo, sheet };
+    group.add(sheet, shell, chromo, body);
+    group.userData = { body, chromo, shell, sheet };
     scene.add(group);
     return group;
   }
 
   function sunMeshes() {
     const u = heroSun.userData;
-    return [u.body, u.chromo, u.sheet];
+    return [u.body, u.chromo, u.shell, u.sheet];
   }
 
   function applySunLook(id) {
@@ -2059,8 +2194,9 @@
     const fade = smooth01(Math.min(1, blend * 1.15));
     const u = heroSun.userData;
     u.body.scale.setScalar(hr);
-    u.chromo.scale.setScalar(hr * 1.008);
-    u.sheet.scale.setScalar(hr * 1.012);
+    u.chromo.scale.setScalar(hr * 1.012);
+    u.shell.scale.setScalar(hr * 1.34);
+    u.sheet.scale.setScalar(hr * 2.45);
     u.sheet.quaternion.copy(camera.quaternion);
     const flare = state.sunFlare;
     for (const mesh of sunMeshes()) {
