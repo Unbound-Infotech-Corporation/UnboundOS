@@ -2086,11 +2086,12 @@
 
   function renderFrame(dt) {
     const now = performance.now();
-    const step = Math.min(Math.max(dt, 0), 0.033);
+    const wall = Math.min(Math.max(dt, 0), 0.12);
+    const step = Math.min(wall, 0.033);
     if (state.motion) {
-      const k = 1 - Math.exp(-step * 3.35);
+      const k = 1 - Math.exp(-wall * 3.35);
       state.visualX += (state.targetX - state.visualX) * k;
-      const ck = 1 - Math.exp(-step * 2.15);
+      const ck = 1 - Math.exp(-wall * 2.15);
       state.camBlend += (state.camGoal - state.camBlend) * ck;
       tickLiving(step, now);
       farStars.rotation.y = now * (farStars.userData.spin || 0);
@@ -2132,7 +2133,7 @@
       camera.updateProjectionMatrix();
     }
     const breathe = state.motion ? 0.96 + 0.04 * Math.sin(now * 0.0007) : 1;
-    if (blend > 0.01) tickSunWeather(step, now);
+    if (blend > 0.01) tickSunWeather(wall, now);
     poseHeroSun(blend, step);
     for (const n of nodes) {
       const on = n.group.userData.node === state.node;
