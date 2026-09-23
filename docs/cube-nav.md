@@ -44,9 +44,10 @@ void (soft silhouette + dim accretion, not a cartoon). Company cyan
 Opening a category (Games, Tools, Options, …) **zooms the camera into
 that system's sun** and parks a slow-rotating **procedural photosphere**
 on the **right**. Each category has its own star (gold 171-like Options,
-continuum-orange Games, rose-gold Tools, and so on) with limb darkening,
-granulation, swirling coronal loops, and occasional limb flares. Motion-off
-freezes the crawl and bursts. The universe stays visible around it. A **titles-only**
+continuum-orange Games, rose-gold Tools, and so on): multi-scale
+granulation, limb darkening, faculae, compact spots, a filament corona
+sheet with loops and prominences. Motion-off freezes the crawl and
+bursts. The universe stays visible around it. A **titles-only**
 Diavlo list sits on the **left** over a reasonably transparent black
 wash — not an opaque slab. Options is a dedicated sun just beyond
 Mods (not on the L/R cycle); the Home **SET** glyph opens it instead
