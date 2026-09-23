@@ -69,8 +69,11 @@ public sealed class GamingSkinnyPolicyTests
     {
         var policy = new WindowsGamingSkinnyPolicy();
         var on = await policy.TrySetHagsAsync(true);
+        var off = await policy.TrySetHagsAsync(false);
         Assert.Contains("frametimes", on.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("not forced", on.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("frametimes", off.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("not forced", off.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     private static string FindRepoRoot()

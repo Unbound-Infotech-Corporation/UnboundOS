@@ -110,23 +110,25 @@ public sealed class WindowsGamingSkinnyPolicy : IGamingSkinnyPolicy
         {
             return Task.FromResult((true, enabled
                 ? "HAGS preference saved. Apply on Windows and test frametimes — not forced."
-                : "HAGS preference saved off. Apply on Windows; reboot may be required."));
+                : "HAGS preference saved off. Apply on Windows and test frametimes — not forced."));
         }
 
         try
         {
             WriteDword(Registry.LocalMachine, HagsPath, "HwSchMode", enabled ? 2 : 1);
             return Task.FromResult((true, enabled
-                ? "HAGS set on. Test frametimes in your titles; reboot if the GPU driver asks."
-                : "HAGS set off. Reboot if the GPU driver asks."));
+                ? "HAGS set on. Test frametimes in your titles — not forced. Reboot if the GPU driver asks."
+                : "HAGS set off. Test frametimes after the change — not forced. Reboot if the GPU driver asks."));
         }
         catch (UnauthorizedAccessException)
         {
-            return Task.FromResult((false, "HAGS needs an elevated write to HKLM. Preference is saved; run UnboundOS elevated to apply."));
+            return Task.FromResult((false,
+                "HAGS needs an elevated write to HKLM. Preference is saved; run UnboundOS elevated to apply. Test frametimes — not forced."));
         }
         catch (Exception ex)
         {
-            return Task.FromResult((false, $"Could not write HAGS: {ex.Message}"));
+            return Task.FromResult((false,
+                $"Could not write HAGS: {ex.Message} Test frametimes — not forced."));
         }
     }
 
