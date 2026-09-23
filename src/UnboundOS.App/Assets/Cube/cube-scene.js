@@ -499,11 +499,11 @@
         const gran = n1 * 0.52 + n2 * 0.33 + n3 * 0.15;
         const spot = smooth01((0.3 - n1) * 3.4) * smooth01((0.38 - n2) * 2.2);
         const hot = smooth01((gran - 0.6) * 4.2);
-        let r = (248 * (0.72 + gran * 0.28) - spot * 86) * limb;
-        let g = (148 * (0.48 + gran * 0.46) - spot * 58) * limb;
-        let b = (58 * (0.32 + gran * 0.4) + hot * 36) * limb;
-        r = Math.min(255, r + hot * 58);
-        g = Math.min(255, g + hot * 28);
+        let r = (255 * (0.8 + gran * 0.2) - spot * 70) * limb;
+        let g = (168 * (0.55 + gran * 0.42) - spot * 48) * limb;
+        let b = (62 * (0.34 + gran * 0.38) + hot * 42) * limb;
+        r = Math.min(255, r + hot * 64);
+        g = Math.min(255, g + hot * 34);
         const i = (y * w + x) * 4;
         d[i] = Math.max(0, Math.min(255, r));
         d[i + 1] = Math.max(0, Math.min(255, g));
@@ -1223,7 +1223,7 @@
 
   function buildOptionsSun() {
     const group = new THREE.Group();
-    group.position.set(OPTIONS_SUN_X, 0.08, 0.16);
+    group.position.set(OPTIONS_SUN_X, 0.16, 0.28);
     const rng = mulberry(0x51e0);
     const sun = new THREE.Sprite(softSprite(starMap, {
       color: 0xffe2b8,
@@ -1280,6 +1280,7 @@
       new THREE.SphereGeometry(1, 48, 32),
       new THREE.MeshBasicMaterial({
         map: sunMap,
+        color: 0xfff2c8,
         transparent: true,
         opacity: 1
       })
@@ -1717,12 +1718,13 @@
     } else {
       sunWorld.set(0, 0.04, 0.12);
     }
-    camZoomPos.set(sunWorld.x - 1.88, sunWorld.y + 0.46, sunWorld.z + 3.42);
-    zoomLook.set(sunWorld.x - 0.46, sunWorld.y - 0.02, sunWorld.z - 0.18);
+    camZoomPos.set(sunWorld.x - 2.12, sunWorld.y + 1.18, sunWorld.z + 2.35);
+    zoomLook.set(sunWorld.x - 0.42, sunWorld.y + 0.02, sunWorld.z + 0.04);
     camera.position.lerpVectors(camRestPos, camZoomPos, blend);
     camLook.lerpVectors(lookTarget, zoomLook, blend);
     camera.lookAt(camLook);
-    const nextFov = 26 + blend * 3.5;
+    const nextFov = 26 + blend * 4.5;
+    dimBandForZoom(blend);
     if (Math.abs(camera.fov - nextFov) > 0.01) {
       camera.fov = nextFov;
       camera.updateProjectionMatrix();
@@ -1766,24 +1768,47 @@
     const show = blend > 0.012;
     heroSun.visible = show;
     if (!show) return;
-    heroSun.position.copy(sunWorld);
-    const hr = 0.10 + blend * 0.52;
+    heroSun.position.set(sunWorld.x, sunWorld.y + 0.06, sunWorld.z + 0.1);
+    const hr = 0.16 + blend * 0.72;
     const u = heroSun.userData;
     u.body.scale.setScalar(hr);
-    u.shell.scale.setScalar(hr * 1.06);
-    u.corona.scale.set(hr * 3.35, hr * 3.0, 1);
-    u.halo.scale.set(hr * 5.5, hr * 4.5, 1);
-    u.flare.scale.set(hr * 3.8, hr * 3.8, 1);
-    u.body.material.opacity = 0.2 + blend * 0.8;
-    u.shell.material.opacity = 0.06 + blend * 0.16;
-    u.corona.material.opacity = 0.12 + blend * 0.36;
-    u.halo.material.opacity = 0.06 + blend * 0.18;
-    u.flare.material.opacity = 0.08 + blend * 0.22;
+    u.shell.scale.setScalar(hr * 1.05);
+    u.corona.scale.set(hr * 2.35, hr * 2.1, 1);
+    u.halo.scale.set(hr * 3.6, hr * 3.05, 1);
+    u.flare.scale.set(hr * 3.2, hr * 3.2, 1);
+    u.body.material.opacity = 0.45 + blend * 0.55;
+    u.shell.material.opacity = 0.08 + blend * 0.16;
+    u.corona.material.opacity = 0.16 + blend * 0.32;
+    u.halo.material.opacity = 0.07 + blend * 0.16;
+    u.flare.material.opacity = 0.1 + blend * 0.2;
     if (state.motion) {
       u.body.rotation.y += step * 0.085;
       u.shell.rotation.y += step * 0.04;
       u.flare.rotation.z += step * 0.03;
     }
+  }
+
+  function dimBandForZoom(blend) {
+    const keep = 1 - blend * 0.78;
+    const live = new Set([
+      diskGlow.userData.bar,
+      diskGlow.userData.nucleus,
+      diskGlow.userData.trail
+    ]);
+    const fadeMat = (obj) => {
+      if (!obj || !obj.material) return;
+      if (live.has(obj)) {
+        obj.material.opacity *= keep;
+        return;
+      }
+      if (obj.userData.baseOp == null) obj.userData.baseOp = obj.material.opacity;
+      obj.material.opacity = obj.userData.baseOp * keep;
+    };
+    diskGlow.traverse((child) => {
+      if (child.isMesh || child.isSprite) fadeMat(child);
+    });
+    for (const sheet of dustSheets) fadeMat(sheet);
+    for (const sheet of filaments) fadeMat(sheet);
   }
 
   let looping = false;
