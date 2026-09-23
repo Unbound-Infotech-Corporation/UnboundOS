@@ -287,17 +287,16 @@
     #scrim {
       position: absolute;
       top: 0;
-      left: 0;
+      left: 18%;
       bottom: 0;
-      width: 46%;
+      width: 64%;
       pointer-events: none;
       opacity: 0;
-      transform: translate3d(-10%, 0, 0);
+      transform: translate3d(0, 8%, 0);
       background:
-        linear-gradient(90deg,
-          rgba(0, 0, 0, 0.46) 0%,
-          rgba(0, 0, 0, 0.36) 38%,
-          rgba(0, 0, 0, 0.16) 72%,
+        radial-gradient(ellipse 58% 72% at 50% 46%,
+          rgba(0, 0, 0, 0.42) 0%,
+          rgba(0, 0, 0, 0.18) 58%,
           rgba(0, 0, 0, 0) 100%);
     }
     #overlay.ready #scrim {
@@ -310,23 +309,23 @@
     }
     #listPane {
       position: absolute;
-      left: 0;
+      left: 50%;
       top: 0;
       bottom: 0;
-      width: min(460px, 44%);
+      width: min(520px, 42vw);
       z-index: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 0 2.4vw 0 6.4vw;
+      padding: 0;
       box-sizing: border-box;
       opacity: 0;
-      transform: translate3d(-14px, 0, 0);
+      transform: translate3d(calc(-50% - 16px), 0, 0);
     }
     #overlay.show #listPane { pointer-events: auto; }
     #overlay.ready #listPane {
       opacity: 1;
-      transform: translate3d(0, 0, 0);
+      transform: translate3d(-50%, 0, 0);
     }
     #overlay.motion #listPane {
       transition: opacity 0.64s cubic-bezier(0.16, 1, 0.3, 1),
@@ -389,7 +388,7 @@
     #hud {
       position: absolute;
       inset: 0;
-      z-index: 3;
+      z-index: 5;
       pointer-events: none;
       color: #F4F7FA;
     }
@@ -423,17 +422,17 @@
     #hudViz {
       position: absolute;
       left: clamp(28px, 4.2vw, 72px);
-      top: clamp(210px, 32vh, 300px);
+      top: clamp(186px, 28vh, 268px);
       display: flex;
       align-items: flex-end;
-      gap: 4px;
-      height: 56px;
+      gap: 5px;
+      height: 92px;
     }
     .viz-bar {
       width: 3px;
-      height: 56px;
-      background: linear-gradient(180deg, #00F0FF, #007a88);
-      opacity: 0.9;
+      height: 92px;
+      background: linear-gradient(180deg, #7dffff 0%, #00F0FF 42%, #007a88 100%);
+      opacity: 0.95;
       transform: scaleY(0.22);
       transform-origin: bottom center;
       border-radius: 1px;
@@ -448,7 +447,7 @@
     #hudMedia {
       position: absolute;
       left: clamp(28px, 4.2vw, 72px);
-      top: clamp(278px, 40vh, 372px);
+      top: clamp(290px, 41vh, 380px);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -478,9 +477,10 @@
       border: 0;
       background: transparent;
       color: #E8EEF2;
-      font-family: "Diavlo Book", var(--list-font);
-      font-size: 18px;
-      letter-spacing: 0.18em;
+      font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
+      font-weight: 300;
+      font-size: 17px;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       cursor: pointer;
       text-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
@@ -519,13 +519,14 @@
       border-radius: 50%;
     }
     body.is-overlay #clock { font-size: clamp(56px, 6.2vw, 88px); }
-    body.is-overlay #hudViz { top: clamp(168px, 24vh, 230px); }
-    body.is-overlay #hudMedia { top: clamp(234px, 31vh, 292px); }
+    body.is-overlay #hudViz { top: clamp(156px, 22vh, 214px); height: 72px; }
+    body.is-overlay .viz-bar { height: 72px; }
+    body.is-overlay #hudMedia { top: clamp(236px, 32vh, 300px); }
     body.is-overlay #hudLaunch { opacity: 0; pointer-events: none; }
     @media (max-height: 820px) {
-      #hudViz { top: 200px; }
-      #hudMedia { top: 266px; }
-      #hudLaunch { top: 304px; }
+      #hudViz { top: 186px; }
+      #hudMedia { top: 288px; }
+      #hudLaunch { top: 328px; }
     }
   </style>
 </head>

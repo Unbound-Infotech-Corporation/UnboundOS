@@ -98,7 +98,7 @@ public sealed partial class MainPage : Page
         ViewModel.SelectedNav = tag;
         ViewModel.StatusLine = tag switch
         {
-            "Home" => "Galaxy home. Left/right: nodes. Up/Down: this node's list (bottom/top).",
+            "Home" => "Home. Left/right: tabs. Up/Down: this tab's list (bottom/top).",
             "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
             "Tools" => "Tools marketplace ready.",

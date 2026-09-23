@@ -33,9 +33,10 @@ by the Home **SET** glyph). Profiles (`PRFL`) stays a discreet corner
 glyph.
 
 Opening a category (Enter / Up / Down) shows a **titles-only** Diavlo
-list on the left over a translucent black wash. No camera zoom. Escape
-eases back to the tab row. Motion-off snaps focus and list states
-(no lift ease).
+list in the center over a translucent wash. Clock, date, weather,
+visualizer, media strip, and calendar stay on the same field. No
+camera zoom. Escape eases back to the tab row. Motion-off snaps focus
+and list states (no lift ease).
 
 Company cyan `#00F0FF` is the tab-tip material, HUD accent, and the
 inner-page token. It is not a full-screen wash.
