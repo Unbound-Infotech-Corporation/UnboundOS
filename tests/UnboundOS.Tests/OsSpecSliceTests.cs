@@ -26,6 +26,8 @@ public sealed class OsSpecSliceTests
         Assert.Contains("never silently disables", OsProductCopy.StartupHonesty, StringComparison.Ordinal);
         Assert.Contains("does not bundle HWiNFO", OsProductCopy.HardwareHonesty, StringComparison.Ordinal);
         Assert.Contains("registry, DriveInfo", OsProductCopy.HardwareHonesty, StringComparison.Ordinal);
+        Assert.Contains("does not redistribute Windows", OsProductCopy.UpdateGuardHonesty, StringComparison.Ordinal);
+        Assert.Contains("not CVE-only", OsProductCopy.UpdateGuardHonesty, StringComparison.Ordinal);
         Assert.DoesNotContain("Night City", OsProductCopy.OverclockHonesty, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -363,6 +365,8 @@ public sealed class OsSpecSliceTests
         Assert.IsType<UnboundOS.Infrastructure.Settings.HomeHudSettings>(
             provider.GetRequiredService<IHomeHudSettings>());
         Assert.IsType<SetupCleanupService>(provider.GetRequiredService<ISetupCleanup>());
+        Assert.IsType<UnboundOS.Infrastructure.Updates.WindowsUpdateGuardPolicy>(
+            provider.GetRequiredService<IUpdateGuardPolicy>());
     }
 
     private sealed class FakeInventory(params StartupCandidate[] items) : IStartupInventory

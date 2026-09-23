@@ -26,7 +26,9 @@ images.
 3. **Reversible session profiles** — Living Room / Streamer /
    Competitive. Game Mode, Ultimate Performance while live, Game DVR
    off in Competitive, visual-effects Performance. Exit restores.
-   Defender / Update / VBS stay on.
+   Defender / Update / VBS stay on. [Update Guard](update-guard.md)
+   keeps monthly Microsoft quality/LCU on and defers feature churn —
+   we do not host `.msu` files.
 4. **HAGS as an informed toggle** — Options → Session skinny. Test
    frametimes. Not forced on enter.
 5. **Startup / AppX discipline** — 24h startup audit + pin allowlist.
@@ -41,7 +43,9 @@ images.
 - Placebo registry megapacks
 - HPET / timer resolution / BCDEdit hacks
 - Irreversible Defender or VBS nukes
+- Hosting Microsoft LCU binaries or claiming CVE-only patches
 - Global NetworkThrottlingIndex / interrupt-moderation as a default
 - Shipping a modified Windows ISO
 
 Skinny toggle reference: [gaming-skinny.md](gaming-skinny.md).
+Update Guard: [update-guard.md](update-guard.md).

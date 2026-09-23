@@ -66,6 +66,7 @@ public static class CubeBrowse
         new("motion", "Interface motion", "SET", "settings", "M"),
         new("hud", "Home HUD", "SET", "settings", "H"),
         new("skinny", "Session skinny", "SET", "settings", "K"),
+        new("updates", "Updates", "SET", "settings", "U"),
         new("display", "Display", "SET", "settings", "D"),
         new("overclock", "Overclocking", "SET", "settings", "O"),
         new("startup", "Startup audit", "SET", "settings", "S"),

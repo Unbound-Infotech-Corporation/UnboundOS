@@ -18,6 +18,7 @@ using UnboundOS.Infrastructure.Startup;
 using UnboundOS.Infrastructure.Stream;
 using UnboundOS.Infrastructure.Telemetry;
 using UnboundOS.Infrastructure.Tools;
+using UnboundOS.Infrastructure.Updates;
 using UnboundOS.Infrastructure.Library;
 using UnboundOS.Infrastructure.Vendor;
 
@@ -57,6 +58,7 @@ public static class DependencyInjection
         services.AddSingleton<ILibraryLaunchService, LibraryLaunchService>();
         services.AddSingleton<ITelemetryService, WindowsTelemetryService>();
         services.AddSingleton<IGamingSkinnyPolicy, WindowsGamingSkinnyPolicy>();
+        services.AddSingleton<IUpdateGuardPolicy, WindowsUpdateGuardPolicy>();
         services.AddSingleton<ISessionEngine, SessionEngine>();
         services.AddSingleton<SteamWorkshopCatalogService>();
         services.AddSingleton<VortexDiscoverySettings>();

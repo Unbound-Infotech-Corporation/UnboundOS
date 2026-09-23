@@ -27,7 +27,10 @@ Shared: `ApplyGameMode` (default true), `EnableHighPerformancePowerHint`
 3. Terminate the profile denylist; never touch HardProtect / Explorer /
    anticheat / Vortex
 4. Apply HKCU Game Mode / Game DVR / visual-effects **if the flags say so**
-5. **Do not** write Defender, Windows Update, VBS, or BCDEdit
+5. **Do not** write Defender, Windows Update, VBS, or BCDEdit.
+   Quality/LCU stays on Microsoft’s channel. Feature deferral is
+   Options → Updates ([update-guard.md](update-guard.md)), never
+   session enter.
 
 Exit / Restore writes the snapshot back.
 
@@ -67,5 +70,7 @@ Director / vendor-driver choice, not a global default.
    `HwSchMode` in GPU driver UI
 4. Defender / Update / VBS were never turned off — if someone else
    disabled them, use Windows Security, not UnboundOS
+5. Update Guard: Options → Updates → Restore (elevated). See
+   [update-guard.md](update-guard.md)
 
 See [competitive-landscape.md](competitive-landscape.md).

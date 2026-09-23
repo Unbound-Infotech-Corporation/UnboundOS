@@ -16,6 +16,7 @@
     { id: "motion", title: "Interface motion", meta: "SET" },
     { id: "hud", title: "Home HUD", meta: "SET" },
     { id: "skinny", title: "Session skinny", meta: "SET" },
+    { id: "updates", title: "Updates", meta: "SET" },
     { id: "display", title: "Display", meta: "SET" },
     { id: "overclock", title: "Overclocking", meta: "SET" },
     { id: "startup", title: "Startup audit", meta: "SET" },

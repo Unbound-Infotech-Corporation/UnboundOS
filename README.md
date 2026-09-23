@@ -8,7 +8,7 @@ UnboundOS does **not** replace Windows. It applies a focused gaming / streaming 
 
 The shell is a living-room home: on Home a **black studio field** holds a row of **narrow vertical tabs** plus a **packaged first-party HUD** (clock, date, viz, calendar — no Rainmeter required). **Left/Right** move focus. The focused tab lifts slightly and shows its **Diavlo** name above. **Up** opens that tab’s list from the bottom; **Down** opens it from the top — titles sit in the center over the same themed field. Games uses the Steam library when present. **SET** opens Options on the same field. Profiles stays a discreet corner glyph. Settings → Home HUD hides the chrome. The old Settings tile that showed the letter “I” is gone.
 
-OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). How we beat Windows-lite ISOs: [docs/competitive-landscape.md](docs/competitive-landscape.md). Session skinny toggles: [docs/gaming-skinny.md](docs/gaming-skinny.md). Theme hex: [docs/theme-tokens.md](docs/theme-tokens.md). Offline NIC pack: [docs/offline-nic-pack.md](docs/offline-nic-pack.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup, reversible session skinny). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
+OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). How we beat Windows-lite ISOs: [docs/competitive-landscape.md](docs/competitive-landscape.md). Session skinny toggles: [docs/gaming-skinny.md](docs/gaming-skinny.md). Theme hex: [docs/theme-tokens.md](docs/theme-tokens.md). Offline NIC pack: [docs/offline-nic-pack.md](docs/offline-nic-pack.md). Update Guard: [docs/update-guard.md](docs/update-guard.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup, reversible session skinny). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
 
 **Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (black Home, vertical tabs, quiet HUD). Company cyan `#00F0FF` is the tab tip and inner-page token. See [docs/screenshots/README.md](docs/screenshots/README.md).
 
@@ -29,7 +29,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
 | **Files** | Daily folder UI (Home, Desktop, Downloads, drives). Explorer stays for EAC / BattlEye / Vanguard |
 | **Hardware** | CPU, GPU, disks, RAM from this PC. Live sensors later; optional Open HWiNFO in Tools |
-| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Home HUD, Session skinny (HAGS + Game DVR copy), Interface motion On / Off |
+| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Home HUD, Session skinny (HAGS + Game DVR copy), Update Guard (quality from Microsoft, feature deferred), Interface motion On / Off |
 
 ## Solution layout
 

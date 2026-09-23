@@ -20,4 +20,7 @@ public static class OsProductCopy
 
     public const string HardwareHonesty =
         "Hardware inventory is read from this PC (registry, DriveInfo, GC memory). Live sensors, WMI depth, and LibreHardwareMonitor are later. Optional Open HWiNFO uses the official app if installed — UnboundOS does not bundle HWiNFO.";
+
+    public const string UpdateGuardHonesty =
+        "Monthly security quality from Microsoft; feature/optional churn blocked. LCUs include security plus some nonsecurity content by Microsoft design — not CVE-only patches. UnboundOS does not redistribute Windows .msu/.cab. Each PC downloads from Microsoft. Home edition is best-effort. Session enter does not flip Update Guard.";
 }

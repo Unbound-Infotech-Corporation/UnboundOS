@@ -140,3 +140,4 @@ pack, plus Microsoft Store and Xbox URI tiles.
 - Session skinny: `docs/gaming-skinny.md`
 - Theme tokens: `docs/theme-tokens.md`
 - Offline NIC pack: `docs/offline-nic-pack.md`
+- Update Guard (quality yes / feature deferred): `docs/update-guard.md`

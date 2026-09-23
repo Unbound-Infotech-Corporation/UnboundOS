@@ -19,10 +19,12 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IVendorAppLauncher _vendorLauncher;
     private readonly ISetupCleanup _cleanup;
     private readonly IGamingSkinnyPolicy _skinny;
+    private readonly IUpdateGuardPolicy _updates;
     private readonly IShellSettingsStore _shell;
     private bool _suppressToggle;
     private bool _suppressHudToggle;
     private bool _suppressHagsToggle;
+    private bool _suppressUpdateGuardToggle;
 
     public SettingsViewModel(
         IUiMotionPolicy motion,
@@ -32,6 +34,7 @@ public partial class SettingsViewModel : ObservableObject
         IVendorAppLauncher vendorLauncher,
         ISetupCleanup cleanup,
         IGamingSkinnyPolicy skinny,
+        IUpdateGuardPolicy updates,
         IShellSettingsStore shell)
     {
         _motion = motion;
@@ -41,6 +44,7 @@ public partial class SettingsViewModel : ObservableObject
         _vendorLauncher = vendorLauncher;
         _cleanup = cleanup;
         _skinny = skinny;
+        _updates = updates;
         _shell = shell;
         _motion.Changed += OnMotionChanged;
         _hud.Changed += OnHudChanged;
@@ -51,6 +55,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool _hagsEnabled;
     [ObservableProperty] private string _hagsStatus =
         "HAGS is hardware/game dependent. Test frametimes. Not forced on session enter.";
+    [ObservableProperty] private bool _updateGuardEnabled;
+    [ObservableProperty] private string _updateGuardStatus = OsProductCopy.UpdateGuardHonesty;
+    [ObservableProperty] private string _windowsQualityStatus = "Windows quality: unknown.";
+    [ObservableProperty] private string _shellVersionStatus = "UnboundOS shell: —";
     [ObservableProperty] private bool _homeClockEnabled = true;
     [ObservableProperty] private bool _homeTempsEnabled = true;
     [ObservableProperty] private string _homeWidgetLook = "Glass";
@@ -71,6 +79,7 @@ public partial class SettingsViewModel : ObservableObject
         new("motion", "Interface motion", "Home tab lift, list ease, and tile focus motion."),
         new("hud", "Home HUD", "Packaged clock, date, viz, and calendar on Home. Off hides that chrome."),
         new("skinny", "Session skinny", "Game Mode, Game DVR, visual effects, HAGS. Reversible. Defender stays on."),
+        new("updates", "Updates", "Quality/LCU from Microsoft; feature updates deferred. UnboundOS does not host Windows patches."),
         new("display", "Display", "Launch the GPU vendor app. UnboundOS does not write display settings."),
         new("overclock", "Overclocking", "Launch-only vendor OC hubs. No silent clocks."),
         new("startup", "Startup audit", "Pin allowlist. Never silently kill anticheat or GPU vendor."),
@@ -88,6 +97,7 @@ public partial class SettingsViewModel : ObservableObject
     public string CleanupHonesty => OsProductCopy.CleanupHonesty;
     public string HardwareHonesty => OsProductCopy.HardwareHonesty;
     public string FilesHonesty => OsProductCopy.FilesHonesty;
+    public string UpdateGuardHonesty => OsProductCopy.UpdateGuardHonesty;
 
     public bool CanPinSelected => SelectedStartup is { Disposition: not StartupDisposition.Protected };
     public bool SelectedIsPinned => SelectedStartup?.IsPinned == true;
@@ -99,6 +109,7 @@ public partial class SettingsViewModel : ObservableObject
         SyncFromPolicy();
         SyncFromHud();
         await SyncFromSkinnyAsync();
+        await SyncFromUpdateGuardAsync();
         await RefreshVendorsAsync();
         await RefreshStartupAsync();
         SelectedGroup ??= Groups[0];
@@ -124,6 +135,7 @@ public partial class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(ShowMotion));
         OnPropertyChanged(nameof(ShowHud));
         OnPropertyChanged(nameof(ShowSkinny));
+        OnPropertyChanged(nameof(ShowUpdates));
         OnPropertyChanged(nameof(ShowDisplay));
         OnPropertyChanged(nameof(ShowOverclock));
         OnPropertyChanged(nameof(ShowStartup));
@@ -134,6 +146,7 @@ public partial class SettingsViewModel : ObservableObject
     public bool ShowMotion => SelectedGroup?.Id == "motion";
     public bool ShowHud => SelectedGroup?.Id == "hud";
     public bool ShowSkinny => SelectedGroup?.Id == "skinny";
+    public bool ShowUpdates => SelectedGroup?.Id == "updates";
     public bool ShowDisplay => SelectedGroup?.Id == "display";
     public bool ShowOverclock => SelectedGroup?.Id == "overclock";
     public bool ShowStartup => SelectedGroup?.Id == "startup";
@@ -216,6 +229,88 @@ public partial class SettingsViewModel : ObservableObject
             : settings.HardwareGpuScheduling.Value
                 ? "HAGS preference is on. Test frametimes in your titles."
                 : "HAGS preference is off. Windows default left unless applied elevated.";
+    }
+
+    partial void OnUpdateGuardEnabledChanged(bool value)
+    {
+        if (_suppressUpdateGuardToggle)
+        {
+            return;
+        }
+
+        _ = PersistUpdateGuardAsync(value);
+    }
+
+    private async Task PersistUpdateGuardAsync(bool enabled)
+    {
+        try
+        {
+            var target = _updates.DescribeTarget();
+            var current = await _shell.LoadAsync();
+            await _shell.SaveAsync(current with
+            {
+                UpdateGuardEnabled = enabled,
+                UpdateGuardTargetRelease = $"{target.ProductVersion} {target.DisplayVersion}".Trim()
+            });
+            var result = enabled
+                ? await _updates.TryApplyUpdateGuardAsync()
+                : await _updates.TryClearUpdateGuardAsync();
+            UpdateGuardStatus = result.Message;
+            await RefreshUpdateStatusAsync();
+        }
+        catch (Exception error)
+        {
+            UpdateGuardStatus = error.Message;
+        }
+    }
+
+    private async Task SyncFromUpdateGuardAsync()
+    {
+        var settings = await _shell.LoadAsync();
+        _suppressUpdateGuardToggle = true;
+        UpdateGuardEnabled = settings.UpdateGuardEnabled ?? false;
+        _suppressUpdateGuardToggle = false;
+        UpdateGuardStatus = settings.UpdateGuardEnabled is true
+            ? OsProductCopy.UpdateGuardHonesty
+            : "Update Guard is off. Windows Update stays available. " + OsProductCopy.UpdateGuardHonesty;
+        await RefreshUpdateStatusAsync();
+    }
+
+    [RelayCommand]
+    private async Task ApplyUpdateGuardAsync()
+    {
+        _suppressUpdateGuardToggle = true;
+        UpdateGuardEnabled = true;
+        _suppressUpdateGuardToggle = false;
+        await PersistUpdateGuardAsync(true);
+    }
+
+    [RelayCommand]
+    private async Task RestoreUpdateGuardAsync()
+    {
+        _suppressUpdateGuardToggle = true;
+        UpdateGuardEnabled = false;
+        _suppressUpdateGuardToggle = false;
+        await PersistUpdateGuardAsync(false);
+    }
+
+    [RelayCommand]
+    private async Task CheckQualityUpdatesAsync()
+    {
+        var result = await _updates.OpenWindowsUpdateSettingsAsync();
+        UpdateGuardStatus = result.Message;
+        await RefreshUpdateStatusAsync();
+    }
+
+    private async Task RefreshUpdateStatusAsync()
+    {
+        var probe = await _updates.ProbeQualityStatusAsync();
+        WindowsQualityStatus = $"Windows quality: {probe.QualityLabel}. {probe.Detail}";
+        ShellVersionStatus = $"UnboundOS shell: {probe.ShellVersion}";
+        if (!string.IsNullOrWhiteSpace(probe.TargetRelease))
+        {
+            WindowsQualityStatus += $" Pin {probe.TargetRelease}.";
+        }
     }
 
     partial void OnHomeWidgetLookChanged(string value)

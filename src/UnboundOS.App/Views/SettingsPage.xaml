@@ -143,6 +143,58 @@
                 </StackPanel>
             </Border>
 
+            <Border x:Name="UpdatesPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="16">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="UPDATES" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.UpdateGuardHonesty}" />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.UpdateGuardEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Update Guard (quality yes / feature deferred)"
+                        AutomationProperties.Name="Update Guard"
+                        AutomationProperties.HelpText="Monthly security quality from Microsoft. Feature and optional preview updates deferred. Elevation may be required. Session enter does not flip this." />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="{x:Bind ViewModel.UpdateGuardStatus, Mode=OneWay}"
+                        AutomationProperties.LiveSetting="Polite" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.WindowsQualityStatus, Mode=OneWay}" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.ShellVersionStatus, Mode=OneWay}" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="Patches download from Microsoft. UnboundOS does not redistribute Windows updates." />
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Button
+                            Style="{StaticResource SignalButtonStyle}"
+                            Content="APPLY"
+                            Command="{x:Bind ViewModel.ApplyUpdateGuardCommand}"
+                            AutomationProperties.Name="Apply Update Guard"
+                            AutomationProperties.HelpText="Write quality-yes / feature-deferred policy. Needs elevation for HKLM." />
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="RESTORE"
+                            Command="{x:Bind ViewModel.RestoreUpdateGuardCommand}"
+                            AutomationProperties.Name="Restore Update Guard"
+                            AutomationProperties.HelpText="Remove Update Guard policy values. Windows Update stays on." />
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="CHECK FOR QUALITY UPDATES"
+                            Command="{x:Bind ViewModel.CheckQualityUpdatesCommand}"
+                            AutomationProperties.Name="Check for quality updates"
+                            AutomationProperties.HelpText="Open Microsoft Windows Update on this PC." />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
             <Border x:Name="DisplayPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
                 <StackPanel Spacing="12">
                     <TextBlock Style="{StaticResource PanelLabelText}" Text="DISPLAY" />

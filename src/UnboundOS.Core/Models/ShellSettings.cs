@@ -23,6 +23,12 @@ public sealed record ShellSettings
     /// <summary>Null means leave Windows HAGS alone. True/false is an informed toggle.</summary>
     public bool? HardwareGpuScheduling { get; init; }
 
+    /// <summary>Null means leave Windows Update policy alone.</summary>
+    public bool? UpdateGuardEnabled { get; init; }
+
+    /// <summary>Last pinned TargetReleaseVersionInfo (e.g. 24H2).</summary>
+    public string? UpdateGuardTargetRelease { get; init; }
+
     [JsonIgnore]
     public bool ShowHomeHud => HomeHudEnabled ?? true;
 
