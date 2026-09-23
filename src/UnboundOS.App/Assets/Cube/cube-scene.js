@@ -1,6 +1,7 @@
 /* UnboundOS Home — original procedural living galaxy.
    Restrained tilted OS band + dense in-band nebula (not a full-bleed
-   wallpaper). Wallpaper Engine / observatory stills are look-dev only. */
+   wallpaper). Wallpaper Engine / observatory / NASA SDO stills are
+   look-dev only. The zoomed hero sun is a shader photosphere. */
 (() => {
   "use strict";
 
@@ -139,9 +140,6 @@
   const accretionMap = paintAccretionRing(512, 256);
   const meteorMap = paintMeteorStreak(256, 64);
   const spikeMap = spriteTex(256, paintSpikeStar);
-  const sunMap = paintSunSurface(768, 384);
-  const sunCoronaMap = spriteTex(512, paintSunCorona);
-  const sunRingMap = paintSunRing(512, 256);
   const filamentMaps = [
     paintFilamentSheet(640, 320, 0xc11, "indigo"),
     paintFilamentSheet(640, 320, 0xc22, "violet"),
@@ -476,105 +474,6 @@
     ctx.fill();
     ctx.restore();
     return finishSoftTexture(c, 36);
-  }
-
-  function paintSunSurface(w, h) {
-    const c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
-    const ctx = c.getContext("2d", { willReadFrequently: true });
-    const img = ctx.createImageData(w, h);
-    const d = img.data;
-    for (let y = 0; y < h; y++) {
-      const v = y / Math.max(1, h - 1);
-      const limb = 0.52 + 0.48 * Math.sin(v * Math.PI);
-      for (let x = 0; x < w; x++) {
-        const u = x / Math.max(1, w - 1);
-        const ang = u * Math.PI * 2;
-        const nx = Math.cos(ang);
-        const nz = Math.sin(ang);
-        const n1 = valueNoise(nx * 3.1 + 4, v * 5.2 + nz * 1.35, 0x91);
-        const n2 = valueNoise(nx * 7.4 + 2, v * 12 + nz * 3.1, 0x92);
-        const n3 = valueNoise(nx * 16 + 8, v * 28 + nz * 6.2, 0x93);
-        const gran = n1 * 0.52 + n2 * 0.33 + n3 * 0.15;
-        const spot = smooth01((0.3 - n1) * 3.4) * smooth01((0.38 - n2) * 2.2);
-        const hot = smooth01((gran - 0.6) * 4.2);
-        let r = (255 * (0.8 + gran * 0.2) - spot * 70) * limb;
-        let g = (168 * (0.55 + gran * 0.42) - spot * 48) * limb;
-        let b = (62 * (0.34 + gran * 0.38) + hot * 42) * limb;
-        r = Math.min(255, r + hot * 64);
-        g = Math.min(255, g + hot * 34);
-        const i = (y * w + x) * 4;
-        d[i] = Math.max(0, Math.min(255, r));
-        d[i + 1] = Math.max(0, Math.min(255, g));
-        d[i + 2] = Math.max(0, Math.min(255, b));
-        d[i + 3] = 255;
-      }
-    }
-    ctx.putImageData(img, 0, 0);
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.wrapS = THREE.RepeatWrapping;
-    tex.wrapT = THREE.ClampToEdgeWrapping;
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    tex.generateMipmaps = false;
-    return tex;
-  }
-
-  function paintSunCorona(ctx, s) {
-    ctx.clearRect(0, 0, s, s);
-    const c = s / 2;
-    const g = ctx.createRadialGradient(c, c, 0, c, c, s * 0.48);
-    g.addColorStop(0, "rgba(255,244,214,0.98)");
-    g.addColorStop(0.12, "rgba(255,186,96,0.55)");
-    g.addColorStop(0.32, "rgba(230,110,48,0.2)");
-    g.addColorStop(0.58, "rgba(160,48,24,0.07)");
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, s, s);
-    ctx.globalCompositeOperation = "lighter";
-    for (let i = 0; i < 9; i++) {
-      const a = (i / 9) * Math.PI * 2 + 0.18;
-      ctx.save();
-      ctx.translate(c, c);
-      ctx.rotate(a);
-      ctx.scale(1, 0.16 + (i % 3) * 0.04);
-      const streak = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 0.46);
-      streak.addColorStop(0, "rgba(255,210,140,0.16)");
-      streak.addColorStop(0.45, "rgba(255,140,60,0.06)");
-      streak.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = streak;
-      ctx.fillRect(-s / 2, -s / 2, s, s);
-      ctx.restore();
-    }
-  }
-
-  function paintSunRing(w, h) {
-    const c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
-    const ctx = c.getContext("2d");
-    ctx.clearRect(0, 0, w, h);
-    ctx.globalCompositeOperation = "lighter";
-    const cx = w * 0.5;
-    const cy = h * 0.5;
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.scale(1, 0.34);
-    const ring = ctx.createRadialGradient(0, 0, w * 0.16, 0, 0, w * 0.4);
-    ring.addColorStop(0, "rgba(0,0,0,0)");
-    ring.addColorStop(0.58, "rgba(0,0,0,0)");
-    ring.addColorStop(0.74, "rgba(255, 170, 80, 0.2)");
-    ring.addColorStop(0.86, "rgba(255, 220, 160, 0.14)");
-    ring.addColorStop(0.95, "rgba(180, 60, 30, 0.05)");
-    ring.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = ring;
-    ctx.beginPath();
-    ctx.arc(0, 0, w * 0.4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-    return finishSoftTexture(c, 28);
   }
 
   function buildBlackHole() {
@@ -1273,48 +1172,194 @@
     return sys;
   }
 
+  function sunNoiseLib() {
+    return `
+      vec3 hash3(vec3 p) {
+        p = vec3(
+          dot(p, vec3(127.1, 311.7, 74.7)),
+          dot(p, vec3(269.5, 183.3, 246.1)),
+          dot(p, vec3(113.5, 271.9, 124.6))
+        );
+        return fract(sin(p) * 43758.5453123);
+      }
+      float hash(vec3 p) {
+        return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453);
+      }
+      float vnoise(vec3 p) {
+        vec3 i = floor(p);
+        vec3 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        float n000 = hash(i);
+        float n100 = hash(i + vec3(1.0, 0.0, 0.0));
+        float n010 = hash(i + vec3(0.0, 1.0, 0.0));
+        float n110 = hash(i + vec3(1.0, 1.0, 0.0));
+        float n001 = hash(i + vec3(0.0, 0.0, 1.0));
+        float n101 = hash(i + vec3(1.0, 0.0, 1.0));
+        float n011 = hash(i + vec3(0.0, 1.0, 1.0));
+        float n111 = hash(i + vec3(1.0, 1.0, 1.0));
+        float n00 = mix(n000, n100, f.x);
+        float n10 = mix(n010, n110, f.x);
+        float n01 = mix(n001, n101, f.x);
+        float n11 = mix(n011, n111, f.x);
+        float n0 = mix(n00, n10, f.y);
+        float n1 = mix(n01, n11, f.y);
+        return mix(n0, n1, f.z);
+      }
+      float fbm(vec3 p) {
+        float a = 0.5;
+        float s = 0.0;
+        for (int i = 0; i < 5; i++) {
+          s += a * vnoise(p);
+          p = p * 2.07 + 11.3;
+          a *= 0.5;
+        }
+        return s;
+      }
+      float worley(vec3 p) {
+        vec3 i = floor(p);
+        vec3 f = fract(p);
+        float d = 1.0;
+        for (int x = -1; x <= 1; x++) {
+          for (int y = -1; y <= 1; y++) {
+            for (int z = -1; z <= 1; z++) {
+              vec3 g = vec3(float(x), float(y), float(z));
+              vec3 o = hash3(i + g);
+              vec3 r = g + o - f;
+              d = min(d, dot(r, r));
+            }
+          }
+        }
+        return sqrt(d);
+      }
+    `;
+  }
+
+  function sunVert() {
+    return `
+      varying vec3 vNormal;
+      varying vec3 vWorldPos;
+      varying vec3 vObjectPos;
+      void main() {
+        vNormal = normalize(normalMatrix * normal);
+        vec4 world = modelMatrix * vec4(position, 1.0);
+        vWorldPos = world.xyz;
+        vObjectPos = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+  }
+
+  function photosphereFrag() {
+    return `
+      uniform float uTime;
+      uniform float uFade;
+      varying vec3 vNormal;
+      varying vec3 vWorldPos;
+      varying vec3 vObjectPos;
+      ${sunNoiseLib()}
+      void main() {
+        vec3 n = normalize(vNormal);
+        vec3 viewDir = normalize(cameraPosition - vWorldPos);
+        float mu = clamp(dot(n, viewDir), 0.0, 1.0);
+        float limb = mix(0.18, 1.0, pow(mu, 0.62));
+        vec3 p = normalize(vObjectPos);
+        float boil = uTime * 0.018;
+        float superG = fbm(p * 3.6 + 1.7);
+        float cells = worley(p * 26.0 + vec3(0.0, boil * 0.15, 0.0));
+        float gran = smoothstep(0.04, 0.52, cells);
+        float lanes = pow(1.0 - gran, 1.55);
+        float fine = fbm(p * 48.0 + vec3(2.2, boil, 5.1));
+        float relief = fbm(p * 28.0) - fbm(p * 28.0 + vec3(0.045, 0.0, 0.0));
+        float spots = fbm(p * 2.4 + vec3(3.8, 0.6, 1.4));
+        float umbra = smoothstep(0.74, 0.86, spots);
+        float penumbra = smoothstep(0.62, 0.74, spots) * (1.0 - umbra);
+        float fil = fbm(p * 10.5 + vec3(0.4, boil * 0.35, 2.6));
+        float loops = smoothstep(0.5, 0.78, fil);
+        vec3 phot = vec3(1.0, 0.70, 0.18);
+        vec3 hot = vec3(1.0, 0.90, 0.58);
+        vec3 lane = vec3(0.48, 0.16, 0.04);
+        vec3 gold = vec3(0.98, 0.74, 0.28);
+        vec3 umbraC = vec3(0.10, 0.04, 0.015);
+        vec3 col = mix(lane, phot, gran);
+        col = mix(col, hot, gran * fine * 0.62);
+        col = mix(col, gold, loops * 0.42 * (0.4 + 0.6 * mu));
+        col *= mix(0.78, 1.12, superG);
+        col *= 1.0 + relief * 1.65;
+        col = mix(col, lane * 0.45, penumbra);
+        col = mix(col, umbraC, umbra * 0.9);
+        col *= limb;
+        col += hot * pow(mu, 10.0) * 0.14;
+        col += gold * pow(1.0 - mu, 2.6) * 0.32;
+        col += lane * lanes * 0.08;
+        col *= uFade;
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `;
+  }
+
+  function coronaFrag() {
+    return `
+      uniform float uTime;
+      uniform float uFade;
+      uniform float uStrength;
+      varying vec3 vNormal;
+      varying vec3 vWorldPos;
+      varying vec3 vObjectPos;
+      ${sunNoiseLib()}
+      void main() {
+        vec3 n = normalize(vNormal);
+        vec3 viewDir = normalize(cameraPosition - vWorldPos);
+        float mu = clamp(dot(n, viewDir), 0.0, 1.0);
+        float fres = pow(1.0 - mu, 1.45);
+        vec3 p = normalize(vObjectPos);
+        float fil = fbm(p * 7.5 + vec3(0.0, uTime * 0.02, 1.8));
+        float tendril = smoothstep(0.38, 0.8, fil);
+        float spike = pow(worley(p * 5.2 + 3.1), 1.4);
+        float haze = fres * (0.22 + 0.62 * tendril) * (0.55 + 0.45 * (1.0 - spike));
+        vec3 gold = vec3(1.0, 0.82, 0.36);
+        vec3 pale = vec3(1.0, 0.93, 0.62);
+        vec3 col = mix(gold, pale, tendril * 0.55);
+        float alpha = haze * uStrength * uFade;
+        gl_FragColor = vec4(col * alpha, alpha);
+      }
+    `;
+  }
+
+  function makeSunMaterial(frag, extra) {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uFade: { value: 0 },
+        uStrength: { value: extra && extra.strength != null ? extra.strength : 1 }
+      },
+      vertexShader: sunVert(),
+      fragmentShader: frag,
+      transparent: !!(extra && extra.transparent),
+      depthWrite: !(extra && extra.transparent),
+      depthTest: true,
+      blending: extra && extra.additive ? THREE.AdditiveBlending : THREE.NormalBlending,
+      toneMapped: false,
+      side: extra && extra.side ? extra.side : THREE.FrontSide
+    });
+  }
+
   function buildHeroSun() {
     const group = new THREE.Group();
     group.visible = false;
     const body = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 48, 32),
-      new THREE.MeshBasicMaterial({
-        map: sunMap,
-        color: 0xfff2c8,
-        transparent: true,
-        opacity: 1
-      })
+      new THREE.SphereGeometry(1, 96, 64),
+      makeSunMaterial(photosphereFrag())
     );
-    const shell = new THREE.Mesh(
-      new THREE.SphereGeometry(1.045, 32, 24),
-      new THREE.MeshBasicMaterial({
-        color: 0xffb060,
-        transparent: true,
-        opacity: 0.18,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false
-      })
+    const chromo = new THREE.Mesh(
+      new THREE.SphereGeometry(1.02, 80, 56),
+      makeSunMaterial(coronaFrag(), { transparent: true, additive: true, strength: 0.55 })
     );
-    const corona = new THREE.Sprite(softSprite(sunCoronaMap, {
-      color: 0xffd090,
-      opacity: 0.42
-    }));
-    const halo = new THREE.Sprite(softSprite(glowMap, {
-      color: 0xff8a3a,
-      opacity: 0.2
-    }));
-    const flare = new THREE.Mesh(
-      new THREE.PlaneGeometry(1, 1),
-      softMat(sunRingMap, {
-        opacity: 0.28,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        side: THREE.DoubleSide
-      })
+    const corona = new THREE.Mesh(
+      new THREE.SphereGeometry(1.16, 80, 56),
+      makeSunMaterial(coronaFrag(), { transparent: true, additive: true, strength: 0.85 })
     );
-    flare.rotation.x = 1.12;
-    group.add(halo, corona, flare, shell, body);
-    group.userData = { body, shell, corona, halo, flare };
+    group.add(corona, chromo, body);
+    group.userData = { body, chromo, corona };
     scene.add(group);
     return group;
   }
@@ -1769,22 +1814,23 @@
     heroSun.visible = show;
     if (!show) return;
     heroSun.position.set(sunWorld.x, sunWorld.y + 0.06, sunWorld.z + 0.1);
-    const hr = 0.16 + blend * 0.72;
+    const hr = 0.18 + blend * 0.74;
+    const fade = smooth01(Math.min(1, blend * 1.15));
     const u = heroSun.userData;
     u.body.scale.setScalar(hr);
-    u.shell.scale.setScalar(hr * 1.05);
-    u.corona.scale.set(hr * 2.35, hr * 2.1, 1);
-    u.halo.scale.set(hr * 3.6, hr * 3.05, 1);
-    u.flare.scale.set(hr * 3.2, hr * 3.2, 1);
-    u.body.material.opacity = 0.45 + blend * 0.55;
-    u.shell.material.opacity = 0.08 + blend * 0.16;
-    u.corona.material.opacity = 0.16 + blend * 0.32;
-    u.halo.material.opacity = 0.07 + blend * 0.16;
-    u.flare.material.opacity = 0.1 + blend * 0.2;
+    u.chromo.scale.setScalar(hr * 1.02);
+    u.corona.scale.setScalar(hr * 1.16);
+    u.body.material.uniforms.uFade.value = fade;
+    u.chromo.material.uniforms.uFade.value = fade;
+    u.corona.material.uniforms.uFade.value = fade;
     if (state.motion) {
-      u.body.rotation.y += step * 0.085;
-      u.shell.rotation.y += step * 0.04;
-      u.flare.rotation.z += step * 0.03;
+      u.body.rotation.y += step * 0.032;
+      u.chromo.rotation.y += step * 0.026;
+      u.corona.rotation.y += step * 0.016;
+      const t = u.body.material.uniforms.uTime;
+      t.value += step;
+      u.chromo.material.uniforms.uTime.value = t.value;
+      u.corona.material.uniforms.uTime.value = t.value;
     }
   }
 

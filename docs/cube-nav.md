@@ -42,8 +42,9 @@ void (soft silhouette + dim accretion, not a cartoon). Company cyan
 (`#00F0FF`) stays a brand token for **inner pages**.
 
 Opening a category (Games, Tools, Options, …) **zooms the camera into
-that system's sun** and parks the sun as a slow-rotating hero on the
-**right**. The universe stays visible around it. A **titles-only**
+that system's sun** and parks a slow-rotating **procedural photosphere**
+on the **right** (limb darkening, granulation, muted active regions, a
+thin gold corona rim). The universe stays visible around it. A **titles-only**
 Diavlo list sits on the **left** over a reasonably transparent black
 wash — not an opaque slab. Options is a dedicated sun just beyond
 Mods (not on the L/R cycle); the Home **SET** glyph opens it instead
