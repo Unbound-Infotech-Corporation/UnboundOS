@@ -1347,16 +1347,16 @@
         for (int i = 0; i < 5; i++) {
           vec3 c = hash3(vec3(seed * 0.41, float(i) * 2.77, 8.2)) * 2.0 - 1.0;
           c.y *= 0.36;
-          if (i == 0) c = vec3(0.22 + 0.08 * seed * 0.02, 0.06, 0.9);
+          if (i == 0) c = vec3(0.18, 0.05, 0.92);
           c = normalize(c);
           float d = acos(clamp(dot(p, c), -1.0, 1.0));
-          float ru = 0.038 + hash(vec3(float(i), seed, 2.0)) * 0.05;
-          float rp = ru * (2.35 + amt * 0.35);
-          float um = smoothstep(ru, ru * 0.3, d);
-          float pe = smoothstep(rp, ru * 0.9, d) * (1.0 - um);
+          float ru = 0.026 + hash(vec3(float(i), seed, 2.0)) * 0.028;
+          float rp = ru * 2.15;
+          float um = smoothstep(ru, ru * 0.42, d);
+          float pe = smoothstep(rp, ru * 0.95, d) * (1.0 - um);
           vec3 rel = p - c * 0.92;
           float fang = atan(rel.z, rel.x);
-          pe *= 0.55 + 0.45 * sin(fang * 14.0 + seed + float(i));
+          pe *= 0.7 + 0.3 * sin(fang * 12.0 + seed + float(i));
           umbra = max(umbra, um);
           pen = max(pen, pe);
         }
@@ -1405,7 +1405,7 @@
         }
         darkChan = max(darkChan, snakes * 0.85);
         float plage = plagePatch(q, uSeed) * (0.5 + fine * 0.5);
-        vec2 sp = spotPair(q, uSeed, uSpotAmt);
+        vec2 sp = spotPair(p, uSeed, uSpotAmt);
         float faculae = walls * pow(1.0 - mu, 0.7) * (0.25 + uActivity * 0.5);
         vec3 flareDir = normalize(vec3(sin(uSeed * 1.7), 0.2, cos(uSeed * 1.7)));
         float flarePatch = pow(max(0.0, dot(q, flareDir)), 8.5) * uFlare;
