@@ -27,6 +27,7 @@ public sealed partial class NavigationCubeView : UserControl
     private IReadOnlyList<DesktopTool> _tools = [];
     private IReadOnlyList<ModGame> _mods = [];
     private IReadOnlyList<CubeBrowseItem> _items = [];
+    private bool _optionsTab;
 
     public NavigationCubeView()
     {
@@ -50,7 +51,7 @@ public sealed partial class NavigationCubeView : UserControl
     /// <summary>Last Options row id, set before <see cref="SettingsRequested"/>.</summary>
     public string? OptionsGroupId { get; private set; }
 
-    /// <summary>True while a category list is open over the galaxy.</summary>
+    /// <summary>True while a category list is open over Home.</summary>
     public bool OverlayOpen => _browsing;
 
     public event EventHandler<bool>? OverlayChanged;
@@ -69,7 +70,7 @@ public sealed partial class NavigationCubeView : UserControl
             _motion.Changed += OnMotionChanged;
         }
 
-        Announce(_pose.Front);
+        AnnounceCurrent();
         await LoadCatalogsAsync();
         await StartSceneAsync();
     }
@@ -215,8 +216,15 @@ public sealed partial class NavigationCubeView : UserControl
                     break;
                 }
 
+                if (IsOptionsFace(message.Face))
+                {
+                    FocusOptionsTab();
+                    break;
+                }
+
                 if (CubeBridge.ParseFace(message.Face) is { } face)
                 {
+                    _optionsTab = false;
                     if (face == _pose.Front)
                     {
                         ActivateFront();
@@ -338,14 +346,27 @@ public sealed partial class NavigationCubeView : UserControl
             return;
         }
 
-        var next = HomeGalaxy.Neighbor(_pose.Front, delta);
-        SetPose(CubeAtmosphere.AimedAt(next, _pose));
+        var next = HomeGalaxy.ShiftTab(_pose.Front, _optionsTab, delta);
+        if (next.Destination is { } destination)
+        {
+            _optionsTab = false;
+            SetPose(CubeAtmosphere.AimedAt(destination, _pose));
+            return;
+        }
+
+        FocusOptionsTab();
     }
 
     public void OpenCategoryList(bool fromBottom)
     {
         if (_opening || _browsing)
         {
+            return;
+        }
+
+        if (_optionsTab)
+        {
+            OpenOptionsList(fromBottom);
             return;
         }
 
@@ -385,6 +406,7 @@ public sealed partial class NavigationCubeView : UserControl
         }
 
         OptionsGroupId = null;
+        _optionsTab = true;
         _items = CubeBrowse.Options();
         _focus = HomeGalaxy.ListStartIndex(_items.Count, fromBottom);
         if (!_sceneReady || CubeWeb.CoreWebView2 is null)
@@ -412,7 +434,7 @@ public sealed partial class NavigationCubeView : UserControl
             CubeWeb.CoreWebView2.PostWebMessageAsJson(CubeBridge.ToJson(CubeBridge.Close(AllowMotion)));
         }
 
-        Announce(_pose.Front);
+        AnnounceCurrent();
     }
 
     public void ResetScene()
@@ -422,6 +444,7 @@ public sealed partial class NavigationCubeView : UserControl
         _pendingOpen = null;
         _items = [];
         _focus = 0;
+        _optionsTab = false;
         _openToken++;
         if (_sceneReady && CubeWeb.CoreWebView2 is not null)
         {
@@ -429,7 +452,7 @@ public sealed partial class NavigationCubeView : UserControl
             PushState(burst: false);
         }
 
-        Announce(_pose.Front);
+        AnnounceCurrent();
     }
 
     private void SetBrowsing(bool value)
@@ -651,7 +674,8 @@ public sealed partial class NavigationCubeView : UserControl
     {
         var changed = pose.YawSteps != _pose.YawSteps || pose.PitchSteps != _pose.PitchSteps;
         _pose = pose;
-        Announce(pose.Front);
+        _optionsTab = false;
+        AnnounceCurrent();
         PushState(burst: changed && AllowMotion);
         SyncFallback();
     }
@@ -664,8 +688,33 @@ public sealed partial class NavigationCubeView : UserControl
         }
 
         var json = CubeBridge.ToJson(
-            CubeBridge.State(_pose, _pose.YawDegrees, _pose.PitchDegrees, AllowMotion, burst));
+            CubeBridge.State(_pose, _pose.YawDegrees, _pose.PitchDegrees, AllowMotion, burst, _optionsTab));
         CubeWeb.CoreWebView2.PostWebMessageAsJson(json);
+    }
+
+    private void FocusOptionsTab()
+    {
+        _optionsTab = true;
+        AnnounceCurrent();
+        PushState(burst: AllowMotion);
+        SyncFallback();
+    }
+
+    private static bool IsOptionsFace(string? face) =>
+        face is not null && face.Equals("Settings", StringComparison.OrdinalIgnoreCase)
+            || face is not null && face.Equals("Options", StringComparison.OrdinalIgnoreCase);
+
+    private void AnnounceCurrent()
+    {
+        if (_optionsTab)
+        {
+            FrontCaption.Text = "Options";
+            AutomationProperties.SetName(this, HomeGalaxy.AnnounceOptions());
+            AutomationProperties.SetName(FrontCaption, "Focused tab Options");
+            return;
+        }
+
+        Announce(_pose.Front);
     }
 
     private void Announce(CubeDestination front)
@@ -673,7 +722,7 @@ public sealed partial class NavigationCubeView : UserControl
         var info = CubeCatalog.Info(front);
         FrontCaption.Text = info.Title;
         AutomationProperties.SetName(this, CubeCatalog.Announce(front));
-        AutomationProperties.SetName(FrontCaption, $"Focused node {info.Title}");
+        AutomationProperties.SetName(FrontCaption, $"Focused tab {info.Title}");
         if (_announced != front)
         {
             _announced = front;

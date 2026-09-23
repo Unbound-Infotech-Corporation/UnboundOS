@@ -16,9 +16,5 @@ Inter and JetBrains Mono licenses live next to those files.
 
 ## NASA SDO look-dev (not shipped)
 
-The zoomed Home category suns are **original procedural shaders**. Public-domain
-NASA Solar Dynamics Observatory stills and multi-wavelength footage (AIA 171 Å,
-AIA 304 Å, HMI continuum) informed multi-scale granulation, limb darkening,
-filamentary corona, and flare cadence offline. Each category sun is seeded so it looks different.
-No SDO plate, logo, or video is loaded or packaged. Do not stamp NASA marks
-on the sphere.
+Home no longer draws a sun. Earlier look-dev used public-domain NASA SDO
+stills offline only. No SDO plate, logo, or video is loaded or packaged.

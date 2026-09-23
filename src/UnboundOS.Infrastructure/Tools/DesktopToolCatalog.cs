@@ -37,7 +37,7 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
     public static ToolGetPath RainmeterGetPath { get; } =
         new("Official site", "https://www.rainmeter.net/");
 
-    /// <summary>Recommended starter skin over galaxy Home. Link only — do not ship the .rmskin.</summary>
+    /// <summary>Recommended starter skin over Home. Link only — do not ship the .rmskin.</summary>
     public static ToolGetPath PhenixGetPath { get; } =
         new("Phenix theme", "https://visualskins.com/skin/phenix");
 
@@ -131,7 +131,7 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
         Create(
             DesktopToolIds.Rainmeter,
             "Rainmeter",
-            "Desktop skins over the galaxy. Open launches Rainmeter if installed. Get is the official Rainmeter page — UnboundOS does not ship skins.",
+            "Desktop skins over Home. Open launches Rainmeter if installed. Get is the official Rainmeter page — UnboundOS does not ship skins.",
             FindRainmeter(),
             ["Rainmeter"],
             RainmeterGetPath),
@@ -161,7 +161,7 @@ public sealed class DesktopToolCatalog(DesktopToolDiscoverySettings? settings = 
         Create(
             DesktopToolIds.Visualizers,
             "Visualizer pack",
-            "Free Rainmeter visualizers that sit over the galaxy (Monstercat Visualizer). Get the official GitHub page. Pair with MusicBee or another player. UnboundOS does not ship paid or redistributed packs.",
+            "Free Rainmeter visualizers that sit over Home (Monstercat Visualizer). Get the official GitHub page. Pair with MusicBee or another player. UnboundOS does not ship paid or redistributed packs.",
             null,
             [],
             VisualizersGetPath),

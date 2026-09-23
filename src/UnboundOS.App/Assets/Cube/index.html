@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UnboundOS Home galaxy</title>
+  <title>UnboundOS Home</title>
   <style>
     /* A font by Jos Buivenga (exljbris) -> www.exljbris.com */
     @font-face {
@@ -28,7 +28,7 @@
       font-display: swap;
     }
     :root {
-      --void: #000000;
+      --void: #05070A;
       --star: #F4EFE2;
       --muted: #8A8A96;
       --cyan: #00F0FF;
@@ -51,14 +51,14 @@
       width: 100%;
       height: 100%;
       display: block;
-      background: #000;
+      background: #05070A;
     }
     #fallback {
       position: absolute;
       inset: 0;
       display: grid;
       place-items: center;
-      background: #000;
+      background: #05070A;
       color: var(--star);
     }
     #fallback[hidden] { display: none; }
@@ -177,16 +177,15 @@
       pointer-events: none;
       font-family: var(--list-font);
       font-weight: 500;
-      color: #F6F1E4;
-      font-size: clamp(30px, 3.6vw, 44px);
-      letter-spacing: 0.04em;
+      color: #F4F7FA;
+      font-size: clamp(26px, 2.4vw, 36px);
+      letter-spacing: 0.08em;
       line-height: 1.1;
       white-space: nowrap;
       text-shadow:
-        0 0 3px #000,
-        0 1px 0 #000,
-        0 2px 10px rgba(0, 0, 0, 0.9),
-        0 10px 28px rgba(0, 0, 0, 0.55);
+        0 1px 0 rgba(0, 0, 0, 0.85),
+        0 4px 18px rgba(0, 0, 0, 0.55),
+        0 12px 32px rgba(0, 0, 0, 0.35);
     }
     #nodeLabel[hidden] { display: none; }
     .preview-caption {
@@ -217,7 +216,7 @@
   <div id="stage">
     <canvas id="gl" aria-hidden="true"></canvas>
     <div id="nodeLabel" hidden aria-live="polite"></div>
-    <div id="fallback" hidden>Galaxy needs WebGL.</div>
+    <div id="fallback" hidden>Home needs WebGL.</div>
     <div id="overlay">
       <div id="scrim" aria-hidden="true"></div>
       <div id="listPane">
@@ -228,7 +227,7 @@
   </div>
   <div class="preview-caption">
     <h1 id="previewTitle">Games</h1>
-    <p id="previewHint">Left/Right shift nodes · Up/Down open this list</p>
+    <p id="previewHint">Left/Right move tabs · Up/Down open this list</p>
   </div>
   <script src="three.min.js"></script>
   <script src="cube-scene.js"></script>

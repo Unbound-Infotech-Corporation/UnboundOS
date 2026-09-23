@@ -1,50 +1,17 @@
-/* UnboundOS Home — original procedural living galaxy.
-   Restrained tilted OS band + dense in-band nebula (not a full-bleed
-   wallpaper). Wallpaper Engine / observatory / NASA SDO stills are
-   look-dev only. The zoomed hero sun is a shader photosphere. */
+/* UnboundOS Home — studio tab bar on Obsidian.
+   No galaxy, no suns. Narrow vertical blades, teal tips, soft shadows. */
 (() => {
   "use strict";
 
-  const NODE_IDS = ["Session", "Tools", "Mods", "Network", "Files", "Hardware"];
-  const NODE_X = [0, 1.14, 2.22, -1.14, -2.22, -3.3];
-  const OPTIONS_SUN_X = 3.15;
-  const SUN_LOOKS = {
-    Session: {
-      phot: [1.0, 0.72, 0.12], hot: [1.0, 0.9, 0.42], lane: [0.45, 0.16, 0.03],
-      gold: [1.0, 0.74, 0.18], umbra: [0.07, 0.025, 0.01], corona: [1.0, 0.78, 0.28],
-      seed: 11.3, activity: 0.74, gran: 110.0, spots: 1.05, swirl: 0.12, flare: 0.7, style: 0.08
-    },
-    Settings: {
-      phot: [1.0, 0.82, 0.16], hot: [1.0, 0.94, 0.48], lane: [0.22, 0.1, 0.025],
-      gold: [1.0, 0.88, 0.24], umbra: [0.1, 0.04, 0.015], corona: [1.0, 0.9, 0.34],
-      seed: 27.8, activity: 1.16, gran: 78.0, spots: 0.58, swirl: 0.22, flare: 1.25, style: 1.0
-    },
-    Tools: {
-      phot: [0.96, 0.2, 0.14], hot: [1.0, 0.42, 0.34], lane: [0.28, 0.04, 0.05],
-      gold: [1.0, 0.36, 0.22], umbra: [0.12, 0.03, 0.03], corona: [1.0, 0.3, 0.24],
-      seed: 41.6, activity: 0.98, gran: 88.0, spots: 0.4, swirl: -0.18, flare: 1.02, style: 0.5
-    },
-    Mods: {
-      phot: [0.92, 0.5, 0.12], hot: [1.0, 0.7, 0.28], lane: [0.32, 0.1, 0.03],
-      gold: [0.9, 0.48, 0.14], umbra: [0.06, 0.02, 0.01], corona: [1.0, 0.58, 0.2],
-      seed: 63.1, activity: 0.86, gran: 64.0, spots: 1.2, swirl: 0.1, flare: 0.64, style: 0.4
-    },
-    Network: {
-      phot: [0.92, 0.88, 0.62], hot: [0.96, 0.96, 0.9], lane: [0.28, 0.26, 0.22],
-      gold: [0.78, 0.86, 0.95], umbra: [0.08, 0.08, 0.1], corona: [0.72, 0.86, 1.0],
-      seed: 8.4, activity: 0.68, gran: 82.0, spots: 0.35, swirl: -0.2, flare: 0.52, style: 0.7
-    },
-    Files: {
-      phot: [1.0, 0.8, 0.42], hot: [1.0, 0.92, 0.64], lane: [0.5, 0.3, 0.1],
-      gold: [1.0, 0.84, 0.4], umbra: [0.14, 0.08, 0.03], corona: [1.0, 0.86, 0.5],
-      seed: 19.7, activity: 0.38, gran: 70.0, spots: 0.28, swirl: 0.06, flare: 0.32, style: 0.2
-    },
-    Hardware: {
-      phot: [1.0, 0.84, 0.22], hot: [1.0, 0.96, 0.7], lane: [0.55, 0.2, 0.04],
-      gold: [1.0, 0.72, 0.16], umbra: [0.07, 0.02, 0.01], corona: [1.0, 0.8, 0.3],
-      seed: 52.2, activity: 1.04, gran: 90.0, spots: 0.88, swirl: 0.18, flare: 1.08, style: 0.35
-    }
-  };
+  const TAB_DEFS = [
+    { id: "Hardware", title: "Hardware" },
+    { id: "Files", title: "Files" },
+    { id: "Network", title: "Network" },
+    { id: "Session", title: "Games" },
+    { id: "Settings", title: "Options" },
+    { id: "Tools", title: "Tools" },
+    { id: "Mods", title: "Mods" }
+  ];
   const OPTIONS_ITEMS = [
     { id: "motion", title: "Interface motion", meta: "SET" },
     { id: "hud", title: "Home HUD", meta: "SET" },
@@ -54,7 +21,7 @@
     { id: "cleanup", title: "Finish setup", meta: "SET" }
   ];
   const DEFAULT_FACES = [
-    { id: "Session", title: "Games", kicker: "PLAY", monogram: "G", meta: "PLAY", hint: "Up or Down opens this list over the galaxy.", accent: "#F2E6C8", core: "#FFE9B0" },
+    { id: "Session", title: "Games", kicker: "PLAY", monogram: "G", meta: "PLAY", hint: "Up or Down opens this list.", accent: "#F2E6C8", core: "#FFE9B0" },
     { id: "Tools", title: "Tools", kicker: "KIT", monogram: "T", meta: "OPEN", hint: "Up or Down opens Tools.", accent: "#E8D7A8", core: "#F0E0B8" },
     { id: "Mods", title: "Mods", kicker: "MOD", monogram: "M", meta: "OPEN", hint: "Up or Down opens Mods.", accent: "#E4D2A0", core: "#F0E0B8" },
     { id: "Network", title: "Network", kicker: "LINK", monogram: "N", meta: "SPLIT", hint: "Up or Down opens Network.", accent: "#C8D4F0", core: "#D8E0F4" },
@@ -82,156 +49,180 @@
 
   const state = {
     faces: DEFAULT_FACES,
-    node: 0,
-    visualX: 0,
-    targetX: 0,
+    tab: 3,
     motion: !reduced,
     overlay: false,
     items: [],
     focus: 0,
     origin: "top",
-    camBlend: 0,
-    camGoal: 0,
-    zoomKind: "",
     overlayTitle: "",
-    overlayFront: "",
-    sunId: "Session",
-    sunFlare: 0,
-    sunFlareGoal: 0,
-    nextSunFlare: 0,
-    dragging: false,
-    moved: false,
-    pressX: 0,
-    pressY: 0,
-    lastX: 0,
-    lastY: 0,
-    lastT: 0,
-    vx: 0,
-    vy: 0
+    overlayFront: ""
   };
 
-  let renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: false,
-      powerPreference: "high-performance",
-      preserveDrawingBuffer: true
-    });
-  } catch (err) {
-    showFallback();
-    return;
-  }
-  if (!renderer.getContext()) {
-    showFallback();
-    return;
-  }
-
-  fallback.hidden = true;
-  renderer.setClearColor(0x000104, 1);
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: false,
+    powerPreference: "high-performance"
+  });
+  renderer.setClearColor(0x05070a, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
-
-  const CAM_Y = 1.62;
-  const CAM_Z = 8.95;
-  const RIG_PITCH = 0.34;
-  const RIG_ROLL = 0.035;
-  const lookTarget = new THREE.Vector3(0, 0.03, -0.7);
+  renderer.toneMappingExposure = 1.08;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(26, 1, 0.08, 160);
-  camera.position.set(0, CAM_Y, CAM_Z);
-  camera.lookAt(lookTarget);
-
-  const rig = new THREE.Group();
-  rig.rotation.x = RIG_PITCH;
-  rig.rotation.z = RIG_ROLL;
-  scene.add(rig);
-
-  const starMap = spriteTex(64, (ctx, s) => {
-    const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s * 0.46);
-    g.addColorStop(0, "rgba(255,255,255,1)");
-    g.addColorStop(0.16, "rgba(255,246,220,0.9)");
-    g.addColorStop(0.4, "rgba(176,198,255,0.24)");
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, s, s);
-  });
-
-  const glowMap = spriteTex(256, (ctx, s) => {
-    const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s * 0.46);
-    g.addColorStop(0, "rgba(255,252,236,0.98)");
-    g.addColorStop(0.18, "rgba(255,226,168,0.42)");
-    g.addColorStop(0.48, "rgba(150,176,230,0.1)");
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, s, s);
-  });
-
-  const barMap = spriteTex(512, paintBarGlow);
-  const diskMap = paintDiskTexture(2560, 1024);
-  const dustMap = paintDustSheet(1024, 256);
-  const nebulaMap = paintNebulaVolume(1600, 640, 0xb1, "blue");
-  const nebulaWarm = paintNebulaVolume(1400, 560, 0xc7, "rose");
-  const trailMap = paintEnergyTrail(2048, 512);
-  const voidMap = spriteTex(256, paintVoidCore);
-  const accretionMap = paintAccretionRing(512, 256);
-  const meteorMap = paintMeteorStreak(256, 64);
-  const spikeMap = spriteTex(256, paintSpikeStar);
-  const filamentMaps = [
-    paintFilamentSheet(640, 320, 0xc11, "indigo"),
-    paintFilamentSheet(640, 320, 0xc22, "violet"),
-    paintFilamentSheet(640, 320, 0xc33, "lavender"),
-    paintFilamentSheet(640, 320, 0xc44, "magenta")
-  ];
-
-  const warm = new THREE.Color(0xffe2a8);
-  const copper = new THREE.Color(0xb86a5a);
-  const cool = new THREE.Color(0x6a88c8);
-  const cream = new THREE.Color(0xfff4dc);
-  const indigo = new THREE.Color(0x24306e);
-  const lavender = new THREE.Color(0xa898d0);
-  const violet = new THREE.Color(0x5a4a98);
-  const magenta = new THREE.Color(0xe07098);
-
-  const farStars = buildHalo(9800, 82, 1.5, 0x8a9ccc, 0x51f, 0.74, 0.0000048, 0);
-  const midStars = buildHalo(4400, 30, 1.85, 0xc8d4f0, 0x77a, 0.66, -0.000009, 0);
-  const nearStars = buildHalo(1900, 17, 2.2, 0xe8e4f4, 0x91c, 0.58, 0.000016, 2.2);
-  const deepField = buildColoredField(11000, 100, 1.42, 0xdef1, 0.72, 0.0000032);
-  const diskRings = buildDiskRings();
-  const shear = buildShear(1500);
-  const diskGlow = buildDiskGlow();
-  const dustSheets = buildDustSheets();
-  const filaments = buildFilaments();
-  const spikes = buildSpikedStars(16);
-  const nodes = buildNodes();
-  const optionsSun = buildOptionsSun();
-  const heroSun = buildHeroSun();
-  const blackHole = buildBlackHole();
-  const skyFx = buildSkyFx();
-  scene.add(farStars, midStars, nearStars, deepField);
-  const vignette = buildVignette();
-  scene.add(vignette);
+  scene.background = new THREE.Color(0x05070a);
+  const camera = new THREE.PerspectiveCamera(26, 16 / 9, 0.1, 80);
+  camera.position.set(0, 2.15, 7.15);
+  camera.lookAt(0, 1.05, 0);
 
   const clock = new THREE.Clock();
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
-  const nodeMeshes = nodes.map((n) => n.hit);
-  const camRestPos = new THREE.Vector3();
-  const camZoomPos = new THREE.Vector3();
-  const camLook = new THREE.Vector3();
-  const sunWorld = new THREE.Vector3();
-  const zoomLook = new THREE.Vector3();
+  const labelWorld = new THREE.Vector3();
+  let running = false;
+  let drag = null;
 
-  function nodeX(i) {
-    return NODE_X[wrapNode(i)];
+  scene.add(new THREE.HemisphereLight(0x243040, 0x05070a, 0.42));
+
+  const key = new THREE.DirectionalLight(0xfff3e4, 1.55);
+  key.position.set(-3.2, 6.4, 5.2);
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.camera.left = -7;
+  key.shadow.camera.right = 7;
+  key.shadow.camera.top = 5;
+  key.shadow.camera.bottom = -2;
+  key.shadow.camera.near = 1;
+  key.shadow.camera.far = 18;
+  key.shadow.bias = -0.00035;
+  key.shadow.radius = 3.2;
+  scene.add(key);
+
+  const fill = new THREE.DirectionalLight(0xb9c6d6, 0.32);
+  fill.position.set(4.4, 3.2, 2.6);
+  scene.add(fill);
+
+  const rim = new THREE.DirectionalLight(0x7f96aa, 0.22);
+  rim.position.set(0.4, 2.4, -5.2);
+  scene.add(rim);
+
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(48, 28),
+    new THREE.MeshPhysicalMaterial({
+      color: 0x080b10,
+      roughness: 0.32,
+      metalness: 0.38,
+      clearcoat: 0.18,
+      clearcoatRoughness: 0.5
+    })
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  const blobTex = makeBlobTexture();
+  const blobGeo = new THREE.PlaneGeometry(1.15, 0.55);
+  const tabs = TAB_DEFS.map((def, i) => makeTab(def, (i - 3) * 0.98));
+
+  function makeBlobTexture() {
+    const c = document.createElement("canvas");
+    c.width = c.height = 256;
+    const ctx = c.getContext("2d");
+    const g = ctx.createRadialGradient(128, 128, 12, 128, 128, 120);
+    g.addColorStop(0, "rgba(0,0,0,0.55)");
+    g.addColorStop(0.45, "rgba(0,0,0,0.22)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 256, 256);
+    const tex = new THREE.CanvasTexture(c);
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    return tex;
   }
 
-  function wrapNode(i) {
-    const n = NODE_IDS.length;
+  function makeTab(def, x) {
+    const group = new THREE.Group();
+    group.position.x = x;
+    group.rotation.x = -0.075;
+    const bodyMat = new THREE.MeshPhysicalMaterial({
+      color: 0x1a2026,
+      roughness: 0.4,
+      metalness: 0.7,
+      clearcoat: 0.28,
+      clearcoatRoughness: 0.32
+    });
+    const edgeMat = new THREE.MeshPhysicalMaterial({
+      color: 0x2a323a,
+      roughness: 0.28,
+      metalness: 0.78,
+      clearcoat: 0.45,
+      clearcoatRoughness: 0.2
+    });
+    const tipMat = new THREE.MeshPhysicalMaterial({
+      color: 0x00e6f5,
+      emissive: 0x00f0ff,
+      emissiveIntensity: 0.62,
+      roughness: 0.22,
+      metalness: 0.3,
+      clearcoat: 0.55,
+      clearcoatRoughness: 0.18
+    });
+    const body = new THREE.Mesh(new THREE.BoxGeometry(0.108, 2.62, 0.2), bodyMat);
+    body.position.y = 1.31;
+    body.castShadow = true;
+    body.receiveShadow = true;
+    const edgeL = new THREE.Mesh(new THREE.BoxGeometry(0.01, 2.62, 0.204), edgeMat);
+    edgeL.position.set(-0.054, 1.31, 0);
+    edgeL.castShadow = true;
+    const edgeR = edgeL.clone();
+    edgeR.position.x = 0.054;
+    const lip = new THREE.Mesh(new THREE.BoxGeometry(0.118, 0.02, 0.22), edgeMat);
+    lip.position.y = 2.63;
+    lip.castShadow = true;
+    const tip = new THREE.Mesh(new THREE.BoxGeometry(0.116, 0.058, 0.216), tipMat);
+    tip.position.y = 2.67;
+    tip.castShadow = true;
+    group.add(body, edgeL, edgeR, lip, tip);
+    scene.add(group);
+
+    const blob = new THREE.Mesh(
+      blobGeo,
+      new THREE.MeshBasicMaterial({
+        map: blobTex,
+        transparent: true,
+        depthWrite: false,
+        opacity: 0.42
+      })
+    );
+    blob.rotation.x = -Math.PI / 2;
+    blob.position.set(x, 0.008, 0.06);
+    scene.add(blob);
+
+    return {
+      def,
+      group,
+      body,
+      tip,
+      blob,
+      lift: 0,
+      liftGoal: 0,
+      glow: 0.62,
+      glowGoal: 0.62
+    };
+  }
+
+  function tabIndexOf(id) {
+    const i = TAB_DEFS.findIndex((t) => t.id === id);
+    return i >= 0 ? i : 3;
+  }
+
+  function wrapTab(i) {
+    const n = TAB_DEFS.length;
     return ((i % n) + n) % n;
   }
 
@@ -239,1741 +230,92 @@
     return state.faces.find((f) => f.id === id) || DEFAULT_FACES[0];
   }
 
-  function paintBarGlow(ctx, s) {
-    ctx.clearRect(0, 0, s, s);
-    ctx.translate(s / 2, s / 2);
-    ctx.scale(1, 0.32);
-    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 0.44);
-    g.addColorStop(0, "rgba(255,248,236,0.82)");
-    g.addColorStop(0.16, "rgba(230,190,200,0.32)");
-    g.addColorStop(0.42, "rgba(120,110,180,0.12)");
-    g.addColorStop(0.7, "rgba(60,80,160,0.05)");
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(-s / 2, -s / 2, s, s);
-  }
-
-  function paintDiskTexture(w, h) {
-    const c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
-    const ctx = c.getContext("2d", { willReadFrequently: true });
-    ctx.clearRect(0, 0, w, h);
-    const cx = w * 0.5;
-    const cy = h * 0.5;
-
-    function oval(rx, ry, stops) {
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.scale(rx, ry);
-      const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
-      for (const [t, col] of stops) g.addColorStop(t, col);
-      ctx.fillStyle = g;
-      ctx.fillRect(-1, -1, 2, 2);
-      ctx.restore();
-    }
-
-    oval(w * 0.48, h * 0.22, [
-      [0, "rgba(40, 52, 130, 0.55)"],
-      [0.4, "rgba(24, 30, 86, 0.26)"],
-      [1, "rgba(0,0,0,0)"]
-    ]);
-    oval(w * 0.42, h * 0.16, [
-      [0, "rgba(96, 70, 158, 0.42)"],
-      [0.48, "rgba(46, 38, 104, 0.18)"],
-      [1, "rgba(0,0,0,0)"]
-    ]);
-    oval(w * 0.34, h * 0.11, [
-      [0, "rgba(168, 96, 140, 0.34)"],
-      [0.42, "rgba(90, 70, 130, 0.14)"],
-      [1, "rgba(0,0,0,0)"]
-    ]);
-    oval(w * 0.16, h * 0.065, [
-      [0, "rgba(255, 236, 210, 0.78)"],
-      [0.3, "rgba(255, 200, 150, 0.36)"],
-      [0.7, "rgba(180, 120, 110, 0.1)"],
-      [1, "rgba(0,0,0,0)"]
-    ]);
-    oval(w * 0.048, h * 0.042, [
-      [0, "rgba(255, 250, 240, 0.95)"],
-      [0.4, "rgba(255, 226, 176, 0.48)"],
-      [1, "rgba(0,0,0,0)"]
-    ]);
-
-    ctx.save();
-    ctx.globalCompositeOperation = "lighter";
-    ctx.translate(cx, cy);
-    ctx.scale(1, 0.04);
-    const spike = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.46);
-    spike.addColorStop(0, "rgba(255,248,230,0.5)");
-    spike.addColorStop(0.2, "rgba(255,220,160,0.12)");
-    spike.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = spike;
-    ctx.fillRect(-w * 0.46, -w * 0.46, w * 0.92, w * 0.92);
-    ctx.restore();
-
-    const img = ctx.getImageData(0, 0, w, h);
-    const d = img.data;
-    for (let y = 0; y < h; y++) {
-      const ny = (y - cy) / h;
-      const band = Math.exp(-ny * ny * 52);
-      if (band < 0.02) continue;
-      for (let x = 0; x < w; x++) {
-        const nx = (x - cx) / w;
-        const n1 = valueNoise(nx * 20 + 2.1, ny * 30, 11);
-        const n2 = valueNoise(nx * 8 - 1.4, ny * 16, 29);
-        const lane = band * (0.32 * n1 + 0.68 * n2);
-        if (lane < 0.13) continue;
-        const i = (y * w + x) * 4;
-        if (!d[i + 3]) continue;
-        const k = 1 - Math.min(0.62, (lane - 0.13) * 1.3);
-        d[i] = Math.round(d[i] * k * 0.72);
-        d[i + 1] = Math.round(d[i + 1] * k * 0.68);
-        d[i + 2] = Math.round(d[i + 2] * (0.85 + k * 0.2));
-        d[i + 3] = Math.round(d[i + 3] * (0.78 + k * 0.22));
+  function setTab(index, instant) {
+    state.tab = wrapTab(index);
+    const on = TAB_DEFS[state.tab];
+    for (let i = 0; i < tabs.length; i++) {
+      const focused = i === state.tab;
+      tabs[i].liftGoal = focused ? 0.13 : 0;
+      tabs[i].glowGoal = focused ? 1.35 : 0.55;
+      if (instant || !state.motion) {
+        tabs[i].lift = tabs[i].liftGoal;
+        tabs[i].glow = tabs[i].glowGoal;
       }
     }
-    ctx.putImageData(img, 0, 0);
-
-    const rng = mulberry(0xc0de);
-    ctx.globalCompositeOperation = "lighter";
-    for (let i = 0; i < 14000; i++) {
-      const x = cx + gauss(rng) * w * 0.42;
-      const y = cy + gauss(rng) * h * (0.034 + Math.abs(x - cx) / w * 0.045);
-      const t = Math.min(1, Math.abs(x - cx) / (w * 0.42));
-      const r = 210 - t * 70;
-      const g = 200 - t * 50;
-      const b = 230 + t * 20;
-      const a = 0.1 + rng() * 0.4;
-      const s = rng() < 0.07 ? 1.35 : 0.5 + rng() * 0.7;
-      ctx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${a})`;
-      ctx.fillRect(x, y, s, s);
+    if (nodeLabelEl) {
+      nodeLabelEl.textContent = on.title;
+      nodeLabelEl.hidden = state.overlay;
     }
-
-    return finishSoftTexture(c, 72);
+    const cap = document.getElementById("previewTitle");
+    const hint = document.getElementById("previewHint");
+    if (cap) cap.textContent = on.title;
+    if (hint) hint.textContent = "Left/Right move tabs · Up/Down open this list";
+    if (instant || !state.motion) poseTabs(0);
   }
 
-  function paintDustSheet(w, h) {
-    const c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
-    const ctx = c.getContext("2d");
-    ctx.clearRect(0, 0, w, h);
-    for (let i = 0; i < 160; i++) {
-      const x = w * 0.12 + (i / 160) * w * 0.76 + (valueNoise(i * 0.2, 0.4, 3) - 0.5) * 28;
-      const y = h * 0.5 + (valueNoise(i * 0.31, 1.2, 5) - 0.5) * h * 0.22;
-      const rw = 20 + valueNoise(i, 2, 7) * 80;
-      const rh = 6 + valueNoise(i, 3, 8) * 18;
-      const g = ctx.createRadialGradient(x, y, 0, x, y, rw);
-      g.addColorStop(0, "rgba(16, 12, 32, 0.5)");
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(1, rh / rw);
-      ctx.beginPath();
-      ctx.arc(0, 0, rw, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-    return finishSoftTexture(c, 48);
-  }
-
-  function paintNebulaVolume(w, h, seed, kind) {
-    const c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
-    const ctx = c.getContext("2d");
-    const img = ctx.createImageData(w, h);
-    const d = img.data;
-    const cx = w * 0.5;
-    const cy = h * 0.5;
-    const rose = kind === "rose";
-    const s0 = seed || 0xb1;
-    for (let y = 0; y < h; y++) {
-      const ny = (y - cy) / h;
-      const band = Math.exp(-ny * ny * 26);
-      if (band < 0.03) continue;
-      for (let x = 0; x < w; x++) {
-        const nx = (x - cx) / w;
-        const edgeX = Math.exp(-nx * nx * 7.2);
-        const n1 = valueNoise(nx * 3.4 + 0.4, ny * 6.8, s0);
-        const n2 = valueNoise(nx * 8.0 - 1.1, ny * 13, s0 + 17);
-        const n3 = valueNoise(nx * 15, ny * 21, s0 + 31);
-        const hue = valueNoise(nx * 2.1 + 0.6, ny * 3.4, s0 + 53);
-        const cloud = n1 * 0.52 + n2 * 0.33 + n3 * 0.15;
-        const a = band * edgeX * cloud * 0.74;
-        if (a < 0.03) continue;
-        const t = Math.min(1, cloud * 1.2);
-        const i = (y * w + x) * 4;
-        if (rose) {
-          d[i] = (70 + t * 130 + hue * 50) | 0;
-          d[i + 1] = (22 + t * 48) | 0;
-          d[i + 2] = (68 + t * 90 - hue * 20) | 0;
-        } else {
-          d[i] = (28 + t * 90 + hue * 80) | 0;
-          d[i + 1] = (24 + t * 72 + (1 - hue) * 30) | 0;
-          d[i + 2] = (86 + t * 130 - hue * 36) | 0;
+  function poseTabs(step) {
+    const k = state.motion ? 1 - Math.exp(-step * 7.2) : 1;
+    for (const tab of tabs) {
+      tab.lift += (tab.liftGoal - tab.lift) * k;
+      tab.glow += (tab.glowGoal - tab.glow) * k;
+      tab.group.position.y = tab.lift;
+      tab.tip.material.emissiveIntensity = tab.glow;
+      const on = tab === tabs[state.tab];
+      tab.blob.material.opacity = on ? 0.62 : 0.34;
+      tab.blob.scale.set(on ? 1.18 : 0.92, on ? 1.12 : 0.88, 1);
+      const dim = state.overlay && !on ? 0.42 : 1;
+      tab.body.material.color.setHex(on ? 0x222830 : 0x1a2026);
+      tab.body.material.opacity = 1;
+      tab.group.traverse((child) => {
+        if (child.material && child.material.emissiveIntensity == null) {
+          child.material.color.multiplyScalar(1);
         }
-        d[i + 3] = (a * 225) | 0;
+      });
+      tab.group.scale.setScalar(on ? 1 : 0.985);
+      tab.body.material.metalness = on ? 0.74 : 0.68;
+      if (dim < 1) {
+        tab.tip.material.emissiveIntensity *= 0.45;
       }
     }
-    ctx.putImageData(img, 0, 0);
-    return finishSoftTexture(c, 64);
   }
 
-  function paintEnergyTrail(w, h) {
-    const c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
-    const ctx = c.getContext("2d");
-    ctx.clearRect(0, 0, w, h);
-    const cx = w * 0.5;
-    const cy = h * 0.5;
-    ctx.globalCompositeOperation = "lighter";
-    const trailY = (x) => {
-      const t = (x - cx) / w;
-      return cy
-        + Math.sin(t * 4.1 + 0.35) * h * 0.18
-        + Math.sin(t * 9.4 + 1.6) * h * 0.05
-        + (valueNoise(t * 7.2, 0.22, 0xee) - 0.5) * h * 0.07;
-    };
-    const fade = (x, y) => {
-      const ux = Math.abs((x - cx) / (w * 0.4));
-      const uy = Math.abs((y - cy) / (h * 0.36));
-      return Math.max(0, 1 - ux * ux) * Math.max(0, 1 - uy * uy);
-    };
-    const passes = [
-      { width: 56, color: [90, 36, 120], alpha: 0.08 },
-      { width: 28, color: [170, 70, 140], alpha: 0.12 },
-      { width: 12, color: [230, 140, 180], alpha: 0.16 },
-      { width: 4.5, color: [255, 220, 230], alpha: 0.22 }
-    ];
-    for (const pass of passes) {
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.lineWidth = pass.width;
-      ctx.beginPath();
-      let started = false;
-      for (let x = w * 0.12; x <= w * 0.88; x += 2) {
-        const y = trailY(x);
-        if (!started) {
-          ctx.moveTo(x, y);
-          started = true;
-        } else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = `rgba(${pass.color[0]},${pass.color[1]},${pass.color[2]},${pass.alpha})`;
-      ctx.stroke();
-    }
-    const veil = ctx.getImageData(0, 0, w, h);
-    const d = veil.data;
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        const i = (y * w + x) * 4;
-        if (!d[i + 3]) continue;
-        d[i + 3] = Math.round(d[i + 3] * fade(x, y));
-      }
-    }
-    ctx.putImageData(veil, 0, 0);
-    return finishSoftTexture(c, 56);
-  }
-
-  function paintVoidCore(ctx, s) {
-    ctx.clearRect(0, 0, s, s);
-    const c = s / 2;
-    const g = ctx.createRadialGradient(c, c, 0, c, c, s * 0.42);
-    g.addColorStop(0, "rgba(0,0,0,0.88)");
-    g.addColorStop(0.42, "rgba(0,0,2,0.5)");
-    g.addColorStop(0.72, "rgba(8,6,14,0.16)");
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, s, s);
-  }
-
-  function paintAccretionRing(w, h) {
-    const c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
-    const ctx = c.getContext("2d");
-    ctx.clearRect(0, 0, w, h);
-    ctx.globalCompositeOperation = "lighter";
-    const cx = w * 0.5;
-    const cy = h * 0.5;
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.scale(1, 0.28);
-    const ring = ctx.createRadialGradient(0, 0, w * 0.18, 0, 0, w * 0.38);
-    ring.addColorStop(0, "rgba(0,0,0,0)");
-    ring.addColorStop(0.62, "rgba(0,0,0,0)");
-    ring.addColorStop(0.78, "rgba(196, 120, 82, 0.16)");
-    ring.addColorStop(0.88, "rgba(255, 196, 150, 0.1)");
-    ring.addColorStop(0.96, "rgba(80, 50, 90, 0.04)");
-    ring.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = ring;
-    ctx.beginPath();
-    ctx.arc(0, 0, w * 0.38, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-    return finishSoftTexture(c, 36);
-  }
-
-  function buildBlackHole() {
-    const group = new THREE.Group();
-    group.position.set(-11.4, 3.7, -36);
-    const shadow = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: voidMap,
-      color: 0x04040a,
-      transparent: true,
-      premultipliedAlpha: true,
-      opacity: 0.4,
-      depthWrite: false,
-      blending: THREE.NormalBlending
-    }));
-    shadow.scale.set(2.55, 2.1, 1);
-    group.add(shadow);
-    const ring = new THREE.Mesh(
-      new THREE.PlaneGeometry(3.35, 0.68),
-      softMat(accretionMap, { opacity: 0.16, blending: THREE.AdditiveBlending })
-    );
-    ring.rotation.x = 1.05;
-    ring.rotation.z = 0.38;
-    group.add(ring);
-    group.userData = { shadow, ring };
-    scene.add(group);
-    return group;
-  }
-
-  function paintMeteorStreak(w, h) {
-    const c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
-    const ctx = c.getContext("2d");
-    const img = ctx.createImageData(w, h);
-    const d = img.data;
-    const cy = h * 0.5;
-    for (let y = 0; y < h; y++) {
-      const ny = Math.abs((y - cy) / (h * 0.4));
-      const fy = Math.max(0, 1 - ny * ny);
-      if (fy < 0.02) continue;
-      for (let x = 0; x < w; x++) {
-        const t = x / (w - 1);
-        const fx = Math.pow(t, 2.15);
-        const a = fy * fx * 0.82;
-        if (a < 0.012) continue;
-        const i = (y * w + x) * 4;
-        d[i] = 255;
-        d[i + 1] = 238 + t * 12;
-        d[i + 2] = 214 + (1 - t) * 28;
-        d[i + 3] = (a * 255) | 0;
-      }
-    }
-    ctx.putImageData(img, 0, 0);
-    return finishSoftTexture(c, 8);
-  }
-
-  function skyGap(min, max, extra) {
-    let wait = min + Math.random() * (max - min);
-    if (Math.random() < 0.22) wait += extra + Math.random() * extra;
-    return wait;
-  }
-
-  function nearCategory(x) {
-    for (let i = 0; i < NODE_X.length; i++) {
-      if (Math.abs(x - NODE_X[i]) < 0.48) return true;
-    }
-    return false;
-  }
-
-  function buildSkyFx() {
-    const meteors = [];
-    const novas = [];
-    for (let i = 0; i < 2; i++) {
-      const streak = new THREE.Sprite(softSprite(meteorMap, { color: 0xf6f0e4, opacity: 0 }));
-      streak.visible = false;
-      streak.renderOrder = 3;
-      const head = new THREE.Sprite(softSprite(starMap, { color: 0xfff6e8, opacity: 0 }));
-      head.visible = false;
-      head.renderOrder = 4;
-      scene.add(streak, head);
-      meteors.push({ streak, head, live: false, t: 0, life: 1, from: new THREE.Vector3(), vel: new THREE.Vector3() });
-    }
-    for (let i = 0; i < 2; i++) {
-      const flash = new THREE.Sprite(softSprite(starMap, { color: 0xfff4dc, opacity: 0 }));
-      flash.visible = false;
-      flash.renderOrder = 4;
-      const shell = new THREE.Sprite(softSprite(glowMap, { color: 0xd8c8ff, opacity: 0 }));
-      shell.visible = false;
-      shell.renderOrder = 3;
-      scene.add(flash, shell);
-      novas.push({ flash, shell, live: false, t: 0, life: 1, hue: 0xd8c8ff });
-    }
-    const now = performance.now();
-    return {
-      meteors,
-      novas,
-      nextMeteor: now + (preview ? 900 : skyGap(10000, 32000, 22000)),
-      nextNova: now + (preview ? 2200 : skyGap(38000, 100000, 40000))
-    };
-  }
-
-  const _meteorNdcA = new THREE.Vector3();
-  const _meteorNdcB = new THREE.Vector3();
-
-  function spawnMeteor(now) {
-    const slot = skyFx.meteors.find((m) => !m.live);
-    if (!slot) return;
-    const fromLeft = Math.random() < 0.5;
-    const y = (Math.random() < 0.55 ? 1 : -1) * (1.6 + Math.random() * 3.4);
-    const z = -5 - Math.random() * 14;
-    const x0 = fromLeft ? -9 - Math.random() * 2 : 9 + Math.random() * 2;
-    const x1 = fromLeft ? 4 + Math.random() * 5 : -4 - Math.random() * 5;
-    const y1 = y + (Math.random() - 0.55) * 3.2;
-    slot.from.set(x0, y, z);
-    slot.vel.set(x1 - x0, y1 - y, (Math.random() - 0.5) * 1.4).normalize();
-    const speed = 7.5 + Math.random() * 6.5;
-    slot.vel.multiplyScalar(speed);
-    slot.life = 0.55 + Math.random() * 0.45;
-    slot.t = 0;
-    slot.live = true;
-    slot.len = 0.9 + Math.random() * 0.7;
-    slot.thick = 0.045 + Math.random() * 0.025;
-    slot.head.material.color.set(Math.random() > 0.35 ? 0xfff4dc : 0xdce6ff);
-    slot.streak.material.color.copy(slot.head.material.color);
-    slot.streak.visible = true;
-    slot.head.visible = true;
-    skyFx.nextMeteor = now + skyGap(11000, 34000, 26000);
-  }
-
-  function spawnNova(now) {
-    const slot = skyFx.novas.find((n) => !n.live);
-    if (!slot) return;
-    let x = (Math.random() - 0.5) * 14;
-    let guard = 0;
-    while (nearCategory(x) && guard < 8) {
-      x = (Math.random() - 0.5) * 14;
-      guard += 1;
-    }
-    const y = (Math.random() - 0.5) * 5.2;
-    const z = -10 - Math.random() * 16;
-    slot.flash.position.set(x, y, z);
-    slot.shell.position.set(x, y, z);
-    slot.life = 1.05 + Math.random() * 0.45;
-    slot.t = 0;
-    slot.live = true;
-    slot.peak = 0.55 + Math.random() * 0.35;
-    const cool = Math.random() > 0.45;
-    slot.flash.material.color.set(cool ? 0xe8f0ff : 0xfff1d4);
-    slot.shell.material.color.set(cool ? 0xb0c4f0 : 0xf0d2b0);
-    slot.flash.visible = true;
-    slot.shell.visible = true;
-    skyFx.nextNova = now + skyGap(42000, 110000, 50000);
-  }
-
-  function quietSkyFx() {
-    for (const m of skyFx.meteors) {
-      m.live = false;
-      m.streak.visible = false;
-      m.head.visible = false;
-      m.streak.material.opacity = 0;
-      m.head.material.opacity = 0;
-    }
-    for (const n of skyFx.novas) {
-      n.live = false;
-      n.flash.visible = false;
-      n.shell.visible = false;
-      n.flash.material.opacity = 0;
-      n.shell.material.opacity = 0;
-    }
-  }
-
-  function tickSkyFx(dt, now) {
-    if (!state.motion) {
-      quietSkyFx();
+  function syncNodeLabel() {
+    if (!nodeLabelEl || state.overlay) {
+      if (nodeLabelEl) nodeLabelEl.hidden = true;
       return;
     }
-    if (now >= skyFx.nextMeteor) spawnMeteor(now);
-    if (now >= skyFx.nextNova) spawnNova(now);
+    const tab = tabs[state.tab];
+    tab.tip.getWorldPosition(labelWorld);
+    labelWorld.y += 0.2;
+    labelWorld.project(camera);
+    const w = canvas.clientWidth || 1;
+    const h = canvas.clientHeight || 1;
+    const x = (labelWorld.x * 0.5 + 0.5) * w;
+    const y = (-labelWorld.y * 0.5 + 0.5) * h;
+    nodeLabelEl.hidden = false;
+    nodeLabelEl.style.transform = `translate(${x}px, ${y}px) translate(-50%, -110%)`;
+  }
 
-    for (const m of skyFx.meteors) {
-      if (!m.live) continue;
-      m.t += dt;
-      if (m.t >= m.life) {
-        m.live = false;
-        m.streak.visible = false;
-        m.head.visible = false;
-        continue;
-      }
-      const u = m.t / m.life;
-      const fade = u < 0.12 ? u / 0.12 : Math.pow(1 - (u - 0.12) / 0.88, 1.15);
-      m.from.addScaledVector(m.vel, dt);
-      m.head.position.copy(m.from);
-      m.streak.position.copy(m.from).addScaledVector(m.vel, -0.035);
-      const look = _meteorNdcA.copy(m.from);
-      const ahead = _meteorNdcB.copy(m.from).add(m.vel);
-      look.project(camera);
-      ahead.project(camera);
-      const ang = Math.atan2(ahead.y - look.y, ahead.x - look.x);
-      m.streak.material.rotation = ang;
-      m.head.material.rotation = ang;
-      const grow = 0.55 + u * 0.7;
-      m.streak.scale.set(m.len * grow, m.thick, 1);
-      m.head.scale.setScalar(0.055 + (1 - u) * 0.04);
-      m.streak.material.opacity = 0.42 * fade;
-      m.head.material.opacity = 0.7 * fade;
+  function send(msg) {
+    if (hosted) window.chrome.webview.postMessage(JSON.stringify(msg));
+  }
+
+  function applyHostState(data) {
+    if (Array.isArray(data.faces) && data.faces.length) state.faces = data.faces;
+    if (data.motion === false) state.motion = false;
+    if (data.motion === true) state.motion = true;
+    if (state.overlay) return;
+    if (isOptionsFront(data.front, data.node)) setTab(tabIndexOf("Settings"), !state.motion);
+    else if (data.front) setTab(tabIndexOf(data.front), !state.motion);
+    else if (typeof data.node === "number" && data.node >= 0) {
+      const ids = ["Session", "Tools", "Mods", "Network", "Files", "Hardware"];
+      setTab(tabIndexOf(ids[data.node] || "Session"), !state.motion);
     }
-
-    for (const n of skyFx.novas) {
-      if (!n.live) continue;
-      n.t += dt;
-      if (n.t >= n.life) {
-        n.live = false;
-        n.flash.visible = false;
-        n.shell.visible = false;
-        continue;
-      }
-      const u = n.t / n.life;
-      const flash = u < 0.08 ? u / 0.08 : Math.pow(1 - (u - 0.08) / 0.92, 1.6);
-      n.flash.scale.setScalar(0.08 + flash * 0.22 * n.peak);
-      n.flash.material.opacity = 0.85 * flash;
-      const shell = Math.pow(u, 0.62);
-      n.shell.scale.setScalar(0.2 + shell * 1.85 * n.peak);
-      n.shell.material.opacity = 0.22 * (1 - u) * (0.35 + flash);
-    }
-  }
-
-  function buildDiskGlow() {
-    const group = new THREE.Group();
-    const plate = new THREE.Mesh(
-      new THREE.PlaneGeometry(14.6, 5.15),
-      softMat(diskMap)
-    );
-    plate.position.z = -0.1;
-    group.add(plate);
-
-    const nebula = new THREE.Mesh(
-      new THREE.PlaneGeometry(13.8, 3.7),
-      softMat(nebulaMap, { opacity: 0.94 })
-    );
-    nebula.position.z = -0.18;
-    group.add(nebula);
-
-    const nebula2 = new THREE.Mesh(
-      new THREE.PlaneGeometry(11.4, 2.85),
-      softMat(nebulaWarm, { opacity: 0.4 })
-    );
-    nebula2.position.set(1.15, -0.14, -0.3);
-    nebula2.rotation.z = 0.07;
-    group.add(nebula2);
-
-    const trail = new THREE.Mesh(
-      new THREE.PlaneGeometry(12.6, 2.4),
-      softMat(trailMap, { opacity: 0.38, blending: THREE.AdditiveBlending })
-    );
-    trail.position.set(0.12, 0.03, 0.01);
-    trail.rotation.z = -0.05;
-    group.add(trail);
-
-    const bar = new THREE.Sprite(softSprite(barMap, { color: 0xffe8d0, opacity: 0.2 }));
-    bar.scale.set(6.2, 0.92, 1);
-    bar.position.z = 0.02;
-    group.add(bar);
-
-    const nucleus = new THREE.Sprite(softSprite(glowMap, { color: 0xfff6dc, opacity: 0.4 }));
-    nucleus.scale.set(1.7, 0.92, 1);
-    nucleus.position.z = 0.06;
-    group.add(nucleus);
-
-    const wings = new THREE.Sprite(softSprite(barMap, { color: 0x6a78c8, opacity: 0.2 }));
-    wings.scale.set(12.2, 1.15, 1);
-    wings.position.z = -0.22;
-    group.add(wings);
-
-    group.userData = { plate, nebula, nebula2, trail, bar, nucleus, wings };
-    rig.add(group);
-    return group;
-  }
-
-  function buildDustSheets() {
-    const list = [];
-    const rng = mulberry(0xd05);
-    for (let i = 0; i < 2; i++) {
-      const mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(8.2 + i * 0.7, 0.88 + i * 0.1),
-        softMat(dustMap, { color: 0xb8b0d8, opacity: 0.26 - i * 0.06 })
-      );
-      mesh.position.set((rng() - 0.5) * 0.7, (rng() - 0.5) * 0.05, -0.14 - i * 0.04);
-      mesh.userData.drift = (rng() - 0.5) * 0.012;
-      rig.add(mesh);
-      list.push(mesh);
-    }
-    return list;
-  }
-
-  function paintSpikeStar(ctx, s) {
-    ctx.clearRect(0, 0, s, s);
-    const c = s / 2;
-    ctx.save();
-    ctx.translate(c, c);
-    ctx.globalCompositeOperation = "lighter";
-    const spike = ctx.createLinearGradient(0, -c, 0, c);
-    spike.addColorStop(0, "rgba(255,246,230,0)");
-    spike.addColorStop(0.46, "rgba(255,236,210,0.55)");
-    spike.addColorStop(0.5, "rgba(255,255,255,0.95)");
-    spike.addColorStop(0.54, "rgba(255,236,210,0.55)");
-    spike.addColorStop(1, "rgba(255,246,230,0)");
-    ctx.fillStyle = spike;
-    ctx.fillRect(-1.1, -c, 2.2, s);
-    ctx.rotate(Math.PI / 2);
-    ctx.fillRect(-1.1, -c, 2.2, s);
-    ctx.rotate(Math.PI / 4);
-    ctx.globalAlpha = 0.35;
-    ctx.fillRect(-0.6, -c * 0.72, 1.2, s * 0.72);
-    ctx.rotate(Math.PI / 2);
-    ctx.fillRect(-0.6, -c * 0.72, 1.2, s * 0.72);
-    ctx.restore();
-    const g = ctx.createRadialGradient(c, c, 0, c, c, s * 0.22);
-    g.addColorStop(0, "rgba(255,252,244,1)");
-    g.addColorStop(0.35, "rgba(255,226,176,0.55)");
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, s, s);
-  }
-
-  function paintFilamentSheet(w, h, seed, kind) {
-    const c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
-    const ctx = c.getContext("2d");
-    ctx.clearRect(0, 0, w, h);
-    const pal = {
-      indigo: [[70, 96, 176], [36, 48, 110], [12, 16, 40]],
-      violet: [[110, 72, 168], [56, 40, 110], [18, 16, 42]],
-      lavender: [[176, 150, 220], [96, 80, 150], [28, 32, 68]],
-      magenta: [[214, 96, 150], [140, 52, 110], [40, 20, 48]]
-    }[kind] || [[120, 100, 180], [50, 40, 90], [12, 14, 32]];
-    const img = ctx.createImageData(w, h);
-    const d = img.data;
-    for (let y = 0; y < h; y++) {
-      const ny = y / h;
-      for (let x = 0; x < w; x++) {
-        const nx = x / w;
-        const n1 = valueNoise(nx * 3.2 + seed * 0.01, ny * 5.4, seed);
-        const n2 = valueNoise(nx * 8.5, ny * 11.2, seed + 17);
-        const ridge = Math.pow(Math.abs(n1 - 0.48), 0.55);
-        const veil = n2 * (0.35 + n1 * 0.65);
-        const cliff = Math.exp(-Math.pow((nx * 0.7 + ny * 0.55 - 0.55) / 0.38, 2));
-        const edge = Math.pow(Math.sin(nx * Math.PI), 1.35) * Math.pow(Math.sin(ny * Math.PI), 1.35);
-        const a = Math.min(1, (0.18 + veil * 0.62) * (1 - ridge * 0.55) * (0.35 + cliff) * edge);
-        if (a < 0.03) continue;
-        const t = Math.min(1, veil * 1.15);
-        const c0 = pal[0];
-        const c1 = pal[1];
-        const mix = t;
-        const i = (y * w + x) * 4;
-        d[i] = (c0[0] + (c1[0] - c0[0]) * mix) | 0;
-        d[i + 1] = (c0[1] + (c1[1] - c0[1]) * mix) | 0;
-        d[i + 2] = (c0[2] + (c1[2] - c0[2]) * mix) | 0;
-        d[i + 3] = (a * 165) | 0;
-      }
-    }
-    ctx.putImageData(img, 0, 0);
-    return finishSoftTexture(c, 36);
-  }
-
-  function buildHalo(count, spread, size, color, seed, flatten, spin, zBias) {
-    const rng = mulberry(seed);
-    const pos = new Float32Array(count * 3);
-    const bias = zBias || 0;
-    for (let i = 0; i < count; i++) {
-      pos[i * 3] = (rng() - 0.5) * spread;
-      pos[i * 3 + 1] = (rng() - 0.5) * spread * flatten;
-      pos[i * 3 + 2] = (rng() - 0.5) * spread * 0.88 + bias;
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    const pts = new THREE.Points(geo, new THREE.PointsMaterial({
-      map: starMap,
-      color,
-      size,
-      transparent: true,
-      premultipliedAlpha: true,
-      opacity: 0.9,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      sizeAttenuation: false
-    }));
-    pts.userData.spin = spin;
-    return pts;
-  }
-
-  function buildDiskRings() {
-    const rings = [
-      { count: 1100, r0: 0.2, r1: 1.15, omega: 0.018, seed: 0xa01, flatten: 0.2 },
-      { count: 1400, r0: 1.0, r1: 2.4, omega: 0.012, seed: 0xa02, flatten: 0.17 },
-      { count: 1400, r0: 2.1, r1: 3.8, omega: 0.008, seed: 0xa03, flatten: 0.14 },
-      { count: 1100, r0: 3.4, r1: 5.6, omega: 0.0052, seed: 0xa04, flatten: 0.12 }
-    ];
-    return rings.map((spec) => {
-      const rng = mulberry(spec.seed);
-      const pos = new Float32Array(spec.count * 3);
-      const col = new Float32Array(spec.count * 3);
-      let wrote = 0;
-      let guard = 0;
-      while (wrote < spec.count && guard < spec.count * 6) {
-        guard += 1;
-        const radius = spec.r0 + rng() * (spec.r1 - spec.r0);
-        const phase = rng() * Math.PI * 2;
-        const lane = Math.abs(Math.sin(phase * 2.2 + radius * 1.15));
-        if (lane < 0.2 && rng() < 0.72) continue;
-        const y = gauss(rng) * (spec.flatten + radius * 0.014);
-        const z = Math.sin(phase) * radius * 0.14 + gauss(rng) * 0.07;
-        pos[wrote * 3] = Math.cos(phase) * radius;
-        pos[wrote * 3 + 1] = y;
-        pos[wrote * 3 + 2] = z;
-        const t = Math.min(1, radius / 5.2);
-        const c = cream.clone().lerp(warm, (1 - t) * 0.35).lerp(violet, t * 0.4).lerp(cool, t * t * 1.05);
-        col[wrote * 3] = c.r;
-        col[wrote * 3 + 1] = c.g;
-        col[wrote * 3 + 2] = c.b;
-        wrote += 1;
-      }
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-      geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
-      const pts = new THREE.Points(geo, new THREE.PointsMaterial({
-        map: starMap,
-        size: 0.09,
-        vertexColors: true,
-        transparent: true,
-        premultipliedAlpha: true,
-        opacity: 0.64,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        sizeAttenuation: true
-      }));
-      pts.userData.omega = spec.omega;
-      rig.add(pts);
-      return pts;
-    });
-  }
-
-  function buildShear(count) {
-    const rng = mulberry(0xa11e);
-    const pos = new Float32Array(count * 3);
-    const col = new Float32Array(count * 3);
-    const orbits = [];
-    for (let i = 0; i < count; i++) {
-      const radius = 0.28 + rng() * 5.5;
-      const phase = rng() * Math.PI * 2;
-      const y = gauss(rng) * (0.11 + radius * 0.022);
-      const z = gauss(rng) * 0.14;
-      pos[i * 3] = Math.cos(phase) * radius;
-      pos[i * 3 + 1] = y;
-      pos[i * 3 + 2] = Math.sin(phase) * radius * 0.08 + z;
-      const t = Math.min(1, radius / 5.2);
-      const c = warm.clone().lerp(magenta, t * 0.18).lerp(cool, t * 0.9);
-      col[i * 3] = c.r;
-      col[i * 3 + 1] = c.g;
-      col[i * 3 + 2] = c.b;
-      orbits.push({
-        radius,
-        phase,
-        y,
-        z,
-        omega: (0.046 / (0.5 + radius)) * (rng() > 0.5 ? 1 : -1) * (0.75 + rng() * 0.5)
-      });
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
-    const pts = new THREE.Points(geo, new THREE.PointsMaterial({
-      map: starMap,
-      size: 0.082,
-      vertexColors: true,
-      transparent: true,
-      premultipliedAlpha: true,
-      opacity: 0.8,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      sizeAttenuation: true
-    }));
-    pts.userData.orbits = orbits;
-    rig.add(pts);
-    return pts;
-  }
-
-  function poseSystem(n, dt) {
-    for (const p of n.planets) {
-      const u = p.userData;
-      if (dt) u.phase += u.omega * dt;
-      p.position.set(
-        Math.cos(u.phase) * u.radius,
-        Math.sin(u.phase) * u.radius * u.tilt,
-        Math.sin(u.phase) * u.radius * 0.42
-      );
-    }
-  }
-
-  function buildColoredField(count, spread, size, seed, flatten, spin) {
-    const rng = mulberry(seed);
-    const pos = new Float32Array(count * 3);
-    const col = new Float32Array(count * 3);
-    const palette = [indigo, cool, cream, violet, lavender, magenta];
-    for (let i = 0; i < count; i++) {
-      pos[i * 3] = (rng() - 0.5) * spread;
-      pos[i * 3 + 1] = (rng() - 0.5) * spread * flatten;
-      pos[i * 3 + 2] = (rng() - 0.5) * spread * 0.9 - 8;
-      const roll = rng();
-      const c = roll < 0.7 ? palette[0].clone().lerp(palette[1], rng())
-        : roll < 0.86 ? palette[2].clone().lerp(palette[1], rng())
-          : roll < 0.94 ? palette[3].clone()
-            : palette[4].clone().lerp(palette[5], rng());
-      col[i * 3] = c.r;
-      col[i * 3 + 1] = c.g;
-      col[i * 3 + 2] = c.b;
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
-    const pts = new THREE.Points(geo, new THREE.PointsMaterial({
-      map: starMap,
-      size,
-      vertexColors: true,
-      transparent: true,
-      premultipliedAlpha: true,
-      opacity: 0.9,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      sizeAttenuation: false
-    }));
-    pts.userData.spin = spin;
-    return pts;
-  }
-
-  function buildFilaments() {
-    const list = [];
-    const specs = [
-      { map: 0, x: -3.2, y: 0.38, z: -3.4, sx: 10.4, sy: 2.8, rx: 0.1, rz: -0.06, op: 0.16, drift: 0.003 },
-      { map: 3, x: 0.3, y: 0.05, z: -2.1, sx: 11.2, sy: 1.9, rx: -0.04, rz: -0.04, op: 0.15, drift: -0.0018 }
-    ];
-    for (const spec of specs) {
-      const mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(1, 1),
-        softMat(filamentMaps[spec.map], { opacity: spec.op })
-      );
-      mesh.position.set(spec.x, spec.y, spec.z);
-      mesh.scale.set(spec.sx, spec.sy, 1);
-      mesh.rotation.x = spec.rx;
-      mesh.rotation.z = spec.rz;
-      mesh.userData.drift = spec.drift;
-      mesh.userData.baseX = spec.x;
-      rig.add(mesh);
-      list.push(mesh);
-    }
-    return list;
-  }
-
-  function buildSpikedStars(count) {
-    const rng = mulberry(0x5b1);
-    const list = [];
-    for (let i = 0; i < count; i++) {
-      const sprite = new THREE.Sprite(softSprite(spikeMap, {
-        color: rng() > 0.45 ? 0xe8d8ff : 0xc8d4ff,
-        opacity: 0.14 + rng() * 0.16
-      }));
-      const y = (rng() > 0.5 ? 1 : -1) * (2.4 + rng() * 8);
-      sprite.position.set((rng() - 0.5) * 20, y, -8 - rng() * 24);
-      const s = 0.08 + rng() * 0.14;
-      sprite.scale.set(s, s, 1);
-      sprite.userData.base = sprite.material.opacity;
-      sprite.userData.phase = rng() * Math.PI * 2;
-      scene.add(sprite);
-      list.push(sprite);
-    }
-    return list;
-  }
-
-  function buildNodes() {
-    const list = [];
-    const planetPal = [0xc4b49a, 0x8a98b4, 0xb07e68, 0xd0c4ae, 0x6a768c];
-    for (let i = 0; i < NODE_IDS.length; i++) {
-      const group = new THREE.Group();
-      group.position.set(nodeX(i), 0.04, 0.12);
-      const rng = mulberry(0x5100 + i * 97);
-      const core = i === 0;
-      const sun = new THREE.Sprite(softSprite(starMap, {
-        color: core ? 0xfff0d4 : 0xeee6dc,
-        opacity: 0.36
-      }));
-      const sunS = core ? 0.14 : 0.108;
-      sun.scale.set(sunS, sunS, 1);
-      group.add(sun);
-      const corona = new THREE.Sprite(softSprite(glowMap, {
-        color: core ? 0xffe0b4 : 0xe4d6c8,
-        opacity: 0.06
-      }));
-      const corS = core ? 0.46 : 0.36;
-      corona.scale.set(corS, corS * 0.82, 1);
-      corona.userData.base = corona.scale.clone();
-      group.add(corona);
-      const planets = [];
-      const count = 3 + (i % 3);
-      for (let p = 0; p < count; p++) {
-        const spr = new THREE.Sprite(softSprite(starMap, {
-          color: planetPal[p % planetPal.length],
-          opacity: 0.26
-        }));
-        const ps = 0.028 + rng() * 0.016;
-        spr.scale.set(ps, ps, 1);
-        spr.userData = {
-          radius: 0.11 + p * 0.055 + rng() * 0.012,
-          phase: rng() * Math.PI * 2,
-          omega: (0.2 / (0.65 + p * 0.55)) * (rng() > 0.4 ? 1 : -1),
-          tilt: 0.26 + rng() * 0.2,
-          baseOpacity: 0.32 + rng() * 0.12
-        };
-        group.add(spr);
-        planets.push(spr);
-      }
-      for (let k = 0; k < 7; k++) {
-        const spr = new THREE.Sprite(softSprite(starMap, {
-          color: rng() > 0.5 ? 0xd4dcec : 0xf0e8d8,
-          opacity: 0.14 + rng() * 0.1
-        }));
-        const cs = 0.011 + rng() * 0.01;
-        spr.scale.set(cs, cs, 1);
-        spr.position.set((rng() - 0.5) * 0.2, (rng() - 0.5) * 0.07, (rng() - 0.5) * 0.09);
-        group.add(spr);
-      }
-      const hit = new THREE.Mesh(
-        new THREE.SphereGeometry(0.48, 10, 8),
-        new THREE.MeshBasicMaterial({ visible: false })
-      );
-      hit.userData.face = NODE_IDS[i];
-      hit.userData.node = i;
-      group.add(hit);
-      group.userData.node = i;
-      rig.add(group);
-      const sys = { group, sun, corona, planets, hit };
-      poseSystem(sys, 0);
-      list.push(sys);
-    }
-    return list;
-  }
-
-  function buildOptionsSun() {
-    const group = new THREE.Group();
-    group.position.set(OPTIONS_SUN_X, 0.16, 0.28);
-    const rng = mulberry(0x51e0);
-    const sun = new THREE.Sprite(softSprite(starMap, {
-      color: 0xffe2b8,
-      opacity: 0.26
-    }));
-    sun.scale.set(0.1, 0.1, 1);
-    group.add(sun);
-    const corona = new THREE.Sprite(softSprite(glowMap, {
-      color: 0xffc878,
-      opacity: 0.045
-    }));
-    corona.scale.set(0.34, 0.28, 1);
-    corona.userData.base = corona.scale.clone();
-    group.add(corona);
-    const planets = [];
-    for (let p = 0; p < 4; p++) {
-      const spr = new THREE.Sprite(softSprite(starMap, {
-        color: [0xb8a890, 0x8a94a8, 0xc09070, 0xd4c8b0][p],
-        opacity: 0.2
-      }));
-      const ps = 0.024 + rng() * 0.012;
-      spr.scale.set(ps, ps, 1);
-      spr.userData = {
-        radius: 0.12 + p * 0.05 + rng() * 0.01,
-        phase: rng() * Math.PI * 2,
-        omega: (0.16 / (0.7 + p * 0.5)) * (rng() > 0.4 ? 1 : -1),
-        tilt: 0.22 + rng() * 0.16,
-        baseOpacity: 0.22 + rng() * 0.08
-      };
-      group.add(spr);
-      planets.push(spr);
-    }
-    for (let k = 0; k < 5; k++) {
-      const spr = new THREE.Sprite(softSprite(starMap, {
-        color: rng() > 0.5 ? 0xe8d8c8 : 0xd0d4e4,
-        opacity: 0.1 + rng() * 0.08
-      }));
-      const cs = 0.01 + rng() * 0.008;
-      spr.scale.set(cs, cs, 1);
-      spr.position.set((rng() - 0.5) * 0.16, (rng() - 0.5) * 0.05, (rng() - 0.5) * 0.07);
-      group.add(spr);
-    }
-    group.userData.node = -1;
-    rig.add(group);
-    const sys = { group, sun, corona, planets, hit: null };
-    poseSystem(sys, 0);
-    return sys;
-  }
-
-  function sunNoiseLib() {
-    return `
-      vec3 hash3(vec3 p) {
-        p = vec3(
-          dot(p, vec3(127.1, 311.7, 74.7)),
-          dot(p, vec3(269.5, 183.3, 246.1)),
-          dot(p, vec3(113.5, 271.9, 124.6))
-        );
-        return fract(sin(p) * 43758.5453123);
-      }
-      float hash(vec3 p) {
-        return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453);
-      }
-      float hash2(vec2 p) {
-        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-      }
-      float vnoise(vec3 p) {
-        vec3 i = floor(p);
-        vec3 f = fract(p);
-        f = f * f * (3.0 - 2.0 * f);
-        float n000 = hash(i);
-        float n100 = hash(i + vec3(1.0, 0.0, 0.0));
-        float n010 = hash(i + vec3(0.0, 1.0, 0.0));
-        float n110 = hash(i + vec3(1.0, 1.0, 0.0));
-        float n001 = hash(i + vec3(0.0, 0.0, 1.0));
-        float n101 = hash(i + vec3(1.0, 0.0, 1.0));
-        float n011 = hash(i + vec3(0.0, 1.0, 1.0));
-        float n111 = hash(i + vec3(1.0, 1.0, 1.0));
-        float nx1 = mix(n000, n100, f.x);
-        float nx2 = mix(n010, n110, f.x);
-        float nx3 = mix(n001, n101, f.x);
-        float nx4 = mix(n011, n111, f.x);
-        return mix(mix(nx1, nx2, f.y), mix(nx3, nx4, f.y), f.z);
-      }
-      float fbm(vec3 p) {
-        float a = 0.5;
-        float s = 0.0;
-        for (int i = 0; i < 4; i++) {
-          s += a * vnoise(p);
-          p = p * 2.11 + 13.7;
-          a *= 0.5;
-        }
-        return s;
-      }
-      float fbm2(vec2 p) {
-        float a = 0.5;
-        float s = 0.0;
-        for (int i = 0; i < 4; i++) {
-          vec2 i2 = floor(p);
-          vec2 f = fract(p);
-          f = f * f * (3.0 - 2.0 * f);
-          float n = mix(
-            mix(hash2(i2), hash2(i2 + vec2(1.0, 0.0)), f.x),
-            mix(hash2(i2 + vec2(0.0, 1.0)), hash2(i2 + vec2(1.0, 1.0)), f.x),
-            f.y
-          );
-          s += a * n;
-          p = p * 2.13 + 9.2;
-          a *= 0.5;
-        }
-        return s;
-      }
-      vec3 dipoleB(vec3 p, float seed) {
-        vec3 m = normalize(vec3(0.72 * sin(seed), 0.42, 0.78 * cos(seed * 1.3)));
-        return normalize(3.0 * dot(m, p) * p - m);
-      }
-      float worley2(vec2 p) {
-        vec2 i = floor(p);
-        vec2 f = fract(p);
-        float d = 1.0;
-        for (int x = -1; x <= 1; x++) {
-          for (int y = -1; y <= 1; y++) {
-            vec2 g = vec2(float(x), float(y));
-            vec2 o = vec2(hash2(i + g), hash2(i + g + vec2(17.2, 9.4)));
-            vec2 r = g + o - f;
-            d = min(d, dot(r, r));
-          }
-        }
-        return sqrt(d);
-      }
-    `;
-  }
-
-  function sunVert() {
-    return `
-      varying vec3 vNormal;
-      varying vec3 vWorldPos;
-      varying vec3 vObjectPos;
-      void main() {
-        vNormal = normalize(normalMatrix * normal);
-        vec4 world = modelMatrix * vec4(position, 1.0);
-        vWorldPos = world.xyz;
-        vObjectPos = position;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `;
-  }
-
-  function sheetVert() {
-    return `
-      varying vec2 vUv;
-      void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `;
-  }
-
-  function photosphereFrag() {
-    return `
-      uniform float uTime;
-      uniform float uFade;
-      uniform float uSeed;
-      uniform float uActivity;
-      uniform float uGran;
-      uniform float uSpotAmt;
-      uniform float uSwirl;
-      uniform float uFlare;
-      uniform float uStyle;
-      uniform vec3 uPhot;
-      uniform vec3 uHot;
-      uniform vec3 uLane;
-      uniform vec3 uGold;
-      uniform vec3 uUmbra;
-      varying vec3 vNormal;
-      varying vec3 vWorldPos;
-      varying vec3 vObjectPos;
-      ${sunNoiseLib()}
-      vec2 spotPair(vec3 p, float seed, float amt) {
-        float umbra = 0.0;
-        float pen = 0.0;
-        for (int i = 0; i < 5; i++) {
-          vec3 c = hash3(vec3(seed * 0.41, float(i) * 2.77, 8.2)) * 2.0 - 1.0;
-          c.y *= 0.36;
-          if (i == 0) c = vec3(0.18, 0.05, 0.92);
-          c = normalize(c);
-          float d = acos(clamp(dot(p, c), -1.0, 1.0));
-          float ru = 0.026 + hash(vec3(float(i), seed, 2.0)) * 0.028;
-          float rp = ru * 2.15;
-          float um = smoothstep(ru, ru * 0.42, d);
-          float pe = smoothstep(rp, ru * 0.95, d) * (1.0 - um);
-          vec3 rel = p - c * 0.92;
-          float fang = atan(rel.z, rel.x);
-          pe *= 0.7 + 0.3 * sin(fang * 12.0 + seed + float(i));
-          umbra = max(umbra, um);
-          pen = max(pen, pe);
-        }
-        return vec2(umbra, pen) * amt;
-      }
-      float plagePatch(vec3 p, float seed) {
-        float acc = 0.0;
-        for (int i = 0; i < 4; i++) {
-          vec3 c = hash3(vec3(seed + 1.7, float(i) * 4.9, 6.1)) * 2.0 - 1.0;
-          c.y *= 0.5;
-          c = normalize(c);
-          float d = acos(clamp(dot(p, c), -1.0, 1.0));
-          acc = max(acc, exp(-d * d * 70.0));
-        }
-        return acc;
-      }
-      void main() {
-        vec3 nrm = normalize(vNormal);
-        vec3 viewDir = normalize(cameraPosition - vWorldPos);
-        float mu = clamp(dot(nrm, viewDir), 0.0, 1.0);
-        float limbHmi = clamp(0.15 + 1.1 * mu - 0.24 * mu * mu, 0.1, 1.16);
-        float limbEuv = clamp(0.68 + 0.4 * mu, 0.45, 1.12);
-        float atmos = smoothstep(0.0, 0.06, mu);
-        vec3 p = normalize(vObjectPos);
-        float boil = uTime * (0.018 + uActivity * 0.014);
-        float w1 = fbm(p * 3.1 + uSeed);
-        float w2 = fbm(p * 3.1 + uSeed + 21.0);
-        vec3 q = normalize(p + vec3(w1 - 0.5, w2 - 0.5, w1 * 0.4 - 0.2) * 0.14);
-        vec2 uv = vec2(atan(q.z, q.x), q.y) + vec2(w1, w2) * 0.28;
-        float superG = worley2(uv * vec2(9.0, 12.0) + uSeed * 0.15);
-        float meso = worley2(uv * vec2(uGran * 0.42, uGran * 0.55) + vec2(boil * 0.1, uSeed));
-        float fine = worley2(uv * vec2(uGran * 1.25, uGran * 1.55) + vec2(boil * 0.2, w2));
-        float gran = mix(smoothstep(0.05, 0.48, meso), smoothstep(0.02, 0.36, fine), 0.78);
-        float walls = pow(1.0 - smoothstep(0.06, 0.6, superG), 1.8);
-        float relief = clamp(0.52 + (fine - meso) * 1.6, 0.3, 1.22);
-        float nA = fbm(q * 12.5 + uSeed + boil * 0.25);
-        float nB = fbm(q * 26.0 + uSeed);
-        float ridge = 1.0 - abs(nA * 2.0 - 1.0);
-        float thread = 1.0 - abs(nB * 2.0 - 1.0);
-        float network = max(pow(ridge, 4.4), pow(walls, 1.6) * 0.55);
-        float darkChan = smoothstep(0.38, 0.56, nA) * (1.0 - network);
-        float snakes = 0.0;
-        for (int i = 0; i < 3; i++) {
-          vec3 ax = normalize(hash3(vec3(uSeed, float(i) * 3.7, 4.2)) * 2.0 - 1.0);
-          snakes = max(snakes, exp(-abs(dot(q, ax)) * (16.0 + 28.0 * nB)));
-        }
-        darkChan = max(darkChan, snakes * 0.85);
-        float plage = plagePatch(q, uSeed) * (0.5 + fine * 0.5);
-        vec2 sp = spotPair(p, uSeed, uSpotAmt);
-        float faculae = walls * pow(1.0 - mu, 0.7) * (0.25 + uActivity * 0.5);
-        vec3 flareDir = normalize(vec3(sin(uSeed * 1.7), 0.2, cos(uSeed * 1.7)));
-        float flarePatch = pow(max(0.0, dot(q, flareDir)), 8.5) * uFlare;
-        vec3 cont = mix(uLane * 0.82, uPhot, gran);
-        cont = mix(cont, uHot, gran * fine * 0.2);
-        cont *= 0.48 + relief * 0.72;
-        float mott = pow(meso, 1.2);
-        vec3 chr = mix(uLane * 0.65, uPhot, mott);
-        chr = mix(chr, uHot, pow(fine, 2.0) * 0.42 + walls * 0.2);
-        vec3 euv = mix(uLane * 0.14, uPhot * 0.42, 0.12 + network * 0.28);
-        euv = mix(euv, uGold, network * 0.95);
-        euv += uHot * plage * 1.2 * uActivity;
-        euv += uGold * pow(thread, 5.2) * 0.75;
-        euv = mix(euv, uLane * 0.06, darkChan * 0.95);
-        float s171 = smoothstep(0.58, 0.96, uStyle);
-        float s304 = clamp(1.0 - abs(uStyle - 0.54) * 2.3, 0.0, 1.0);
-        vec3 col = mix(cont, chr, s304 * (1.0 - s171));
-        col = mix(col, euv, s171);
-        col = mix(col, uLane * 0.34, sp.y);
-        col = mix(col, uUmbra, sp.x);
-        col += uHot * faculae * (0.85 - s171 * 0.4);
-        col += uHot * flarePatch * 1.45;
-        col *= mix(limbHmi, limbEuv, s171);
-        col += uGold * pow(1.0 - mu, 2.6) * (0.12 + uStyle * 0.38);
-        col *= mix(1.18, 1.08, s171);
-        col = col / (vec3(1.0) + col * mix(0.28, 0.18, s171));
-        col *= uFade * atmos;
-        gl_FragColor = vec4(col, 1.0);
-      }
-    `;
-  }
-
-  function chromoFrag() {
-    return `
-      uniform float uTime;
-      uniform float uFade;
-      uniform float uSeed;
-      uniform float uActivity;
-      uniform float uSwirl;
-      uniform float uFlare;
-      uniform float uStyle;
-      uniform vec3 uGold;
-      uniform vec3 uHot;
-      uniform vec3 uCorona;
-      varying vec3 vNormal;
-      varying vec3 vWorldPos;
-      varying vec3 vObjectPos;
-      ${sunNoiseLib()}
-      void main() {
-        vec3 nrm = normalize(vNormal);
-        vec3 viewDir = normalize(cameraPosition - vWorldPos);
-        float mu = clamp(dot(nrm, viewDir), 0.0, 1.0);
-        float rim = pow(1.0 - mu, 2.85);
-        vec3 p = normalize(vObjectPos);
-        vec2 uv = vec2(atan(p.z, p.x), p.y);
-        float spic = worley2(uv * vec2(42.0, 56.0) + vec2(uTime * uSwirl * 0.55, uSeed));
-        float grass = pow(1.0 - spic, 2.4);
-        float alpha = rim * (0.16 + 0.7 * grass) * (0.5 + uActivity * 0.45) * uFade;
-        alpha *= 0.7 + uStyle * 0.55;
-        alpha += rim * uFlare * 0.4;
-        vec3 col = mix(uCorona, uHot, grass * 0.45 + uStyle * 0.2);
-        gl_FragColor = vec4(col * alpha, alpha);
-      }
-    `;
-  }
-
-  function coronaSheetFrag() {
-    return `
-      uniform float uTime;
-      uniform float uFade;
-      uniform float uSeed;
-      uniform float uActivity;
-      uniform float uSwirl;
-      uniform float uFlare;
-      uniform float uStyle;
-      uniform vec3 uGold;
-      uniform vec3 uHot;
-      uniform vec3 uCorona;
-      varying vec2 vUv;
-      ${sunNoiseLib()}
-      const float EXT = 2.45;
-      float loopArc(vec2 p, float ang, float height, float width, float thick) {
-        float ca = cos(ang);
-        float sa = sin(ang);
-        vec2 rad = vec2(ca, sa);
-        vec2 tang = vec2(-sa, ca);
-        vec2 d = p - rad * 0.97;
-        float u = dot(d, rad);
-        float v = dot(d, tang);
-        float e = (u / max(height, 0.02)) * (u / max(height, 0.02)) + (v / max(width, 0.02)) * (v / max(width, 0.02));
-        e += (fbm2(vec2(ang * 3.0 + u, v * 6.0)) - 0.48) * 0.22;
-        float ring = exp(-abs(sqrt(max(e, 1e-4)) - 1.0) * thick);
-        ring *= smoothstep(-0.03, 0.06, u);
-        ring *= smoothstep(height * 1.2, height * 0.18, u);
-        return ring;
-      }
-      float tongue(vec2 p, float ang, float len) {
-        float ca = cos(ang);
-        float sa = sin(ang);
-        vec2 rad = vec2(ca, sa);
-        vec2 tang = vec2(-sa, ca);
-        vec2 d = p - rad;
-        float u = dot(d, rad);
-        float v = dot(d, tang);
-        float body = exp(-abs(v) * (8.0 + 22.0 * max(u, 0.0))) * smoothstep(-0.01, 0.05, u) * smoothstep(len, len * 0.35, u);
-        float curl = fbm2(vec2(v * 16.0, u * 9.0 + uTime * uSwirl));
-        return body * (0.4 + curl);
-      }
-      void main() {
-        vec2 q = vUv * 2.0 - 1.0;
-        float r = length(q) * EXT;
-        if (r < 0.982 || r > EXT - 0.05) discard;
-        float ang = atan(q.y, q.x);
-        vec2 p = q * EXT;
-        float t = uTime * uSwirl;
-        float fil = fbm2(vec2(ang * 5.4 + t * 1.25, r * 7.0 + uSeed));
-        float fil2 = fbm2(vec2(ang * 12.0 - t * 0.72, r * 11.0 + 5.0));
-        float fil3 = fbm2(vec2(ang * 2.15 + t * 0.32, log(max(r, 1.0)) * 9.0 + uSeed));
-        float stream = pow(max(0.0, fil - 0.34), 1.4);
-        float sheet = pow(max(0.0, fil2 - 0.4), 1.85);
-        float swirl = pow(max(0.0, fil3 - 0.36), 1.28);
-        float radial = r - 1.0;
-        float fall = exp(-radial * (1.85 - uActivity * 0.5));
-        float limbGlow = exp(-abs(r - 1.01) * 18.0);
-        float loops = 0.0;
-        for (int i = 0; i < 7; i++) {
-          float seedi = hash2(vec2(uSeed, float(i) * 3.1));
-          float a0 = (seedi * 2.0 - 1.0) * 3.12 + t * 0.03;
-          float h = mix(0.12, 0.4, hash2(vec2(float(i), uSeed + 2.0))) * (0.72 + uActivity * 0.55);
-          float w = mix(0.05, 0.18, hash2(vec2(uSeed + 4.0, float(i))));
-          float thick = mix(18.0, 36.0, hash2(vec2(float(i) * 2.0, uSeed)));
-          loops += loopArc(p, a0, h, w, thick);
-        }
-        loops *= (0.4 + uStyle * 1.05) * (0.55 + uActivity * 0.7);
-        float prom = 0.0;
-        for (int i = 0; i < 3; i++) {
-          float a0 = hash2(vec2(uSeed + 9.0, float(i))) * 6.28318 - 3.14159;
-          float len = mix(0.14, 0.36, hash2(vec2(float(i), uSeed + 1.4))) * (0.75 + uFlare * 0.7);
-          prom += tongue(p, a0 + t * 0.04, len);
-        }
-        prom *= (0.65 + uStyle * 0.55) * uActivity;
-        float pole = exp(-min(abs(abs(ang) - 1.5708), abs(abs(ang) - 4.7124)) * 2.6);
-        float polar = pole * pow(max(0.0, fbm2(vec2(ang * 9.0, r * 5.5 + t)) - 0.3), 1.35) * fall;
-        float feAng = 0.52 + uSeed * 0.035;
-        float dang = atan(sin(ang - feAng), cos(ang - feAng));
-        float eject = uFlare * exp(-abs(dang) * 3.8) * exp(-abs(r - (1.08 + uFlare * 0.32)) * 6.2) * (0.55 + swirl);
-        float kernel = uFlare * exp(-abs(r - 1.012) * 20.0) * exp(-abs(dang) * 5.4);
-        float haze = 0.0;
-        haze += limbGlow * (0.22 + uStyle * 0.28);
-        haze += stream * fall * (0.42 + uActivity * 0.45);
-        haze += sheet * fall * 0.16;
-        haze += swirl * fall * 0.2 * uStyle;
-        haze += loops;
-        haze += prom * (0.85 + uFlare);
-        haze += polar * (0.22 + uStyle * 0.4);
-        haze += eject * 1.35 + kernel;
-        haze *= smoothstep(EXT - 0.08, 1.38, r);
-        haze *= uFade * (0.78 + uActivity * 0.42);
-        vec3 col = mix(uCorona, uHot, stream * 0.38 + uFlare * 0.32 + loops * 0.22);
-        col = mix(col, uGold, limbGlow * 0.45 + loops * 0.4);
-        gl_FragColor = vec4(col * haze, clamp(haze, 0.0, 1.2));
-      }
-    `;
-  }
-
-  function coronaShellFrag() {
-    return `
-      uniform float uTime;
-      uniform float uFade;
-      uniform float uSeed;
-      uniform float uActivity;
-      uniform float uSwirl;
-      uniform float uFlare;
-      uniform float uStyle;
-      uniform vec3 uGold;
-      uniform vec3 uHot;
-      uniform vec3 uCorona;
-      varying vec3 vNormal;
-      varying vec3 vWorldPos;
-      varying vec3 vObjectPos;
-      ${sunNoiseLib()}
-      void main() {
-        vec3 nrm = normalize(vNormal);
-        vec3 viewDir = normalize(cameraPosition - vWorldPos);
-        float ndv = abs(dot(nrm, viewDir));
-        float rim = pow(1.0 - ndv, 1.28);
-        vec3 p = normalize(vObjectPos);
-        float t = uTime * uSwirl;
-        vec3 B = dipoleB(p, uSeed);
-        float along = fbm(vec3(dot(p, B) * 18.0, p.y * 7.2, uSeed + t * 0.55));
-        float fil = pow(max(0.0, along - 0.36), 1.45);
-        float plume = pow(abs(p.y), 3.4) * pow(max(0.0, fbm(p * 8.5 + t) - 0.38), 1.25);
-        float alpha = (rim * 0.2 + fil * rim * 1.55 + plume * rim * 0.7) * uFade;
-        alpha *= (0.32 + uActivity * 0.55) * (0.12 + uStyle * 0.95);
-        alpha += rim * uFlare * 0.28;
-        vec3 col = mix(uCorona, uHot, fil * 0.42 + uFlare * 0.22);
-        col = mix(col, uGold, rim * 0.35);
-        gl_FragColor = vec4(col * alpha, alpha);
-      }
-    `;
-  }
-
-  function sunUniformSet() {
-    return {
-      uTime: { value: 0 },
-      uFade: { value: 0 },
-      uSeed: { value: 11.3 },
-      uActivity: { value: 0.8 },
-      uGran: { value: 48 },
-      uSpotAmt: { value: 0.6 },
-      uSwirl: { value: 0.16 },
-      uFlare: { value: 0 },
-      uStyle: { value: 0.5 },
-      uPhot: { value: new THREE.Vector3(1, 0.78, 0.18) },
-      uHot: { value: new THREE.Vector3(1, 0.9, 0.45) },
-      uLane: { value: new THREE.Vector3(0.4, 0.14, 0.03) },
-      uGold: { value: new THREE.Vector3(1, 0.82, 0.22) },
-      uUmbra: { value: new THREE.Vector3(0.08, 0.03, 0.01) },
-      uCorona: { value: new THREE.Vector3(1, 0.84, 0.3) }
-    };
-  }
-
-  function makeSunMaterial(vert, frag, extra) {
-    const transparent = !!(extra && extra.transparent);
-    return new THREE.ShaderMaterial({
-      uniforms: sunUniformSet(),
-      vertexShader: vert,
-      fragmentShader: frag,
-      transparent,
-      depthWrite: !transparent,
-      depthTest: extra && extra.depthTest === false ? false : true,
-      blending: extra && extra.additive ? THREE.AdditiveBlending : THREE.NormalBlending,
-      toneMapped: false,
-      side: extra && extra.side ? extra.side : THREE.FrontSide
-    });
-  }
-
-  function buildHeroSun() {
-    const group = new THREE.Group();
-    group.visible = false;
-    const body = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 96, 72),
-      makeSunMaterial(sunVert(), photosphereFrag())
-    );
-    const chromo = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 96, 64),
-      makeSunMaterial(sunVert(), chromoFrag(), { transparent: true, additive: true })
-    );
-    const shell = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 64, 48),
-      makeSunMaterial(sunVert(), coronaShellFrag(), { transparent: true, additive: true, side: THREE.BackSide })
-    );
-    const sheet = new THREE.Mesh(
-      new THREE.PlaneGeometry(2, 2),
-      makeSunMaterial(sheetVert(), coronaSheetFrag(), { transparent: true, additive: true, depthTest: false })
-    );
-    shell.renderOrder = 1;
-    sheet.renderOrder = 2;
-    group.add(sheet, shell, chromo, body);
-    group.userData = { body, chromo, shell, sheet };
-    scene.add(group);
-    return group;
-  }
-
-  function sunMeshes() {
-    const u = heroSun.userData;
-    return [u.body, u.chromo, u.shell, u.sheet];
-  }
-
-  function applySunLook(id) {
-    const look = SUN_LOOKS[id] || SUN_LOOKS.Session;
-    state.sunId = SUN_LOOKS[id] ? id : "Session";
-    for (const mesh of sunMeshes()) {
-      const un = mesh.material.uniforms;
-      un.uSeed.value = look.seed;
-      un.uActivity.value = look.activity;
-      un.uGran.value = look.gran;
-      un.uSpotAmt.value = look.spots;
-      un.uSwirl.value = look.swirl;
-      un.uStyle.value = look.style;
-      un.uPhot.value.fromArray(look.phot);
-      un.uHot.value.fromArray(look.hot);
-      un.uLane.value.fromArray(look.lane);
-      un.uGold.value.fromArray(look.gold);
-      un.uUmbra.value.fromArray(look.umbra);
-      un.uCorona.value.fromArray(look.corona);
-    }
-    if (preview && state.motion) {
-      state.sunFlare = 0.88;
-      state.sunFlareGoal = 1.15 * look.flare;
-      state.nextSunFlare = performance.now() + 2800;
-    } else {
-      state.sunFlare = 0;
-      state.sunFlareGoal = 0;
-      state.nextSunFlare = performance.now() + (state.motion ? 1800 + Math.random() * 2200 : 1e12);
-    }
-  }
-
-  function tickSunWeather(step, now) {
-    const look = SUN_LOOKS[state.sunId] || SUN_LOOKS.Session;
-    if (!state.motion) return;
-    if (now >= state.nextSunFlare) {
-      state.sunFlareGoal = (0.65 + Math.random() * 0.5) * look.flare;
-      const gap = preview ? 2600 + Math.random() * 1400 : (3200 + Math.random() * 9000) / Math.max(0.35, look.activity);
-      state.nextSunFlare = now + gap;
-    }
-    if (state.sunFlareGoal > 0.02) {
-      state.sunFlare += (state.sunFlareGoal - state.sunFlare) * (1 - Math.exp(-step * 5.4));
-      state.sunFlareGoal *= Math.exp(-step * (preview ? 0.55 : 1.55));
-    } else {
-      state.sunFlare *= Math.exp(-step * 2.8);
-    }
-  }
-
-  function getZoomAnchor() {
-    if (state.zoomKind === "options") return optionsSun;
-    if (state.zoomKind === "node") return nodes[state.node];
-    return null;
   }
 
   function isOptionsFront(front, node) {
     if (node === -1) return true;
-    const id = String(front || "");
-    return /^settings$|^options$/i.test(id);
-  }
-
-  function clearZoom() {
-    state.zoomKind = "";
-    state.overlayTitle = "";
-    state.overlayFront = "";
-  }
-
-  function buildVignette() {
-    const c = document.createElement("canvas");
-    c.width = c.height = 256;
-    const ctx = c.getContext("2d");
-    const g = ctx.createRadialGradient(128, 128, 56, 128, 128, 168);
-    g.addColorStop(0, "rgba(0,0,0,0)");
-    g.addColorStop(0.55, "rgba(0,0,0,0.18)");
-    g.addColorStop(1, "rgba(0,0,0,0.62)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, 256, 256);
-    const tex = new THREE.CanvasTexture(c);
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    tex.generateMipmaps = false;
-    const mesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(2, 2),
-      new THREE.MeshBasicMaterial({
-        map: tex,
-        transparent: true,
-        depthTest: false,
-        depthWrite: false
-      })
-    );
-    mesh.frustumCulled = false;
-    mesh.renderOrder = 10;
-    return mesh;
-  }
-
-  function tickLiving(dt, now) {
-    if (!state.motion) return;
-    const pos = shear.geometry.attributes.position;
-    const orbits = shear.userData.orbits;
-    const arr = pos.array;
-    for (let i = 0; i < orbits.length; i++) {
-      const o = orbits[i];
-      o.phase += o.omega * dt;
-      arr[i * 3] = Math.cos(o.phase) * o.radius;
-      arr[i * 3 + 1] = o.y;
-      arr[i * 3 + 2] = Math.sin(o.phase) * o.radius * 0.08 + o.z;
-    }
-    pos.needsUpdate = true;
-
-    for (const ring of diskRings) {
-      ring.rotation.y += ring.userData.omega * dt;
-    }
-
-    for (const sheet of dustSheets) {
-      sheet.position.x += sheet.userData.drift * dt;
-      if (sheet.position.x > 0.7) sheet.userData.drift = -Math.abs(sheet.userData.drift);
-      if (sheet.position.x < -0.7) sheet.userData.drift = Math.abs(sheet.userData.drift);
-    }
-
-    if (diskGlow.userData.bar) {
-      diskGlow.userData.bar.material.opacity = 0.18 + Math.sin(now * 0.00016) * 0.02;
-      diskGlow.userData.nucleus.material.opacity = 0.38 + Math.sin(now * 0.0002) * 0.03;
-    }
-    if (diskGlow.userData.trail) {
-      diskGlow.userData.trail.material.opacity = 0.34 + Math.sin(now * 0.00028) * 0.05;
-      diskGlow.userData.trail.position.x = 0.12 + Math.sin(now * 0.00012) * 0.1;
-    }
-    if (diskGlow.userData.nebula) {
-      diskGlow.userData.nebula.position.x = Math.sin(now * 0.00008) * 0.18;
-    }
-    if (diskGlow.userData.nebula2) {
-      diskGlow.userData.nebula2.position.x = 1.15 + Math.sin(now * 0.00007) * 0.14;
-    }
-
-    for (const n of nodes) poseSystem(n, dt);
-    poseSystem(optionsSun, dt);
-
-    tickSkyFx(dt, now);
-
-    if (blackHole && blackHole.userData.ring) {
-      blackHole.userData.ring.material.opacity = 0.14 + Math.sin(now * 0.00014) * 0.025;
-      blackHole.rotation.z = Math.sin(now * 0.00005) * 0.04;
-    }
-
-    for (const sheet of filaments) {
-      sheet.position.x += sheet.userData.drift * dt * 4;
-      if (sheet.position.x > sheet.userData.baseX + 1.4) sheet.userData.drift = -Math.abs(sheet.userData.drift);
-      if (sheet.position.x < sheet.userData.baseX - 1.4) sheet.userData.drift = Math.abs(sheet.userData.drift);
-      sheet.rotation.z += sheet.userData.drift * dt * 0.08;
-    }
-
-    for (const spike of spikes) {
-      spike.userData.phase += dt * 0.35;
-      spike.material.opacity = spike.userData.base * (0.82 + Math.sin(spike.userData.phase) * 0.18);
-    }
-
-    if (deepField.userData.spin) {
-      deepField.rotation.y = now * deepField.userData.spin;
-      deepField.rotation.z = Math.sin(now * 0.00003) * 0.01;
-    }
-  }
-
-  function setNode(index, instant) {
-    state.node = wrapNode(index);
-    state.targetX = nodeX(state.node);
-    if (instant || !state.motion) state.visualX = state.targetX;
-    const info = faceInfo(NODE_IDS[state.node]);
-    syncCaption(info.title, info.hint);
-  }
-
-  let hideTimer = 0;
-
-  function cancelHide() {
-    if (hideTimer) {
-      clearTimeout(hideTimer);
-      hideTimer = 0;
-    }
-  }
-
-  function showOverlay(items, focus, origin, instant) {
-    cancelHide();
-    state.overlay = true;
-    state.items = items || [];
-    state.focus = typeof focus === "number" ? focus : 0;
-    state.origin = origin === "bottom" ? "bottom" : "top";
-    state.camGoal = 1;
-    if (instant || !state.motion) state.camBlend = 1;
-    overlayEl.classList.remove("show", "ready", "motion");
-    if (listHeadEl) listHeadEl.textContent = state.overlayTitle || faceInfo(NODE_IDS[state.node]).title || "";
-    if (!instant && state.motion) overlayEl.classList.add("motion");
-    renderTrack();
-    applyOverlayFocus(true);
-    overlayEl.classList.add("show");
-    syncNodeLabel();
-    const arm = () => overlayEl.classList.add("ready");
-    if (instant || !state.motion) arm();
-    else requestAnimationFrame(() => requestAnimationFrame(arm));
-  }
-
-  function hideOverlay(instant) {
-    cancelHide();
-    const fade = !instant && state.motion && overlayEl.classList.contains("ready");
-    state.overlay = false;
-    state.items = [];
-    state.camGoal = 0;
-    state.targetX = nodeX(state.node);
-    if (instant || !state.motion) {
-      state.camBlend = 0;
-      state.visualX = state.targetX;
-      clearZoom();
-    }
-    overlayEl.classList.remove("show");
-    const finish = () => {
-      hideTimer = 0;
-      overlayEl.classList.remove("ready", "motion");
-      trackEl.style.removeProperty("--track-y");
-      trackEl.style.removeProperty("transition");
-      trackEl.innerHTML = "";
-      if (listHeadEl) listHeadEl.textContent = "";
-    };
-    if (fade) {
-      overlayEl.classList.add("motion");
-      overlayEl.classList.remove("ready");
-      hideTimer = setTimeout(finish, 720);
-    } else {
-      finish();
-    }
-    const info = faceInfo(NODE_IDS[state.node]);
-    syncCaption(info.title, info.hint);
-    syncNodeLabel();
-  }
-
-  function renderTrack() {
-    trackEl.innerHTML = "";
-    state.items.forEach((item, i) => {
-      const el = document.createElement("button");
-      el.type = "button";
-      el.className = "row" + (state.motion ? " motion" : "") + (i === state.focus ? " focus" : "");
-      el.textContent = item.title || "";
-      el.addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        if (i === state.focus) {
-          send({ v: 1, type: "select", index: i, item: item.id, face: state.overlayFront || NODE_IDS[state.node] });
-        } else {
-          state.focus = i;
-          applyOverlayFocus(false);
-          send({ v: 1, type: "cycle", index: i, item: item.id });
-        }
-      });
-      trackEl.appendChild(el);
-    });
-  }
-
-  function rowStride() {
-    const rows = trackEl.children;
-    if (rows.length >= 2) return rows[1].offsetTop - rows[0].offsetTop;
-    if (rows[0]) return rows[0].offsetHeight + 2;
-    return 56;
-  }
-
-  function applyOverlayFocus(instant) {
-    const rows = trackEl.children;
-    for (let i = 0; i < rows.length; i++) {
-      rows[i].classList.toggle("focus", i === state.focus);
-    }
-    const item = state.items[state.focus];
-    if (item) syncCaption(item.title, "Up/Down move · Enter opens · Esc returns");
-    const y = (state.items.length * 0.5 - state.focus - 0.5) * rowStride();
-    if (instant || !state.motion) trackEl.style.transition = "none";
-    else trackEl.style.transition = "";
-    trackEl.style.setProperty("--track-y", `${y}px`);
-  }
-
-  function startOpen(msg) {
-    if (msg.motion === false) state.motion = false;
-    const options = isOptionsFront(msg.front, msg.node);
-    if (options) {
-      state.zoomKind = "options";
-      state.overlayTitle = "Options";
-      state.overlayFront = "Settings";
-      state.targetX = OPTIONS_SUN_X;
-      if (!state.motion) state.visualX = state.targetX;
-    } else {
-      state.zoomKind = "node";
-      state.overlayTitle = "";
-      state.overlayFront = "";
-      if (typeof msg.node === "number" && msg.node >= 0) setNode(msg.node, !state.motion);
-      else if (msg.front) {
-        const idx = NODE_IDS.indexOf(msg.front);
-        if (idx >= 0) setNode(idx, !state.motion);
-      }
-      state.overlayTitle = faceInfo(NODE_IDS[state.node]).title || "";
-      state.overlayFront = NODE_IDS[state.node];
-    }
-    const items = Array.isArray(msg.items) && msg.items.length
-      ? msg.items
-      : (options ? OPTIONS_ITEMS : previewItems(NODE_IDS[state.node]));
-    const origin = String(msg.origin || "top").toLowerCase();
-    const focus = typeof msg.focus === "number" ? msg.focus : (origin === "bottom" ? items.length - 1 : 0);
-    applySunLook(options ? "Settings" : NODE_IDS[state.node]);
-    if (items.length) showOverlay(items, focus, origin, !state.motion);
-    send({ v: 1, type: "opened", face: state.overlayFront || NODE_IDS[state.node], stay: true });
-    setLoop(true);
+    return /^settings$|^options$/i.test(String(front || ""));
   }
 
   function previewItems(id) {
@@ -1991,332 +333,128 @@
         { id: "vortex", title: "Vortex", meta: "KIT" }
       ];
     }
+    if (id === "Settings") return OPTIONS_ITEMS;
     const info = faceInfo(id);
-    return [
-      { id: id.toLowerCase(), title: info.title, meta: "PAGE" },
-      { id: id.toLowerCase() + "-2", title: info.hint.replace("Up or Down opens ", ""), meta: info.meta }
-    ];
+    return [{ id: id.toLowerCase(), title: info.title, meta: info.meta || "OPEN" }];
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (ch) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
+    }[ch]));
+  }
+
+  function renderTrack() {
+    if (!trackEl) return;
+    trackEl.innerHTML = state.items.map((item, i) => {
+      const focus = i === state.focus ? " focus" : "";
+      const motion = state.motion ? " motion" : "";
+      return `<button type="button" class="row${focus}${motion}" data-index="${i}"><span class="title">${escapeHtml(item.title)}</span></button>`;
+    }).join("");
+    trackEl.querySelectorAll(".row").forEach((row) => {
+      row.addEventListener("click", () => {
+        const i = Number(row.getAttribute("data-index"));
+        state.focus = i;
+        renderTrack();
+        send({ v: 1, type: "select", index: i, item: state.items[i]?.id });
+      });
+    });
+    syncTrack();
+  }
+
+  function syncTrack() {
+    if (!trackEl) return;
+    const rows = [...trackEl.querySelectorAll(".row")];
+    const on = rows[state.focus];
+    if (!on) return;
+    const pane = document.getElementById("listPane");
+    const mid = (pane?.clientHeight || 400) * 0.42;
+    const y = mid - (on.offsetTop + on.offsetHeight * 0.5);
+    if (!state.motion) trackEl.style.transition = "none";
+    else trackEl.style.transition = "";
+    trackEl.style.setProperty("--track-y", `${y}px`);
+  }
+
+  function showOverlay(items, focus, origin, instant) {
+    state.overlay = true;
+    state.items = items;
+    state.focus = focus;
+    state.origin = origin;
+    if (listHeadEl) listHeadEl.textContent = state.overlayTitle || TAB_DEFS[state.tab].title;
+    overlayEl.classList.remove("show", "ready", "motion");
+    if (!instant && state.motion) overlayEl.classList.add("motion");
+    overlayEl.classList.add("show");
+    renderTrack();
+    const arm = () => overlayEl.classList.add("ready");
+    if (instant || !state.motion) arm();
+    else requestAnimationFrame(() => requestAnimationFrame(arm));
+    if (nodeLabelEl) nodeLabelEl.hidden = true;
+  }
+
+  function hideOverlay(instant) {
+    state.overlay = false;
+    const fade = !instant && state.motion && overlayEl.classList.contains("ready");
+    overlayEl.classList.remove("show");
+    if (!fade) {
+      overlayEl.classList.remove("ready", "motion");
+    } else {
+      overlayEl.classList.add("motion");
+      overlayEl.classList.remove("ready");
+      window.setTimeout(() => overlayEl.classList.remove("motion"), 720);
+    }
+    state.items = [];
+    setTab(state.tab, instant || !state.motion);
+  }
+
+  function startOpen(msg) {
+    if (msg.motion === false) state.motion = false;
+    const options = isOptionsFront(msg.front, msg.node);
+    if (options) {
+      setTab(tabIndexOf("Settings"), !state.motion);
+      state.overlayTitle = "Options";
+      state.overlayFront = "Settings";
+    } else {
+      if (typeof msg.node === "number" && msg.node >= 0) {
+        const ids = ["Session", "Tools", "Mods", "Network", "Files", "Hardware"];
+        setTab(tabIndexOf(ids[msg.node] || msg.front || "Session"), !state.motion);
+      } else if (msg.front) setTab(tabIndexOf(msg.front), !state.motion);
+      state.overlayTitle = TAB_DEFS[state.tab].title;
+      state.overlayFront = TAB_DEFS[state.tab].id;
+    }
+    const items = Array.isArray(msg.items) && msg.items.length
+      ? msg.items
+      : previewItems(options ? "Settings" : TAB_DEFS[state.tab].id);
+    const origin = String(msg.origin || "top").toLowerCase();
+    const focus = typeof msg.focus === "number" ? msg.focus : (origin === "bottom" ? items.length - 1 : 0);
+    if (items.length) showOverlay(items, focus, origin, !state.motion);
+    send({ v: 1, type: "opened", face: state.overlayFront, stay: true });
+    setLoop(true);
   }
 
   function onHostMessage(data) {
-    const type = data && data.type ? String(data.type).toLowerCase() : "state";
-    if (type === "open") {
-      startOpen(data);
-      return;
-    }
-    if (type === "focus") {
+    if (!data || typeof data !== "object") return;
+    if (data.type === "state") applyHostState(data);
+    if (data.type === "open") startOpen(data);
+    if (data.type === "focus") {
       if (typeof data.focus === "number") {
         state.focus = data.focus;
-        if (state.overlay) applyOverlayFocus(!state.motion);
+        renderTrack();
       }
-      return;
     }
-    if (type === "close") {
-      if (data.motion === false) state.motion = false;
-      hideOverlay(!state.motion);
-      return;
-    }
-    if (type === "reset") {
+    if (data.type === "close") hideOverlay(!data.motion);
+    if (data.type === "reset") {
       hideOverlay(true);
-      applyHostState({ ...data, type: "state" });
-      return;
+      applyHostState(data);
     }
-    applyHostState(data);
-  }
-
-  function applyHostState(msg) {
-    if (!msg || msg.type && msg.type !== "state") return;
-    if (Array.isArray(msg.faces) && msg.faces.length) state.faces = msg.faces;
-    if (typeof msg.node === "number") setNode(msg.node, msg.motion === false);
-    else if (msg.front) {
-      const idx = NODE_IDS.indexOf(msg.front);
-      if (idx >= 0) setNode(idx, msg.motion === false);
-    }
-    state.motion = msg.motion !== false && !reduced;
-    if (!state.motion) {
-      state.visualX = state.targetX;
-      state.camBlend = state.camGoal;
-      quietSkyFx();
-    }
-    syncCaption(faceInfo(NODE_IDS[state.node]).title, faceInfo(NODE_IDS[state.node]).hint);
-    setLoop(true);
-    if (!state.motion) renderFrame(0);
-  }
-
-  const labelNdc = new THREE.Vector3();
-
-  function syncNodeLabel() {
-    if (!nodeLabelEl) return;
-    if (state.overlay) {
-      nodeLabelEl.hidden = true;
-      return;
-    }
-    const n = nodes[state.node];
-    if (!n) {
-      nodeLabelEl.hidden = true;
-      return;
-    }
-    const title = faceInfo(NODE_IDS[state.node]).title || NODE_IDS[state.node];
-    if (nodeLabelEl.textContent !== title) nodeLabelEl.textContent = title;
-    n.group.updateWorldMatrix(true, false);
-    n.group.getWorldPosition(labelNdc);
-    camera.updateMatrixWorld();
-    labelNdc.project(camera);
-    if (labelNdc.z < -1 || labelNdc.z > 1) {
-      nodeLabelEl.hidden = true;
-      return;
-    }
-    const w = canvas.clientWidth || window.innerWidth;
-    const h = canvas.clientHeight || window.innerHeight;
-    const x = (labelNdc.x * 0.5 + 0.5) * w;
-    const y = (-labelNdc.y * 0.5 + 0.5) * h + Math.max(30, h * 0.04);
-    const pad = 36;
-    const clampedX = Math.min(Math.max(x, pad), w - pad);
-    const clampedY = Math.min(Math.max(y, pad), h - pad - 40);
-    nodeLabelEl.hidden = false;
-    nodeLabelEl.style.transform = `translate3d(${clampedX}px, ${clampedY}px, 0) translate(-50%, 0)`;
-  }
-
-  function syncCaption(title, hint) {
-    const t = document.getElementById("previewTitle");
-    const h = document.getElementById("previewHint");
-    if (t) t.textContent = title || "";
-    if (h) h.textContent = hint || "Left/Right shift nodes · Up/Down open this list";
-  }
-
-  function renderFrame(dt) {
-    const now = performance.now();
-    const wall = Math.min(Math.max(dt, 0), 0.12);
-    const step = Math.min(wall, 0.033);
-    if (state.motion) {
-      const k = 1 - Math.exp(-wall * 3.35);
-      state.visualX += (state.targetX - state.visualX) * k;
-      const ck = 1 - Math.exp(-wall * 2.15);
-      state.camBlend += (state.camGoal - state.camBlend) * ck;
-      tickLiving(step, now);
-      farStars.rotation.y = now * (farStars.userData.spin || 0);
-      midStars.rotation.y = now * (midStars.userData.spin || 0);
-      nearStars.rotation.y = now * (nearStars.userData.spin || 0);
-      farStars.rotation.z = Math.sin(now * 0.00004) * 0.012;
-      midStars.rotation.z = Math.sin(now * 0.00006) * 0.018;
-    } else {
-      state.camBlend = state.camGoal;
-    }
-    if (state.camGoal === 0 && state.camBlend < 0.012) {
-      state.camBlend = 0;
-      if (!state.overlay) clearZoom();
-    }
-    const blend = smooth01(state.camBlend);
-    rig.position.x = -state.visualX * 0.82;
-    farStars.position.x = -state.visualX * 0.03;
-    midStars.position.x = -state.visualX * 0.07;
-    nearStars.position.x = -state.visualX * 0.16;
-    deepField.position.x = -state.visualX * 0.02;
-    const restY = CAM_Y + (state.motion ? Math.sin(now * 0.00018) * 0.028 : 0);
-    camRestPos.set(0, restY, CAM_Z);
-    const anchor = getZoomAnchor();
-    if (anchor) {
-      anchor.group.updateWorldMatrix(true, false);
-      anchor.group.getWorldPosition(sunWorld);
-    } else {
-      sunWorld.set(0, 0.04, 0.12);
-    }
-    camZoomPos.set(sunWorld.x - 2.12, sunWorld.y + 1.18, sunWorld.z + 2.35);
-    zoomLook.set(sunWorld.x - 0.42, sunWorld.y + 0.02, sunWorld.z + 0.04);
-    camera.position.lerpVectors(camRestPos, camZoomPos, blend);
-    camLook.lerpVectors(lookTarget, zoomLook, blend);
-    camera.lookAt(camLook);
-    const nextFov = 26 + blend * 4.5;
-    dimBandForZoom(blend);
-    if (Math.abs(camera.fov - nextFov) > 0.01) {
-      camera.fov = nextFov;
-      camera.updateProjectionMatrix();
-    }
-    const breathe = state.motion ? 0.96 + 0.04 * Math.sin(now * 0.0007) : 1;
-    if (blend > 0.01) tickSunWeather(wall, now);
-    poseHeroSun(blend, step);
-    for (const n of nodes) {
-      const on = n.group.userData.node === state.node;
-      const hide = anchor === n ? blend : 0;
-      const base = n.corona.userData.base;
-      n.sun.material.opacity = (on ? 0.52 : 0.3) * breathe * (1 - hide * 0.95);
-      n.corona.material.opacity = (on ? 0.14 : 0.055) * breathe * (1 - hide * 0.9);
-      n.corona.scale.set(base.x * (on ? 1.12 : 1), base.y * (on ? 1.08 : 1), 1);
-      for (const p of n.planets) {
-        p.material.opacity = p.userData.baseOpacity * (on ? 1.15 : 0.85) * (1 - hide);
-      }
-      if (!state.motion) poseSystem(n, 0);
-    }
-    {
-      const hide = anchor === optionsSun ? blend : 0;
-      const lit = state.zoomKind === "options";
-      const base = optionsSun.corona.userData.base;
-      optionsSun.sun.material.opacity = (lit ? 0.4 : 0.22) * breathe * (1 - hide * 0.95);
-      optionsSun.corona.material.opacity = (lit ? 0.1 : 0.04) * breathe * (1 - hide * 0.9);
-      optionsSun.corona.scale.set(base.x * (lit ? 1.1 : 1), base.y * (lit ? 1.06 : 1), 1);
-      for (const p of optionsSun.planets) {
-        p.material.opacity = p.userData.baseOpacity * (lit ? 1.05 : 0.75) * (1 - hide);
-      }
-      if (!state.motion) poseSystem(optionsSun, 0);
-    }
-    if (!state.motion) quietSkyFx();
-    syncNodeLabel();
-    if (vignette.material) vignette.material.opacity = 1 - blend * 0.55;
-    vignette.position.copy(camera.position);
-    vignette.quaternion.copy(camera.quaternion);
-    vignette.translateZ(-1.15);
-    renderer.render(scene, camera);
-  }
-
-  function poseHeroSun(blend, step) {
-    const show = blend > 0.012;
-    heroSun.visible = show;
-    if (!show) return;
-    heroSun.position.set(sunWorld.x, sunWorld.y + 0.06, sunWorld.z + 0.1);
-    const hr = 0.18 + blend * 0.74;
-    const fade = smooth01(Math.min(1, blend * 1.15));
-    const u = heroSun.userData;
-    u.body.scale.setScalar(hr);
-    u.chromo.scale.setScalar(hr * 1.012);
-    u.shell.scale.setScalar(hr * 1.34);
-    u.sheet.scale.setScalar(hr * 2.45);
-    u.sheet.quaternion.copy(camera.quaternion);
-    const flare = state.sunFlare;
-    for (const mesh of sunMeshes()) {
-      mesh.material.uniforms.uFade.value = fade;
-      mesh.material.uniforms.uFlare.value = flare;
-    }
-    if (state.motion) {
-      u.body.rotation.y += step * 0.028;
-      u.chromo.rotation.y += step * 0.022;
-      const t = u.body.material.uniforms.uTime;
-      t.value += step;
-      for (const mesh of sunMeshes()) mesh.material.uniforms.uTime.value = t.value;
-    }
-  }
-
-  function dimBandForZoom(blend) {
-    const keep = 1 - blend * 0.78;
-    const live = new Set([
-      diskGlow.userData.bar,
-      diskGlow.userData.nucleus,
-      diskGlow.userData.trail
-    ]);
-    const fadeMat = (obj) => {
-      if (!obj || !obj.material) return;
-      if (live.has(obj)) {
-        obj.material.opacity *= keep;
-        return;
-      }
-      if (obj.userData.baseOp == null) obj.userData.baseOp = obj.material.opacity;
-      obj.material.opacity = obj.userData.baseOp * keep;
-    };
-    diskGlow.traverse((child) => {
-      if (child.isMesh || child.isSprite) fadeMat(child);
-    });
-    for (const sheet of dustSheets) fadeMat(sheet);
-    for (const sheet of filaments) fadeMat(sheet);
-  }
-
-  let looping = false;
-  function setLoop(on) {
-    if (on && !looping) {
-      looping = true;
-      clock.getDelta();
-      renderer.setAnimationLoop(() => renderFrame(Math.min(clock.getDelta(), 0.033)));
-    } else if (!on && looping) {
-      looping = false;
-      renderer.setAnimationLoop(null);
-    }
-  }
-
-  function resize() {
-    const w = canvas.clientWidth || window.innerWidth;
-    const h = canvas.clientHeight || window.innerHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = Math.max(w / Math.max(h, 1), 0.4);
-    camera.updateProjectionMatrix();
-    if (state.overlay) applyOverlayFocus(true);
-    if (!looping) renderFrame(0);
-  }
-
-  function send(msg) {
-    if (hosted) window.chrome.webview.postMessage(JSON.stringify(msg));
-  }
-
-  function onPointerDown(ev) {
-    if (state.overlay) return;
-    state.dragging = true;
-    state.moved = false;
-    state.pressX = ev.clientX;
-    state.pressY = ev.clientY;
-    state.lastX = ev.clientX;
-    state.lastY = ev.clientY;
-    state.lastT = performance.now();
-    canvas.setPointerCapture?.(ev.pointerId);
-  }
-
-  function onPointerMove(ev) {
-    if (!state.dragging) return;
-    const dx = ev.clientX - state.pressX;
-    const dy = ev.clientY - state.pressY;
-    const now = performance.now();
-    const dt = Math.max(0.001, (now - state.lastT) / 1000);
-    state.vx = (ev.clientX - state.lastX) / dt;
-    state.vy = (ev.clientY - state.lastY) / dt;
-    state.lastX = ev.clientX;
-    state.lastY = ev.clientY;
-    state.lastT = now;
-    if (Math.abs(dx) + Math.abs(dy) > 8) state.moved = true;
-  }
-
-  function onPointerUp(ev) {
-    if (!state.dragging) return;
-    state.dragging = false;
-    canvas.releasePointerCapture?.(ev.pointerId);
-    const dx = ev.clientX - state.pressX;
-    const dy = ev.clientY - state.pressY;
-    if (state.moved) {
-      send({ v: 1, type: "dragEnd", dx, dy, vx: state.vx, vy: state.vy });
-      if (!hosted) {
-        if (Math.abs(dx) >= Math.abs(dy)) localTurn(dx < 0 ? "Right" : "Left");
-        else localTurn(dy > 0 ? "Down" : "Up");
-      }
-      return;
-    }
-    pick(ev.clientX, ev.clientY);
-  }
-
-  function pick(x, y) {
-    const rect = canvas.getBoundingClientRect();
-    pointer.x = ((x - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -((y - rect.top) / rect.height) * 2 + 1;
-    raycaster.setFromCamera(pointer, camera);
-    const hits = raycaster.intersectObjects(nodeMeshes, false);
-    if (hits.length) {
-      const face = hits[0].object.userData.face;
-      if (hosted) {
-        send({ v: 1, type: "pick", face });
-        return;
-      }
-      const idx = NODE_IDS.indexOf(face);
-      if (idx === state.node) previewOpen("top");
-      else setNode(idx, false);
-      return;
-    }
-    if (hosted) send({ v: 1, type: "activate" });
-    else previewOpen("top");
   }
 
   function previewOpen(origin) {
-    const items = previewItems(NODE_IDS[state.node]);
     startOpen({
-      front: NODE_IDS[state.node],
-      node: state.node,
-      motion: state.motion,
+      front: TAB_DEFS[state.tab].id,
+      node: TAB_DEFS[state.tab].id === "Settings" ? -1 : 0,
       origin,
-      focus: origin === "bottom" ? items.length - 1 : 0,
-      items
+      motion: state.motion,
+      items: previewItems(TAB_DEFS[state.tab].id)
     });
   }
 
@@ -2324,197 +462,130 @@
     startOpen({
       front: "Settings",
       node: -1,
-      motion: state.motion,
       origin: "top",
-      focus: 0,
+      motion: state.motion,
       items: OPTIONS_ITEMS
     });
-  }
-
-  function localTurn(turn) {
-    if (turn === "Left") setNode(visualNeighbor(-1), !state.motion);
-    if (turn === "Right") setNode(visualNeighbor(1), !state.motion);
-    if (turn === "Up") previewOpen("bottom");
-    if (turn === "Down") previewOpen("top");
-  }
-
-  function visualNeighbor(delta) {
-    const order = [5, 4, 3, 0, 1, 2];
-    const at = order.indexOf(state.node);
-    return order[wrapIndex(at + delta, order.length)];
   }
 
   function onKey(ev) {
     if (state.overlay) {
       if (ev.key === "Escape") {
-        ev.preventDefault();
+        hideOverlay(!state.motion);
         send({ v: 1, type: "back" });
-        if (!hosted) hideOverlay();
-        return;
-      }
-      if (ev.key === "Enter" || ev.key === " ") {
         ev.preventDefault();
-        const item = state.items[state.focus];
-        if (item) send({ v: 1, type: "select", index: state.focus, item: item.id, face: state.overlayFront || NODE_IDS[state.node] });
-        return;
       }
       if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
+        const dir = ev.key === "ArrowUp" ? -1 : 1;
+        state.focus = (state.focus + dir + state.items.length) % state.items.length;
+        renderTrack();
+        send({ v: 1, type: "cycle", index: state.focus });
         ev.preventDefault();
-        state.focus = wrapIndex(state.focus + (ev.key === "ArrowUp" ? -1 : 1), state.items.length);
-        applyOverlayFocus(false);
-        send({ v: 1, type: "cycle", index: state.focus, item: state.items[state.focus].id });
+      }
+      if (ev.key === "Enter") {
+        send({ v: 1, type: "activate", index: state.focus, item: state.items[state.focus]?.id });
+        ev.preventDefault();
       }
       return;
     }
-    if ((ev.key === "o" || ev.key === "O") && !hosted) {
+    if (ev.key === "ArrowLeft") {
+      if (!hosted) setTab(state.tab - 1, !state.motion);
+      send({ v: 1, type: "turn", turn: "Left" });
       ev.preventDefault();
+    }
+    if (ev.key === "ArrowRight") {
+      if (!hosted) setTab(state.tab + 1, !state.motion);
+      send({ v: 1, type: "turn", turn: "Right" });
+      ev.preventDefault();
+    }
+    if (ev.key === "ArrowUp") {
+      if (!hosted) previewOpen("bottom");
+      send({ v: 1, type: "turn", turn: "Up" });
+      ev.preventDefault();
+    }
+    if (ev.key === "ArrowDown") {
+      if (!hosted) previewOpen("top");
+      send({ v: 1, type: "turn", turn: "Down" });
+      ev.preventDefault();
+    }
+    if (ev.key === "Enter") {
+      if (!hosted) previewOpen("top");
+      send({ v: 1, type: "activate" });
+      ev.preventDefault();
+    }
+    if ((ev.key === "o" || ev.key === "O") && preview && !hosted) {
       previewOpenOptions();
-      return;
-    }
-    if (ev.key === "Enter" || ev.key === " ") {
       ev.preventDefault();
-      if (hosted) send({ v: 1, type: "activate" });
-      else previewOpen("top");
+    }
+  }
+
+  function hitTab(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const meshes = tabs.flatMap((t) => [t.body, t.tip]);
+    const hits = raycaster.intersectObjects(meshes, false);
+    if (!hits.length) return -1;
+    return tabs.findIndex((t) => t.body === hits[0].object || t.tip === hits[0].object);
+  }
+
+  function onPointerDown(ev) {
+    drag = { x: ev.clientX, y: ev.clientY, t: performance.now() };
+    canvas.setPointerCapture?.(ev.pointerId);
+  }
+
+  function onPointerUp(ev) {
+    if (!drag) return;
+    const dx = ev.clientX - drag.x;
+    const dy = ev.clientY - drag.y;
+    const dt = Math.max(16, performance.now() - drag.t);
+    drag = null;
+    if (state.overlay) return;
+    if (Math.abs(dx) > 64 && Math.abs(dx) > Math.abs(dy)) {
+      setTab(state.tab + (dx < 0 ? 1 : -1), !state.motion);
+      send({ v: 1, type: "turn", turn: dx < 0 ? "Right" : "Left" });
       return;
     }
-    const map = { ArrowLeft: "Left", ArrowRight: "Right", ArrowUp: "Up", ArrowDown: "Down" };
-    const turn = map[ev.key];
-    if (!turn) return;
-    ev.preventDefault();
-    if (hosted) send({ v: 1, type: "turn", turn });
-    else localTurn(turn);
-  }
-
-  function onWheel(ev) {
-    ev.preventDefault();
-    if (state.overlay) {
-      state.focus = wrapIndex(state.focus + (ev.deltaY < 0 ? -1 : 1), state.items.length);
-      applyOverlayFocus(false);
-      send({ v: 1, type: "cycle", index: state.focus, item: state.items[state.focus].id });
-      return;
+    const idx = hitTab(ev.clientX, ev.clientY);
+    if (idx < 0) return;
+    if (idx === state.tab) {
+      previewOpen("top");
+      send({ v: 1, type: "activate" });
+    } else {
+      setTab(idx, !state.motion);
+      send({ v: 1, type: "pick", face: TAB_DEFS[idx].id });
     }
-    const turn = ev.deltaY < 0 ? "Left" : "Right";
-    if (hosted) send({ v: 1, type: "turn", turn });
-    else localTurn(turn);
   }
 
-  function wrapIndex(i, n) {
-    if (n <= 0) return 0;
-    return ((i % n) + n) % n;
+  function resize() {
+    const w = canvas.clientWidth || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / Math.max(1, h);
+    camera.updateProjectionMatrix();
   }
 
-  function spriteTex(size, draw) {
-    const c = document.createElement("canvas");
-    c.width = c.height = size;
-    const ctx = c.getContext("2d");
-    draw(ctx, size);
-    return finishSoftTexture(c, Math.max(6, size * 0.06));
+  function renderFrame() {
+    const dt = Math.min(clock.getDelta(), 0.05);
+    poseTabs(dt);
+    syncNodeLabel();
+    renderer.render(scene, camera);
   }
 
-  function smooth01(t) {
-    const x = Math.min(1, Math.max(0, t));
-    return x * x * (3 - 2 * x);
+  function loop() {
+    if (!running) return;
+    renderFrame();
+    requestAnimationFrame(loop);
   }
 
-  function featherPremul(ctx, w, h, margin) {
-    const img = ctx.getImageData(0, 0, w, h);
-    const d = img.data;
-    const mx = Math.max(8, margin | 0);
-    const my = Math.max(8, Math.round(margin * (h / Math.max(1, w))));
-    for (let y = 0; y < h; y++) {
-      const ey = smooth01(y < my ? y / my : y > h - 1 - my ? (h - 1 - y) / my : 1);
-      for (let x = 0; x < w; x++) {
-        const i = (y * w + x) * 4;
-        const a0 = d[i + 3];
-        if (!a0) {
-          d[i] = d[i + 1] = d[i + 2] = 0;
-          continue;
-        }
-        const ex = smooth01(x < mx ? x / mx : x > w - 1 - mx ? (w - 1 - x) / mx : 1);
-        const a = a0 * ex * ey;
-        if (a < 1.4) {
-          d[i] = d[i + 1] = d[i + 2] = d[i + 3] = 0;
-          continue;
-        }
-        const pa = a / 255;
-        d[i] = Math.round(d[i] * pa);
-        d[i + 1] = Math.round(d[i + 1] * pa);
-        d[i + 2] = Math.round(d[i + 2] * pa);
-        d[i + 3] = Math.round(a);
-      }
+  function setLoop(on) {
+    if (on && !running) {
+      running = true;
+      clock.getDelta();
+      requestAnimationFrame(loop);
     }
-    ctx.putImageData(img, 0, 0);
-  }
-
-  function finishSoftTexture(canvas, margin) {
-    const ctx = canvas.getContext("2d", { willReadFrequently: true }) || canvas.getContext("2d");
-    featherPremul(ctx, canvas.width, canvas.height, margin);
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.wrapS = THREE.ClampToEdgeWrapping;
-    tex.wrapT = THREE.ClampToEdgeWrapping;
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    tex.generateMipmaps = false;
-    return tex;
-  }
-
-  function softMat(map, extra) {
-    return new THREE.MeshBasicMaterial(Object.assign({
-      map,
-      transparent: true,
-      premultipliedAlpha: true,
-      depthWrite: false,
-      blending: THREE.NormalBlending
-    }, extra || {}));
-  }
-
-  function softSprite(map, extra) {
-    return new THREE.SpriteMaterial(Object.assign({
-      map,
-      transparent: true,
-      premultipliedAlpha: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    }, extra || {}));
-  }
-
-  function mulberry(a) {
-    return function rng() {
-      a |= 0;
-      a = a + 0x6D2B79F5 | 0;
-      let t = Math.imul(a ^ a >>> 15, 1 | a);
-      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-      return ((t ^ t >>> 14) >>> 0) / 4294967296;
-    };
-  }
-
-  function gauss(rng) {
-    return (rng() + rng() + rng() - 1.5) * 0.85;
-  }
-
-  function valueNoise(x, y, seed) {
-    const x0 = Math.floor(x);
-    const y0 = Math.floor(y);
-    const fx = x - x0;
-    const fy = y - y0;
-    const sx = fx * fx * (3 - 2 * fx);
-    const sy = fy * fy * (3 - 2 * fy);
-    const a = hash2(x0, y0, seed);
-    const b = hash2(x0 + 1, y0, seed);
-    const c = hash2(x0, y0 + 1, seed);
-    const d = hash2(x0 + 1, y0 + 1, seed);
-    return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
-  }
-
-  function hash2(ix, iy, seed) {
-    let n = Math.imul(ix, 374761393) + Math.imul(iy, 668265263) + seed * 1013904223 | 0;
-    n = Math.imul(n ^ n >>> 13, 1274126177);
-    return ((n ^ n >>> 16) >>> 0) / 4294967296;
-  }
-
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[ch]));
+    if (!on) running = false;
   }
 
   function showFallback() {
@@ -2523,11 +594,8 @@
   }
 
   canvas.addEventListener("pointerdown", onPointerDown);
-  window.addEventListener("pointermove", onPointerMove);
   window.addEventListener("pointerup", onPointerUp);
-  window.addEventListener("pointercancel", onPointerUp);
   window.addEventListener("keydown", onKey);
-  canvas.addEventListener("wheel", onWheel, { passive: false });
   window.addEventListener("resize", resize);
 
   if (hosted) {
@@ -2547,25 +615,26 @@
   }
 
   resize();
+  setTab(3, true);
   setLoop(true);
-  if (!state.motion) renderFrame(0);
+  const startTabParam = (params.get("tab") || "").toLowerCase();
+  if (!hosted && startTabParam) {
+    const def = TAB_DEFS.find((t) => t.id.toLowerCase() === startTabParam || t.title.toLowerCase() === startTabParam);
+    if (def) setTab(tabIndexOf(def.id), true);
+  }
   const startOpenParam = (params.get("open") || "").toLowerCase();
   if (!hosted && (startOpenParam === "options" || startOpenParam === "settings")) {
-    window.setTimeout(() => {
-      previewOpenOptions();
-      if (!state.motion) renderFrame(0);
-    }, 80);
+    window.setTimeout(() => previewOpenOptions(), 60);
   } else if (!hosted && (startOpenParam === "games" || startOpenParam === "session")) {
     window.setTimeout(() => {
+      setTab(tabIndexOf("Session"), true);
       previewOpen("top");
-      if (!state.motion) renderFrame(0);
-    }, 80);
-  } else if (!hosted && NODE_IDS.some((id) => id.toLowerCase() === startOpenParam)) {
+    }, 60);
+  } else if (!hosted && TAB_DEFS.some((t) => t.id.toLowerCase() === startOpenParam)) {
     window.setTimeout(() => {
-      const idx = NODE_IDS.findIndex((id) => id.toLowerCase() === startOpenParam);
-      setNode(idx, true);
+      const def = TAB_DEFS.find((t) => t.id.toLowerCase() === startOpenParam);
+      setTab(tabIndexOf(def.id), true);
       previewOpen("top");
-      if (!state.motion) renderFrame(0);
-    }, 80);
+    }, 60);
   }
 })();

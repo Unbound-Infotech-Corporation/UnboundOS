@@ -53,10 +53,10 @@ public sealed class UiMotionPolicy : IUiMotionPolicy
 
     public string StatusText => Suppression switch
     {
-        MotionSuppression.UserDisabled => "Interface motion is off. Tiles, buttons, and the Home galaxy use instant states. Star drift and heavy postFX are frozen.",
+        MotionSuppression.UserDisabled => "Interface motion is off. Tiles, buttons, and Home tabs use instant states. Tab lift is frozen.",
         MotionSuppression.SystemDisabled => "Interface motion is paused because Windows animations are off.",
-        MotionSuppression.SessionLive => "Interface motion is paused while a session is live. The toggle stays available. The galaxy will not drift stars or run bloom.",
-        _ => "Interface motion is on. A few-percent scale, a 1px cyan hairline on the focused tile, and a living galaxy with star drift."
+        MotionSuppression.SessionLive => "Interface motion is paused while a session is live. The toggle stays available. Home tabs will not lift or ease.",
+        _ => "Interface motion is on. A few-percent scale, a 1px cyan hairline on the focused tile, and a quiet tab lift on Home."
     };
 
     public event EventHandler? Changed;

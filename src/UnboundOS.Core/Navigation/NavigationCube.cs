@@ -3,7 +3,7 @@ using System.Numerics;
 namespace UnboundOS.Core.Navigation;
 
 /// <summary>
-/// Six Home destinations. On Home they sit as galaxy nodes. Settings and
+/// Six Home destinations. On Home they sit as studio tabs. Settings and
 /// Profiles remain the discreet corner glyphs; Overlay stays inner-page chrome.
 /// </summary>
 public enum CubeDestination
@@ -25,7 +25,7 @@ public enum CubeTurn
 }
 
 /// <summary>
-/// How a destination opens. Games stay as a translucent list over the galaxy.
+/// How a destination opens. Games stay as a translucent list over Home.
 /// Tools/Mods stay as a mosaic when items exist. Config nodes land on a list page.
 /// </summary>
 public enum CubeOpenKind
@@ -120,7 +120,7 @@ public static class CubeCatalog
         {
             CubeDestination.Session => new(
                 destination, "Session", "Games", "PLAY", "G", "PLAY",
-                "Installed library. Up or Down opens the list over the galaxy. Enter launches.",
+                "Installed library. Up or Down opens the list over Home. Enter launches.",
                 "games", CubeOpenKind.Carousel),
             CubeDestination.Tools => new(
                 destination, "Tools", "Tools", "KIT", "T", "OPEN",
@@ -159,7 +159,7 @@ public static class CubeCatalog
         HomeGalaxy.AnnounceOverlay(item, index, total);
 }
 
-/// <summary>Pointer, keyboard, and gamepad mapping for Home (galaxy nodes).</summary>
+/// <summary>Pointer, keyboard, and gamepad mapping for Home tabs.</summary>
 public static class CubeInput
 {
     public const float DefaultPixelsPerQuarterTurn = 96f;

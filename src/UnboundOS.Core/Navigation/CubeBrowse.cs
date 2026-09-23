@@ -5,7 +5,7 @@ namespace UnboundOS.Core.Navigation;
 /// <summary>
 /// Maps discovered library/tools/mods into Home category lists.
 /// Games stay the Steam library. Tools and Mods use their catalogs.
-/// Config nodes open an honest page list over the galaxy.
+/// Config nodes open an honest page list over Home.
 /// </summary>
 public static class CubeBrowse
 {

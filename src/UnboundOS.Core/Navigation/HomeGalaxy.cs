@@ -1,8 +1,8 @@
 namespace UnboundOS.Core.Navigation;
 
 /// <summary>
-/// Home is an edge-on galaxy. Bright clusters along the disk are menu
-/// nodes. C# owns which node is focused and how a category list opens.
+/// Home is a black studio field with vertical category tabs.
+/// C# owns which tab is focused and how a category list opens.
 /// </summary>
 public enum HomeIdleAction
 {
@@ -25,7 +25,7 @@ public static class HomeGalaxy
         CubeDestination.Hardware
     ];
 
-    /// <summary>Left-to-right along the disk (blue arm → core → blue arm).</summary>
+    /// <summary>Left-to-right catalog neighbors (Options is a separate tab).</summary>
     public static IReadOnlyList<CubeDestination> VisualOrder { get; } =
     [
         CubeDestination.Hardware,
@@ -36,10 +36,15 @@ public static class HomeGalaxy
         CubeDestination.Mods
     ];
 
-    /// <summary>
-    /// World X for catalog index. Session sits on the bright core;
-    /// other nodes lock to luminous clusters along the plane.
-    /// </summary>
+    /// <summary>LTR studio tabs, including Options between Games and Tools.</summary>
+    public static IReadOnlyList<string> TabIds { get; } =
+    [
+        "Hardware", "Files", "Network", "Session", "Settings", "Tools", "Mods"
+    ];
+
+    public const int OptionsTabIndex = 4;
+
+    /// <summary>Legacy spacing helper. Home tabs are laid out in the WebView.</summary>
     private static readonly float[] VisualX = [0f, 1.14f, 2.22f, -1.14f, -2.22f, -3.30f];
 
     public const float NodeSpacing = 1.14f;
@@ -79,6 +84,47 @@ public static class HomeGalaxy
     public static CubeDestination Neighbor(CubeDestination current, int delta) =>
         VisualOrder[Wrap(VisualIndexOf(current) + delta)];
 
+    public static int TabIndexOf(CubeDestination destination, bool optionsTab = false)
+    {
+        if (optionsTab)
+        {
+            return OptionsTabIndex;
+        }
+
+        return destination switch
+        {
+            CubeDestination.Hardware => 0,
+            CubeDestination.Files => 1,
+            CubeDestination.Network => 2,
+            CubeDestination.Session => 3,
+            CubeDestination.Tools => 5,
+            CubeDestination.Mods => 6,
+            _ => 3
+        };
+    }
+
+    public static (string Id, CubeDestination? Destination) TabAt(int index)
+    {
+        var i = CubeBrowse.Wrap(index, TabIds.Count);
+        return i switch
+        {
+            0 => ("Hardware", CubeDestination.Hardware),
+            1 => ("Files", CubeDestination.Files),
+            2 => ("Network", CubeDestination.Network),
+            3 => ("Session", CubeDestination.Session),
+            4 => ("Settings", null),
+            5 => ("Tools", CubeDestination.Tools),
+            6 => ("Mods", CubeDestination.Mods),
+            _ => ("Session", CubeDestination.Session)
+        };
+    }
+
+    public static (string Id, CubeDestination? Destination) ShiftTab(
+        CubeDestination current,
+        bool optionsTab,
+        int delta) =>
+        TabAt(TabIndexOf(current, optionsTab) + delta);
+
     public static float NodeX(int index) => VisualX[Wrap(index)];
 
     public static HomeIdleAction? FromTurn(CubeTurn turn) =>
@@ -104,9 +150,12 @@ public static class HomeGalaxy
     public static string Announce(CubeDestination node)
     {
         var info = CubeCatalog.Info(node);
-        return $"{info.Title} node. Up opens this list from the bottom over the galaxy. Down opens this list from the top. Left and right shift nodes. Enter opens this group. The SET glyph zooms to Options over the galaxy. Settings and Profiles are the corner glyphs.";
+        return $"{info.Title} tab. Up opens this list from the bottom over Home. Down opens this list from the top. Left and right move between tabs. Enter opens this group. The SET glyph opens Options. Settings and Profiles are the corner glyphs.";
     }
 
+    public static string AnnounceOptions() =>
+        "Options tab. Up opens this list from the bottom. Down opens this list from the top. Left and right move between tabs. Enter opens this group. Settings and Profiles are the corner glyphs.";
+
     public static string AnnounceOverlay(CubeBrowseItem item, int index, int total) =>
-        $"{item.Title}, {item.Meta}, {index + 1} of {total}. Enter opens. Up and down move the list. Escape returns to the galaxy.";
+        $"{item.Title}, {item.Meta}, {index + 1} of {total}. Enter opens. Up and down move the list. Escape returns to Home.";
 }

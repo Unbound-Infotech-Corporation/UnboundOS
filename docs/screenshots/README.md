@@ -13,23 +13,19 @@ dotnet run --project src\UnboundOS.App\UnboundOS.App.csproj -c Debug -p:Platform
 
 Visual check:
 
-- **Home is galaxy-only** — no top chrome, brand block, tagline, or START
-  row. Settings / Profiles are discreet corner glyphs, not galaxy nodes.
+- **Home is a black studio field** — no top chrome, brand block, tagline,
+  or START row. Settings / Profiles are discreet corner glyphs.
   Inner pages restore HOME / SESSION / NETWORK / TOOLS / FILES /
   HARDWARE / MODS / PROFILES / SETTINGS.
-- Home hero is an **original procedural tilted OS galaxy**: deep void
-  with breathing room, dense **in-band** blue/violet nebula and a quiet
-  winding trail (not a full-bleed wallpaper). No observatory, Flux, or
-  Wallpaper Engine plates at runtime. All stars move a little
-  (shear / differential rotation / parallax / filament drift);
-  node clusters stay locked on the bar and read larger than a razor
-  edge-on. Focused node lifts like a selected star; only that node
-  shows a large screen-aligned label. Opening a list zooms that
-  system's sun to the right; titles-only Diavlo rows sit on the left
-  over translucent black. SET opens Options the same way. Escape
-  zooms back.
-- **Left/Right** shift nodes. **Up** opens that node’s list from the
-  bottom; **Down** opens it from the top. The galaxy stays visible.
-- Interface motion On: differential rotation, parallax, silky list ease.
-  Off (or a live session): freeze drift / heavy postFX; lists still open.
+- Home hero is a **row of narrow vertical tabs** on Obsidian `#05070A`:
+  dark metal blades, cyan-teal `#00F0FF` tips, soft drop shadows on a
+  dark floor. No galaxy, nebula, or sun. Only the focused tab shows a
+  Diavlo name above. Opening a list keeps that field; titles-only
+  Diavlo rows sit on the left over translucent black. SET opens Options.
+  Escape returns.
+- **Left/Right** move tabs. **Up** opens that tab’s list from the
+  bottom; **Down** opens it from the top. The black field stays visible
+  so Rainmeter overlays still read.
+- Interface motion On: quiet tab lift and silky list ease.
+  Off (or a live session): instant focus; lists still open.
 - Inner-page chrome keeps obsidian `#05070A` and cyan pulse `#00F0FF`.

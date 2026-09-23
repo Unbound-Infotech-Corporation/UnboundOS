@@ -146,7 +146,7 @@ public sealed class NavigationCubeTests
         Assert.Contains("Explorer stays", files.Hint, StringComparison.Ordinal);
         Assert.DoesNotContain("Night City", files.Hint, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", CubeCatalog.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("galaxy", CubeCatalog.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Home", CubeCatalog.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("this list from the bottom", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("this list from the top", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("corner glyphs", CubeCatalog.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
@@ -326,16 +326,32 @@ public sealed class HomeGalaxyTests
     }
 
     [Fact]
-    public void Announce_NamesTheGalaxyAndOverlay()
+    public void Announce_NamesTheHomeAndOverlay()
     {
-        Assert.Contains("Games node", HomeGalaxy.Announce(CubeDestination.Session), StringComparison.Ordinal);
+        Assert.Contains("Games tab", HomeGalaxy.Announce(CubeDestination.Session), StringComparison.Ordinal);
         Assert.Contains("from the bottom", HomeGalaxy.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("from the top", HomeGalaxy.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("corner glyphs", HomeGalaxy.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Options tab", HomeGalaxy.AnnounceOptions(), StringComparison.Ordinal);
         var overlay = HomeGalaxy.AnnounceOverlay(new CubeBrowseItem("570", "Dota 2", "STEAM", "game", "D"), 0, 3);
         Assert.Contains("Dota 2", overlay, StringComparison.Ordinal);
         Assert.Contains("1 of 3", overlay, StringComparison.Ordinal);
-        Assert.Contains("returns to the galaxy", overlay, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("returns to Home", overlay, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", overlay, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void Tabs_IncludeOptionsBetweenGamesAndTools()
+    {
+        Assert.Equal(7, HomeGalaxy.TabIds.Count);
+        Assert.Equal("Settings", HomeGalaxy.TabIds[HomeGalaxy.OptionsTabIndex]);
+        Assert.Equal(3, HomeGalaxy.TabIndexOf(CubeDestination.Session));
+        Assert.Equal(4, HomeGalaxy.TabIndexOf(CubeDestination.Session, optionsTab: true));
+        Assert.Equal("Settings", HomeGalaxy.ShiftTab(CubeDestination.Session, false, 1).Id);
+        Assert.Null(HomeGalaxy.ShiftTab(CubeDestination.Session, false, 1).Destination);
+        Assert.Equal(CubeDestination.Tools, HomeGalaxy.ShiftTab(CubeDestination.Session, true, 1).Destination);
+        Assert.Equal(CubeDestination.Session, HomeGalaxy.ShiftTab(CubeDestination.Session, true, -1).Destination);
+        Assert.Equal(CubeDestination.Mods, HomeGalaxy.ShiftTab(CubeDestination.Hardware, false, -1).Destination);
     }
 
     [Fact]

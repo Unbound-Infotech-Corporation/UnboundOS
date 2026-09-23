@@ -11,23 +11,19 @@ This document is the full spec. The current UnboundOS PR ships a **first
 slice** only (called out per section). Image/OOBE owners pick up the rest.
 
 Brand stays Unbound Infotech first: obsidian, cyan pulse, cobalt, spare
-circuit amber on **inner pages**. Home is a separate bay — an original
-procedural tilted horizontal galaxy with a JWST-class deep field
-and living stars (look-dev plate / observatory photos are
-inspiration only, never the runtime wallpaper). Restrained professional
+circuit amber on **inner pages**. Home is a separate bay — a black
+studio field with vertical teal-tipped tabs. Restrained professional
 buttons. No ads. No silent overclock. Treat **x64** as the WinUI
 platform.
 
-Home navigation is a **linear galaxy** (WebView2 hosting packaged
-Three.js, not Unreal in-process). Nodes along the disk: Games (core),
-Tools, Mods, Network, Files, Hardware. Left/right shift nodes. **Up**
-opens that node’s list from the bottom; **Down** opens it from the top.
-The list is titles-only on the left; a dark glass panel covers only
-the right half of the galaxy. Quiet **movable** light-grey widgets
-(clock / CPU / GPU / package / honest CPU load) sit over the galaxy
-on the right by default so they rest on that glass rather than the
-titles; positions persist. Architecture:
-[docs/cube-nav.md](cube-nav.md).
+Home navigation is a **tab bar** (WebView2 hosting packaged Three.js,
+not Unreal in-process). Tabs: Hardware, Files, Network, Games, Options,
+Tools, Mods. Left/right move focus. **Up** opens that tab’s list from
+the bottom; **Down** opens it from the top. The list is titles-only on
+the left over translucent black. Quiet **movable** light-grey widgets
+(clock / CPU / GPU / package / honest CPU load) sit on the right by
+default; positions persist. Architecture:
+[docs/home-nav.md](home-nav.md).
 
 ## 1. OOBE / initial setup last step
 

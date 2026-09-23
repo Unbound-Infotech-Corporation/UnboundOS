@@ -1,7 +1,7 @@
 namespace UnboundOS.Core.Home;
 
 /// <summary>
-/// First-party Home utility widgets. Quiet chrome over the galaxy —
+/// First-party Home utility widgets. Quiet chrome over the black field —
 /// not a Rainmeter clone. Addons append extras via
 /// <see cref="UnboundOS.Core.Abstractions.IHomeWidgetSource"/>.
 /// </summary>
@@ -41,7 +41,7 @@ public static class HomeWidgets
     public const string Package = "package";
     public const string Load = "load";
 
-    /// <summary>Left-side titles list. Zoomed category sun occupies the right; defaults sit there.</summary>
+    /// <summary>Left-side titles list. Tabs sit on the bottom; defaults stay on the right.</summary>
     public const double ListKeepoutX = 0.48;
 
     public static IReadOnlyList<HomeWidgetDefinition> BuiltIn { get; } =

@@ -1,7 +1,8 @@
 # Desktop overlay / skins addon (optional)
 
-UnboundOS is a **session shell**, not a desktop replacement. The living
-galaxy Home stays the hero. Overlay widgets sit **over** that galaxy.
+UnboundOS is a **session shell**, not a desktop replacement. Home is a
+**black full-bleed studio field** with vertical tabs. Overlay widgets
+sit **over** that empty field.
 
 **Rainmeter** is the customizable overlay path (clock, CPU/GPU temps,
 user-picked skins, music visualizers). First-party light-grey Home
@@ -11,6 +12,9 @@ This host is **on by default** (`OverlayHostOptions.Enabled = true`).
 The Overlay nav item is the Rainmeter surface: Open Rainmeter, Get Phenix.
 Set `Enabled = false` to hide it. The app window starts/stops the host;
 `SessionEngine` never does.
+
+Home must stay a transparent / black WebView shell so skins remain
+visible. Do not paint opaque WinUI chrome across Home.
 
 ## Contract
 
@@ -67,7 +71,7 @@ clearly allows redistribution. None are bundled today.
 
 ## Starter Rainmeter skin
 
-Recommended / default **theme** over galaxy Home is **Phenix**.
+Recommended / default **theme** over Home is **Phenix**.
 Recommended **clock** skin is **Minimalistic Clock**:
 
 - Rainmeter (host): [https://www.rainmeter.net/](https://www.rainmeter.net/)
@@ -117,4 +121,4 @@ enter/exit internals.
 - Do not rewrite `rainmeter.ini` or skin configs.
 - Do not scrape Steam credentials or edit Workshop payload folders.
 - Do not lower monitor resolution from overlay tools.
-- Do not replace the galaxy Home with skins.
+- Do not replace Home with skins. Skins sit **over** the black tab field.

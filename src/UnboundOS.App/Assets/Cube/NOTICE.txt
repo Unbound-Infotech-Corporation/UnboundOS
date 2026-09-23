@@ -15,16 +15,9 @@ all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
-Home look-dev plate
--------------------
-`home-plate.png` is an owner-supplied look-dev reference (edge-on linear
-galaxy). Hugging Face Flux schnell stills, JWST-class photographs, and
-a live Wallpaper Engine desktop may inform volume, nebula color, and
-the winding energy trail offline.
-None of those plates or workshop files are loaded or shipped.
-Runtime Home is an original procedural living galaxy (tilted
-canvas-painted disk + in-band nebula + moving starfield). Zoomed
-category suns are original shaders (per-category color, granulation,
-limb darkening, coronal swirl, occasional limb flares). NASA SDO
-AIA/HMI stills were look-dev only and are not loaded or shipped.
+Home look-dev
+-------------
+`home-plate.png` may remain in the tree as unused look-dev. Runtime Home
+is an original studio tab bar on Obsidian `#05070A` (vertical blades,
+cyan-teal tips, soft shadows). No galaxy, nebula, or sun is drawn.
 No NASA logo is drawn.

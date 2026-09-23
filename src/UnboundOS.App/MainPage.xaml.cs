@@ -67,7 +67,7 @@ public sealed partial class MainPage : Page
     private void OnHomeSettingsClick(object sender, RoutedEventArgs e)
     {
         ViewModel.SelectedNav = "Home";
-        ViewModel.StatusLine = "Options. Sun on the right. Escape returns to the galaxy.";
+        ViewModel.StatusLine = "Options. Escape returns to Home.";
         ApplyNavState("Home");
         ApplyHomeChrome(home: true);
         HomeCube.OpenOptionsList();

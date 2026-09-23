@@ -6,21 +6,21 @@ A public Windows 11 **console-style shell** by **[Unbound Infotech Corporation](
 
 UnboundOS does **not** replace Windows. It applies a focused gaming / streaming posture — snapshot NICs, clear denylist junk, protect games and anticheat — then restores the desktop when you exit.
 
-The shell is a living-room home: on Home the **tilted horizontal galaxy** is the only focal point (original procedural living Three.js galaxy in WebView2 — not a static photo). **Left/Right** shift the nodes along the disk. Only the focused node shows a large screen-aligned label. **Up** opens that node’s list from the bottom; **Down** opens it from the top — the camera zooms that system’s sun to the right, Diavlo titles sit on the left over translucent black. Games uses the Steam library when present. **SET** zooms to Options over the galaxy (not a flat window first). Profiles stays a discreet corner glyph. A quiet Home HUD can show local time and CPU/GPU temps; hide them in Settings. The old Settings tile that showed the letter “I” is gone.
+The shell is a living-room home: on Home a **black studio field** holds a row of **narrow vertical tabs** (WebView2 + packaged Three.js — not a cube, not a galaxy). **Left/Right** move focus. The focused tab lifts slightly and shows its **Diavlo** name above. **Up** opens that tab’s list from the bottom; **Down** opens it from the top — titles sit on the left over translucent black. Games uses the Steam library when present. **SET** opens Options on the same field (not a flat window first). Profiles stays a discreet corner glyph. A quiet Home HUD can show local time and CPU/GPU temps; hide them in Settings. The old Settings tile that showed the letter “I” is gone.
 
 OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
 
-**Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (black Home, linear galaxy, quiet HUD). Company cyan `#00F0FF` stays on inner pages. See [docs/screenshots/README.md](docs/screenshots/README.md).
+**Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (black Home, vertical tabs, quiet HUD). Company cyan `#00F0FF` is the tab tip and inner-page token. See [docs/screenshots/README.md](docs/screenshots/README.md).
 
 ## What it is
 
-A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic stay in the existing engines. **Rainmeter** is the overlay-widget path over galaxy Home (discover / Open / protect — Rainmeter keeps its configs). First-party Home widgets stay as the fallback. See [docs/overlay-addon.md](docs/overlay-addon.md). The Overlay page Opens Rainmeter and Gets Phenix.
+A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic stay in the existing engines. **Rainmeter** is the overlay-widget path over the black Home field (discover / Open / protect — Rainmeter keeps its configs). First-party Home widgets stay as the fallback. See [docs/overlay-addon.md](docs/overlay-addon.md). The Overlay page Opens Rainmeter and Gets Phenix.
 
 ## What it does
 
 | Module | Purpose |
 |--------|---------|
-| **Home galaxy** | Deep-field Home: original procedural tilted OS galaxy with dramatic in-band nebula (not a full-bleed wallpaper plate). Category sites are quiet star systems (sun + orbiting planets), not UI hot-dots. Left/right shift systems. Only the focused system is labeled. Up/Down zoom a living shader photosphere to the right (each category a different star: multi-scale granulation, filamentary corona, occasional flares) with Diavlo titles on the left over translucent black. SET opens Options the same way. Games launches via `steam://rungameid`. Optional Home HUD. See [docs/cube-nav.md](docs/cube-nav.md) |
+| **Home** | Obsidian field with vertical studio tabs (teal-tipped blades, soft drop shadows). Left/right move tabs. Only the focused tab is labeled in Diavlo. Up/Down open that list over translucent black — no sun zoom. SET opens Options. Games launches via `steam://rungameid`. Optional Home HUD. Rainmeter sits over the empty field. See [docs/home-nav.md](docs/home-nav.md) |
 | **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
 | **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam, Rainmeter, MusicBee, visualizer pack, Store, Xbox) plus utilities (Notepad++, 7-Zip). Launch, Windows URI, or official Get. Recommended Rainmeter theme is [Phenix](https://visualskins.com/skin/phenix); clock skin is [Minimalistic Clock](https://visualskins.com/skin/minimalistic-clock) (link only — no .rmskin in tree). Ultrawide crop recipe lives on the OBS tile |
@@ -150,10 +150,10 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 
 ## Design notes
 
-- Console-style shell: **Home galaxy** (WebView2 + packaged Three.js, not Unreal/Unity in-process) plus inner-page tile rows. Home hides top chrome so the galaxy is the only focal point
-- Galaxy motion: differential rotation around the disk, parallax layers, and silky category lists on Up/Down. Instant when Settings, Windows animations, or a live session say off
-- Keyboard: Left/Right shift nodes, Up/Down open that list from bottom/top, Enter opens, Escape returns. Mouse: drag / flick / click a node. Gamepad D-pad / A is mapped in Core for a later stub
-- Atmosphere: Home is an original procedural edge-on galaxy on a filmic black field. Inner pages keep Unbound cyan / cobalt chrome. Circuit amber remains a seasoning on tiles
+- Console-style shell: **Home tabs** (WebView2 + packaged Three.js, not Unreal/Unity in-process) plus inner-page tile rows. Home hides top chrome so the black field and tabs are the only focal point
+- Home motion: quiet tab lift and silky category lists on Up/Down. Instant when Settings, Windows animations, or a live session say off
+- Keyboard: Left/Right move tabs, Up/Down open that list from bottom/top, Enter opens, Escape returns. Mouse: drag / flick / click a tab. Gamepad D-pad / A is mapped in Core for a later stub
+- Atmosphere: Home is an Obsidian studio field. Inner pages keep Unbound cyan / cobalt chrome. Circuit amber remains a seasoning on tiles
 - Settings → Interface motion Off (or Windows animations off, or a live session) snaps back to instant states
 - Preferences live at `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\settings.json`
 - CommunityToolkit.Mvvm + Microsoft.Extensions.DependencyInjection

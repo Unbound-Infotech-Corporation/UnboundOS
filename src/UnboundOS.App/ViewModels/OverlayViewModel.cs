@@ -8,7 +8,7 @@ using UnboundOS.Infrastructure.Tools;
 namespace UnboundOS.App.ViewModels;
 
 /// <summary>
-/// Rainmeter overlay surface over galaxy Home. Opens the real host
+/// Rainmeter overlay surface over Home. Opens the real host
 /// and Gets Phenix. Does not start, stop, or own session/network/process behavior.
 /// </summary>
 public partial class OverlayViewModel : ObservableObject
@@ -29,7 +29,7 @@ public partial class OverlayViewModel : ObservableObject
         Widgets = host.Widgets;
         Headline = host.IsEnabled ? "Rainmeter overlay" : "Rainmeter overlay is off";
         Detail = host.IsEnabled
-            ? "Rainmeter skins sit over galaxy Home. Open launches Rainmeter if installed. Get Phenix for the recommended starter theme. UnboundOS does not rewrite rainmeter.ini. Built-in Home widgets stay as the fallback."
+            ? "Rainmeter skins sit over Home. Open launches Rainmeter if installed. Get Phenix for the recommended starter theme. UnboundOS does not rewrite rainmeter.ini. Built-in Home widgets stay as the fallback."
             : "Rainmeter overlay is disabled (OverlayHostOptions.Enabled = false). Built-in Home widgets remain the fallback.";
         Status = host.IsEnabled
             ? (CanOpenRainmeter
@@ -86,7 +86,7 @@ public partial class OverlayViewModel : ObservableObject
         new(
             DesktopToolIds.Rainmeter,
             "Rainmeter",
-            "Desktop skins over the galaxy.",
+            "Desktop skins over Home.",
             false,
             null,
             ["Rainmeter"],

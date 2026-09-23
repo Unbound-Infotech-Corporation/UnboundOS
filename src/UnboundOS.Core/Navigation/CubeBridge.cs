@@ -167,7 +167,8 @@ public static class CubeBridge
         float visualYaw,
         float visualPitch,
         bool motion,
-        bool burst)
+        bool burst,
+        bool optionsTab = false)
     {
         var info = CubeCatalog.Info(pose.Front);
         var accent = CubeAtmosphere.Palette(pose.Front);
@@ -177,19 +178,19 @@ public static class CubeBridge
             Pitch = visualPitch,
             RestYaw = CubeAtmosphere.RestYawDegrees,
             RestPitch = CubeAtmosphere.RestPitchDegrees,
-            Front = pose.Front.ToString(),
+            Front = optionsTab ? "Settings" : pose.Front.ToString(),
             Motion = motion,
             Burst = burst,
             Accent = accent.AccentHex,
             Seam = accent.SeamHex,
             Core = accent.CoreHex,
             Plate = accent.PlateHex,
-            Title = info.Title,
-            Kicker = info.Kicker,
-            Monogram = info.Monogram,
+            Title = optionsTab ? "Options" : info.Title,
+            Kicker = optionsTab ? "SET" : info.Kicker,
+            Monogram = optionsTab ? "O" : info.Monogram,
             Hint = info.Hint,
             Mode = info.OpenKind.ToString().ToLowerInvariant(),
-            Node = HomeGalaxy.IndexOf(pose.Front),
+            Node = optionsTab ? -1 : HomeGalaxy.IndexOf(pose.Front),
             Overlay = "none",
             Faces = CatalogPayload()
         };
@@ -225,7 +226,7 @@ public static class CubeBridge
     }
 
     /// <summary>
-    /// Open the Options list over a dedicated sun. Node -1 is not on the L/R cycle.
+    /// Open the Options list over Home. Node -1 selects the Options tab.
     /// </summary>
     public static CubeHostCommand OpenOptions(
         bool motion,
