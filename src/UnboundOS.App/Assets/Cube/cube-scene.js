@@ -118,8 +118,11 @@
   const barMap = spriteTex(512, paintBarGlow);
   const diskMap = paintDiskTexture(2560, 1024);
   const dustMap = paintDustSheet(1024, 256);
-  const nebulaMap = paintNebulaVolume(1600, 640);
+  const nebulaMap = paintNebulaVolume(1600, 640, 0xb1, "blue");
+  const nebulaWarm = paintNebulaVolume(1400, 560, 0xc7, "rose");
   const trailMap = paintEnergyTrail(2048, 512);
+  const voidMap = spriteTex(256, paintVoidCore);
+  const accretionMap = paintAccretionRing(512, 256);
   const spikeMap = spriteTex(256, paintSpikeStar);
   const filamentMaps = [
     paintFilamentSheet(640, 320, 0xc11, "indigo"),
@@ -143,12 +146,12 @@
   const deepField = buildColoredField(11000, 100, 1.42, 0xdef1, 0.72, 0.0000032);
   const diskRings = buildDiskRings();
   const shear = buildShear(1500);
-  const orbiters = buildOrbiters(180);
   const diskGlow = buildDiskGlow();
   const dustSheets = buildDustSheets();
   const filaments = buildFilaments();
   const spikes = buildSpikedStars(16);
   const nodes = buildNodes();
+  const blackHole = buildBlackHole();
   scene.add(farStars, midStars, nearStars, deepField);
   const vignette = buildVignette();
   scene.add(vignette);
@@ -311,7 +314,7 @@
     return finishSoftTexture(c, 48);
   }
 
-  function paintNebulaVolume(w, h) {
+  function paintNebulaVolume(w, h, seed, kind) {
     const c = document.createElement("canvas");
     c.width = w;
     c.height = h;
@@ -320,25 +323,34 @@
     const d = img.data;
     const cx = w * 0.5;
     const cy = h * 0.5;
+    const rose = kind === "rose";
+    const s0 = seed || 0xb1;
     for (let y = 0; y < h; y++) {
       const ny = (y - cy) / h;
-      const band = Math.exp(-ny * ny * 28);
+      const band = Math.exp(-ny * ny * 26);
       if (band < 0.03) continue;
       for (let x = 0; x < w; x++) {
         const nx = (x - cx) / w;
         const edgeX = Math.exp(-nx * nx * 7.2);
-        const n1 = valueNoise(nx * 3.6 + 0.4, ny * 7.2, 0xb1);
-        const n2 = valueNoise(nx * 8.2 - 1.1, ny * 14, 0xb2);
-        const n3 = valueNoise(nx * 16, ny * 22, 0xb3);
-        const cloud = n1 * 0.55 + n2 * 0.32 + n3 * 0.13;
-        const a = band * edgeX * cloud * 0.7;
+        const n1 = valueNoise(nx * 3.4 + 0.4, ny * 6.8, s0);
+        const n2 = valueNoise(nx * 8.0 - 1.1, ny * 13, s0 + 17);
+        const n3 = valueNoise(nx * 15, ny * 21, s0 + 31);
+        const hue = valueNoise(nx * 2.1 + 0.6, ny * 3.4, s0 + 53);
+        const cloud = n1 * 0.52 + n2 * 0.33 + n3 * 0.15;
+        const a = band * edgeX * cloud * 0.74;
         if (a < 0.03) continue;
         const t = Math.min(1, cloud * 1.2);
         const i = (y * w + x) * 4;
-        d[i] = (32 + t * 100) | 0;
-        d[i + 1] = (26 + t * 78) | 0;
-        d[i + 2] = (80 + t * 120) | 0;
-        d[i + 3] = (a * 220) | 0;
+        if (rose) {
+          d[i] = (70 + t * 130 + hue * 50) | 0;
+          d[i + 1] = (22 + t * 48) | 0;
+          d[i + 2] = (68 + t * 90 - hue * 20) | 0;
+        } else {
+          d[i] = (28 + t * 90 + hue * 80) | 0;
+          d[i + 1] = (24 + t * 72 + (1 - hue) * 30) | 0;
+          d[i + 2] = (86 + t * 130 - hue * 36) | 0;
+        }
+        d[i + 3] = (a * 225) | 0;
       }
     }
     ctx.putImageData(img, 0, 0);
@@ -401,6 +413,71 @@
     return finishSoftTexture(c, 56);
   }
 
+  function paintVoidCore(ctx, s) {
+    ctx.clearRect(0, 0, s, s);
+    const c = s / 2;
+    const g = ctx.createRadialGradient(c, c, 0, c, c, s * 0.42);
+    g.addColorStop(0, "rgba(0,0,0,0.88)");
+    g.addColorStop(0.42, "rgba(0,0,2,0.5)");
+    g.addColorStop(0.72, "rgba(8,6,14,0.16)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, s, s);
+  }
+
+  function paintAccretionRing(w, h) {
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, w, h);
+    ctx.globalCompositeOperation = "lighter";
+    const cx = w * 0.5;
+    const cy = h * 0.5;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(1, 0.28);
+    const ring = ctx.createRadialGradient(0, 0, w * 0.18, 0, 0, w * 0.38);
+    ring.addColorStop(0, "rgba(0,0,0,0)");
+    ring.addColorStop(0.62, "rgba(0,0,0,0)");
+    ring.addColorStop(0.78, "rgba(196, 120, 82, 0.16)");
+    ring.addColorStop(0.88, "rgba(255, 196, 150, 0.1)");
+    ring.addColorStop(0.96, "rgba(80, 50, 90, 0.04)");
+    ring.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = ring;
+    ctx.beginPath();
+    ctx.arc(0, 0, w * 0.38, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    return finishSoftTexture(c, 36);
+  }
+
+  function buildBlackHole() {
+    const group = new THREE.Group();
+    group.position.set(-11.4, 3.7, -36);
+    const shadow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: voidMap,
+      color: 0x04040a,
+      transparent: true,
+      premultipliedAlpha: true,
+      opacity: 0.34,
+      depthWrite: false,
+      blending: THREE.NormalBlending
+    }));
+    shadow.scale.set(2.35, 1.95, 1);
+    group.add(shadow);
+    const ring = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.15, 0.62),
+      softMat(accretionMap, { opacity: 0.11, blending: THREE.AdditiveBlending })
+    );
+    ring.rotation.x = 1.05;
+    ring.rotation.z = 0.38;
+    group.add(ring);
+    group.userData = { shadow, ring };
+    scene.add(group);
+    return group;
+  }
+
   function buildDiskGlow() {
     const group = new THREE.Group();
     const plate = new THREE.Mesh(
@@ -416,6 +493,14 @@
     );
     nebula.position.z = -0.18;
     group.add(nebula);
+
+    const nebula2 = new THREE.Mesh(
+      new THREE.PlaneGeometry(11.4, 2.85),
+      softMat(nebulaWarm, { opacity: 0.4 })
+    );
+    nebula2.position.set(1.15, -0.14, -0.3);
+    nebula2.rotation.z = 0.07;
+    group.add(nebula2);
 
     const trail = new THREE.Mesh(
       new THREE.PlaneGeometry(12.6, 2.4),
@@ -440,7 +525,7 @@
     wings.position.z = -0.22;
     group.add(wings);
 
-    group.userData = { plate, nebula, trail, bar, nucleus, wings };
+    group.userData = { plate, nebula, nebula2, trail, bar, nucleus, wings };
     rig.add(group);
     return group;
   }
@@ -654,28 +739,16 @@
     return pts;
   }
 
-  function buildOrbiters(count) {
-    const rng = mulberry(0x0b17);
-    const list = [];
-    for (let i = 0; i < count; i++) {
-      const node = i % NODE_IDS.length;
-      const sprite = new THREE.Sprite(softSprite(starMap, {
-        color: rng() > 0.55 ? 0xc9d8ff : 0xfff1d0,
-        opacity: 0.5
-      }));
-      sprite.scale.setScalar(0.04 + rng() * 0.036);
-      sprite.userData = {
-        node,
-        radius: 0.1 + rng() * 0.4,
-        phase: rng() * Math.PI * 2,
-        omega: (0.1 + rng() * 0.2) * (rng() > 0.5 ? 1 : -1),
-        tilt: (rng() - 0.5) * 0.32,
-        baseOpacity: 0.42 + rng() * 0.18
-      };
-      rig.add(sprite);
-      list.push(sprite);
+  function poseSystem(n, dt) {
+    for (const p of n.planets) {
+      const u = p.userData;
+      if (dt) u.phase += u.omega * dt;
+      p.position.set(
+        Math.cos(u.phase) * u.radius,
+        Math.sin(u.phase) * u.radius * u.tilt,
+        Math.sin(u.phase) * u.radius * 0.42
+      );
     }
-    return list;
   }
 
   function buildColoredField(count, spread, size, seed, flatten, spin) {
@@ -759,32 +832,58 @@
 
   function buildNodes() {
     const list = [];
+    const planetPal = [0xc4b49a, 0x8a98b4, 0xb07e68, 0xd0c4ae, 0x6a768c];
     for (let i = 0; i < NODE_IDS.length; i++) {
       const group = new THREE.Group();
       group.position.set(nodeX(i), 0.04, 0.12);
-      const info = faceInfo(NODE_IDS[i]);
-      const coreCol = new THREE.Color(info.core || "#FFE9B0");
-      const bloom = new THREE.Sprite(softSprite(glowMap, {
-        color: coreCol,
-        opacity: i === 0 ? 0.26 : 0.14
+      const rng = mulberry(0x5100 + i * 97);
+      const core = i === 0;
+      const sun = new THREE.Sprite(softSprite(starMap, {
+        color: core ? 0xfff0d4 : 0xeee6dc,
+        opacity: 0.36
       }));
-      bloom.scale.set(i === 0 ? 3.35 : 2.2, i === 0 ? 1.28 : 0.9, 1);
-      bloom.userData.base = bloom.scale.clone();
-      group.add(bloom);
-      const core = new THREE.Sprite(softSprite(starMap, {
-        color: 0xffffff,
-        opacity: i === 0 ? 0.58 : 0.4
+      const sunS = core ? 0.14 : 0.108;
+      sun.scale.set(sunS, sunS, 1);
+      group.add(sun);
+      const corona = new THREE.Sprite(softSprite(glowMap, {
+        color: core ? 0xffe0b4 : 0xe4d6c8,
+        opacity: 0.06
       }));
-      core.scale.set(i === 0 ? 0.3 : 0.2, i === 0 ? 0.3 : 0.2, 1);
-      group.add(core);
-      const dust = new THREE.Sprite(softSprite(glowMap, {
-        color: 0xc8b8e0,
-        opacity: 0.05
-      }));
-      dust.scale.set(i === 0 ? 2.15 : 1.35, i === 0 ? 0.58 : 0.42, 1);
-      group.add(dust);
+      const corS = core ? 0.46 : 0.36;
+      corona.scale.set(corS, corS * 0.82, 1);
+      corona.userData.base = corona.scale.clone();
+      group.add(corona);
+      const planets = [];
+      const count = 3 + (i % 3);
+      for (let p = 0; p < count; p++) {
+        const spr = new THREE.Sprite(softSprite(starMap, {
+          color: planetPal[p % planetPal.length],
+          opacity: 0.26
+        }));
+        const ps = 0.015 + rng() * 0.013;
+        spr.scale.set(ps, ps, 1);
+        spr.userData = {
+          radius: 0.082 + p * 0.04 + rng() * 0.01,
+          phase: rng() * Math.PI * 2,
+          omega: (0.2 / (0.65 + p * 0.55)) * (rng() > 0.4 ? 1 : -1),
+          tilt: 0.26 + rng() * 0.2,
+          baseOpacity: 0.2 + rng() * 0.1
+        };
+        group.add(spr);
+        planets.push(spr);
+      }
+      for (let k = 0; k < 7; k++) {
+        const spr = new THREE.Sprite(softSprite(starMap, {
+          color: rng() > 0.5 ? 0xd4dcec : 0xf0e8d8,
+          opacity: 0.14 + rng() * 0.1
+        }));
+        const cs = 0.011 + rng() * 0.01;
+        spr.scale.set(cs, cs, 1);
+        spr.position.set((rng() - 0.5) * 0.2, (rng() - 0.5) * 0.07, (rng() - 0.5) * 0.09);
+        group.add(spr);
+      }
       const hit = new THREE.Mesh(
-        new THREE.SphereGeometry(0.52, 10, 8),
+        new THREE.SphereGeometry(0.48, 10, 8),
         new THREE.MeshBasicMaterial({ visible: false })
       );
       hit.userData.face = NODE_IDS[i];
@@ -792,7 +891,9 @@
       group.add(hit);
       group.userData.node = i;
       rig.add(group);
-      list.push({ group, bloom, core, dust, hit });
+      const sys = { group, sun, corona, planets, hit };
+      poseSystem(sys, 0);
+      list.push(sys);
     }
     return list;
   }
@@ -860,17 +961,15 @@
     if (diskGlow.userData.nebula) {
       diskGlow.userData.nebula.position.x = Math.sin(now * 0.00008) * 0.18;
     }
+    if (diskGlow.userData.nebula2) {
+      diskGlow.userData.nebula2.position.x = 1.15 + Math.sin(now * 0.00007) * 0.14;
+    }
 
-    for (const s of orbiters) {
-      const u = s.userData;
-      u.phase += u.omega * dt;
-      const nx = nodeX(u.node);
-      const pull = 0.08;
-      s.position.x += (nx + Math.cos(u.phase) * u.radius - s.position.x) * pull;
-      s.position.y = Math.sin(u.phase) * u.radius * 0.22 * Math.cos(u.tilt);
-      s.position.z = Math.sin(u.phase * 0.7) * u.radius * 0.12;
-      const on = u.node === state.node;
-      s.material.opacity = u.baseOpacity * (on ? 0.85 : 0.55);
+    for (const n of nodes) poseSystem(n, dt);
+
+    if (blackHole && blackHole.userData.ring) {
+      blackHole.userData.ring.material.opacity = 0.09 + Math.sin(now * 0.00014) * 0.02;
+      blackHole.rotation.z = Math.sin(now * 0.00005) * 0.04;
     }
 
     for (const sheet of filaments) {
@@ -1134,11 +1233,14 @@
     const breathe = state.motion ? 0.96 + 0.04 * Math.sin(now * 0.0007) : 1;
     for (const n of nodes) {
       const on = n.group.userData.node === state.node;
-      const base = n.bloom.userData.base;
-      n.bloom.material.opacity = (on ? 0.3 : 0.11) * breathe;
-      n.core.material.opacity = on ? 0.62 : 0.28;
-      n.dust.material.opacity = on ? 0.11 : 0.035;
-      n.bloom.scale.set(base.x * (on ? 1.08 : 1), base.y * (on ? 1.06 : 1), 1);
+      const base = n.corona.userData.base;
+      n.sun.material.opacity = (on ? 0.52 : 0.3) * breathe;
+      n.corona.material.opacity = (on ? 0.14 : 0.055) * breathe;
+      n.corona.scale.set(base.x * (on ? 1.12 : 1), base.y * (on ? 1.08 : 1), 1);
+      for (const p of n.planets) {
+        p.material.opacity = p.userData.baseOpacity * (on ? 1.15 : 0.85);
+      }
+      if (!state.motion) poseSystem(n, 0);
     }
     syncNodeLabel();
     vignette.position.copy(camera.position);

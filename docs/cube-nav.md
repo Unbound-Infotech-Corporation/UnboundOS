@@ -7,17 +7,17 @@ camera so nodes read larger, still clearly a nav axis. A JWST-class
 deep field (tiny pinpricks, copper/gold/lavender filaments, spiked
 foreground stars) fills the frame behind it and must never compete
 with node readability. Observatory photos are look-dev only and are
-**not** loaded at runtime. Bright clusters along the disk are the
-menu nodes. The WinUI 3 shell stays the product. Category lists ease
+**not** loaded at runtime. Quiet star systems along the disk are the
+menu sites. The WinUI 3 shell stays the product. Category lists ease
 in over the living galaxy so the field stays visible.
 
 ## Art direction
 
 **Procedural living galaxy.** Runtime Home is handcrafted in Three.js:
-a restrained tilted OS band with **dense in-band nebula** (deep
-blues / violets, thicker dust, a quiet winding energy trail) plus a
+a restrained tilted OS band with **dramatic in-band nebula** (deep
+blues / violets / rose dust, a quiet winding energy trail) plus a
 starfield that leaves **black breathing room** above and below so
-nodes and HUD stay clean. This is not a full-bleed Wallpaper Engine
+systems and HUD stay clean. This is not a full-bleed Wallpaper Engine
 fill. Camera sits back (telephoto) with a slight disk pitch/roll.
 **Every star moves a little** — differential rotation, orbital shear,
 and slow nebula drift. Motion-off freezes that drift. Never a locked
@@ -30,12 +30,15 @@ files are loaded or shipped.** **No NASA or observatory credit is
 claimed**; do not invent one.
 
 Games sits on the bright core. Tools and Mods lock to the right-hand
-clusters; Network, Files, and Hardware lock to the left-hand arm.
-Nodes stay on the horizontal. Focused node: a quiet star-select
-(soft core lift, slight local dust, no neon rings). **Only the
-focused node** shows a label — large, high-contrast, screen-aligned
-type that does not follow the disk tilt. Other nodes stay unlabeled.
-Company cyan (`#00F0FF`) stays a brand token for **inner pages**.
+arm; Network, Files, and Hardware lock to the left. Category sites
+are **quiet star systems** — a small sun, orbiting planets, a modest
+local cluster — not bright UI hot-dots. At rest the bar still reads
+as one galaxy. Focus only brightens that system gently. **Only the
+focused system** shows a label — large, high-contrast, screen-aligned
+type that does not follow the disk tilt. Other systems stay unlabeled.
+A **very faint black-hole suggestion** sits far in the upper-left
+void (soft silhouette + dim accretion, not a cartoon). Company cyan
+(`#00F0FF`) stays a brand token for **inner pages**.
 
 Opening a category (Games, Tools, …) brings up a **right-half** dark
 glass panel over the living galaxy — soft edge, vanishing toward the
