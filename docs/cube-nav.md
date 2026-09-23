@@ -20,8 +20,9 @@ starfield that leaves **black breathing room** above and below so
 systems and HUD stay clean. This is not a full-bleed Wallpaper Engine
 fill. Camera sits back (telephoto) with a slight disk pitch/roll.
 **Every star moves a little** — differential rotation, orbital shear,
-and slow nebula drift. Motion-off freezes that drift. Never a locked
-plate. No bloom spam, no noisy particle spray.
+and slow nebula drift. Rare **shooting stars** and rarer **supernova**
+flashes can cross the field; Motion-off freezes drift and those
+events. Never a locked plate. No bloom spam, no noisy particle spray.
 
 `Assets/Cube/home-plate.png` may remain as a look-dev reference. Flux
 stills, JWST-class imagery, and a live Wallpaper Engine desktop may

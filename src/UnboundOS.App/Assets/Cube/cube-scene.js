@@ -123,6 +123,7 @@
   const trailMap = paintEnergyTrail(2048, 512);
   const voidMap = spriteTex(256, paintVoidCore);
   const accretionMap = paintAccretionRing(512, 256);
+  const meteorMap = paintMeteorStreak(256, 64);
   const spikeMap = spriteTex(256, paintSpikeStar);
   const filamentMaps = [
     paintFilamentSheet(640, 320, 0xc11, "indigo"),
@@ -152,6 +153,7 @@
   const spikes = buildSpikedStars(16);
   const nodes = buildNodes();
   const blackHole = buildBlackHole();
+  const skyFx = buildSkyFx();
   scene.add(farStars, midStars, nearStars, deepField);
   const vignette = buildVignette();
   scene.add(vignette);
@@ -476,6 +478,204 @@
     group.userData = { shadow, ring };
     scene.add(group);
     return group;
+  }
+
+  function paintMeteorStreak(w, h) {
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d");
+    const img = ctx.createImageData(w, h);
+    const d = img.data;
+    const cy = h * 0.5;
+    for (let y = 0; y < h; y++) {
+      const ny = Math.abs((y - cy) / (h * 0.4));
+      const fy = Math.max(0, 1 - ny * ny);
+      if (fy < 0.02) continue;
+      for (let x = 0; x < w; x++) {
+        const t = x / (w - 1);
+        const fx = Math.pow(t, 2.15);
+        const a = fy * fx * 0.82;
+        if (a < 0.012) continue;
+        const i = (y * w + x) * 4;
+        d[i] = 255;
+        d[i + 1] = 238 + t * 12;
+        d[i + 2] = 214 + (1 - t) * 28;
+        d[i + 3] = (a * 255) | 0;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    return finishSoftTexture(c, 8);
+  }
+
+  function skyGap(min, max, extra) {
+    let wait = min + Math.random() * (max - min);
+    if (Math.random() < 0.22) wait += extra + Math.random() * extra;
+    return wait;
+  }
+
+  function nearCategory(x) {
+    for (let i = 0; i < NODE_X.length; i++) {
+      if (Math.abs(x - NODE_X[i]) < 0.48) return true;
+    }
+    return false;
+  }
+
+  function buildSkyFx() {
+    const meteors = [];
+    const novas = [];
+    for (let i = 0; i < 2; i++) {
+      const streak = new THREE.Sprite(softSprite(meteorMap, { color: 0xf6f0e4, opacity: 0 }));
+      streak.visible = false;
+      streak.renderOrder = 3;
+      const head = new THREE.Sprite(softSprite(starMap, { color: 0xfff6e8, opacity: 0 }));
+      head.visible = false;
+      head.renderOrder = 4;
+      scene.add(streak, head);
+      meteors.push({ streak, head, live: false, t: 0, life: 1, from: new THREE.Vector3(), vel: new THREE.Vector3() });
+    }
+    for (let i = 0; i < 2; i++) {
+      const flash = new THREE.Sprite(softSprite(starMap, { color: 0xfff4dc, opacity: 0 }));
+      flash.visible = false;
+      flash.renderOrder = 4;
+      const shell = new THREE.Sprite(softSprite(glowMap, { color: 0xd8c8ff, opacity: 0 }));
+      shell.visible = false;
+      shell.renderOrder = 3;
+      scene.add(flash, shell);
+      novas.push({ flash, shell, live: false, t: 0, life: 1, hue: 0xd8c8ff });
+    }
+    const now = performance.now();
+    return {
+      meteors,
+      novas,
+      nextMeteor: now + (preview ? 900 : skyGap(10000, 32000, 22000)),
+      nextNova: now + (preview ? 2200 : skyGap(38000, 100000, 40000))
+    };
+  }
+
+  const _meteorNdcA = new THREE.Vector3();
+  const _meteorNdcB = new THREE.Vector3();
+
+  function spawnMeteor(now) {
+    const slot = skyFx.meteors.find((m) => !m.live);
+    if (!slot) return;
+    const fromLeft = Math.random() < 0.5;
+    const y = (Math.random() < 0.55 ? 1 : -1) * (1.6 + Math.random() * 3.4);
+    const z = -5 - Math.random() * 14;
+    const x0 = fromLeft ? -9 - Math.random() * 2 : 9 + Math.random() * 2;
+    const x1 = fromLeft ? 4 + Math.random() * 5 : -4 - Math.random() * 5;
+    const y1 = y + (Math.random() - 0.55) * 3.2;
+    slot.from.set(x0, y, z);
+    slot.vel.set(x1 - x0, y1 - y, (Math.random() - 0.5) * 1.4).normalize();
+    const speed = 7.5 + Math.random() * 6.5;
+    slot.vel.multiplyScalar(speed);
+    slot.life = 0.55 + Math.random() * 0.45;
+    slot.t = 0;
+    slot.live = true;
+    slot.len = 0.9 + Math.random() * 0.7;
+    slot.thick = 0.045 + Math.random() * 0.025;
+    slot.head.material.color.set(Math.random() > 0.35 ? 0xfff4dc : 0xdce6ff);
+    slot.streak.material.color.copy(slot.head.material.color);
+    slot.streak.visible = true;
+    slot.head.visible = true;
+    skyFx.nextMeteor = now + skyGap(11000, 34000, 26000);
+  }
+
+  function spawnNova(now) {
+    const slot = skyFx.novas.find((n) => !n.live);
+    if (!slot) return;
+    let x = (Math.random() - 0.5) * 14;
+    let guard = 0;
+    while (nearCategory(x) && guard < 8) {
+      x = (Math.random() - 0.5) * 14;
+      guard += 1;
+    }
+    const y = (Math.random() - 0.5) * 5.2;
+    const z = -10 - Math.random() * 16;
+    slot.flash.position.set(x, y, z);
+    slot.shell.position.set(x, y, z);
+    slot.life = 1.05 + Math.random() * 0.45;
+    slot.t = 0;
+    slot.live = true;
+    slot.peak = 0.55 + Math.random() * 0.35;
+    const cool = Math.random() > 0.45;
+    slot.flash.material.color.set(cool ? 0xe8f0ff : 0xfff1d4);
+    slot.shell.material.color.set(cool ? 0xb0c4f0 : 0xf0d2b0);
+    slot.flash.visible = true;
+    slot.shell.visible = true;
+    skyFx.nextNova = now + skyGap(42000, 110000, 50000);
+  }
+
+  function quietSkyFx() {
+    for (const m of skyFx.meteors) {
+      m.live = false;
+      m.streak.visible = false;
+      m.head.visible = false;
+      m.streak.material.opacity = 0;
+      m.head.material.opacity = 0;
+    }
+    for (const n of skyFx.novas) {
+      n.live = false;
+      n.flash.visible = false;
+      n.shell.visible = false;
+      n.flash.material.opacity = 0;
+      n.shell.material.opacity = 0;
+    }
+  }
+
+  function tickSkyFx(dt, now) {
+    if (!state.motion) {
+      quietSkyFx();
+      return;
+    }
+    if (now >= skyFx.nextMeteor) spawnMeteor(now);
+    if (now >= skyFx.nextNova) spawnNova(now);
+
+    for (const m of skyFx.meteors) {
+      if (!m.live) continue;
+      m.t += dt;
+      if (m.t >= m.life) {
+        m.live = false;
+        m.streak.visible = false;
+        m.head.visible = false;
+        continue;
+      }
+      const u = m.t / m.life;
+      const fade = u < 0.12 ? u / 0.12 : Math.pow(1 - (u - 0.12) / 0.88, 1.15);
+      m.from.addScaledVector(m.vel, dt);
+      m.head.position.copy(m.from);
+      m.streak.position.copy(m.from).addScaledVector(m.vel, -0.035);
+      const look = _meteorNdcA.copy(m.from);
+      const ahead = _meteorNdcB.copy(m.from).add(m.vel);
+      look.project(camera);
+      ahead.project(camera);
+      const ang = Math.atan2(ahead.y - look.y, ahead.x - look.x);
+      m.streak.material.rotation = ang;
+      m.head.material.rotation = ang;
+      const grow = 0.55 + u * 0.7;
+      m.streak.scale.set(m.len * grow, m.thick, 1);
+      m.head.scale.setScalar(0.055 + (1 - u) * 0.04);
+      m.streak.material.opacity = 0.42 * fade;
+      m.head.material.opacity = 0.7 * fade;
+    }
+
+    for (const n of skyFx.novas) {
+      if (!n.live) continue;
+      n.t += dt;
+      if (n.t >= n.life) {
+        n.live = false;
+        n.flash.visible = false;
+        n.shell.visible = false;
+        continue;
+      }
+      const u = n.t / n.life;
+      const flash = u < 0.08 ? u / 0.08 : Math.pow(1 - (u - 0.08) / 0.92, 1.6);
+      n.flash.scale.setScalar(0.08 + flash * 0.22 * n.peak);
+      n.flash.material.opacity = 0.85 * flash;
+      const shell = Math.pow(u, 0.62);
+      n.shell.scale.setScalar(0.2 + shell * 1.85 * n.peak);
+      n.shell.material.opacity = 0.22 * (1 - u) * (0.35 + flash);
+    }
   }
 
   function buildDiskGlow() {
@@ -967,6 +1167,8 @@
 
     for (const n of nodes) poseSystem(n, dt);
 
+    tickSkyFx(dt, now);
+
     if (blackHole && blackHole.userData.ring) {
       blackHole.userData.ring.material.opacity = 0.14 + Math.sin(now * 0.00014) * 0.025;
       blackHole.rotation.z = Math.sin(now * 0.00005) * 0.04;
@@ -1159,7 +1361,10 @@
       if (idx >= 0) setNode(idx, msg.motion === false);
     }
     state.motion = msg.motion !== false && !reduced;
-    if (!state.motion) state.visualX = state.targetX;
+    if (!state.motion) {
+      state.visualX = state.targetX;
+      quietSkyFx();
+    }
     syncCaption(faceInfo(NODE_IDS[state.node]).title, faceInfo(NODE_IDS[state.node]).hint);
     setLoop(true);
     if (!state.motion) renderFrame(0);
@@ -1242,6 +1447,7 @@
       }
       if (!state.motion) poseSystem(n, 0);
     }
+    if (!state.motion) quietSkyFx();
     syncNodeLabel();
     vignette.position.copy(camera.position);
     vignette.quaternion.copy(camera.quaternion);
