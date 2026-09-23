@@ -23,7 +23,6 @@ opaque WinUI chrome.
 - Focus lifts and slightly scales the blade, deepens the studio
   shadow, and lets the tip breathe. Motion-off freezes breath and
   sheen; focus still snaps.
-- A short, faint floor ghost sits under each blade (studio, not puddle).
 - Only the **focused** tab shows its name **above** in Diavlo, with a
   designed drop shadow and open tracking. Unfocused tabs stay unlabeled.
 

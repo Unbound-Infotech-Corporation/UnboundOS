@@ -90,7 +90,6 @@
             `<span class="tip"><span class="facet"></span></span>` +
             `<span class="tab-label">${escapeHtml(def.title)}</span>` +
           `</span>` +
-          `<span class="mirror" aria-hidden="true"></span>` +
         `</span>` +
       `</button>`
     )).join("");

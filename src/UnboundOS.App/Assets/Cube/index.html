@@ -96,13 +96,13 @@
       background: transparent;
       cursor: pointer;
     }
-    .tab[data-index="0"] { --h: 68%; --delay: 0s; }
-    .tab[data-index="1"] { --h: 80%; --delay: 0.7s; }
-    .tab[data-index="2"] { --h: 91%; --delay: 1.4s; }
+    .tab[data-index="0"] { --h: 76%; --delay: 0s; }
+    .tab[data-index="1"] { --h: 86%; --delay: 0.7s; }
+    .tab[data-index="2"] { --h: 95%; --delay: 1.4s; }
     .tab[data-index="3"] { --h: 100%; --delay: 2.1s; }
-    .tab[data-index="4"] { --h: 91%; --delay: 2.8s; }
-    .tab[data-index="5"] { --h: 80%; --delay: 3.5s; }
-    .tab[data-index="6"] { --h: 68%; --delay: 4.2s; }
+    .tab[data-index="4"] { --h: 95%; --delay: 2.8s; }
+    .tab[data-index="5"] { --h: 86%; --delay: 3.5s; }
+    .tab[data-index="6"] { --h: 76%; --delay: 4.2s; }
     .stack {
       position: relative;
       width: var(--blade-w);
@@ -220,27 +220,6 @@
         0 0 18px rgba(0, 240, 255, 0.32),
         0 0 4px rgba(0, 240, 255, 0.4);
     }
-    .mirror {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      width: 100%;
-      height: 18%;
-      transform: scaleY(-1);
-      transform-origin: top;
-      border-radius: 0 0 2px 2px;
-      background:
-        linear-gradient(90deg,
-          rgba(255, 255, 255, 0.12) 0%,
-          rgba(0, 0, 0, 0.08) 100%),
-        linear-gradient(180deg, #3e454e, #2a3038);
-      opacity: 0.18;
-      filter: blur(0.5px);
-      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
-      -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
-      pointer-events: none;
-    }
-    .tab.is-focus .mirror { opacity: 0.26; height: 22%; }
     .tab-label {
       position: absolute;
       left: 50%;
@@ -275,7 +254,6 @@
       100% { background-position: 0 160%; }
     }
     body:not(.reduce-motion) .blade,
-    body:not(.reduce-motion) .mirror,
     body:not(.reduce-motion) .tab-label,
     body:not(.reduce-motion) .stack {
       transition:
