@@ -64,21 +64,21 @@
       left: 0;
       right: 0;
       bottom: 0;
-      height: 24vh;
-      background: radial-gradient(ellipse 48% 90% at 50% 100%,
-        rgba(14, 18, 24, 0.72) 0%,
-        rgba(5, 7, 10, 0) 74%);
+      height: 20vh;
+      background: radial-gradient(ellipse 50% 100% at 50% 100%,
+        #0a0d12 0%,
+        #05070A 100%);
     }
     #tabRow {
       position: absolute;
       left: 50%;
-      bottom: 9.5vh;
+      bottom: 5.5vh;
       transform: translateX(-50%);
       display: flex;
       align-items: stretch;
       justify-content: space-between;
       width: min(880px, 68vw);
-      height: clamp(280px, 44vh, 580px);
+      height: clamp(300px, 48vh, 620px);
       pointer-events: auto;
     }
     .tab {
@@ -106,16 +106,13 @@
           rgba(0, 0, 0, 0.28) 100%),
         linear-gradient(180deg,
           #8a94a0 0%,
-          #5c6570 20%,
-          #3a414a 56%,
-          #22272d 100%);
+          #5a636e 35%,
+          #454d56 100%);
       box-shadow:
         inset 0 0 0 1px rgba(255, 255, 255, 0.045),
         inset 1px 0 0 rgba(255, 255, 255, 0.16),
         inset -1px 0 0 rgba(0, 0, 0, 0.3),
-        10px 22px 32px rgba(0, 0, 0, 0.46),
-        3px 8px 12px rgba(0, 0, 0, 0.4),
-        0 2px 3px rgba(0, 0, 0, 0.32);
+        22px 14px 48px rgba(0, 0, 0, 0.48);
     }
     .tab.is-focus .blade {
       background:
@@ -126,16 +123,13 @@
           rgba(0, 0, 0, 0.24) 100%),
         linear-gradient(180deg,
           #9aa4b0 0%,
-          #6a7380 20%,
-          #454d56 56%,
-          #2a3036 100%);
+          #6a7380 35%,
+          #545c66 100%);
       box-shadow:
         inset 0 0 0 1px rgba(255, 255, 255, 0.06),
         inset 1px 0 0 rgba(255, 255, 255, 0.2),
         inset -1px 0 0 rgba(0, 0, 0, 0.28),
-        14px 34px 46px rgba(0, 0, 0, 0.55),
-        5px 14px 18px rgba(0, 0, 0, 0.44),
-        0 4px 6px rgba(0, 0, 0, 0.34);
+        26px 18px 56px rgba(0, 0, 0, 0.52);
       transform: translateY(-16px);
     }
     .tip {
@@ -167,7 +161,7 @@
       line-height: 1.1;
       white-space: nowrap;
       font-variant-ligatures: none;
-      font-feature-settings: "liga" 0, "calt" 0;
+      font-feature-settings: "liga" 0, "calt" 0, "swsh" 0, "dlig" 0, "ss01" 0;
       text-shadow: 0 6px 22px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
       opacity: 0;
       pointer-events: none;
@@ -175,24 +169,7 @@
     .tab.is-focus .tab-label { opacity: 1; }
     #studio.is-overlay .tab-label { opacity: 0; }
     #studio.is-overlay .tab:not(.is-focus) { opacity: 0.42; }
-    .contact {
-      position: absolute;
-      left: 50%;
-      bottom: -2px;
-      width: 40px;
-      height: 12px;
-      transform: translateX(-50%);
-      background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5) 0%, transparent 72%);
-      filter: blur(4px);
-      pointer-events: none;
-    }
-    .tab.is-focus .contact {
-      width: 50px;
-      opacity: 0.92;
-      transform: translateX(-50%) translateY(-8px);
-    }
     body:not(.reduce-motion) .blade,
-    body:not(.reduce-motion) .contact,
     body:not(.reduce-motion) .tab-label,
     body:not(.reduce-motion) .tab {
       transition:

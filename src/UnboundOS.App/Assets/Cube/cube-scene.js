@@ -89,7 +89,6 @@
           `<span class="tip"></span>` +
           `<span class="tab-label">${escapeHtml(def.title)}</span>` +
         `</span>` +
-        `<span class="contact" aria-hidden="true"></span>` +
       `</button>`
     )).join("");
     tabs.length = 0;
