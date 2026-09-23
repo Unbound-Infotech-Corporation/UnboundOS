@@ -666,9 +666,9 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Margin="0,0,28,28"
-                    Click="Nav_Click"
-                    AutomationProperties.Name="Settings"
-                    AutomationProperties.HelpText="Open Settings. Hidden chrome on Home; this glyph is the path." />
+                    Click="OnHomeSettingsClick"
+                    AutomationProperties.Name="Options"
+                    AutomationProperties.HelpText="Zoom to Options over the galaxy. Enter a group for the Settings page." />
             </Grid>
 
             <Frame x:Name="ContentFrame" Visibility="Collapsed" />

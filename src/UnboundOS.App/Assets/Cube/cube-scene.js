@@ -6,6 +6,15 @@
 
   const NODE_IDS = ["Session", "Tools", "Mods", "Network", "Files", "Hardware"];
   const NODE_X = [0, 1.14, 2.22, -1.14, -2.22, -3.3];
+  const OPTIONS_SUN_X = 3.15;
+  const OPTIONS_ITEMS = [
+    { id: "motion", title: "Interface motion", meta: "SET" },
+    { id: "hud", title: "Home HUD", meta: "SET" },
+    { id: "display", title: "Display", meta: "SET" },
+    { id: "overclock", title: "Overclocking", meta: "SET" },
+    { id: "startup", title: "Startup audit", meta: "SET" },
+    { id: "cleanup", title: "Finish setup", meta: "SET" }
+  ];
   const DEFAULT_FACES = [
     { id: "Session", title: "Games", kicker: "PLAY", monogram: "G", meta: "PLAY", hint: "Up or Down opens this list over the galaxy.", accent: "#F2E6C8", core: "#FFE9B0" },
     { id: "Tools", title: "Tools", kicker: "KIT", monogram: "T", meta: "OPEN", hint: "Up or Down opens Tools.", accent: "#E8D7A8", core: "#F0E0B8" },
@@ -43,6 +52,11 @@
     items: [],
     focus: 0,
     origin: "top",
+    camBlend: 0,
+    camGoal: 0,
+    zoomKind: "",
+    overlayTitle: "",
+    overlayFront: "",
     dragging: false,
     moved: false,
     pressX: 0,
@@ -125,6 +139,9 @@
   const accretionMap = paintAccretionRing(512, 256);
   const meteorMap = paintMeteorStreak(256, 64);
   const spikeMap = spriteTex(256, paintSpikeStar);
+  const sunMap = paintSunSurface(768, 384);
+  const sunCoronaMap = spriteTex(512, paintSunCorona);
+  const sunRingMap = paintSunRing(512, 256);
   const filamentMaps = [
     paintFilamentSheet(640, 320, 0xc11, "indigo"),
     paintFilamentSheet(640, 320, 0xc22, "violet"),
@@ -152,6 +169,8 @@
   const filaments = buildFilaments();
   const spikes = buildSpikedStars(16);
   const nodes = buildNodes();
+  const optionsSun = buildOptionsSun();
+  const heroSun = buildHeroSun();
   const blackHole = buildBlackHole();
   const skyFx = buildSkyFx();
   scene.add(farStars, midStars, nearStars, deepField);
@@ -162,6 +181,11 @@
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   const nodeMeshes = nodes.map((n) => n.hit);
+  const camRestPos = new THREE.Vector3();
+  const camZoomPos = new THREE.Vector3();
+  const camLook = new THREE.Vector3();
+  const sunWorld = new THREE.Vector3();
+  const zoomLook = new THREE.Vector3();
 
   function nodeX(i) {
     return NODE_X[wrapNode(i)];
@@ -452,6 +476,105 @@
     ctx.fill();
     ctx.restore();
     return finishSoftTexture(c, 36);
+  }
+
+  function paintSunSurface(w, h) {
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    const img = ctx.createImageData(w, h);
+    const d = img.data;
+    for (let y = 0; y < h; y++) {
+      const v = y / Math.max(1, h - 1);
+      const limb = 0.52 + 0.48 * Math.sin(v * Math.PI);
+      for (let x = 0; x < w; x++) {
+        const u = x / Math.max(1, w - 1);
+        const ang = u * Math.PI * 2;
+        const nx = Math.cos(ang);
+        const nz = Math.sin(ang);
+        const n1 = valueNoise(nx * 3.1 + 4, v * 5.2 + nz * 1.35, 0x91);
+        const n2 = valueNoise(nx * 7.4 + 2, v * 12 + nz * 3.1, 0x92);
+        const n3 = valueNoise(nx * 16 + 8, v * 28 + nz * 6.2, 0x93);
+        const gran = n1 * 0.52 + n2 * 0.33 + n3 * 0.15;
+        const spot = smooth01((0.3 - n1) * 3.4) * smooth01((0.38 - n2) * 2.2);
+        const hot = smooth01((gran - 0.6) * 4.2);
+        let r = (248 * (0.72 + gran * 0.28) - spot * 86) * limb;
+        let g = (148 * (0.48 + gran * 0.46) - spot * 58) * limb;
+        let b = (58 * (0.32 + gran * 0.4) + hot * 36) * limb;
+        r = Math.min(255, r + hot * 58);
+        g = Math.min(255, g + hot * 28);
+        const i = (y * w + x) * 4;
+        d[i] = Math.max(0, Math.min(255, r));
+        d[i + 1] = Math.max(0, Math.min(255, g));
+        d[i + 2] = Math.max(0, Math.min(255, b));
+        d[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    return tex;
+  }
+
+  function paintSunCorona(ctx, s) {
+    ctx.clearRect(0, 0, s, s);
+    const c = s / 2;
+    const g = ctx.createRadialGradient(c, c, 0, c, c, s * 0.48);
+    g.addColorStop(0, "rgba(255,244,214,0.98)");
+    g.addColorStop(0.12, "rgba(255,186,96,0.55)");
+    g.addColorStop(0.32, "rgba(230,110,48,0.2)");
+    g.addColorStop(0.58, "rgba(160,48,24,0.07)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, s, s);
+    ctx.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 9; i++) {
+      const a = (i / 9) * Math.PI * 2 + 0.18;
+      ctx.save();
+      ctx.translate(c, c);
+      ctx.rotate(a);
+      ctx.scale(1, 0.16 + (i % 3) * 0.04);
+      const streak = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 0.46);
+      streak.addColorStop(0, "rgba(255,210,140,0.16)");
+      streak.addColorStop(0.45, "rgba(255,140,60,0.06)");
+      streak.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = streak;
+      ctx.fillRect(-s / 2, -s / 2, s, s);
+      ctx.restore();
+    }
+  }
+
+  function paintSunRing(w, h) {
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, w, h);
+    ctx.globalCompositeOperation = "lighter";
+    const cx = w * 0.5;
+    const cy = h * 0.5;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(1, 0.34);
+    const ring = ctx.createRadialGradient(0, 0, w * 0.16, 0, 0, w * 0.4);
+    ring.addColorStop(0, "rgba(0,0,0,0)");
+    ring.addColorStop(0.58, "rgba(0,0,0,0)");
+    ring.addColorStop(0.74, "rgba(255, 170, 80, 0.2)");
+    ring.addColorStop(0.86, "rgba(255, 220, 160, 0.14)");
+    ring.addColorStop(0.95, "rgba(180, 60, 30, 0.05)");
+    ring.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = ring;
+    ctx.beginPath();
+    ctx.arc(0, 0, w * 0.4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    return finishSoftTexture(c, 28);
   }
 
   function buildBlackHole() {
@@ -1098,6 +1221,121 @@
     return list;
   }
 
+  function buildOptionsSun() {
+    const group = new THREE.Group();
+    group.position.set(OPTIONS_SUN_X, 0.08, 0.16);
+    const rng = mulberry(0x51e0);
+    const sun = new THREE.Sprite(softSprite(starMap, {
+      color: 0xffe2b8,
+      opacity: 0.26
+    }));
+    sun.scale.set(0.1, 0.1, 1);
+    group.add(sun);
+    const corona = new THREE.Sprite(softSprite(glowMap, {
+      color: 0xffc878,
+      opacity: 0.045
+    }));
+    corona.scale.set(0.34, 0.28, 1);
+    corona.userData.base = corona.scale.clone();
+    group.add(corona);
+    const planets = [];
+    for (let p = 0; p < 4; p++) {
+      const spr = new THREE.Sprite(softSprite(starMap, {
+        color: [0xb8a890, 0x8a94a8, 0xc09070, 0xd4c8b0][p],
+        opacity: 0.2
+      }));
+      const ps = 0.024 + rng() * 0.012;
+      spr.scale.set(ps, ps, 1);
+      spr.userData = {
+        radius: 0.12 + p * 0.05 + rng() * 0.01,
+        phase: rng() * Math.PI * 2,
+        omega: (0.16 / (0.7 + p * 0.5)) * (rng() > 0.4 ? 1 : -1),
+        tilt: 0.22 + rng() * 0.16,
+        baseOpacity: 0.22 + rng() * 0.08
+      };
+      group.add(spr);
+      planets.push(spr);
+    }
+    for (let k = 0; k < 5; k++) {
+      const spr = new THREE.Sprite(softSprite(starMap, {
+        color: rng() > 0.5 ? 0xe8d8c8 : 0xd0d4e4,
+        opacity: 0.1 + rng() * 0.08
+      }));
+      const cs = 0.01 + rng() * 0.008;
+      spr.scale.set(cs, cs, 1);
+      spr.position.set((rng() - 0.5) * 0.16, (rng() - 0.5) * 0.05, (rng() - 0.5) * 0.07);
+      group.add(spr);
+    }
+    group.userData.node = -1;
+    rig.add(group);
+    const sys = { group, sun, corona, planets, hit: null };
+    poseSystem(sys, 0);
+    return sys;
+  }
+
+  function buildHeroSun() {
+    const group = new THREE.Group();
+    group.visible = false;
+    const body = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 48, 32),
+      new THREE.MeshBasicMaterial({
+        map: sunMap,
+        transparent: true,
+        opacity: 1
+      })
+    );
+    const shell = new THREE.Mesh(
+      new THREE.SphereGeometry(1.045, 32, 24),
+      new THREE.MeshBasicMaterial({
+        color: 0xffb060,
+        transparent: true,
+        opacity: 0.18,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      })
+    );
+    const corona = new THREE.Sprite(softSprite(sunCoronaMap, {
+      color: 0xffd090,
+      opacity: 0.42
+    }));
+    const halo = new THREE.Sprite(softSprite(glowMap, {
+      color: 0xff8a3a,
+      opacity: 0.2
+    }));
+    const flare = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      softMat(sunRingMap, {
+        opacity: 0.28,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        side: THREE.DoubleSide
+      })
+    );
+    flare.rotation.x = 1.12;
+    group.add(halo, corona, flare, shell, body);
+    group.userData = { body, shell, corona, halo, flare };
+    scene.add(group);
+    return group;
+  }
+
+  function getZoomAnchor() {
+    if (state.zoomKind === "options") return optionsSun;
+    if (state.zoomKind === "node") return nodes[state.node];
+    return null;
+  }
+
+  function isOptionsFront(front, node) {
+    if (node === -1) return true;
+    const id = String(front || "");
+    return /^settings$|^options$/i.test(id);
+  }
+
+  function clearZoom() {
+    state.zoomKind = "";
+    state.overlayTitle = "";
+    state.overlayFront = "";
+  }
+
   function buildVignette() {
     const c = document.createElement("canvas");
     c.width = c.height = 256;
@@ -1166,6 +1404,7 @@
     }
 
     for (const n of nodes) poseSystem(n, dt);
+    poseSystem(optionsSun, dt);
 
     tickSkyFx(dt, now);
 
@@ -1215,8 +1454,10 @@
     state.items = items || [];
     state.focus = typeof focus === "number" ? focus : 0;
     state.origin = origin === "bottom" ? "bottom" : "top";
+    state.camGoal = 1;
+    if (instant || !state.motion) state.camBlend = 1;
     overlayEl.classList.remove("show", "ready", "motion");
-    if (listHeadEl) listHeadEl.textContent = faceInfo(NODE_IDS[state.node]).title || "";
+    if (listHeadEl) listHeadEl.textContent = state.overlayTitle || faceInfo(NODE_IDS[state.node]).title || "";
     if (!instant && state.motion) overlayEl.classList.add("motion");
     renderTrack();
     applyOverlayFocus(true);
@@ -1227,11 +1468,18 @@
     else requestAnimationFrame(() => requestAnimationFrame(arm));
   }
 
-  function hideOverlay() {
+  function hideOverlay(instant) {
     cancelHide();
-    const fade = state.motion && overlayEl.classList.contains("ready");
+    const fade = !instant && state.motion && overlayEl.classList.contains("ready");
     state.overlay = false;
     state.items = [];
+    state.camGoal = 0;
+    state.targetX = nodeX(state.node);
+    if (instant || !state.motion) {
+      state.camBlend = 0;
+      state.visualX = state.targetX;
+      clearZoom();
+    }
     overlayEl.classList.remove("show");
     const finish = () => {
       hideTimer = 0;
@@ -1263,7 +1511,7 @@
       el.addEventListener("click", (ev) => {
         ev.stopPropagation();
         if (i === state.focus) {
-          send({ v: 1, type: "select", index: i, item: item.id, face: NODE_IDS[state.node] });
+          send({ v: 1, type: "select", index: i, item: item.id, face: state.overlayFront || NODE_IDS[state.node] });
         } else {
           state.focus = i;
           applyOverlayFocus(false);
@@ -1295,17 +1543,33 @@
   }
 
   function startOpen(msg) {
-    if (typeof msg.node === "number") setNode(msg.node, !state.motion);
-    else if (msg.front) {
-      const idx = NODE_IDS.indexOf(msg.front);
-      if (idx >= 0) setNode(idx, !state.motion);
-    }
     if (msg.motion === false) state.motion = false;
-    const items = Array.isArray(msg.items) ? msg.items : previewItems(NODE_IDS[state.node]);
+    const options = isOptionsFront(msg.front, msg.node);
+    if (options) {
+      state.zoomKind = "options";
+      state.overlayTitle = "Options";
+      state.overlayFront = "Settings";
+      state.targetX = OPTIONS_SUN_X;
+      if (!state.motion) state.visualX = state.targetX;
+    } else {
+      state.zoomKind = "node";
+      state.overlayTitle = "";
+      state.overlayFront = "";
+      if (typeof msg.node === "number" && msg.node >= 0) setNode(msg.node, !state.motion);
+      else if (msg.front) {
+        const idx = NODE_IDS.indexOf(msg.front);
+        if (idx >= 0) setNode(idx, !state.motion);
+      }
+      state.overlayTitle = faceInfo(NODE_IDS[state.node]).title || "";
+      state.overlayFront = NODE_IDS[state.node];
+    }
+    const items = Array.isArray(msg.items) && msg.items.length
+      ? msg.items
+      : (options ? OPTIONS_ITEMS : previewItems(NODE_IDS[state.node]));
     const origin = String(msg.origin || "top").toLowerCase();
     const focus = typeof msg.focus === "number" ? msg.focus : (origin === "bottom" ? items.length - 1 : 0);
     if (items.length) showOverlay(items, focus, origin, !state.motion);
-    send({ v: 1, type: "opened", face: NODE_IDS[state.node], stay: true });
+    send({ v: 1, type: "opened", face: state.overlayFront || NODE_IDS[state.node], stay: true });
     setLoop(true);
   }
 
@@ -1344,8 +1608,13 @@
       }
       return;
     }
+    if (type === "close") {
+      if (data.motion === false) state.motion = false;
+      hideOverlay(!state.motion);
+      return;
+    }
     if (type === "reset") {
-      hideOverlay();
+      hideOverlay(true);
       applyHostState({ ...data, type: "state" });
       return;
     }
@@ -1363,6 +1632,7 @@
     state.motion = msg.motion !== false && !reduced;
     if (!state.motion) {
       state.visualX = state.targetX;
+      state.camBlend = state.camGoal;
       quietSkyFx();
     }
     syncCaption(faceInfo(NODE_IDS[state.node]).title, faceInfo(NODE_IDS[state.node]).hint);
@@ -1417,42 +1687,103 @@
     if (state.motion) {
       const k = 1 - Math.exp(-step * 3.35);
       state.visualX += (state.targetX - state.visualX) * k;
+      const ck = 1 - Math.exp(-step * 2.15);
+      state.camBlend += (state.camGoal - state.camBlend) * ck;
       tickLiving(step, now);
       farStars.rotation.y = now * (farStars.userData.spin || 0);
       midStars.rotation.y = now * (midStars.userData.spin || 0);
       nearStars.rotation.y = now * (nearStars.userData.spin || 0);
       farStars.rotation.z = Math.sin(now * 0.00004) * 0.012;
       midStars.rotation.z = Math.sin(now * 0.00006) * 0.018;
+    } else {
+      state.camBlend = state.camGoal;
     }
+    if (state.camGoal === 0 && state.camBlend < 0.012) {
+      state.camBlend = 0;
+      if (!state.overlay) clearZoom();
+    }
+    const blend = smooth01(state.camBlend);
     rig.position.x = -state.visualX * 0.82;
     farStars.position.x = -state.visualX * 0.03;
     midStars.position.x = -state.visualX * 0.07;
     nearStars.position.x = -state.visualX * 0.16;
     deepField.position.x = -state.visualX * 0.02;
-    camera.position.set(
-      0,
-      CAM_Y + (state.motion ? Math.sin(now * 0.00018) * 0.028 : 0),
-      CAM_Z
-    );
-    camera.lookAt(lookTarget);
+    const restY = CAM_Y + (state.motion ? Math.sin(now * 0.00018) * 0.028 : 0);
+    camRestPos.set(0, restY, CAM_Z);
+    const anchor = getZoomAnchor();
+    if (anchor) {
+      anchor.group.updateWorldMatrix(true, false);
+      anchor.group.getWorldPosition(sunWorld);
+    } else {
+      sunWorld.set(0, 0.04, 0.12);
+    }
+    camZoomPos.set(sunWorld.x - 1.88, sunWorld.y + 0.46, sunWorld.z + 3.42);
+    zoomLook.set(sunWorld.x - 0.46, sunWorld.y - 0.02, sunWorld.z - 0.18);
+    camera.position.lerpVectors(camRestPos, camZoomPos, blend);
+    camLook.lerpVectors(lookTarget, zoomLook, blend);
+    camera.lookAt(camLook);
+    const nextFov = 26 + blend * 3.5;
+    if (Math.abs(camera.fov - nextFov) > 0.01) {
+      camera.fov = nextFov;
+      camera.updateProjectionMatrix();
+    }
     const breathe = state.motion ? 0.96 + 0.04 * Math.sin(now * 0.0007) : 1;
+    poseHeroSun(blend, step);
     for (const n of nodes) {
       const on = n.group.userData.node === state.node;
+      const hide = anchor === n ? blend : 0;
       const base = n.corona.userData.base;
-      n.sun.material.opacity = (on ? 0.52 : 0.3) * breathe;
-      n.corona.material.opacity = (on ? 0.14 : 0.055) * breathe;
+      n.sun.material.opacity = (on ? 0.52 : 0.3) * breathe * (1 - hide * 0.95);
+      n.corona.material.opacity = (on ? 0.14 : 0.055) * breathe * (1 - hide * 0.9);
       n.corona.scale.set(base.x * (on ? 1.12 : 1), base.y * (on ? 1.08 : 1), 1);
       for (const p of n.planets) {
-        p.material.opacity = p.userData.baseOpacity * (on ? 1.15 : 0.85);
+        p.material.opacity = p.userData.baseOpacity * (on ? 1.15 : 0.85) * (1 - hide);
       }
       if (!state.motion) poseSystem(n, 0);
     }
+    {
+      const hide = anchor === optionsSun ? blend : 0;
+      const lit = state.zoomKind === "options";
+      const base = optionsSun.corona.userData.base;
+      optionsSun.sun.material.opacity = (lit ? 0.4 : 0.22) * breathe * (1 - hide * 0.95);
+      optionsSun.corona.material.opacity = (lit ? 0.1 : 0.04) * breathe * (1 - hide * 0.9);
+      optionsSun.corona.scale.set(base.x * (lit ? 1.1 : 1), base.y * (lit ? 1.06 : 1), 1);
+      for (const p of optionsSun.planets) {
+        p.material.opacity = p.userData.baseOpacity * (lit ? 1.05 : 0.75) * (1 - hide);
+      }
+      if (!state.motion) poseSystem(optionsSun, 0);
+    }
     if (!state.motion) quietSkyFx();
     syncNodeLabel();
+    if (vignette.material) vignette.material.opacity = 1 - blend * 0.55;
     vignette.position.copy(camera.position);
     vignette.quaternion.copy(camera.quaternion);
     vignette.translateZ(-1.15);
     renderer.render(scene, camera);
+  }
+
+  function poseHeroSun(blend, step) {
+    const show = blend > 0.012;
+    heroSun.visible = show;
+    if (!show) return;
+    heroSun.position.copy(sunWorld);
+    const hr = 0.10 + blend * 0.52;
+    const u = heroSun.userData;
+    u.body.scale.setScalar(hr);
+    u.shell.scale.setScalar(hr * 1.06);
+    u.corona.scale.set(hr * 3.35, hr * 3.0, 1);
+    u.halo.scale.set(hr * 5.5, hr * 4.5, 1);
+    u.flare.scale.set(hr * 3.8, hr * 3.8, 1);
+    u.body.material.opacity = 0.2 + blend * 0.8;
+    u.shell.material.opacity = 0.06 + blend * 0.16;
+    u.corona.material.opacity = 0.12 + blend * 0.36;
+    u.halo.material.opacity = 0.06 + blend * 0.18;
+    u.flare.material.opacity = 0.08 + blend * 0.22;
+    if (state.motion) {
+      u.body.rotation.y += step * 0.085;
+      u.shell.rotation.y += step * 0.04;
+      u.flare.rotation.z += step * 0.03;
+    }
   }
 
   let looping = false;
@@ -1557,6 +1888,17 @@
     });
   }
 
+  function previewOpenOptions() {
+    startOpen({
+      front: "Settings",
+      node: -1,
+      motion: state.motion,
+      origin: "top",
+      focus: 0,
+      items: OPTIONS_ITEMS
+    });
+  }
+
   function localTurn(turn) {
     if (turn === "Left") setNode(visualNeighbor(-1), !state.motion);
     if (turn === "Right") setNode(visualNeighbor(1), !state.motion);
@@ -1581,7 +1923,7 @@
       if (ev.key === "Enter" || ev.key === " ") {
         ev.preventDefault();
         const item = state.items[state.focus];
-        if (item) send({ v: 1, type: "select", index: state.focus, item: item.id, face: NODE_IDS[state.node] });
+        if (item) send({ v: 1, type: "select", index: state.focus, item: item.id, face: state.overlayFront || NODE_IDS[state.node] });
         return;
       }
       if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
@@ -1590,6 +1932,11 @@
         applyOverlayFocus(false);
         send({ v: 1, type: "cycle", index: state.focus, item: state.items[state.focus].id });
       }
+      return;
+    }
+    if ((ev.key === "o" || ev.key === "O") && !hosted) {
+      ev.preventDefault();
+      previewOpenOptions();
       return;
     }
     if (ev.key === "Enter" || ev.key === " ") {
@@ -1770,4 +2117,11 @@
   resize();
   setLoop(true);
   if (!state.motion) renderFrame(0);
+  const startOpenParam = (params.get("open") || "").toLowerCase();
+  if (!hosted && (startOpenParam === "options" || startOpenParam === "settings")) {
+    window.setTimeout(() => {
+      previewOpenOptions();
+      if (!state.motion) renderFrame(0);
+    }, 80);
+  }
 })();

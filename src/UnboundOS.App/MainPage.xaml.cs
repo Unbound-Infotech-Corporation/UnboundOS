@@ -64,8 +64,25 @@ public sealed partial class MainPage : Page
     private void OnCubeActivated(object sender, CubeDestination destination) =>
         Navigate(CubeCatalog.NavTag(destination));
 
-    private void OnGalaxySettingsRequested(object sender, EventArgs e) =>
+    private void OnHomeSettingsClick(object sender, RoutedEventArgs e)
+    {
+        ViewModel.SelectedNav = "Home";
+        ViewModel.StatusLine = "Options. Sun on the right. Escape returns to the galaxy.";
+        ApplyNavState("Home");
+        ApplyHomeChrome(home: true);
+        HomeCube.OpenOptionsList();
+        HomeCube.Focus(FocusState.Programmatic);
+    }
+
+    private void OnGalaxySettingsRequested(object sender, EventArgs e)
+    {
+        var id = HomeCube.OptionsGroupId;
         Navigate("Settings");
+        if (!string.IsNullOrWhiteSpace(id))
+        {
+            AppServices.Get<SettingsViewModel>().SelectGroup(id);
+        }
+    }
 
     private void OnCubeNotice(object sender, string message) =>
         ViewModel.StatusLine = message;

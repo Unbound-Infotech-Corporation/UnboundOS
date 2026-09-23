@@ -267,6 +267,13 @@ public sealed class NavigationCubeTests
         Assert.Contains("\"front\":\"Tools\"", toolsOpen, StringComparison.Ordinal);
         Assert.Contains("\"motion\":true", toolsOpen, StringComparison.Ordinal);
         Assert.Contains("\"mode\":\"mosaic\"", toolsOpen, StringComparison.Ordinal);
+        var optionsOpen = CubeBridge.ToJson(CubeBridge.OpenOptions(true, CubeBrowse.Options()));
+        Assert.Contains("\"front\":\"Settings\"", optionsOpen, StringComparison.Ordinal);
+        Assert.Contains("\"node\":-1", optionsOpen, StringComparison.Ordinal);
+        Assert.Contains("\"stay\":true", optionsOpen, StringComparison.Ordinal);
+        Assert.Contains("Interface motion", optionsOpen, StringComparison.Ordinal);
+        var close = CubeBridge.ToJson(CubeBridge.Close(true));
+        Assert.Contains("\"type\":\"close\"", close, StringComparison.Ordinal);
         var reset = CubeBridge.ToJson(CubeBridge.Reset(CubeDestination.Session, false));
         Assert.Contains("\"type\":\"reset\"", reset, StringComparison.Ordinal);
         Assert.Contains("\"motion\":false", reset, StringComparison.Ordinal);
@@ -346,5 +353,11 @@ public sealed class HomeGalaxyTests
         var network = CubeBrowse.ForNode(CubeDestination.Network, games, tools, mods);
         Assert.Contains(network, item => item.Kind == "page");
         Assert.Equal(2, HomeGalaxy.ListStartIndex(network.Count, true));
+
+        var options = CubeBrowse.Options();
+        Assert.Equal(6, options.Count);
+        Assert.All(options, item => Assert.Equal("settings", item.Kind));
+        Assert.Contains(options, item => item.Id == "motion" && item.Title == "Interface motion");
+        Assert.Contains(options, item => item.Id == "cleanup" && item.Title == "Finish setup");
     }
 }

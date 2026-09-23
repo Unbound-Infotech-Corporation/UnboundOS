@@ -57,6 +57,20 @@ public static class CubeBrowse
             "mod",
             Mark(game.DisplayName))).ToArray();
 
+    /// <summary>
+    /// Home SET / Options list. Keep titles in sync with SettingsViewModel.Groups.
+    /// Enter still lands on the native Settings page for the real toggles.
+    /// </summary>
+    public static IReadOnlyList<CubeBrowseItem> Options() =>
+    [
+        new("motion", "Interface motion", "SET", "settings", "M"),
+        new("hud", "Home HUD", "SET", "settings", "H"),
+        new("display", "Display", "SET", "settings", "D"),
+        new("overclock", "Overclocking", "SET", "settings", "O"),
+        new("startup", "Startup audit", "SET", "settings", "S"),
+        new("cleanup", "Finish setup", "SET", "settings", "C")
+    ];
+
     public static IReadOnlyList<CubeBrowseItem> Config(CubeDestination destination)
     {
         var info = CubeCatalog.Info(destination);

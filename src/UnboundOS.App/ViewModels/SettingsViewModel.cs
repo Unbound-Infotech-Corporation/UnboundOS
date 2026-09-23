@@ -55,6 +55,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private VendorApp? _selectedOcApp;
     [ObservableProperty] private SettingsGroup? _selectedGroup;
 
+    /// <summary>Keep titles aligned with <c>CubeBrowse.Options()</c>.</summary>
     public ObservableCollection<SettingsGroup> Groups { get; } =
     [
         new("motion", "Interface motion", "Living galaxy, star drift, and tile focus motion."),
@@ -89,6 +90,21 @@ public partial class SettingsViewModel : ObservableObject
         await RefreshVendorsAsync();
         await RefreshStartupAsync();
         SelectedGroup ??= Groups[0];
+    }
+
+    public void SelectGroup(string? id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return;
+        }
+
+        var match = Groups.FirstOrDefault(group =>
+            string.Equals(group.Id, id, StringComparison.OrdinalIgnoreCase));
+        if (match is not null)
+        {
+            SelectedGroup = match;
+        }
     }
 
     partial void OnSelectedGroupChanged(SettingsGroup? value)

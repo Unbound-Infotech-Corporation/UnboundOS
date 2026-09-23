@@ -47,6 +47,9 @@ public sealed partial class NavigationCubeView : UserControl
 
     public event EventHandler? SettingsRequested;
 
+    /// <summary>Last Options row id, set before <see cref="SettingsRequested"/>.</summary>
+    public string? OptionsGroupId { get; private set; }
+
     /// <summary>True while a category list is open over the galaxy.</summary>
     public bool OverlayOpen => _browsing;
 
@@ -192,7 +195,7 @@ public sealed partial class NavigationCubeView : UserControl
 
                 break;
             case "back":
-                ResetScene();
+                CloseOverlay();
                 break;
             case "turn":
                 if (_opening || _browsing)
@@ -249,7 +252,7 @@ public sealed partial class NavigationCubeView : UserControl
         {
             if (CubeInput.IsBackKey(name) || e.Key is Windows.System.VirtualKey.Escape)
             {
-                ResetScene();
+                CloseOverlay();
                 e.Handled = true;
                 return;
             }
@@ -369,6 +372,49 @@ public sealed partial class NavigationCubeView : UserControl
 
     public void ActivateFront() => OpenCategoryList(fromBottom: false);
 
+    public void OpenOptionsList(bool fromBottom = false)
+    {
+        if (_opening)
+        {
+            return;
+        }
+
+        if (_browsing)
+        {
+            ResetScene();
+        }
+
+        OptionsGroupId = null;
+        _items = CubeBrowse.Options();
+        _focus = HomeGalaxy.ListStartIndex(_items.Count, fromBottom);
+        if (!_sceneReady || CubeWeb.CoreWebView2 is null)
+        {
+            SettingsRequested?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+
+        var origin = fromBottom ? "bottom" : "top";
+        CubeWeb.CoreWebView2.PostWebMessageAsJson(
+            CubeBridge.ToJson(CubeBridge.OpenOptions(AllowMotion, _items, _focus, origin)));
+        EnterBrowse(_pose.Front);
+    }
+
+    public void CloseOverlay()
+    {
+        _opening = false;
+        SetBrowsing(false);
+        _pendingOpen = null;
+        _items = [];
+        _focus = 0;
+        _openToken++;
+        if (_sceneReady && CubeWeb.CoreWebView2 is not null)
+        {
+            CubeWeb.CoreWebView2.PostWebMessageAsJson(CubeBridge.ToJson(CubeBridge.Close(AllowMotion)));
+        }
+
+        Announce(_pose.Front);
+    }
+
     public void ResetScene()
     {
         _opening = false;
@@ -485,6 +531,11 @@ public sealed partial class NavigationCubeView : UserControl
             case "mod":
                 ResetScene();
                 FaceActivated?.Invoke(this, CubeDestination.Mods);
+                break;
+            case "settings":
+                OptionsGroupId = item.Id;
+                ResetScene();
+                SettingsRequested?.Invoke(this, EventArgs.Empty);
                 break;
             case "page":
                 ResetScene();

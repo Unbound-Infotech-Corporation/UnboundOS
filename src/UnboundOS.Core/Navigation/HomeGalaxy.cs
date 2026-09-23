@@ -104,7 +104,7 @@ public static class HomeGalaxy
     public static string Announce(CubeDestination node)
     {
         var info = CubeCatalog.Info(node);
-        return $"{info.Title} node. Up opens this list from the bottom over the galaxy. Down opens this list from the top. Left and right shift nodes. Enter opens this group. Settings and Profiles are the corner glyphs.";
+        return $"{info.Title} node. Up opens this list from the bottom over the galaxy. Down opens this list from the top. Left and right shift nodes. Enter opens this group. The SET glyph zooms to Options over the galaxy. Settings and Profiles are the corner glyphs.";
     }
 
     public static string AnnounceOverlay(CubeBrowseItem item, int index, int total) =>

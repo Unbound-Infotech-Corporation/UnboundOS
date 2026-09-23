@@ -41,12 +41,17 @@ A **very faint black-hole suggestion** sits far in the upper-left
 void (soft silhouette + dim accretion, not a cartoon). Company cyan
 (`#00F0FF`) stays a brand token for **inner pages**.
 
-Opening a category (Games, Tools, …) brings up a **right-half** dark
-glass panel over the living galaxy — soft edge, vanishing toward the
-center, not a hard cut. The **titles-only** list sits to the **left**
-of that glass in Diavlo. Up/Down still choose list origin (bottom/top
-focus); Left/Right still change nodes. The glass and list ease in
-(slide/fade) unless Motion Settings is off. Escape collapses both.
+Opening a category (Games, Tools, Options, …) **zooms the camera into
+that system's sun** and parks the sun as a slow-rotating hero on the
+**right**. The universe stays visible around it. A **titles-only**
+Diavlo list sits on the **left** over a reasonably transparent black
+wash — not an opaque slab. Options is a dedicated sun just beyond
+Mods (not on the L/R cycle); the Home **SET** glyph opens it instead
+of jumping to a flat Settings window. Enter on an Options row still
+lands on the native Settings page. Up/Down still choose list origin
+(bottom/top focus); Left/Right still change nodes. The camera ease
+and list fade respect Motion Settings (instant/cut when off). Escape
+zooms back to the quiet galaxy.
 
 Motion-off (or a live session) freezes star drift and heavy postFX;
 lists still open (instant or a short fade). The previous control-altar
@@ -62,7 +67,8 @@ cube is not the Home hero.
 | **Enter** | Open this node’s list from the top | Launch / open the focused row |
 | **Escape** | — | Collapse back to the galaxy |
 
-Settings (`SET`) and Profiles (`PRFL`) stay discreet Home corner glyphs.
+Settings (`SET`) zooms to Options over the galaxy. Profiles (`PRFL`)
+stays a discreet Home corner glyph.
 
 | Node | List |
 |------|------|
@@ -84,10 +90,11 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
                  │      owns node focus, list origin (top/bottom), page nav
                  │
                  └─ WebView2  →  packaged Three.js scene (Assets/Cube)
-                        JSON: state / open / focus / reset
+                        JSON: state / open / focus / close / reset
                               ready / turn / pick / dragEnd / activate /
                               opened / cycle / select / back
                         open.origin = "top" | "bottom"
+                        open.front = "Settings" + node = -1 → Options sun
 ```
 
 - **Not Unreal.** UE is not a runtime dependency.
@@ -97,6 +104,7 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
 - Quiet Home HUD (movable clock / temps / load) and SET / PRFL glyphs stay optional.
 
 Look-dev: `Assets/Cube/index.html?preview=1`.
+Options zoom: `?preview=1&open=options` (KeyO in the browser preview).
 `docs/screenshots/README.md` still wants a Windows `Debug|x64` capture.
 
 ## Home widgets
@@ -112,10 +120,10 @@ Drag to reposition. Positions and visibility persist in `settings.json`
 Motion-off still lets you drag; no fancy drag animation is required.
 
 Default stack sits on the **right** (`X = 0.84`, past `ListKeepoutX`
-0.48) so plaques rest on the right-half glass instead of the
-titles list. Widgets stay visible while a list is open and **dim**
-(layer opacity) so they do not fight the glass. Master visibility is
-Settings → Home HUD.
+0.48) so plaques rest beside the zoomed sun instead of the titles
+list. Widgets stay visible while a list is open and **dim** (layer
+opacity) so they do not fight the sun or the list. Master visibility
+is Settings → Home HUD.
 
 List type is **Diavlo** (Jos Buivenga / exljbris), bundled under
 `Assets/Fonts` for embedding in the shell only. See

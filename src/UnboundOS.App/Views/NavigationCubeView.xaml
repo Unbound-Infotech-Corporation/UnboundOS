@@ -10,7 +10,7 @@
     HorizontalAlignment="Stretch"
     VerticalAlignment="Stretch"
     AutomationProperties.Name="UnboundOS Home galaxy"
-    AutomationProperties.HelpText="Left and right shift nodes along the galaxy. Up opens that node's list from the bottom. Down opens that node's list from the top. Escape returns to the galaxy. Settings and Profiles are the corner glyphs.">
+    AutomationProperties.HelpText="Left and right shift nodes along the galaxy. Up opens that node's list from the bottom. Down opens that node's list from the top. Escape returns to the galaxy. SET zooms to Options. Profiles is the other corner glyph.">
 
     <Grid
         x:Name="PerspectiveHost"

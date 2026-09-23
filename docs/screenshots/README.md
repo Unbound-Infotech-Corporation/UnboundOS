@@ -24,9 +24,10 @@ Visual check:
   (shear / differential rotation / parallax / filament drift);
   node clusters stay locked on the bar and read larger than a razor
   edge-on. Focused node lifts like a selected star; only that node
-  shows a large screen-aligned label. Opening a list brings a
-  right-half dark glass panel; titles-only Diavlo rows sit to its
-  left. Escape collapses the glass.
+  shows a large screen-aligned label. Opening a list zooms that
+  system's sun to the right; titles-only Diavlo rows sit on the left
+  over translucent black. SET opens Options the same way. Escape
+  zooms back.
 - **Left/Right** shift nodes. **Up** opens that node’s list from the
   bottom; **Down** opens it from the top. The galaxy stays visible.
 - Interface motion On: differential rotation, parallax, silky list ease.

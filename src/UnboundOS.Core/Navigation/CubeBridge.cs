@@ -224,8 +224,35 @@ public static class CubeBridge
         };
     }
 
+    /// <summary>
+    /// Open the Options list over a dedicated sun. Node -1 is not on the L/R cycle.
+    /// </summary>
+    public static CubeHostCommand OpenOptions(
+        bool motion,
+        IReadOnlyList<CubeBrowseItem>? items = null,
+        int focus = 0,
+        string origin = "top")
+    {
+        var list = items ?? CubeBrowse.Options();
+        return new()
+        {
+            Type = "open",
+            Front = "Settings",
+            Motion = motion,
+            Mode = "list",
+            Stay = list.Count > 0,
+            Focus = focus,
+            Node = -1,
+            Origin = origin is "bottom" ? "bottom" : "top",
+            Items = list
+        };
+    }
+
     public static CubeHostCommand Focus(int index) =>
         new() { Type = "focus", Focus = index };
+
+    public static CubeHostCommand Close(bool motion) =>
+        new() { Type = "close", Motion = motion };
 
     public static CubeHostCommand Reset(CubeDestination front, bool motion) =>
         new()

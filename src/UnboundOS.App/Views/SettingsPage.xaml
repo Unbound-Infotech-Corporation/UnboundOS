@@ -12,7 +12,7 @@
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="Settings" />
                 <TextBlock
                     Style="{StaticResource BodyMutedText}"
-                    Text="A list of option groups. Pick one. The SET glyph on Home opens Settings here — Up/Down on the galaxy open that node's own list. Interface motion off freezes star drift." />
+                    Text="A list of option groups. Pick one. The SET glyph on Home zooms to Options over the galaxy; Enter a group to land here. Up/Down on the galaxy open that node's own list. Interface motion off freezes star drift and the camera cut." />
             </StackPanel>
 
             <ListView
