@@ -1,12 +1,13 @@
 # Desktop overlay / skins addon (optional)
 
 UnboundOS is a **session shell**, not a desktop replacement. Home is a
-**black full-bleed studio field** with vertical tabs. Overlay widgets
-sit **over** that empty field.
+**black full-bleed studio field** with vertical tabs **and a packaged
+first-party HUD** (clock, date, viz, media strip, launcher, calendar).
+That HUD is the default theme. It does **not** require Rainmeter.
 
-**Rainmeter** is the customizable overlay path (clock, CPU/GPU temps,
-user-picked skins, music visualizers). First-party light-grey Home
-widgets (`IHomeWidgetCatalog`) stay as the built-in fallback.
+**Rainmeter** remains an **optional** overlay path for users who want
+their own skins on top of Home. First-party movable temp plaques
+(`IHomeWidgetCatalog`) stay as extras.
 
 This host is **on by default** (`OverlayHostOptions.Enabled = true`).
 The Overlay nav item is the Rainmeter surface: Open Rainmeter, Get Phenix.
@@ -69,10 +70,10 @@ its state alone.
 Do **not** drop `.rmskin` files into this tree unless the license
 clearly allows redistribution. None are bundled today.
 
-## Starter Rainmeter skin
+## Starter Rainmeter skin (optional)
 
-Recommended / default **theme** over Home is **Phenix**.
-Recommended **clock** skin is **Minimalistic Clock**:
+The default Home theme is the **packaged Unbound HUD**. Rainmeter is
+not required. If you still want third-party skins on top:
 
 - Rainmeter (host): [https://www.rainmeter.net/](https://www.rainmeter.net/)
 - Phenix theme: [https://visualskins.com/skin/phenix](https://visualskins.com/skin/phenix)

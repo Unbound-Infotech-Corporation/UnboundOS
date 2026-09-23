@@ -280,6 +280,7 @@
     #overlay {
       position: absolute;
       inset: 0;
+      z-index: 4;
       display: block;
       pointer-events: none;
     }
@@ -383,6 +384,149 @@
     }
     .row .title { display: block; }
     .preview-caption { display: none; }
+
+    /* First-party Unbound HUD — light on Obsidian, visible, shell-wide. */
+    #hud {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      color: #F4F7FA;
+    }
+    body.hud-off #hud { display: none; }
+    #hudClock {
+      position: absolute;
+      left: clamp(28px, 4.2vw, 72px);
+      top: clamp(22px, 5.2vh, 56px);
+      max-width: min(520px, 38vw);
+    }
+    #clock {
+      margin: 0;
+      font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
+      font-weight: 200;
+      font-size: clamp(72px, 8.6vw, 124px);
+      letter-spacing: 0.06em;
+      line-height: 0.88;
+      color: #F7FAFC;
+      text-shadow: 0 10px 36px rgba(0, 0, 0, 0.55);
+    }
+    #dateLine, #weatherLine {
+      margin: 10px 0 0;
+      font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
+      font-weight: 400;
+      font-size: clamp(15px, 1.15vw, 18px);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #C8D0D8;
+    }
+    #weatherLine { color: #8A96A2; letter-spacing: 0.14em; }
+    #hudViz {
+      position: absolute;
+      left: clamp(28px, 4.2vw, 72px);
+      top: clamp(210px, 32vh, 300px);
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 56px;
+    }
+    .viz-bar {
+      width: 3px;
+      height: 56px;
+      background: linear-gradient(180deg, #00F0FF, #007a88);
+      opacity: 0.9;
+      transform: scaleY(0.22);
+      transform-origin: bottom center;
+      border-radius: 1px;
+    }
+    body:not(.reduce-motion) .viz-bar {
+      animation: vizBeat 1.35s ease-in-out infinite;
+    }
+    @keyframes vizBeat {
+      0%, 100% { transform: scaleY(0.16); }
+      50% { transform: scaleY(1); }
+    }
+    #hudMedia {
+      position: absolute;
+      left: clamp(28px, 4.2vw, 72px);
+      top: clamp(278px, 40vh, 372px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #C8D0D8;
+    }
+    #hudMedia .mark {
+      color: var(--cyan);
+      font-size: 16px;
+    }
+    #hudLaunch {
+      position: absolute;
+      left: clamp(28px, 4.2vw, 72px);
+      top: clamp(318px, 46vh, 420px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      pointer-events: auto;
+    }
+    #hudLaunch button {
+      margin: 0;
+      padding: 4px 0;
+      border: 0;
+      background: transparent;
+      color: #E8EEF2;
+      font-family: "Diavlo Book", var(--list-font);
+      font-size: 18px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    }
+    #hudLaunch button:hover,
+    #hudLaunch button:focus-visible { color: var(--cyan); }
+    #hudCal {
+      position: absolute;
+      right: clamp(28px, 4vw, 64px);
+      top: clamp(28px, 6vh, 56px);
+      width: min(220px, 18vw);
+      font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
+      color: #D8DEE4;
+    }
+    #hudCal h2 {
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #A8B0B8;
+    }
+    #calGrid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px 2px;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+    #calGrid span { color: #8A929A; }
+    #calGrid .dow { color: #6A727A; }
+    #calGrid .today {
+      color: #05070A;
+      background: var(--cyan);
+      border-radius: 50%;
+    }
+    body.is-overlay #clock { font-size: clamp(56px, 6.2vw, 88px); }
+    body.is-overlay #hudViz { top: clamp(168px, 24vh, 230px); }
+    body.is-overlay #hudMedia { top: clamp(234px, 31vh, 292px); }
+    body.is-overlay #hudLaunch { opacity: 0; pointer-events: none; }
+    @media (max-height: 820px) {
+      #hudViz { top: 200px; }
+      #hudMedia { top: 266px; }
+      #hudLaunch { top: 304px; }
+    }
   </style>
 </head>
 <body>
@@ -390,6 +534,24 @@
     <div id="studio">
       <div id="floor" aria-hidden="true"></div>
       <div id="tabRow" role="tablist" aria-label="Home"></div>
+    </div>
+    <div id="hud" aria-hidden="false">
+      <div id="hudClock">
+        <p id="clock">00:00</p>
+        <p id="dateLine">—</p>
+        <p id="weatherLine">Offline · clear field</p>
+      </div>
+      <div id="hudViz" aria-hidden="true"></div>
+      <div id="hudMedia"><span class="mark">▶</span><span id="nowPlaying">Quiet field — idle</span></div>
+      <div id="hudLaunch">
+        <button type="button" data-launch="Session">Games</button>
+        <button type="button" data-launch="Tools">Tools</button>
+        <button type="button" data-launch="Settings">Options</button>
+      </div>
+      <div id="hudCal">
+        <h2 id="calTitle">Calendar</h2>
+        <div id="calGrid"></div>
+      </div>
     </div>
     <div id="overlay">
       <div id="scrim" aria-hidden="true"></div>

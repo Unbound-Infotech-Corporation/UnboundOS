@@ -5,9 +5,10 @@ vertical tabs** along the bottom. No galaxy, no nebulas, no suns, no
 star-system nodes. Negative space is the point.
 
 The WinUI 3 shell stays the product. Category lists ease in over the
-same black field so Rainmeter skins (Phenix clock/temps, visualizers)
-remain visible. Home is a full-bleed Obsidian / black shell — not
-opaque WinUI chrome.
+same Obsidian field. A **packaged first-party HUD** (clock, date,
+weather stub, visualizer, media strip, launcher, calendar) sits on
+that field on Home **and** every main-menu list. Home is a full-bleed
+Obsidian / black shell — not opaque WinUI chrome.
 
 ## Art direction
 
@@ -36,8 +37,24 @@ list on the left over a translucent black wash. No camera zoom. Escape
 eases back to the tab row. Motion-off snaps focus and list states
 (no lift ease).
 
-Company cyan `#00F0FF` is the tab-tip material and the inner-page
-token. It is not a full-screen wash.
+Company cyan `#00F0FF` is the tab-tip material, HUD accent, and the
+inner-page token. It is not a full-screen wash.
+
+## Packaged HUD
+
+Default Home ships a first-party desktop suite — original Unbound UI,
+inspired by clean Rainmeter desktops, **not** a Rainmeter install:
+
+- Large thin clock (local time) + date
+- Weather-style line (offline stub until a live source exists)
+- Vertical cyan visualizer (freezes when Motion is off)
+- Slim now-playing strip (binds later; idle copy for now)
+- Text launcher: Games / Tools / Options
+- Right-side month calendar
+
+Settings → **Home HUD** hides or shows this chrome. `?hud=0` hides it
+in the browser preview. The HUD stays up when a category list opens
+so Hardware…Mods keep one theme.
 
 ## Keys
 
@@ -84,24 +101,24 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
 - **WebView2 + HTML studio tabs.** `three.min.js` and `home-plate.png`
   remain unused look-dev / leftover vendor. No WebGL required for Home.
 - If WebView2 is missing, Enter still opens the WinUI page.
-- Quiet Home HUD (movable clock / temps / load) and SET / PRFL glyphs stay optional.
+- SET / PRFL glyphs stay discreet. Packaged HUD is on by default
+  (Settings → Home HUD). Movable temp plaques remain optional.
 
 Look-dev: `Assets/Cube/index.html?preview=1`.
 Options: `?preview=1&open=options` (KeyO in the browser preview).
 Games / Tools: `?preview=1&open=games` or `?open=tools`.
 
-## Rainmeter
+## Rainmeter (optional)
 
-Home stays a **transparent / black full-bleed** WebView so Rainmeter
-overlays sit on top of the empty field. Do not paint an opaque WinUI
-slab over Home. See [overlay-addon.md](overlay-addon.md). Recommended
-theme is **Phenix**; recommended clock skin is **Minimalistic Clock**.
+Rainmeter is **not** required for this look. See
+[overlay-addon.md](overlay-addon.md). Home stays a black full-bleed
+WebView so optional skins can still sit on top if the user installs
+them later.
 
 ## Home widgets
 
-Light-grey **movable** plaques for honest basics. Default stack sits
-on the **right** (`X = 0.84`, past `ListKeepoutX` 0.48) so plaques
-rest beside the left titles list and above the tab row. Master
+The **packaged HUD** is the default theme. Light-grey **movable**
+temp/load plaques remain as extras on the right (`X = 0.84`). Master
 visibility is Settings → Home HUD.
 
 List type is **Diavlo** (Jos Buivenga / exljbris), bundled under

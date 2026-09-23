@@ -52,7 +52,8 @@
     focus: 0,
     origin: "top",
     overlayTitle: "",
-    overlayFront: ""
+    overlayFront: "",
+    hud: params.get("hud") !== "0"
   };
 
   let drag = null;
@@ -80,6 +81,74 @@
 
   function syncMotionClass() {
     document.body.classList.toggle("reduce-motion", !state.motion);
+  }
+
+  function syncHudClass() {
+    document.body.classList.toggle("hud-off", !state.hud);
+  }
+
+  function pad(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function tickClock() {
+    const now = new Date();
+    const clock = document.getElementById("clock");
+    const dateLine = document.getElementById("dateLine");
+    if (clock) clock.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    if (dateLine) {
+      dateLine.textContent = now.toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+      });
+    }
+  }
+
+  function buildViz() {
+    const root = document.getElementById("hudViz");
+    if (!root) return;
+    root.innerHTML = "";
+    for (let i = 0; i < 22; i++) {
+      const bar = document.createElement("span");
+      bar.className = "viz-bar";
+      bar.style.animationDelay = `${(i % 11) * 0.11}s`;
+      bar.style.animationDuration = `${1.05 + (i % 5) * 0.12}s`;
+      root.appendChild(bar);
+    }
+  }
+
+  function buildCalendar() {
+    const grid = document.getElementById("calGrid");
+    const title = document.getElementById("calTitle");
+    if (!grid) return;
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    if (title) {
+      title.textContent = now.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+    }
+    const first = new Date(year, month, 1).getDay();
+    const days = new Date(year, month + 1, 0).getDate();
+    const dow = ["S", "M", "T", "W", "T", "F", "S"];
+    const cells = dow.map((d) => `<span class="dow">${d}</span>`);
+    for (let i = 0; i < first; i++) cells.push("<span></span>");
+    for (let d = 1; d <= days; d++) {
+      const on = d === now.getDate() ? " today" : "";
+      cells.push(`<span class="${on.trim()}">${d}</span>`);
+    }
+    grid.innerHTML = cells.join("");
+  }
+
+  function launchCategory(id) {
+    if (hosted) {
+      send({ v: 1, type: "pick", face: id === "Settings" ? "Settings" : id });
+      send({ v: 1, type: "activate" });
+      return;
+    }
+    setTab(tabIndexOf(id), !state.motion);
+    if (id === "Settings") previewOpenOptions();
+    else previewOpen("top");
   }
 
   function buildTabs() {
@@ -138,7 +207,10 @@
     if (Array.isArray(data.faces) && data.faces.length) state.faces = data.faces;
     if (data.motion === false) state.motion = false;
     if (data.motion === true) state.motion = true;
+    if (data.hud === false) state.hud = false;
+    if (data.hud === true) state.hud = true;
     syncMotionClass();
+    syncHudClass();
     if (state.overlay) return;
     if (isOptionsFront(data.front, data.node)) setTab(tabIndexOf("Settings"), !state.motion);
     else if (data.front) setTab(tabIndexOf(data.front), !state.motion);
@@ -210,6 +282,7 @@
     state.focus = focus;
     state.origin = origin;
     studioEl.classList.add("is-overlay");
+    document.body.classList.add("is-overlay");
     if (listHeadEl) listHeadEl.textContent = state.overlayTitle || TAB_DEFS[state.tab].title;
     overlayEl.classList.remove("show", "ready", "motion");
     if (!instant && state.motion) overlayEl.classList.add("motion");
@@ -223,6 +296,7 @@
   function hideOverlay(instant) {
     state.overlay = false;
     studioEl.classList.remove("is-overlay");
+    document.body.classList.remove("is-overlay");
     const fade = !instant && state.motion && overlayEl.classList.contains("ready");
     overlayEl.classList.remove("show");
     if (!fade) {
@@ -366,7 +440,15 @@
   }
 
   buildTabs();
+  buildViz();
+  buildCalendar();
+  tickClock();
+  window.setInterval(tickClock, 1000);
+  document.getElementById("hudLaunch")?.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => launchCategory(btn.getAttribute("data-launch") || "Session"));
+  });
   syncMotionClass();
+  syncHudClass();
   window.addEventListener("pointerdown", onPointerDown);
   window.addEventListener("pointerup", onPointerUp);
   window.addEventListener("keydown", onKey);

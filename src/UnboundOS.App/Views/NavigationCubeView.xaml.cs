@@ -14,6 +14,7 @@ namespace UnboundOS.App.Views;
 public sealed partial class NavigationCubeView : UserControl
 {
     private IUiMotionPolicy? _motion;
+    private IHomeHudSettings? _hudSettings;
     private CubePose _pose = CubePose.Home;
     private CubeDestination _announced = CubeDestination.Session;
     private CubeDestination? _pendingOpen;
@@ -70,6 +71,12 @@ public sealed partial class NavigationCubeView : UserControl
             _motion.Changed += OnMotionChanged;
         }
 
+        _hudSettings = TryGet<IHomeHudSettings>();
+        if (_hudSettings is not null)
+        {
+            _hudSettings.Changed += OnHudChanged;
+        }
+
         AnnounceCurrent();
         await LoadCatalogsAsync();
         await StartSceneAsync();
@@ -81,6 +88,12 @@ public sealed partial class NavigationCubeView : UserControl
         {
             _motion.Changed -= OnMotionChanged;
             _motion = null;
+        }
+
+        if (_hudSettings is not null)
+        {
+            _hudSettings.Changed -= OnHudChanged;
+            _hudSettings = null;
         }
 
         if (CubeWeb.CoreWebView2 is not null)
@@ -144,6 +157,9 @@ public sealed partial class NavigationCubeView : UserControl
     }
 
     private void OnMotionChanged(object? sender, EventArgs e) =>
+        _ = DispatcherQueue.TryEnqueue(() => PushState(burst: false));
+
+    private void OnHudChanged(object? sender, EventArgs e) =>
         _ = DispatcherQueue.TryEnqueue(() => PushState(burst: false));
 
     private void OnWebMessage(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
@@ -688,7 +704,14 @@ public sealed partial class NavigationCubeView : UserControl
         }
 
         var json = CubeBridge.ToJson(
-            CubeBridge.State(_pose, _pose.YawDegrees, _pose.PitchDegrees, AllowMotion, burst, _optionsTab));
+            CubeBridge.State(
+                _pose,
+                _pose.YawDegrees,
+                _pose.PitchDegrees,
+                AllowMotion,
+                burst,
+                _optionsTab,
+                _hudSettings?.HudEnabled ?? true));
         CubeWeb.CoreWebView2.PostWebMessageAsJson(json);
     }
 

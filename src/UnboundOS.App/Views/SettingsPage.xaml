@@ -78,15 +78,15 @@
                     <TextBlock Style="{StaticResource PanelLabelText}" Text="HOME HUD" />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
-                        Text="Light-grey movable widgets on Home. Drag them on the galaxy. Defaults sit on the right so they stay clear of the category list. Positions and look persist. This does not restore the top menu." />
+                        Text="Packaged Unbound HUD on Home and category lists: clock, date, visualizer, media strip, launcher, calendar. Off hides that chrome. Movable temp plaques stay optional on the right. This does not restore the top menu." />
                     <ToggleSwitch
                         MinHeight="48"
                         IsOn="{x:Bind ViewModel.HomeHudEnabled, Mode=TwoWay}"
                         OnContent="On"
                         OffContent="Off"
-                        Header="Home widgets"
-                        AutomationProperties.Name="Home widgets"
-                        AutomationProperties.HelpText="Hides the clock, temperature, and load widgets on Home." />
+                        Header="Home HUD"
+                        AutomationProperties.Name="Home HUD"
+                        AutomationProperties.HelpText="Shows or hides the packaged Home HUD (clock, date, viz, calendar)." />
                     <ToggleSwitch
                         MinHeight="48"
                         IsOn="{x:Bind ViewModel.HomeClockEnabled, Mode=TwoWay}"

@@ -224,6 +224,7 @@ public sealed class NavigationCubeTests
         Assert.Contains("\"node\":0", json, StringComparison.Ordinal);
         Assert.Contains("\"overlay\":\"none\"", json, StringComparison.Ordinal);
         Assert.Contains("\"burst\":true", json, StringComparison.Ordinal);
+        Assert.Contains("\"hud\":true", json, StringComparison.Ordinal);
         Assert.Contains("\"accent\":\"#6FA896\"", json, StringComparison.Ordinal);
         Assert.Contains("\"id\":\"Tools\"", json, StringComparison.Ordinal);
         Assert.DoesNotContain("PlayStation", json, StringComparison.OrdinalIgnoreCase);

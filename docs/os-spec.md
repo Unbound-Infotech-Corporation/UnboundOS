@@ -16,14 +16,13 @@ studio field with vertical teal-tipped tabs. Restrained professional
 buttons. No ads. No silent overclock. Treat **x64** as the WinUI
 platform.
 
-Home navigation is a **tab bar** (WebView2 hosting HTML studio tabs,
-not Unreal in-process). Tabs: Hardware, Files, Network, Games, Options,
-Tools, Mods. Left/right move focus. **Up** opens that tab’s list from
-the bottom; **Down** opens it from the top. The list is titles-only on
-the left over translucent black. Quiet **movable** light-grey widgets
-(clock / CPU / GPU / package / honest CPU load) sit on the right by
-default; positions persist. Architecture:
-[docs/home-nav.md](home-nav.md).
+Home navigation is a **tab bar** plus a **packaged first-party HUD**
+(WebView2 hosting HTML, not Unreal). Tabs: Hardware, Files, Network,
+Games, Options, Tools, Mods. Left/right move focus. **Up** opens that
+tab’s list from the bottom; **Down** opens it from the top. The list
+is titles-only on the left over the same Obsidian field and HUD. Quiet
+**movable** light-grey temp plaques can sit on the right. Architecture:
+[docs/home-nav.md](home-nav.md). Offline NIC pack: [docs/offline-nic-pack.md](offline-nic-pack.md).
 
 ## 1. OOBE / initial setup last step
 
