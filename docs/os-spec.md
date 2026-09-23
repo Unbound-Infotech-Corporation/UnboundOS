@@ -16,7 +16,7 @@ studio field with vertical teal-tipped tabs. Restrained professional
 buttons. No ads. No silent overclock. Treat **x64** as the WinUI
 platform.
 
-Home navigation is a **tab bar** (WebView2 hosting packaged Three.js,
+Home navigation is a **tab bar** (WebView2 hosting HTML studio tabs,
 not Unreal in-process). Tabs: Hardware, Files, Network, Games, Options,
 Tools, Mods. Left/right move focus. **Up** opens that tab’s list from
 the bottom; **Down** opens it from the top. The list is titles-only on

@@ -11,12 +11,13 @@ opaque WinUI chrome.
 
 ## Art direction
 
-**Studio product shot.** Runtime Home is a small Three.js scene:
+**Studio product shot.** Runtime Home is HTML/CSS in the WebView
+(Three.js stays vendored, unused):
 
 - Background is Obsidian `#05070A` (or true black). Empty and calm.
-- Tabs are tall thin blades that rise from a dark reflective floor.
-- Soft key + cool fill + rim light. Contact blobs and shadow-mapped
-  drop shadows under each blade — grounded, not flat UI chrome.
+- Tabs sit along the **bottom** as tall thin blades that rise toward
+  the top. Soft key + fill drop shadows under/around each blade —
+  grounded product shot, not flat UI chrome.
 - The **tip** of every tab is brand cyan-teal `#00F0FF`. The body is
   dark metal / charcoal. No neon flood.
 - Focus lifts the blade a few millimeters, strengthens the shadow, and
@@ -70,7 +71,7 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
                  ├─ C#  HomeGalaxy / CubePose / CubeCatalog / CubeBrowse
                  │      owns tab focus (incl. Options), list origin, page nav
                  │
-                 └─ WebView2  →  packaged Three.js studio (Assets/Cube)
+                 └─ WebView2  →  packaged HTML studio tabs (Assets/Cube)
                         JSON: state / open / focus / close / reset
                               ready / turn / pick / dragEnd / activate /
                               opened / cycle / select / back
@@ -79,9 +80,9 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
 ```
 
 - **Not Unreal.** UE is not a runtime dependency.
-- **WebView2 + Three.js r158.** Studio tabs + floor at runtime.
-  `home-plate.png` is unused look-dev only.
-- If WebView2 or WebGL is missing, Enter still opens the WinUI page.
+- **WebView2 + HTML studio tabs.** `three.min.js` and `home-plate.png`
+  remain unused look-dev / leftover vendor. No WebGL required for Home.
+- If WebView2 is missing, Enter still opens the WinUI page.
 - Quiet Home HUD (movable clock / temps / load) and SET / PRFL glyphs stay optional.
 
 Look-dev: `Assets/Cube/index.html?preview=1`.

@@ -6,7 +6,7 @@ A public Windows 11 **console-style shell** by **[Unbound Infotech Corporation](
 
 UnboundOS does **not** replace Windows. It applies a focused gaming / streaming posture — snapshot NICs, clear denylist junk, protect games and anticheat — then restores the desktop when you exit.
 
-The shell is a living-room home: on Home a **black studio field** holds a row of **narrow vertical tabs** (WebView2 + packaged Three.js — not a cube, not a galaxy). **Left/Right** move focus. The focused tab lifts slightly and shows its **Diavlo** name above. **Up** opens that tab’s list from the bottom; **Down** opens it from the top — titles sit on the left over translucent black. Games uses the Steam library when present. **SET** opens Options on the same field (not a flat window first). Profiles stays a discreet corner glyph. A quiet Home HUD can show local time and CPU/GPU temps; hide them in Settings. The old Settings tile that showed the letter “I” is gone.
+The shell is a living-room home: on Home a **black studio field** holds a row of **narrow vertical tabs** (WebView2 + HTML — not a cube, not a galaxy). **Left/Right** move focus. The focused tab lifts slightly and shows its **Diavlo** name above. **Up** opens that tab’s list from the bottom; **Down** opens it from the top — titles sit on the left over translucent black. Games uses the Steam library when present. **SET** opens Options on the same field (not a flat window first). Profiles stays a discreet corner glyph. A quiet Home HUD can show local time and CPU/GPU temps; hide them in Settings. The old Settings tile that showed the letter “I” is gone.
 
 OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
 
@@ -150,7 +150,7 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 
 ## Design notes
 
-- Console-style shell: **Home tabs** (WebView2 + packaged Three.js, not Unreal/Unity in-process) plus inner-page tile rows. Home hides top chrome so the black field and tabs are the only focal point
+- Console-style shell: **Home tabs** (WebView2 + HTML studio blades, not Unreal/Unity in-process) plus inner-page tile rows. Home hides top chrome so the black field and tabs are the only focal point
 - Home motion: quiet tab lift and silky category lists on Up/Down. Instant when Settings, Windows animations, or a live session say off
 - Keyboard: Left/Right move tabs, Up/Down open that list from bottom/top, Enter opens, Escape returns. Mouse: drag / flick / click a tab. Gamepad D-pad / A is mapped in Core for a later stub
 - Atmosphere: Home is an Obsidian studio field. Inner pages keep Unbound cyan / cobalt chrome. Circuit amber remains a seasoning on tiles

@@ -7,21 +7,21 @@
   <style>
     /* A font by Jos Buivenga (exljbris) -> www.exljbris.com */
     @font-face {
-      font-family: "Diavlo";
+      font-family: "Diavlo Book";
       src: url("../Fonts/Diavlo_BOOK_II_37.otf") format("opentype");
       font-weight: 400;
       font-style: normal;
       font-display: swap;
     }
     @font-face {
-      font-family: "Diavlo";
+      font-family: "Diavlo Medium";
       src: url("../Fonts/Diavlo_MEDIUM_II_37.otf") format("opentype");
       font-weight: 500;
       font-style: normal;
       font-display: swap;
     }
     @font-face {
-      font-family: "Diavlo";
+      font-family: "Diavlo Bold";
       src: url("../Fonts/Diavlo_BOLD_II_37.otf") format("opentype");
       font-weight: 700;
       font-style: normal;
@@ -32,7 +32,8 @@
       --star: #F4EFE2;
       --muted: #8A8A96;
       --cyan: #00F0FF;
-      --list-font: "Diavlo", "Segoe UI Variable", "Segoe UI", sans-serif;
+      --list-font: "Diavlo Book", "Diavlo Medium", "Diavlo Bold", "Segoe UI Variable", "Segoe UI", sans-serif;
+      --blade-w: 15px;
     }
     html, body {
       margin: 0;
@@ -44,24 +45,162 @@
       font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
       user-select: none;
       -webkit-user-select: none;
+      color-scheme: dark;
     }
-    #stage, #gl {
+    #stage {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      display: block;
       background: #05070A;
     }
-    #fallback {
+    #studio {
       position: absolute;
       inset: 0;
-      display: grid;
-      place-items: center;
-      background: #05070A;
-      color: var(--star);
+      pointer-events: none;
     }
-    #fallback[hidden] { display: none; }
+    #floor {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 24vh;
+      background: radial-gradient(ellipse 48% 90% at 50% 100%,
+        rgba(14, 18, 24, 0.72) 0%,
+        rgba(5, 7, 10, 0) 74%);
+    }
+    #tabRow {
+      position: absolute;
+      left: 50%;
+      bottom: 9.5vh;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      width: min(880px, 68vw);
+      height: clamp(280px, 44vh, 580px);
+      pointer-events: auto;
+    }
+    .tab {
+      position: relative;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+    .blade {
+      position: relative;
+      width: var(--blade-w);
+      height: 100%;
+      border-radius: 1.5px 1.5px 0 0;
+      background:
+        linear-gradient(90deg,
+          rgba(255, 255, 255, 0.18) 0%,
+          rgba(255, 255, 255, 0.05) 16%,
+          rgba(0, 0, 0, 0) 40%,
+          rgba(0, 0, 0, 0.28) 100%),
+        linear-gradient(180deg,
+          #8a94a0 0%,
+          #5c6570 20%,
+          #3a414a 56%,
+          #22272d 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.045),
+        inset 1px 0 0 rgba(255, 255, 255, 0.16),
+        inset -1px 0 0 rgba(0, 0, 0, 0.3),
+        10px 22px 32px rgba(0, 0, 0, 0.46),
+        3px 8px 12px rgba(0, 0, 0, 0.4),
+        0 2px 3px rgba(0, 0, 0, 0.32);
+    }
+    .tab.is-focus .blade {
+      background:
+        linear-gradient(90deg,
+          rgba(255, 255, 255, 0.22) 0%,
+          rgba(255, 255, 255, 0.07) 16%,
+          rgba(0, 0, 0, 0) 40%,
+          rgba(0, 0, 0, 0.24) 100%),
+        linear-gradient(180deg,
+          #9aa4b0 0%,
+          #6a7380 20%,
+          #454d56 56%,
+          #2a3036 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        inset 1px 0 0 rgba(255, 255, 255, 0.2),
+        inset -1px 0 0 rgba(0, 0, 0, 0.28),
+        14px 34px 46px rgba(0, 0, 0, 0.55),
+        5px 14px 18px rgba(0, 0, 0, 0.44),
+        0 4px 6px rgba(0, 0, 0, 0.34);
+      transform: translateY(-16px);
+    }
+    .tip {
+      position: absolute;
+      top: 0;
+      left: -1px;
+      right: -1px;
+      height: 8px;
+      border-radius: 1.5px 1.5px 0 0;
+      background: linear-gradient(180deg, #9cffff 0%, #00F0FF 42%, #00c4d4 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    }
+    .tab.is-focus .tip {
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        0 0 10px rgba(0, 240, 255, 0.22);
+    }
+    .tab-label {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 16px);
+      transform: translateX(-50%);
+      margin: 0;
+      color: #F4F7FA;
+      font-family: "Diavlo Medium", var(--list-font);
+      font-weight: 500;
+      font-size: clamp(26px, 2.2vw, 36px);
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+      white-space: nowrap;
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0, "calt" 0;
+      text-shadow: 0 6px 22px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .tab.is-focus .tab-label { opacity: 1; }
+    #studio.is-overlay .tab-label { opacity: 0; }
+    #studio.is-overlay .tab:not(.is-focus) { opacity: 0.42; }
+    .contact {
+      position: absolute;
+      left: 50%;
+      bottom: -2px;
+      width: 40px;
+      height: 12px;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5) 0%, transparent 72%);
+      filter: blur(4px);
+      pointer-events: none;
+    }
+    .tab.is-focus .contact {
+      width: 50px;
+      opacity: 0.92;
+      transform: translateX(-50%) translateY(-8px);
+    }
+    body:not(.reduce-motion) .blade,
+    body:not(.reduce-motion) .contact,
+    body:not(.reduce-motion) .tab-label,
+    body:not(.reduce-motion) .tab {
+      transition:
+        transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        background 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+    }
     #overlay {
       position: absolute;
       inset: 0;
@@ -167,56 +306,15 @@
         0 1px 14px rgba(0, 0, 0, 0.85);
     }
     .row .title { display: block; }
-    #nodeLabel {
-      position: absolute;
-      left: 0;
-      top: 0;
-      z-index: 2;
-      margin: 0;
-      padding: 0;
-      pointer-events: none;
-      font-family: var(--list-font);
-      font-weight: 500;
-      color: #F4F7FA;
-      font-size: clamp(26px, 2.4vw, 36px);
-      letter-spacing: 0.08em;
-      line-height: 1.1;
-      white-space: nowrap;
-      text-shadow:
-        0 1px 0 rgba(0, 0, 0, 0.85),
-        0 4px 18px rgba(0, 0, 0, 0.55),
-        0 12px 32px rgba(0, 0, 0, 0.35);
-    }
-    #nodeLabel[hidden] { display: none; }
-    .preview-caption {
-      display: none;
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 22px;
-      text-align: center;
-      pointer-events: none;
-      text-shadow: 0 2px 18px #000;
-    }
-    body.preview .preview-caption { display: block; }
-    .preview-caption h1 {
-      margin: 0;
-      font-family: var(--list-font);
-      font-size: 20px;
-      font-weight: 500;
-    }
-    .preview-caption p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
+    .preview-caption { display: none; }
   </style>
 </head>
 <body>
   <div id="stage">
-    <canvas id="gl" aria-hidden="true"></canvas>
-    <div id="nodeLabel" hidden aria-live="polite"></div>
-    <div id="fallback" hidden>Home needs WebGL.</div>
+    <div id="studio">
+      <div id="floor" aria-hidden="true"></div>
+      <div id="tabRow" role="tablist" aria-label="Home"></div>
+    </div>
     <div id="overlay">
       <div id="scrim" aria-hidden="true"></div>
       <div id="listPane">
@@ -229,7 +327,6 @@
     <h1 id="previewTitle">Games</h1>
     <p id="previewHint">Left/Right move tabs · Up/Down open this list</p>
   </div>
-  <script src="three.min.js"></script>
   <script src="cube-scene.js"></script>
 </body>
 </html>

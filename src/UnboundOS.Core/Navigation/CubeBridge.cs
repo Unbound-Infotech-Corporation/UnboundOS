@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace UnboundOS.Core.Navigation;
 
 /// <summary>
-/// JSON contract between the WinUI shell and the packaged WebGL Home host.
+/// JSON contract between the WinUI shell and the packaged HTML Home host.
 /// C# owns node focus, overlay, and page navigation. The scene owns rendering.
 /// </summary>
 public sealed record CubeFacePayload(

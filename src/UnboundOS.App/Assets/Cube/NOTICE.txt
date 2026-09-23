@@ -17,7 +17,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
 Home look-dev
 -------------
-`home-plate.png` may remain in the tree as unused look-dev. Runtime Home
-is an original studio tab bar on Obsidian `#05070A` (vertical blades,
-cyan-teal tips, soft shadows). No galaxy, nebula, or sun is drawn.
-No NASA logo is drawn.
+`home-plate.png` and this `three.min.js` may remain in the tree as
+unused look-dev / leftover vendor. Runtime Home is an original HTML
+studio tab bar on Obsidian `#05070A` (vertical blades, cyan-teal tips,
+soft drop shadows). No galaxy, nebula, or sun is drawn. No NASA logo
+is drawn. No WebGL is required for Home.
