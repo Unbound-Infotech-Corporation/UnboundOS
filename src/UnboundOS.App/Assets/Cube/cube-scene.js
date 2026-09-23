@@ -1250,7 +1250,7 @@
       float fbm(vec3 p) {
         float a = 0.5;
         float s = 0.0;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
           s += a * vnoise(p);
           p = p * 2.11 + 13.7;
           a *= 0.5;
@@ -1260,7 +1260,7 @@
       float fbm2(vec2 p) {
         float a = 0.5;
         float s = 0.0;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
           vec2 i2 = floor(p);
           vec2 f = fract(p);
           f = f * f * (3.0 - 2.0 * f);
@@ -1274,22 +1274,6 @@
           a *= 0.5;
         }
         return s;
-      }
-      float worley(vec3 p) {
-        vec3 i = floor(p);
-        vec3 f = fract(p);
-        float d = 1.0;
-        for (int x = -1; x <= 1; x++) {
-          for (int y = -1; y <= 1; y++) {
-            for (int z = -1; z <= 1; z++) {
-              vec3 g = vec3(float(x), float(y), float(z));
-              vec3 o = hash3(i + g);
-              vec3 r = g + o - f;
-              d = min(d, dot(r, r));
-            }
-          }
-        }
-        return sqrt(d);
       }
       vec3 dipoleB(vec3 p, float seed) {
         vec3 m = normalize(vec3(0.22 * sin(seed), 1.0, 0.16 * cos(seed * 1.3)));
@@ -1360,97 +1344,86 @@
       vec2 spotPair(vec3 p, float seed, float amt) {
         float umbra = 0.0;
         float pen = 0.0;
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 5; i++) {
           vec3 c = hash3(vec3(seed * 0.41, float(i) * 2.77, 8.2)) * 2.0 - 1.0;
           c.y *= 0.36;
           c = normalize(c);
           float d = acos(clamp(dot(p, c), -1.0, 1.0));
-          float ru = 0.022 + hash(vec3(float(i), seed, 2.0)) * 0.038;
-          float rp = ru * (2.15 + amt * 0.35);
-          float um = smoothstep(ru, ru * 0.28, d);
-          float pe = smoothstep(rp, ru * 0.92, d) * (1.0 - um);
+          float ru = 0.02 + hash(vec3(float(i), seed, 2.0)) * 0.034;
+          float rp = ru * (2.2 + amt * 0.3);
+          float um = smoothstep(ru, ru * 0.3, d);
+          float pe = smoothstep(rp, ru * 0.9, d) * (1.0 - um);
           vec3 rel = p - c * 0.92;
           float fang = atan(rel.z, rel.x);
-          float fil = 0.52 + 0.48 * sin(fang * 13.0 + seed + float(i) * 1.7);
-          pe *= mix(1.0, fil, 0.7);
+          pe *= 0.55 + 0.45 * sin(fang * 14.0 + seed + float(i));
           umbra = max(umbra, um);
           pen = max(pen, pe);
         }
         return vec2(umbra, pen) * amt;
       }
-      float loopForest(vec3 p, vec3 B, float seed, float t) {
+      float plagePatch(vec3 p, float seed) {
         float acc = 0.0;
-        for (int i = 0; i < 10; i++) {
-          vec3 c = hash3(vec3(seed, float(i) * 5.13, 3.7)) * 2.0 - 1.0;
-          c.y *= 0.58;
+        for (int i = 0; i < 4; i++) {
+          vec3 c = hash3(vec3(seed + 1.7, float(i) * 4.9, 6.1)) * 2.0 - 1.0;
+          c.y *= 0.5;
           c = normalize(c);
           float d = acos(clamp(dot(p, c), -1.0, 1.0));
-          float r1 = 0.03 + hash(vec3(float(i), seed, 1.0)) * 0.055;
-          float r2 = r1 * 1.82;
-          float ring = exp(-abs(d - r1) * 95.0) + exp(-abs(d - r2) * 72.0) * 0.62;
-          vec3 axis = normalize(cross(c, B + vec3(0.02, 0.18, 0.0)));
-          float streak = pow(abs(dot(normalize(p - c + 1e-4), axis)), 2.4);
-          acc = max(acc, ring * (0.5 + streak * 0.75));
+          acc = max(acc, exp(-d * d * 70.0));
         }
-        float threads = pow(max(0.0, fbm(vec3(dot(p, B) * 26.0, length(cross(p, B)) * 10.0, seed + t)) - 0.46), 1.65);
-        return acc + threads * 1.15;
+        return acc;
       }
       void main() {
         vec3 nrm = normalize(vNormal);
         vec3 viewDir = normalize(cameraPosition - vWorldPos);
         float mu = clamp(dot(nrm, viewDir), 0.0, 1.0);
-        float limb = clamp(0.16 + 1.08 * mu - 0.22 * mu * mu, 0.1, 1.18);
-        float atmos = smoothstep(0.0, 0.07, mu);
+        float limbHmi = clamp(0.15 + 1.1 * mu - 0.24 * mu * mu, 0.1, 1.16);
+        float limbEuv = clamp(0.68 + 0.4 * mu, 0.45, 1.12);
+        float atmos = smoothstep(0.0, 0.06, mu);
         vec3 p = normalize(vObjectPos);
-        float boil = uTime * (0.02 + uActivity * 0.016);
-        vec3 warp = vec3(fbm(p * 2.9 + uSeed), fbm(p * 2.9 + uSeed + 19.0), fbm(p * 2.9 + uSeed + 41.0)) - 0.5;
-        vec3 q = normalize(p + warp * 0.08);
+        float boil = uTime * (0.018 + uActivity * 0.014);
+        float w1 = fbm(p * 2.7 + uSeed);
+        vec3 q = normalize(p + (vec3(w1, fbm(p * 2.7 + uSeed + 19.0), w1 * 0.7) - 0.5) * 0.1);
         vec2 uv = vec2(atan(q.z, q.x), q.y);
-        float superG = worley2(uv * vec2(8.5, 11.5) + uSeed);
-        float meso = worley2(uv * vec2(uGran * 0.34, uGran * 0.44) + vec2(0.0, boil * 0.18));
-        float fine = worley2(uv * vec2(uGran * 1.05, uGran * 1.28) + vec2(boil * 0.26, uSeed));
-        float micro = hash2(floor(uv * uGran * 3.6 + boil * 0.5));
-        float gran = mix(smoothstep(0.03, 0.52, meso), smoothstep(0.015, 0.4, fine), 0.72);
-        gran = mix(gran, micro, 0.1);
-        float superLane = pow(1.0 - smoothstep(0.04, 0.56, superG), 1.55);
-        float hx = worley2(uv * vec2(uGran, uGran) + vec2(0.01, 0.0));
-        float hy = worley2(uv * vec2(uGran, uGran) + vec2(0.0, 0.01));
-        float relief = clamp(0.48 + (fine - hx) * 9.0 + (fine - hy) * 4.5, 0.22, 1.35);
+        float superG = worley2(uv * vec2(7.5, 10.0) + uSeed * 0.2);
+        float meso = worley2(uv * vec2(uGran * 0.38, uGran * 0.5) + vec2(boil * 0.12, uSeed));
+        float fine = worley2(uv * vec2(uGran * 1.15, uGran * 1.4) + vec2(boil * 0.22, 0.0));
+        float gran = mix(smoothstep(0.04, 0.5, meso), smoothstep(0.02, 0.38, fine), 0.74);
+        gran = mix(gran, hash2(floor(uv * uGran * 3.2)), 0.08);
+        float walls = pow(1.0 - smoothstep(0.05, 0.58, superG), 1.7);
+        float relief = clamp(0.5 + (fine - worley2(uv * uGran + vec2(0.012, 0.0))) * 8.0, 0.28, 1.28);
         vec3 B = dipoleB(q, uSeed);
-        float along = fbm(vec3(dot(q, B) * 20.0, q.y * 4.4, uSeed + boil * 0.45));
-        float darkFil = pow(1.0 - along, 2.35);
-        float loops = loopForest(q, B, uSeed, boil) * uActivity;
+        float along = fbm(vec3(dot(q, B) * 16.0, q.y * 5.0, uSeed + boil * 0.4));
+        float ridge = 1.0 - abs(along * 2.0 - 1.0);
+        float network = max(pow(ridge, 3.2), walls);
+        float darkChan = smoothstep(0.38, 0.5, along) * smoothstep(0.68, 0.54, along);
+        float plage = plagePatch(q, uSeed) * (0.55 + fine * 0.45);
         vec2 sp = spotPair(q, uSeed, uSpotAmt);
-        float faculae = superLane * pow(1.0 - mu, 0.75) * (0.28 + uActivity * 0.55);
+        float faculae = walls * pow(1.0 - mu, 0.7) * (0.25 + uActivity * 0.5);
         vec3 flareDir = normalize(vec3(sin(uSeed * 1.7), 0.2, cos(uSeed * 1.7)));
         float flarePatch = pow(max(0.0, dot(q, flareDir)), 8.5) * uFlare;
         vec3 cont = mix(uLane, uPhot, gran);
-        cont = mix(cont, uHot, gran * fine * 0.3);
-        cont *= mix(0.8, 1.2, fbm(q * 3.2 + uSeed));
-        cont *= 0.46 + relief * 0.78;
-        float mott = pow(meso, 1.25);
-        vec3 chr = mix(uLane * 0.72, uPhot, mott);
-        chr = mix(chr, uHot, pow(fine, 2.1) * 0.48);
-        chr += uHot * superLane * 0.28;
-        chr *= 0.7 + relief * 0.4;
-        vec3 euv = mix(uLane * 0.3, uPhot * 0.62, 0.22 + superG * 0.22);
-        euv = mix(euv, uGold, superLane * 0.82);
-        euv = mix(euv, uHot, pow(1.0 - meso, 2.05) * 0.5);
-        euv += uHot * loops * 1.45;
-        euv += uGold * pow(max(0.0, along - 0.42), 1.6) * uStyle * 0.7;
-        euv = mix(euv, uLane * 0.2, darkFil * 0.58 * uStyle);
+        cont = mix(cont, uHot, gran * fine * 0.22);
+        cont *= 0.5 + relief * 0.68;
+        float mott = pow(meso, 1.2);
+        vec3 chr = mix(uLane * 0.65, uPhot, mott);
+        chr = mix(chr, uHot, pow(fine, 2.0) * 0.42 + walls * 0.2);
+        vec3 euv = mix(uLane * 0.38, uPhot * 0.7, 0.28 + network * 0.35);
+        euv = mix(euv, uGold, network * 0.7);
+        euv += uHot * plage * 0.95 * uActivity;
+        euv += uGold * pow(max(0.0, along - 0.48), 1.8) * 0.45;
+        euv = mix(euv, uLane * 0.16, darkChan * 0.85);
         float s171 = smoothstep(0.32, 0.92, uStyle);
         float s304 = clamp(1.0 - abs(uStyle - 0.54) * 2.3, 0.0, 1.0);
         vec3 col = mix(cont, chr, s304 * (1.0 - s171));
         col = mix(col, euv, s171);
-        col = mix(col, uLane * 0.36, sp.y);
+        col = mix(col, uLane * 0.34, sp.y);
         col = mix(col, uUmbra, sp.x);
-        col += uHot * faculae * (0.9 - s171 * 0.35);
-        col += uHot * flarePatch * 1.7;
-        col *= limb;
-        col += uGold * pow(1.0 - mu, 2.55) * (0.16 + uStyle * 0.5);
-        col *= 1.48;
-        col = col / (vec3(1.0) + col * 0.24);
+        col += uHot * faculae * (0.85 - s171 * 0.4);
+        col += uHot * flarePatch * 1.45;
+        col *= mix(limbHmi, limbEuv, s171);
+        col += uGold * pow(1.0 - mu, 2.6) * (0.12 + uStyle * 0.38);
+        col *= 1.22;
+        col = col / (vec3(1.0) + col * 0.3);
         col *= uFade * atmos;
         gl_FragColor = vec4(col, 1.0);
       }
@@ -1549,12 +1522,12 @@
         float fall = exp(-radial * (1.85 - uActivity * 0.5));
         float limbGlow = exp(-abs(r - 1.01) * 18.0);
         float loops = 0.0;
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 7; i++) {
           float seedi = hash2(vec2(uSeed, float(i) * 3.1));
-          float a0 = (seedi * 2.0 - 1.0) * 3.12 + t * 0.035;
-          float h = mix(0.11, 0.42, hash2(vec2(float(i), uSeed + 2.0))) * (0.72 + uActivity * 0.55);
-          float w = mix(0.055, 0.2, hash2(vec2(uSeed + 4.0, float(i))));
-          float thick = mix(16.0, 34.0, hash2(vec2(float(i) * 2.0, uSeed)));
+          float a0 = (seedi * 2.0 - 1.0) * 3.12 + t * 0.03;
+          float h = mix(0.12, 0.4, hash2(vec2(float(i), uSeed + 2.0))) * (0.72 + uActivity * 0.55);
+          float w = mix(0.05, 0.18, hash2(vec2(uSeed + 4.0, float(i))));
+          float thick = mix(18.0, 36.0, hash2(vec2(float(i) * 2.0, uSeed)));
           loops += loopArc(p, a0, h, w, thick);
         }
         loops *= (0.28 + uStyle * 0.95) * (0.5 + uActivity * 0.65);
@@ -1572,9 +1545,9 @@
         float eject = uFlare * exp(-abs(dang) * 3.8) * exp(-abs(r - (1.08 + uFlare * 0.32)) * 6.2) * (0.55 + swirl);
         float kernel = uFlare * exp(-abs(r - 1.012) * 20.0) * exp(-abs(dang) * 5.4);
         float haze = 0.0;
-        haze += limbGlow * (0.38 + uStyle * 0.4);
-        haze += stream * fall * (0.5 + uActivity * 0.55);
-        haze += sheet * fall * 0.22;
+        haze += limbGlow * (0.22 + uStyle * 0.28);
+        haze += stream * fall * (0.42 + uActivity * 0.45);
+        haze += sheet * fall * 0.16;
         haze += swirl * fall * 0.2 * uStyle;
         haze += loops;
         haze += prom * (0.85 + uFlare);
@@ -1665,7 +1638,7 @@
     const group = new THREE.Group();
     group.visible = false;
     const body = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 160, 120),
+      new THREE.SphereGeometry(1, 96, 72),
       makeSunMaterial(sunVert(), photosphereFrag())
     );
     const chromo = new THREE.Mesh(
@@ -1673,7 +1646,7 @@
       makeSunMaterial(sunVert(), chromoFrag(), { transparent: true, additive: true })
     );
     const shell = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 80, 56),
+      new THREE.SphereGeometry(1, 64, 48),
       makeSunMaterial(sunVert(), coronaShellFrag(), { transparent: true, additive: true, side: THREE.BackSide })
     );
     const sheet = new THREE.Mesh(
