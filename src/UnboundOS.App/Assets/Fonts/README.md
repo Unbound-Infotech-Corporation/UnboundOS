@@ -1,18 +1,15 @@
 # Bundled fonts
 
-UnboundOS ships Latin subsets of the Unbound Infotech site fonts so the
-WinUI shell matches [unboundinfotech.com](https://unboundinfotech.com)
-without a machine-wide install, plus **Diavlo** for Home category lists.
+UnboundOS ships **Diavlo** as the Super Clean shell typeface for every
+menu, page, and Home surface, plus Inter / JetBrains Mono as unused
+fallbacks that stay in the tree for license completeness.
 
 | File | Family name (after `#`) | Use |
 |------|-------------------------|-----|
-| `Inter-Regular.ttf` | `Inter` | Body UI |
-| `Inter-SemiBold.ttf` | `Inter SemiBold` | Section titles, buttons |
-| `Inter-Bold.ttf` | `Inter` | Hero / brand display |
-| `JetBrainsMono-Regular.ttf` | `JetBrains Mono` | Telemetry, logs, crop math |
-| `Diavlo_BOOK_II_37.otf` | `Diavlo Book` | Home list titles (regular) |
-| `Diavlo_MEDIUM_II_37.otf` | `Diavlo Medium` | Home list headers / node label |
-| `Diavlo_BOLD_II_37.otf` | `Diavlo Bold` | Home list selection |
+| `Diavlo_BOOK_II_37.otf` | `Diavlo Book` | Body, unfocused lists, help |
+| `Diavlo_MEDIUM_II_37.otf` | `Diavlo Medium` | Focus, titles, clock |
+| `Diavlo_BOLD_II_37.otf` | `Diavlo Bold` | Strong display if needed |
+| `Inter-*.ttf` / `JetBrainsMono-Regular.ttf` | unused in Super Clean | License files stay |
 
 ## Diavlo (exljbris / Jos Buivenga)
 

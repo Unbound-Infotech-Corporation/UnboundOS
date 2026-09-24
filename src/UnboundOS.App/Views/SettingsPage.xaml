@@ -21,24 +21,22 @@
                 ItemsSource="{x:Bind ViewModel.Groups, Mode=OneWay}"
                 SelectedItem="{x:Bind ViewModel.SelectedGroup, Mode=TwoWay}"
                 SelectionMode="Single"
+                Style="{StaticResource SuperCleanListViewStyle}"
+                ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
                 AutomationProperties.Name="Settings groups">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="vm:SettingsGroup">
-                        <Grid Padding="0,10" ColumnSpacing="16">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                        <StackPanel Spacing="4">
                             <TextBlock
                                 FontFamily="{StaticResource UiFontSemiboldFamily}"
-                                FontSize="16"
+                                FontSize="22"
                                 Foreground="{StaticResource PaperBrush}"
                                 Text="{x:Bind Title}" />
                             <TextBlock
-                                Grid.Column="1"
                                 Style="{StaticResource BodyMutedText}"
+                                FontSize="14"
                                 Text="{x:Bind Hint}" />
-                        </Grid>
+                        </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -203,6 +201,8 @@
                         MaxHeight="220"
                         ItemsSource="{x:Bind ViewModel.DisplayApps, Mode=OneWay}"
                         SelectedItem="{x:Bind ViewModel.SelectedDisplayApp, Mode=TwoWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
                         AutomationProperties.Name="GPU vendor display apps">
                         <ListView.ItemTemplate>
                             <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:VendorApp">
@@ -229,6 +229,8 @@
                         MaxHeight="220"
                         ItemsSource="{x:Bind ViewModel.OverclockApps, Mode=OneWay}"
                         SelectedItem="{x:Bind ViewModel.SelectedOcApp, Mode=TwoWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
                         AutomationProperties.Name="Manufacturer overclocking tools">
                         <ListView.ItemTemplate>
                             <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:VendorApp">
@@ -256,6 +258,8 @@
                         MaxHeight="280"
                         ItemsSource="{x:Bind ViewModel.StartupEntries, Mode=OneWay}"
                         SelectedItem="{x:Bind ViewModel.SelectedStartup, Mode=TwoWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
                         AutomationProperties.Name="Startup audit entries">
                         <ListView.ItemTemplate>
                             <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:StartupEntry">

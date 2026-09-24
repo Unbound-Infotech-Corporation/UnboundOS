@@ -24,6 +24,10 @@ public sealed class BrandingAndOverlayTests
         Assert.Equal("#00F0FF", Branding.Palette.CyanPulse);
         Assert.Equal("#1E40AF", Branding.Palette.Cobalt);
         Assert.Equal("#E4B53C", Branding.Palette.CircuitAmber);
+        Assert.Equal("#05070A", UnboundOS.Core.Brand.UnboundTokens.Obsidian);
+        Assert.Equal("#00F0FF", UnboundOS.Core.Brand.UnboundTokens.Cyan);
+        Assert.Equal("#5C646C", UnboundOS.Core.Brand.UnboundTokens.Quiet);
+        Assert.Equal("#5C646C", UnboundOS.Core.Brand.UnboundTokens.Muted);
         Assert.DoesNotContain("lime", Branding.Tagline, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", Branding.ProductName, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", Branding.CompanyName, StringComparison.OrdinalIgnoreCase);

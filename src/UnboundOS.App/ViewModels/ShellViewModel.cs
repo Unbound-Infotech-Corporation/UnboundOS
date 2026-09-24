@@ -16,6 +16,7 @@ public partial class ShellViewModel : ObservableObject
     private readonly IDesktopOverlayHost _overlay;
     private readonly IUiMotionPolicy _motion;
     private readonly DispatcherTimer _timer;
+    private readonly DispatcherTimer _clockTimer;
 
     public ShellViewModel(
         ISessionEngine session,
@@ -37,6 +38,9 @@ public partial class ShellViewModel : ObservableObject
 
         _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _timer.Tick += async (_, _) => await RefreshTelemetryAsync();
+        _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _clockTimer.Tick += (_, _) => TickClock();
+        TickClock();
     }
 
     public string ProductName => Branding.ProductName;
@@ -53,6 +57,8 @@ public partial class ShellViewModel : ObservableObject
     [ObservableProperty] private int _processCount;
     [ObservableProperty] private int _suspectCount;
     [ObservableProperty] private string _selectedNav = "Home";
+    [ObservableProperty] private string _clockText = "--:--";
+    [ObservableProperty] private string _dateText = "";
 
     public string CpuUsageText => $"{CpuUsage:0}%";
 
@@ -66,7 +72,16 @@ public partial class ShellViewModel : ObservableObject
         await _profiles.EnsureDefaultsAsync();
         await _motion.InitializeAsync();
         await RefreshTelemetryAsync();
+        TickClock();
         _timer.Start();
+        _clockTimer.Start();
+    }
+
+    private void TickClock()
+    {
+        var now = DateTime.Now;
+        ClockText = now.ToString("HH:mm");
+        DateText = now.ToString("dddd, MMMM d");
     }
 
     [RelayCommand]

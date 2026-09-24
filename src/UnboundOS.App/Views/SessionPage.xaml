@@ -82,6 +82,8 @@
                         <ListView
                             ItemsSource="{x:Bind ViewModel.RunningSuspects, Mode=OneWay}"
                             MinHeight="120"
+                            Style="{StaticResource SuperCleanListViewStyle}"
+                            ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
                             AutomationProperties.Name="Running denylist processes" />
                     </StackPanel>
                 </Border>

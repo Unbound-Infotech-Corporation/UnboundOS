@@ -152,7 +152,7 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 
 ## Design notes
 
-- Console-style shell: **Super Clean Home labels** (WebView2 + HTML, not Unreal/Unity in-process) plus inner-page tile rows. Home hides top chrome so the black field and left stack are the only focal point
+- Console-style shell: **Super Clean** on every page — Diavlo type, black field, cyan only on focus. Home is WebView2 labels + clock; inner pages share `UnboundTheme.xaml`
 - Home motion: focused label enlarges and pushes neighbors; category lists ease after Enter. Instant when Settings, Windows animations, or a live session say off
 - Keyboard: Up/Down (and Left/Right) move labels, Enter opens the all-black group, Escape returns. Mouse: wheel / click a label. Gamepad D-pad / A is mapped in Core
 - Atmosphere: Home is an Obsidian studio field. Inner pages keep Unbound cyan / cobalt chrome. Circuit amber remains a seasoning on tiles

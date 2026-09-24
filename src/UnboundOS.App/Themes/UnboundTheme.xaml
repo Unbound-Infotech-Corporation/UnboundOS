@@ -5,23 +5,21 @@
     xmlns:motion="using:UnboundOS.App.Motion">
 
     <!--
-        UnboundOS — Unbound Infotech brand tokens (unboundinfotech.com).
-        Inner pages keep obsidian + cyan pulse + cobalt. Home is a separate
-        bay: Super Clean left-label stack on an Obsidian field.
-        Inner-page tiles still use a 1px cyan hairline.
-        Motion-off freezes label enlarge/push and list ease. No carnival neon,
-        sheen, or squash.
+        UnboundOS Super Clean — shell-wide. Obsidian field, Diavlo type,
+        cyan only on focus / active. No glass plaques, teal-tip tabs,
+        cobalt washes, or Inter/Segoe body copy.
+        Motion-off freezes enlarge/push and list ease.
     -->
     <Color x:Key="Obsidian">#05070A</Color>
-    <Color x:Key="SteelPanel">#0B121D</Color>
-    <Color x:Key="SteelElevated">#111827</Color>
-    <Color x:Key="CardSurface">#090C10</Color>
+    <Color x:Key="SteelPanel">#05070A</Color>
+    <Color x:Key="SteelElevated">#05070A</Color>
+    <Color x:Key="CardSurface">#05070A</Color>
     <Color x:Key="CyanPulse">#00F0FF</Color>
     <Color x:Key="CyanPulseBright">#5CFAFF</Color>
     <Color x:Key="CyanPulseDeep">#00C2D1</Color>
     <Color x:Key="CobaltAccent">#1E40AF</Color>
-    <Color x:Key="Paper">#F8FAFC</Color>
-    <Color x:Key="MutedText">#94A3B8</Color>
+    <Color x:Key="Paper">#F7FAFC</Color>
+    <Color x:Key="MutedText">#5C646C</Color>
     <Color x:Key="CircuitAmber">#E4B53C</Color>
     <Color x:Key="AlertAmber">#F59E0B</Color>
     <Color x:Key="FaultRed">#FF5C5C</Color>
@@ -82,8 +80,8 @@
     <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#CC00F0FF" />
     <SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="#9900F0FF" />
     <SolidColorBrush x:Key="AccentTextFillColorPrimaryBrush" Color="{StaticResource CyanPulse}" />
-    <SolidColorBrush x:Key="ControlFillColorDefaultBrush" Color="{StaticResource SteelPanel}" />
-    <SolidColorBrush x:Key="ControlFillColorSecondaryBrush" Color="{StaticResource SteelElevated}" />
+    <SolidColorBrush x:Key="ControlFillColorDefaultBrush" Color="{StaticResource Obsidian}" />
+    <SolidColorBrush x:Key="ControlFillColorSecondaryBrush" Color="{StaticResource Obsidian}" />
     <SolidColorBrush x:Key="ControlStrokeColorDefaultBrush" Color="{StaticResource LineSubtle}" />
     <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="{StaticResource Paper}" />
     <SolidColorBrush x:Key="TextFillColorSecondaryBrush" Color="{StaticResource MutedText}" />
@@ -91,23 +89,18 @@
     <SolidColorBrush x:Key="SubtleFillColorSecondaryBrush" Color="#14FFFFFF" />
     <SolidColorBrush x:Key="SystemControlForegroundBaseHighBrush" Color="{StaticResource Paper}" />
     <SolidColorBrush x:Key="SystemControlBackgroundChromeMediumLowBrush" Color="{StaticResource SteelPanel}" />
-    <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="#241E40AF" />
-    <SolidColorBrush x:Key="InfoBarInformationalSeverityIconBackground" Color="{StaticResource CobaltAccent}" />
+    <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="#1400F0FF" />
+    <SolidColorBrush x:Key="InfoBarInformationalSeverityIconBackground" Color="{StaticResource CyanPulse}" />
 
-    <FontFamily x:Key="UiFontFamily">ms-appx:///Assets/Fonts/Inter-Regular.ttf#Inter</FontFamily>
-    <FontFamily x:Key="UiFontSemiboldFamily">ms-appx:///Assets/Fonts/Inter-SemiBold.ttf#Inter SemiBold</FontFamily>
-    <FontFamily x:Key="DisplayFontFamily">ms-appx:///Assets/Fonts/Inter-Bold.ttf#Inter</FontFamily>
-    <FontFamily x:Key="MonoFontFamily">ms-appx:///Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono</FontFamily>
+    <FontFamily x:Key="UiFontFamily">ms-appx:///Assets/Fonts/Diavlo_BOOK_II_37.otf#Diavlo Book</FontFamily>
+    <FontFamily x:Key="UiFontSemiboldFamily">ms-appx:///Assets/Fonts/Diavlo_MEDIUM_II_37.otf#Diavlo Medium</FontFamily>
+    <FontFamily x:Key="DisplayFontFamily">ms-appx:///Assets/Fonts/Diavlo_MEDIUM_II_37.otf#Diavlo Medium</FontFamily>
+    <FontFamily x:Key="MonoFontFamily">ms-appx:///Assets/Fonts/Diavlo_BOOK_II_37.otf#Diavlo Book</FontFamily>
     <FontFamily x:Key="DiavloBookFamily">ms-appx:///Assets/Fonts/Diavlo_BOOK_II_37.otf#Diavlo Book</FontFamily>
     <FontFamily x:Key="DiavloMediumFamily">ms-appx:///Assets/Fonts/Diavlo_MEDIUM_II_37.otf#Diavlo Medium</FontFamily>
     <FontFamily x:Key="DiavloBoldFamily">ms-appx:///Assets/Fonts/Diavlo_BOLD_II_37.otf#Diavlo Bold</FontFamily>
 
-    <LinearGradientBrush x:Key="HeroAtmosphereBrush" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#05070A" Offset="0" />
-        <GradientStop Color="#0B121D" Offset="0.48" />
-        <GradientStop Color="#081428" Offset="0.82" />
-        <GradientStop Color="#0A0906" Offset="1" />
-    </LinearGradientBrush>
+    <SolidColorBrush x:Key="HeroAtmosphereBrush" Color="{StaticResource Obsidian}" />
 
     <!-- Barely-there scan / grid. Static. Keep opacity on the host ~0.04–0.06. -->
     <LinearGradientBrush
@@ -132,24 +125,28 @@
         <GradientStop Color="#0000F0FF" Offset="1" />
     </LinearGradientBrush>
 
-    <LinearGradientBrush x:Key="TileFieldBrush" StartPoint="0.15,0" EndPoint="1,1">
-        <GradientStop Color="#111827" Offset="0" />
-        <GradientStop Color="#1E40AF" Offset="0.72" />
-        <GradientStop Color="#0B121D" Offset="1" />
-    </LinearGradientBrush>
+    <SolidColorBrush x:Key="TileFieldBrush" Color="{StaticResource Obsidian}" />
+    <SolidColorBrush x:Key="TileFieldAltBrush" Color="{StaticResource Obsidian}" />
+    <SolidColorBrush x:Key="TileFieldHeroBrush" Color="{StaticResource Obsidian}" />
 
-    <LinearGradientBrush x:Key="TileFieldAltBrush" StartPoint="0,1" EndPoint="1,0">
-        <GradientStop Color="#0B121D" Offset="0" />
-        <GradientStop Color="#123046" Offset="0.55" />
-        <GradientStop Color="#0A1A22" Offset="1" />
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="TileFieldHeroBrush" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#0B121D" Offset="0" />
-        <GradientStop Color="#0C3A40" Offset="0.48" />
-        <GradientStop Color="#1E40AF" Offset="0.88" />
-        <GradientStop Color="#161208" Offset="1" />
-    </LinearGradientBrush>
+    <Style TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
+        <Setter Property="Foreground" Value="{StaticResource PaperBrush}" />
+    </Style>
+    <Style TargetType="Button">
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
+    </Style>
+    <Style TargetType="ToggleSwitch">
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
+        <Setter Property="Foreground" Value="{StaticResource PaperBrush}" />
+    </Style>
+    <Style TargetType="ComboBox">
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
+    </Style>
+    <Style TargetType="InfoBar">
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
+        <Setter Property="Background" Value="{StaticResource ObsidianBrush}" />
+    </Style>
 
     <Style x:Key="BrandDisplayText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource DisplayFontFamily}" />
@@ -166,11 +163,10 @@
     </Style>
 
     <Style x:Key="KickerText" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
-        <Setter Property="FontSize" Value="11" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="CharacterSpacing" Value="160" />
-        <Setter Property="Foreground" Value="{StaticResource CyanPulseBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="CharacterSpacing" Value="200" />
+        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
     </Style>
 
     <Style x:Key="MicroLabelText" TargetType="TextBlock">
@@ -178,7 +174,7 @@
         <Setter Property="FontSize" Value="10" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="CharacterSpacing" Value="140" />
-        <Setter Property="Foreground" Value="{StaticResource CircuitAmberBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
@@ -200,7 +196,7 @@
     <Style x:Key="TelemetryValueText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="Foreground" Value="{StaticResource CyanPulseBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource PaperBrush}" />
     </Style>
 
     <Style x:Key="HomeHudKickerText" TargetType="TextBlock">
@@ -246,10 +242,10 @@
     </Style>
 
     <Style x:Key="HomeWidgetPlaqueStyle" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource HomeWidgetGlassFillBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource HomeWidgetStrokeBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
         <Setter Property="Padding" Value="12,8" />
         <Setter Property="IsHitTestVisible" Value="True" />
         <Setter Property="MinWidth" Value="72" />
@@ -282,21 +278,20 @@
     </Style>
 
     <Style x:Key="PanelLabelText" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
         <Setter Property="FontSize" Value="12" />
-        <Setter Property="CharacterSpacing" Value="80" />
-        <Setter Property="Foreground" Value="{StaticResource CyanPulseBrush}" />
+        <Setter Property="CharacterSpacing" Value="160" />
+        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
     </Style>
 
     <Style x:Key="SignalButtonStyle" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource CyanPulseBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource ObsidianBrush}" />
-        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="Padding" Value="24,14" />
-        <Setter Property="MinHeight" Value="48" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource PaperBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource UiFontSemiboldFamily}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Padding" Value="4,10" />
+        <Setter Property="MinHeight" Value="44" />
+        <Setter Property="CornerRadius" Value="0" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="motion:ConsoleMotion.Role" Value="Signal" />
         <Setter Property="Template">
@@ -308,8 +303,9 @@
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.BorderBrush" Value="{StaticResource ObsidianBrush}" />
-                                        <Setter Target="Root.BorderThickness" Value="1" />
+                                        <Setter Target="Root.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Root.BorderThickness" Value="0,0,0,2" />
+                                        <Setter Target="Label.Foreground" Value="{StaticResource CyanPulseBrush}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Pressed" />
@@ -323,8 +319,9 @@
                                 <VisualState x:Name="Unfocused" />
                                 <VisualState x:Name="Focused">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.BorderBrush" Value="{StaticResource ObsidianBrush}" />
-                                        <Setter Target="Root.BorderThickness" Value="1" />
+                                        <Setter Target="Root.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Root.BorderThickness" Value="0,0,0,2" />
+                                        <Setter Target="Label.Foreground" Value="{StaticResource CyanPulseBrush}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="PointerFocused" />
@@ -338,6 +335,7 @@
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Padding="{TemplateBinding Padding}">
                             <ContentPresenter
+                                x:Name="Label"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Foreground="{TemplateBinding Foreground}" />
@@ -349,15 +347,15 @@
     </Style>
 
     <Style x:Key="GhostButtonStyle" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource CardSurfaceBrush}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource PaperBrush}" />
-        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="Padding" Value="20,14" />
-        <Setter Property="MinHeight" Value="48" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="BorderBrush" Value="{StaticResource LineSubtleBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Padding" Value="4,10" />
+        <Setter Property="MinHeight" Value="44" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="motion:ConsoleMotion.Role" Value="Ghost" />
         <Setter Property="Template">
             <Setter.Value>
@@ -420,11 +418,11 @@
     </Style>
 
     <Style x:Key="PanelBorderStyle" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource SteelPanelBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource LineSubtleBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="18" />
-        <Setter Property="Padding" Value="28" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="0,12,0,20" />
     </Style>
 
     <Style x:Key="TileRowLabelText" TargetType="TextBlock" BasedOn="{StaticResource PanelLabelText}">
@@ -453,7 +451,7 @@
     <Style x:Key="TileMetaText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
         <Setter Property="FontSize" Value="12" />
-        <Setter Property="Foreground" Value="{StaticResource CyanPulseBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
         <Setter Property="CharacterSpacing" Value="40" />
     </Style>
 
@@ -570,8 +568,8 @@
                             AutomationProperties.AccessibilityView="Raw">
                             <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
                             <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
+                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CyanPulseBrush}" />
                             <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4,0,0,4" Fill="{StaticResource CyanPulseBrush}" />
                             <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4,0,0,4" Fill="{StaticResource CyanPulseBrush}" />
                             <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,4" Fill="{StaticResource CyanPulseBrush}" />
@@ -688,8 +686,8 @@
                             AutomationProperties.AccessibilityView="Raw">
                             <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
                             <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,4,0,0" Fill="{StaticResource CyanPulseBrush}" />
-                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
-                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CircuitAmberBrush}" />
+                            <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CyanPulseBrush}" />
+                            <Rectangle Width="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Fill="{StaticResource CyanPulseBrush}" />
                             <Rectangle Width="10" Height="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4,0,0,4" Fill="{StaticResource CyanPulseBrush}" />
                             <Rectangle Width="1" Height="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4,0,0,4" Fill="{StaticResource CyanPulseBrush}" />
                             <Rectangle Width="10" Height="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,4" Fill="{StaticResource CyanPulseBrush}" />
@@ -720,10 +718,10 @@
         <Setter Property="MinWidth" Value="56" />
         <Setter Property="Padding" Value="12,7" />
         <Setter Property="FontSize" Value="10" />
-        <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
-        <Setter Property="Foreground" Value="{StaticResource HomeBoneIvoryBrush}" />
-        <Setter Property="Background" Value="{StaticResource HomePlaqueFillBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource HomePlaqueStrokeBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
+        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="1" />
         <Setter Property="Opacity" Value="0.72" />
@@ -737,7 +735,7 @@
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.BorderBrush" Value="{StaticResource HomeBileBrush}" />
+                                        <Setter Target="Root.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
                                         <Setter Target="Root.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
@@ -752,7 +750,7 @@
                                 <VisualState x:Name="Unfocused" />
                                 <VisualState x:Name="Focused">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.BorderBrush" Value="{StaticResource HomeVeinBrush}" />
+                                        <Setter Target="Root.BorderBrush" Value="{StaticResource CyanPulseBrush}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="PointerFocused" />
@@ -781,6 +779,132 @@
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="UseLayoutRounding" Value="False" />
+    </Style>
+
+    <Style x:Key="SuperCleanListViewStyle" TargetType="ListView">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="SelectionMode" Value="Single" />
+        <Setter Property="IsItemClickEnabled" Value="True" />
+        <Setter Property="XYFocusKeyboardNavigation" Value="Enabled" />
+    </Style>
+
+    <Style x:Key="SuperCleanListItemStyle" TargetType="ListViewItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0,8,0,8" />
+        <Setter Property="Margin" Value="0,2,0,2" />
+        <Setter Property="MinHeight" Value="44" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
+        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+        <Setter Property="motion:ConsoleMotion.Role" Value="Tile" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="Hair.Opacity" Value="1" />
+                                        <Setter Target="Body.Foreground" Value="{StaticResource PaperBrush}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Pressed" />
+                                <VisualState x:Name="Selected">
+                                    <VisualState.Setters>
+                                        <Setter Target="Hair.Opacity" Value="1" />
+                                        <Setter Target="Slot.Padding" Value="18,16,0,16" />
+                                        <Setter Target="Body.Foreground" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Body.FontFamily" Value="{StaticResource UiFontSemiboldFamily}" />
+                                        <Setter Target="Body.FontSize" Value="22" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="SelectedPointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="Hair.Opacity" Value="1" />
+                                        <Setter Target="Slot.Padding" Value="18,16,0,16" />
+                                        <Setter Target="Body.Foreground" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Body.FontFamily" Value="{StaticResource UiFontSemiboldFamily}" />
+                                        <Setter Target="Body.FontSize" Value="22" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="PointerOverSelected">
+                                    <VisualState.Setters>
+                                        <Setter Target="Hair.Opacity" Value="1" />
+                                        <Setter Target="Slot.Padding" Value="18,16,0,16" />
+                                        <Setter Target="Body.Foreground" Value="{StaticResource CyanPulseBrush}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="SelectedPressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="Hair.Opacity" Value="1" />
+                                        <Setter Target="Slot.Padding" Value="18,16,0,16" />
+                                        <Setter Target="Body.Foreground" Value="{StaticResource CyanPulseBrush}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="Slot.Opacity" Value="0.4" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Unfocused" />
+                                <VisualState x:Name="Focused">
+                                    <VisualState.Setters>
+                                        <Setter Target="Hair.Opacity" Value="1" />
+                                        <Setter Target="Slot.Padding" Value="18,16,0,16" />
+                                        <Setter Target="Body.Foreground" Value="{StaticResource CyanPulseBrush}" />
+                                        <Setter Target="Body.FontFamily" Value="{StaticResource UiFontSemiboldFamily}" />
+                                        <Setter Target="Body.FontSize" Value="22" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="PointerFocused" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Grid x:Name="Slot" Padding="0,8,0,8">
+                            <Rectangle
+                                x:Name="Hair"
+                                Width="2"
+                                HorizontalAlignment="Left"
+                                Fill="{StaticResource CyanPulseBrush}"
+                                Opacity="0" />
+                            <ContentPresenter
+                                x:Name="Body"
+                                Margin="18,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                FontFamily="{StaticResource UiFontFamily}"
+                                FontSize="16"
+                                Foreground="{StaticResource MutedTextBrush}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ShellClockTimeText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource UiFontSemiboldFamily}" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="Foreground" Value="{StaticResource PaperBrush}" />
+        <Setter Property="CharacterSpacing" Value="40" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style x:Key="ShellClockDateText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource UiFontFamily}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+        <Setter Property="CharacterSpacing" Value="60" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,4,0,0" />
     </Style>
 
     <Style x:Key="CubeFaceStyle" TargetType="Border">

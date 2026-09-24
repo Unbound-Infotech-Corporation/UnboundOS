@@ -235,7 +235,7 @@ public static class ConsoleMotion
                 return (1f, opacity);
             }
 
-            var scale = _role == ConsoleMotionRole.HeroTile ? 1.02f : 1.03f;
+            var scale = _role == ConsoleMotionRole.HeroTile ? 1.06f : 1.08f;
             return (scale, opacity);
         }
 

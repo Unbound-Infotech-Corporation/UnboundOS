@@ -102,6 +102,8 @@
                         SelectedItem="{x:Bind ViewModel.SelectedMod, Mode=TwoWay}"
                         SelectionMode="Single"
                         XYFocusKeyboardNavigation="Enabled"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
                         AutomationProperties.Name="Installed mods and Workshop items">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:InstalledMod">

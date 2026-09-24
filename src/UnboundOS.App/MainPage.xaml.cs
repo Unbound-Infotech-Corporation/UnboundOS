@@ -141,9 +141,9 @@ public sealed partial class MainPage : Page
     private void ApplyHomeChrome(bool home)
     {
         ChromeBar.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
-        HeroTicks.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
-        HeroScan.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
-        HeroGrid.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
+        HeroTicks.Visibility = Visibility.Collapsed;
+        HeroScan.Visibility = Visibility.Collapsed;
+        HeroGrid.Visibility = Visibility.Collapsed;
         HomeView.Visibility = home ? Visibility.Visible : Visibility.Collapsed;
         ContentFrame.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
     }

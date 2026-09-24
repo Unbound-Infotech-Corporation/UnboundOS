@@ -50,6 +50,8 @@
                     SelectedItem="{x:Bind ViewModel.SelectedEntry, Mode=TwoWay}"
                     IsItemClickEnabled="True"
                     ItemClick="Entries_ItemClick"
+                    Style="{StaticResource SuperCleanListViewStyle}"
+                    ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
                     AutomationProperties.Name="Folder contents">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:FileBrowseEntry">

@@ -368,9 +368,9 @@
             x:Name="ChromeBar"
             Grid.Row="0"
             Padding="28,14,28,12"
-            BorderBrush="{StaticResource LineSubtleBrush}"
-            BorderThickness="0,0,0,1"
-            Background="{StaticResource TelemetryStripBrush}"
+            BorderBrush="Transparent"
+            BorderThickness="0"
+            Background="{StaticResource ObsidianBrush}"
             Visibility="Collapsed"
             AutomationProperties.Name="Console chrome">
             <Grid ColumnSpacing="20">
@@ -381,20 +381,13 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <Grid Width="28" Height="28" AutomationProperties.Name="Unbound Infotech mark">
-                        <Border Background="{StaticResource CyanPulseBrush}" CornerRadius="2" />
-                        <Border Margin="7" Background="{StaticResource ObsidianBrush}" CornerRadius="1" />
-                        <Rectangle Width="6" Height="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,2,0" Fill="{StaticResource CircuitAmberBrush}" />
-                        <Rectangle Width="1" Height="6" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,2,0" Fill="{StaticResource CircuitAmberBrush}" />
-                    </Grid>
                     <StackPanel VerticalAlignment="Center" Spacing="0">
                         <TextBlock
                             Style="{StaticResource BrandDisplayText}"
-                            FontSize="18"
+                            FontSize="20"
                             CharacterSpacing="20"
                             Text="{x:Bind ViewModel.ProductName}"
-                            Foreground="{StaticResource CyanPulseBrush}" />
-                        <TextBlock Style="{StaticResource MicroLabelText}" Text="SYS" Opacity="0.85" />
+                            Foreground="{StaticResource PaperBrush}" />
                     </StackPanel>
                 </StackPanel>
 
@@ -501,13 +494,17 @@
                         Text="LIVE"
                         Visibility="{x:Bind ViewModel.IsSessionActive, Mode=OneWay}"
                         AutomationProperties.Name="Session live" />
+                    <StackPanel Spacing="0" Margin="12,0,0,0" AutomationProperties.Name="Local time">
+                        <TextBlock Style="{StaticResource ShellClockTimeText}" FontSize="22" Text="{x:Bind ViewModel.ClockText, Mode=OneWay}" />
+                        <TextBlock Style="{StaticResource ShellClockDateText}" FontSize="11" Text="{x:Bind ViewModel.DateText, Mode=OneWay}" />
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </Border>
 
         <Grid Grid.Row="1">
             <Grid.Background>
-                <StaticResource ResourceKey="HeroAtmosphereBrush" />
+                <StaticResource ResourceKey="ObsidianBrush" />
             </Grid.Background>
             <Rectangle
                 x:Name="HeroScan"
