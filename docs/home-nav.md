@@ -17,10 +17,10 @@ stays vendored, unused):
 - Background is Obsidian `#05070A`. Empty studio floor. Calm.
 - Seven labels sit in a left stack. Unfocused names stay small and
   quiet (`#5C646C`).
-- The **focused** label enlarges in **Diavlo Medium** (`#F7FAFC`) with
-  a 2px cyan `#00F0FF` hairline. Neighbors push apart on the same
-  stack so the larger type has room — shared motion, not floating
-  chips.
+- Unfocused names stay on Segoe UI Variable. The **focused** label
+  enlarges in **Diavlo Medium** (`#F7FAFC`) with a 2px cyan `#00F0FF`
+  hairline. Neighbors push apart on the same stack so the larger type
+  has room — shared motion, not floating chips.
 - Motion-off freezes enlarge/push; focus still snaps.
 
 Labels, top to bottom: Games, Tools, Options, Mods, Network, Files,
