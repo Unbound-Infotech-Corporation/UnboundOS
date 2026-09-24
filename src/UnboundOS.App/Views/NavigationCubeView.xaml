@@ -10,12 +10,12 @@
     HorizontalAlignment="Stretch"
     VerticalAlignment="Stretch"
     AutomationProperties.Name="UnboundOS Home"
-    AutomationProperties.HelpText="Left and right move tabs. Up opens that tab's list from the bottom. Down opens that tab's list from the top. Escape returns to Home. SET opens Options. Profiles is the other corner glyph.">
+    AutomationProperties.HelpText="Up and down move the label list. Enter opens this group. Escape returns to Home. SET opens Options. Profiles is the other corner glyph.">
 
     <Grid
         x:Name="PerspectiveHost"
         Style="{StaticResource CubeHostStyle}"
-        AutomationProperties.Name="Home tabs">
+        AutomationProperties.Name="Home labels">
         <WebView2
             x:Name="CubeWeb"
             DefaultBackgroundColor="#FF000000"

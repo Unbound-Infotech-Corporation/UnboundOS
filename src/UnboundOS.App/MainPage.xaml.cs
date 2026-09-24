@@ -90,7 +90,7 @@ public sealed partial class MainPage : Page
     private void OnCubeFrontChanged(object sender, CubeDestination destination)
     {
         var info = CubeCatalog.Info(destination);
-        ViewModel.StatusLine = $"{info.Title} node. Up opens this list from the bottom. Down opens this list from the top.";
+        ViewModel.StatusLine = $"{info.Title}. Up/Down: labels. Enter opens this group.";
     }
 
     private void Navigate(string tag)
@@ -98,7 +98,7 @@ public sealed partial class MainPage : Page
         ViewModel.SelectedNav = tag;
         ViewModel.StatusLine = tag switch
         {
-            "Home" => "Home. Left/right: tabs. Up/Down: this tab's list (bottom/top).",
+            "Home" => "Home. Up/Down: labels. Enter opens this group.",
             "Session" => "Session engine ready.",
             "Network" => "Network director ready.",
             "Tools" => "Tools marketplace ready.",
@@ -107,7 +107,7 @@ public sealed partial class MainPage : Page
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
             "Settings" => "Display, overclocking launch, startup audit, Home widgets, motion.",
-            "Overlay" => "Rainmeter overlay. Open the host or Get Phenix.",
+            "Overlay" => "Optional Rainmeter addon. Super Clean Home does not need it.",
             _ => ViewModel.StatusLine
         };
 

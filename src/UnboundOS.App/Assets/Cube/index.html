@@ -27,18 +27,13 @@
       font-style: normal;
       font-display: swap;
     }
-    /* Theme tokens — tweak here (keep UnboundTokens.cs + UnboundTheme.xaml in sync). */
+    /* Theme tokens — Super Clean Home. Keep UnboundTokens.cs in sync. */
     :root {
       --void: #05070A;
-      --star: #F4EFE2;
       --paper: #F7FAFC;
-      --muted: #8A8A96;
-      --date-ink: #C8D0D8;
-      --weather-ink: #8A96A2;
+      --quiet: #5C646C;
       --cyan: #00F0FF;
       --list-font: "Diavlo Book", "Diavlo Medium", "Diavlo Bold", "Segoe UI Variable", "Segoe UI", sans-serif;
-      --hud-font: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
-      --blade-w: 18px;
     }
     html, body {
       margin: 0;
@@ -46,7 +41,7 @@
       height: 100%;
       overflow: hidden;
       background: var(--void);
-      color: var(--star);
+      color: var(--paper);
       font-family: "Segoe UI Variable", "Segoe UI", Inter, sans-serif;
       user-select: none;
       -webkit-user-select: none;
@@ -55,309 +50,108 @@
     #stage {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
       background: #05070A;
     }
-    #studio {
+    #labelStack {
       position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-    #floor {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 22vh;
-      background: radial-gradient(ellipse 46% 100% at 50% 100%,
-        #0c1016 0%,
-        #05070A 78%);
-    }
-    #tabRow {
-      position: absolute;
-      left: 50%;
-      bottom: 7.2vh;
-      transform: translateX(-50%);
+      left: clamp(40px, 7vw, 110px);
+      top: 50%;
+      transform: translateY(-50%);
       display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      width: min(920px, 70vw);
-      height: clamp(300px, 50vh, 640px);
-      pointer-events: auto;
+      flex-direction: column;
+      align-items: flex-start;
+      max-height: 86vh;
+      z-index: 3;
     }
-    .tab {
-      --h: 100%;
-      --delay: 0s;
+    .label {
+      --d: 3;
       position: relative;
-      flex: 1;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
+      display: block;
       margin: 0;
-      padding: 0;
+      padding: calc(2px + (2.1 - min(var(--d), 2.1)) * 12px) 0 calc(2px + (2.1 - min(var(--d), 2.1)) * 12px) 18px;
       border: 0;
       background: transparent;
+      color: var(--quiet);
+      font-family: "Diavlo Book", var(--list-font);
+      font-size: clamp(17px, 1.55vw + (2 - min(var(--d), 2)) * 0.35vw, 26px);
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      line-height: 1.05;
+      text-align: left;
       cursor: pointer;
-    }
-    .tab[data-index="0"] { --h: 76%; --delay: 0s; }
-    .tab[data-index="1"] { --h: 86%; --delay: 0.7s; }
-    .tab[data-index="2"] { --h: 95%; --delay: 1.4s; }
-    .tab[data-index="3"] { --h: 100%; --delay: 2.1s; }
-    .tab[data-index="4"] { --h: 95%; --delay: 2.8s; }
-    .tab[data-index="5"] { --h: 86%; --delay: 3.5s; }
-    .tab[data-index="6"] { --h: 76%; --delay: 4.2s; }
-    .stack {
-      position: relative;
-      width: var(--blade-w);
-      height: var(--h);
-    }
-    .blade {
-      position: absolute;
-      inset: 0;
-      border-radius: 2px 2px 0.5px 0.5px;
-      background:
-        linear-gradient(90deg,
-          rgba(255, 255, 255, 0.22) 0%,
-          rgba(255, 255, 255, 0.06) 14%,
-          rgba(255, 255, 255, 0.02) 38%,
-          rgba(0, 0, 0, 0.12) 62%,
-          rgba(0, 0, 0, 0.34) 100%),
-        linear-gradient(180deg,
-          #c3ccd6 0%,
-          #8b949f 16%,
-          #5d6670 48%,
-          #3e454e 78%,
-          #2a3038 100%);
-      box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
-        inset 1px 0 0 rgba(255, 255, 255, 0.2),
-        inset -1px 0 0 rgba(0, 0, 0, 0.38),
-        16px 10px 28px rgba(0, 0, 0, 0.42),
-        4px 4px 10px rgba(0, 0, 0, 0.28);
-    }
-    .blade::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      background: linear-gradient(180deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.2) 46%,
-        transparent 100%);
-      background-size: 100% 36%;
-      background-repeat: no-repeat;
-      background-position: 0 -40%;
-      opacity: 0.28;
-    }
-    .blade::after {
-      content: "";
-      position: absolute;
-      top: 14px;
-      bottom: 0;
-      left: 3px;
-      width: 1px;
-      border-radius: 1px;
-      background: linear-gradient(180deg,
-        rgba(255, 255, 255, 0.28),
-        rgba(255, 255, 255, 0.04) 70%,
-        transparent);
-      pointer-events: none;
-    }
-    .tab.is-focus .blade {
-      background:
-        linear-gradient(90deg,
-          rgba(255, 255, 255, 0.28) 0%,
-          rgba(255, 255, 255, 0.08) 14%,
-          rgba(255, 255, 255, 0.03) 38%,
-          rgba(0, 0, 0, 0.1) 62%,
-          rgba(0, 0, 0, 0.28) 100%),
-        linear-gradient(180deg,
-          #d4dbe3 0%,
-          #9aa4b0 16%,
-          #6a7380 48%,
-          #4a525c 78%,
-          #343b44 100%);
-      box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.07),
-        inset 1px 0 0 rgba(255, 255, 255, 0.26),
-        inset -1px 0 0 rgba(0, 0, 0, 0.32),
-        20px 18px 36px rgba(0, 0, 0, 0.5),
-        6px 8px 14px rgba(0, 0, 0, 0.32);
-      transform: translateY(-18px) scale(1.045);
-      transform-origin: 50% 100%;
-    }
-    .tip {
-      position: absolute;
-      top: -1px;
-      left: -2px;
-      right: -2px;
-      height: 12px;
-      border-radius: 2.5px 2.5px 1px 1px;
-      background:
-        linear-gradient(180deg,
-          rgba(255, 255, 255, 0.72) 0%,
-          #c8ffff 14%,
-          #00F0FF 46%,
-          #00c8d6 78%,
-          #00a8b4 100%);
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.7),
-        inset 0 -1px 0 rgba(0, 70, 80, 0.22),
-        0 0 14px rgba(0, 240, 255, 0.2);
-    }
-    .tip .facet {
-      position: absolute;
-      left: 16%;
-      top: 2px;
-      width: 34%;
-      height: 3px;
-      border-radius: 1px;
-      background: rgba(255, 255, 255, 0.5);
-      pointer-events: none;
-    }
-    .tab.is-focus .tip {
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.8),
-        inset 0 -1px 0 rgba(0, 70, 80, 0.18),
-        0 0 18px rgba(0, 240, 255, 0.32),
-        0 0 4px rgba(0, 240, 255, 0.4);
-    }
-    .tab-label {
-      position: absolute;
-      left: 50%;
-      bottom: calc(100% + 18px);
-      transform: translateX(-50%);
-      margin: 0;
-      color: #F6F8FB;
-      font-family: "Diavlo Medium", var(--list-font);
-      font-weight: 500;
-      font-size: clamp(26px, 2.2vw, 36px);
-      letter-spacing: 0.09em;
-      line-height: 1.1;
-      white-space: nowrap;
+      opacity: calc(0.34 + (1 - min(var(--d), 3) / 3) * 0.4);
       font-variant-ligatures: none;
-      font-feature-settings: "liga" 0, "calt" 0, "swsh" 0, "dlig" 0, "ss01" 0;
-      text-shadow:
-        0 10px 28px rgba(0, 0, 0, 0.62),
-        0 2px 8px rgba(0, 0, 0, 0.45),
-        0 0 22px rgba(0, 240, 255, 0.08);
-      opacity: 0;
-      pointer-events: none;
+      font-feature-settings: "liga" 0, "calt" 0, "swsh" 0;
     }
-    .tab.is-focus .tab-label { opacity: 1; }
-    #studio.is-overlay .tab-label,
-    body.is-overlay .tab-label {
-      opacity: 0 !important;
-      visibility: hidden;
+    .label.is-focus {
+      color: var(--paper);
+      font-family: "Diavlo Medium", var(--list-font);
+      font-size: clamp(52px, 6.6vw, 96px);
+      letter-spacing: 0.05em;
+      opacity: 1;
+      padding-top: 18px;
+      padding-bottom: 18px;
     }
-    #studio.is-overlay .tab:not(.is-focus) { opacity: 0.36; }
-    @keyframes tipBreath {
-      0%, 100% { filter: brightness(0.9); }
-      50% { filter: brightness(1.14); }
+    .label.is-focus::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 22%;
+      bottom: 22%;
+      width: 2px;
+      background: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
     }
-    @keyframes metalSweep {
-      0% { background-position: 0 -50%; }
-      100% { background-position: 0 160%; }
-    }
-    body:not(.reduce-motion) .blade,
-    body:not(.reduce-motion) .tab-label,
-    body:not(.reduce-motion) .stack {
+    body:not(.reduce-motion) .label {
       transition:
-        transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-        box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-        height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-        background 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        font-size 0.48s cubic-bezier(0.16, 1, 0.3, 1),
+        padding 0.48s cubic-bezier(0.16, 1, 0.3, 1),
+        color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        letter-spacing 0.48s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    body:not(.reduce-motion) .blade::before {
-      animation: metalSweep 16s ease-in-out infinite;
-      animation-delay: var(--delay);
-    }
-    body:not(.reduce-motion) .tip {
-      animation: tipBreath 5.8s ease-in-out infinite;
-      animation-delay: var(--delay);
-    }
-    body:not(.reduce-motion) .tab.is-focus .tip {
-      animation-duration: 2.8s;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .blade::before, .tip { animation: none !important; }
-    }
+    body.is-overlay #labelStack { visibility: hidden; pointer-events: none; }
+
     #overlay {
       position: absolute;
       inset: 0;
       z-index: 4;
       display: block;
       pointer-events: none;
-    }
-    #scrim {
-      position: absolute;
-      top: 0;
-      left: 18%;
-      bottom: 0;
-      width: 64%;
-      pointer-events: none;
+      background: #05070A;
       opacity: 0;
-      transform: translate3d(0, 8%, 0);
-      background:
-        radial-gradient(ellipse 58% 72% at 50% 46%,
-          rgba(0, 0, 0, 0.42) 0%,
-          rgba(0, 0, 0, 0.18) 58%,
-          rgba(0, 0, 0, 0) 100%);
     }
-    #overlay.ready #scrim {
+    #overlay.show {
       opacity: 1;
-      transform: translate3d(0, 0, 0);
+      pointer-events: auto;
     }
-    #overlay.motion #scrim {
-      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.78s cubic-bezier(0.16, 1, 0.3, 1);
+    body:not(.reduce-motion) #overlay {
+      transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1);
     }
     #listPane {
       position: absolute;
-      left: 50%;
+      left: clamp(40px, 7vw, 110px);
       top: 0;
-      bottom: 26vh;
-      width: min(520px, 42vw);
-      z-index: 1;
+      bottom: 0;
+      width: min(720px, 78vw);
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      padding: 0;
+      padding: 8vh 0;
       box-sizing: border-box;
-      opacity: 0;
-      transform: translate3d(calc(-50% - 16px), 0, 0);
-    }
-    #overlay.show #listPane { pointer-events: auto; }
-    #overlay.ready #listPane {
-      opacity: 1;
-      transform: translate3d(-50%, 0, 0);
-    }
-    #overlay.motion #listPane {
-      transition: opacity 0.64s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
     #listHead {
-      margin: 0 0 18px;
+      margin: 0 0 28px;
       font-family: var(--list-font);
-      font-weight: 500;
       font-size: 13px;
-      letter-spacing: 0.28em;
+      letter-spacing: 0.32em;
       text-transform: uppercase;
-      color: var(--muted);
-      text-align: center;
-      width: 100%;
+      color: #7A828A;
     }
     #track {
-      position: relative;
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      width: min(440px, 100%);
+      gap: 4px;
       will-change: transform;
       transform: translate3d(0, var(--track-y, 0px), 0);
     }
@@ -367,207 +161,35 @@
     .row {
       display: block;
       width: 100%;
-      padding: 12px 0;
+      padding: 14px 0;
       border: 0;
       background: transparent;
-      color: var(--star);
+      color: var(--paper);
       font-family: var(--list-font);
-      font-weight: 400;
-      font-size: 28px;
+      font-size: clamp(26px, 2.4vw, 36px);
       line-height: 1.15;
-      letter-spacing: 0.01em;
-      text-align: center;
+      letter-spacing: 0.02em;
+      text-align: left;
       cursor: pointer;
-      opacity: 0.4;
-      text-shadow: 0 1px 16px rgba(0, 0, 0, 0.8);
+      opacity: 0.38;
     }
     .row.motion {
-      transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1),
-                  color 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .row.focus {
       opacity: 1;
-      font-weight: 700;
+      font-family: "Diavlo Medium", var(--list-font);
       color: var(--cyan);
-      text-shadow:
-        0 0 18px rgba(0, 240, 255, 0.28),
-        0 1px 14px rgba(0, 0, 0, 0.85);
     }
-    .row .title { display: block; }
     .preview-caption { display: none; }
-
-    /* First-party Unbound HUD — light on Obsidian, visible, shell-wide. */
-    #hud {
-      position: absolute;
-      inset: 0;
-      z-index: 5;
-      pointer-events: none;
-      color: var(--paper);
-    }
-    body.hud-off #hud { display: none; }
-    #hudClock {
-      position: absolute;
-      left: clamp(28px, 4.2vw, 72px);
-      top: clamp(22px, 5.2vh, 56px);
-      max-width: min(520px, 38vw);
-    }
-    #clock {
-      margin: 0;
-      font-family: var(--hud-font);
-      font-weight: 200;
-      font-size: clamp(72px, 8.6vw, 124px);
-      letter-spacing: 0.04em;
-      line-height: 0.88;
-      color: var(--paper);
-      text-shadow: 0 10px 36px rgba(0, 0, 0, 0.55);
-    }
-    #dateLine, #weatherLine {
-      margin: 10px 0 0;
-      font-family: var(--hud-font);
-      font-weight: 400;
-      font-size: clamp(15px, 1.15vw, 18px);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--date-ink);
-    }
-    #weatherLine { color: var(--weather-ink); letter-spacing: 0.08em; }
-    #hudViz {
-      position: absolute;
-      left: clamp(28px, 4.2vw, 72px);
-      top: clamp(186px, 28vh, 268px);
-      display: flex;
-      align-items: flex-end;
-      gap: 5px;
-      height: 92px;
-    }
-    .viz-bar {
-      width: 3px;
-      height: 92px;
-      background: linear-gradient(180deg, #7dffff 0%, #00F0FF 42%, #007a88 100%);
-      opacity: 0.95;
-      transform: scaleY(0.22);
-      transform-origin: bottom center;
-      border-radius: 1px;
-    }
-    body:not(.reduce-motion) .viz-bar {
-      animation: vizBeat 1.35s ease-in-out infinite;
-    }
-    @keyframes vizBeat {
-      0%, 100% { transform: scaleY(0.16); }
-      50% { transform: scaleY(1); }
-    }
-    #hudMedia {
-      position: absolute;
-      left: clamp(28px, 4.2vw, 72px);
-      top: clamp(290px, 41vh, 380px);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--hud-font);
-      font-size: 13px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #C8D0D8;
-    }
-    #hudMedia .mark {
-      color: var(--cyan);
-      font-size: 16px;
-    }
-    #hudLaunch {
-      position: absolute;
-      left: clamp(28px, 4.2vw, 72px);
-      top: clamp(318px, 46vh, 420px);
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
-      pointer-events: auto;
-    }
-    #hudLaunch button {
-      margin: 0;
-      padding: 4px 0;
-      border: 0;
-      background: transparent;
-      color: #E8EEF2;
-      font-family: var(--hud-font);
-      font-weight: 300;
-      font-size: 17px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      cursor: pointer;
-      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
-    }
-    #hudLaunch button:hover,
-    #hudLaunch button:focus-visible { color: var(--cyan); }
-    #hudCal {
-      position: absolute;
-      right: clamp(28px, 4vw, 64px);
-      top: clamp(28px, 6vh, 56px);
-      width: min(220px, 18vw);
-      font-family: var(--hud-font);
-      color: var(--date-ink);
-    }
-    #hudCal h2 {
-      margin: 0 0 10px;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: #A8B0B8;
-    }
-    #calGrid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px 2px;
-      font-size: 11px;
-      letter-spacing: 0.04em;
-      text-align: center;
-    }
-    #calGrid span { color: #8A929A; }
-    #calGrid .dow { color: #6A727A; }
-    #calGrid .today {
-      color: #05070A;
-      background: var(--cyan);
-      border-radius: 50%;
-    }
-    body.is-overlay #clock { font-size: clamp(56px, 6.2vw, 88px); }
-    body.is-overlay #hudViz { top: clamp(156px, 22vh, 214px); height: 72px; }
-    body.is-overlay .viz-bar { height: 72px; }
-    body.is-overlay #hudMedia { top: clamp(236px, 32vh, 300px); }
-    body.is-overlay #hudLaunch { opacity: 0; pointer-events: none; }
-    @media (max-height: 820px) {
-      #hudViz { top: 186px; }
-      #hudMedia { top: 288px; }
-      #hudLaunch { top: 328px; }
-    }
   </style>
 </head>
 <body>
   <div id="stage">
     <div id="studio">
-      <div id="floor" aria-hidden="true"></div>
-      <div id="tabRow" role="tablist" aria-label="Home"></div>
-    </div>
-    <div id="hud" aria-hidden="false">
-      <div id="hudClock">
-        <p id="clock">00:00</p>
-        <p id="dateLine">—</p>
-        <p id="weatherLine">Offline · clear field</p>
-      </div>
-      <div id="hudViz" aria-hidden="true"></div>
-      <div id="hudMedia"><span class="mark">▶</span><span id="nowPlaying">Quiet field — idle</span></div>
-      <div id="hudLaunch">
-        <button type="button" data-launch="Session">Games</button>
-        <button type="button" data-launch="Tools">Tools</button>
-        <button type="button" data-launch="Settings">Options</button>
-      </div>
-      <div id="hudCal">
-        <h2 id="calTitle">Calendar</h2>
-        <div id="calGrid"></div>
-      </div>
+      <div id="labelStack" role="listbox" aria-label="Home"></div>
     </div>
     <div id="overlay">
-      <div id="scrim" aria-hidden="true"></div>
       <div id="listPane">
         <p id="listHead"></p>
         <div id="track"></div>
@@ -576,7 +198,7 @@
   </div>
   <div class="preview-caption">
     <h1 id="previewTitle">Games</h1>
-    <p id="previewHint">Left/Right move tabs · Up/Down open this list</p>
+    <p id="previewHint">Up/Down move labels · Enter opens this group</p>
   </div>
   <script src="cube-scene.js"></script>
 </body>

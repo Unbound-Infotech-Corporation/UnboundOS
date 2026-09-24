@@ -47,7 +47,7 @@ public partial class ShellViewModel : ObservableObject
     [ObservableProperty] private string _sessionStateText = SessionState.Idle.ToString();
     [ObservableProperty] private bool _isSessionActive;
     [ObservableProperty] private string _activeProfileName = "None";
-    [ObservableProperty] private string _statusLine = "Galaxy home. Left/right shift nodes. Up/Down open this list.";
+    [ObservableProperty] private string _statusLine = "Home. Up/Down: labels. Enter opens this group.";
     [ObservableProperty] private double _cpuUsage;
     [ObservableProperty] private string _memoryText = "—";
     [ObservableProperty] private int _processCount;
@@ -56,7 +56,7 @@ public partial class ShellViewModel : ObservableObject
 
     public string CpuUsageText => $"{CpuUsage:0}%";
 
-    /// <summary>Overlay nav shows when the Rainmeter host is enabled (default on).</summary>
+    /// <summary>Overlay nav shows only when the optional Rainmeter host is enabled (off by default).</summary>
     public bool OverlayNavVisible => _overlay.IsEnabled;
 
     partial void OnCpuUsageChanged(double value) => OnPropertyChanged(nameof(CpuUsageText));

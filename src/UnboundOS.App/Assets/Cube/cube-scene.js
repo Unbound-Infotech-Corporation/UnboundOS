@@ -1,20 +1,19 @@
-/* UnboundOS Home — studio tab bar on Obsidian.
-   No galaxy, no suns. Narrow vertical blades, teal tips, soft shadows. */
+/* UnboundOS Home — Super Clean left label stack on Obsidian. */
 (() => {
   "use strict";
 
   const TAB_DEFS = [
-    { id: "Hardware", title: "Hardware" },
-    { id: "Files", title: "Files" },
-    { id: "Network", title: "Network" },
     { id: "Session", title: "Games" },
-    { id: "Settings", title: "Options" },
     { id: "Tools", title: "Tools" },
-    { id: "Mods", title: "Mods" }
+    { id: "Settings", title: "Options" },
+    { id: "Mods", title: "Mods" },
+    { id: "Network", title: "Network" },
+    { id: "Files", title: "Files" },
+    { id: "Hardware", title: "Hardware" }
   ];
   const OPTIONS_ITEMS = [
     { id: "motion", title: "Interface motion", meta: "SET" },
-    { id: "hud", title: "Home HUD", meta: "SET" },
+    { id: "hud", title: "Home extras", meta: "SET" },
     { id: "skinny", title: "Session skinny", meta: "SET" },
     { id: "updates", title: "Updates", meta: "SET" },
     { id: "display", title: "Display", meta: "SET" },
@@ -23,12 +22,12 @@
     { id: "cleanup", title: "Finish setup", meta: "SET" }
   ];
   const DEFAULT_FACES = [
-    { id: "Session", title: "Games", kicker: "PLAY", monogram: "G", meta: "PLAY", hint: "Up or Down opens this list.", accent: "#F2E6C8", core: "#FFE9B0" },
-    { id: "Tools", title: "Tools", kicker: "KIT", monogram: "T", meta: "OPEN", hint: "Up or Down opens Tools.", accent: "#E8D7A8", core: "#F0E0B8" },
-    { id: "Mods", title: "Mods", kicker: "MOD", monogram: "M", meta: "OPEN", hint: "Up or Down opens Mods.", accent: "#E4D2A0", core: "#F0E0B8" },
-    { id: "Network", title: "Network", kicker: "LINK", monogram: "N", meta: "SPLIT", hint: "Up or Down opens Network.", accent: "#C8D4F0", core: "#D8E0F4" },
-    { id: "Files", title: "Files", kicker: "FS", monogram: "F", meta: "BROWSE", hint: "Up or Down opens Files.", accent: "#D8D4C8", core: "#E8E4D8" },
-    { id: "Hardware", title: "Hardware", kicker: "HW", monogram: "H", meta: "READ", hint: "Up or Down opens Hardware.", accent: "#B8C8E8", core: "#C8D4F0" }
+    { id: "Session", title: "Games", kicker: "PLAY", monogram: "G", meta: "PLAY", hint: "Enter opens this group.", accent: "#00F0FF", core: "#00F0FF" },
+    { id: "Tools", title: "Tools", kicker: "KIT", monogram: "T", meta: "OPEN", hint: "Enter opens Tools.", accent: "#00F0FF", core: "#00F0FF" },
+    { id: "Mods", title: "Mods", kicker: "MOD", monogram: "M", meta: "OPEN", hint: "Enter opens Mods.", accent: "#00F0FF", core: "#00F0FF" },
+    { id: "Network", title: "Network", kicker: "LINK", monogram: "N", meta: "SPLIT", hint: "Enter opens Network.", accent: "#00F0FF", core: "#00F0FF" },
+    { id: "Files", title: "Files", kicker: "FS", monogram: "F", meta: "BROWSE", hint: "Enter opens Files.", accent: "#00F0FF", core: "#00F0FF" },
+    { id: "Hardware", title: "Hardware", kicker: "HW", monogram: "H", meta: "READ", hint: "Enter opens Hardware.", accent: "#00F0FF", core: "#00F0FF" }
   ];
 
   const params = new URLSearchParams(location.search);
@@ -36,18 +35,18 @@
   if (preview) document.body.classList.add("preview");
 
   const studioEl = document.getElementById("studio");
-  const tabRowEl = document.getElementById("tabRow");
+  const stackEl = document.getElementById("labelStack");
   const overlayEl = document.getElementById("overlay");
   const trackEl = document.getElementById("track");
   const listHeadEl = document.getElementById("listHead");
   const hosted = Boolean(window.chrome?.webview);
   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
-  if (!studioEl || !tabRowEl) return;
+  if (!studioEl || !stackEl) return;
 
   const state = {
     faces: DEFAULT_FACES,
-    tab: 3,
+    tab: 0,
     motion: !reduced,
     overlay: false,
     items: [],
@@ -55,10 +54,9 @@
     origin: "top",
     overlayTitle: "",
     overlayFront: "",
-    hud: params.get("hud") !== "0"
+    hud: false
   };
 
-  let drag = null;
   const tabs = [];
 
   function escapeHtml(s) {
@@ -69,7 +67,7 @@
 
   function tabIndexOf(id) {
     const i = TAB_DEFS.findIndex((t) => t.id === id);
-    return i >= 0 ? i : 3;
+    return i >= 0 ? i : 0;
   }
 
   function wrapTab(i) {
@@ -85,93 +83,18 @@
     document.body.classList.toggle("reduce-motion", !state.motion);
   }
 
-  function syncHudClass() {
-    document.body.classList.toggle("hud-off", !state.hud);
-  }
-
-  function pad(n) {
-    return String(n).padStart(2, "0");
-  }
-
-  function tickClock() {
-    const now = new Date();
-    const clock = document.getElementById("clock");
-    const dateLine = document.getElementById("dateLine");
-    if (clock) clock.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-    if (dateLine) {
-      dateLine.textContent = now.toLocaleDateString(undefined, {
-        weekday: "long",
-        day: "numeric",
-        month: "long"
-      });
-    }
-  }
-
-  function buildViz() {
-    const root = document.getElementById("hudViz");
-    if (!root) return;
-    root.innerHTML = "";
-    for (let i = 0; i < 22; i++) {
-      const bar = document.createElement("span");
-      bar.className = "viz-bar";
-      bar.style.animationDelay = `${(i % 11) * 0.11}s`;
-      bar.style.animationDuration = `${1.05 + (i % 5) * 0.12}s`;
-      root.appendChild(bar);
-    }
-  }
-
-  function buildCalendar() {
-    const grid = document.getElementById("calGrid");
-    const title = document.getElementById("calTitle");
-    if (!grid) return;
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
-    if (title) {
-      title.textContent = now.toLocaleDateString(undefined, { month: "long", year: "numeric" });
-    }
-    const first = new Date(year, month, 1).getDay();
-    const days = new Date(year, month + 1, 0).getDate();
-    const dow = ["S", "M", "T", "W", "T", "F", "S"];
-    const cells = dow.map((d) => `<span class="dow">${d}</span>`);
-    for (let i = 0; i < first; i++) cells.push("<span></span>");
-    for (let d = 1; d <= days; d++) {
-      const on = d === now.getDate() ? " today" : "";
-      cells.push(`<span class="${on.trim()}">${d}</span>`);
-    }
-    grid.innerHTML = cells.join("");
-  }
-
-  function launchCategory(id) {
-    if (hosted) {
-      send({ v: 1, type: "pick", face: id === "Settings" ? "Settings" : id });
-      send({ v: 1, type: "activate" });
-      return;
-    }
-    setTab(tabIndexOf(id), !state.motion);
-    if (id === "Settings") previewOpenOptions();
-    else previewOpen("top");
-  }
-
-  function buildTabs() {
-    tabRowEl.innerHTML = TAB_DEFS.map((def, i) => (
-      `<button type="button" class="tab" data-index="${i}" role="tab" aria-selected="false" tabindex="-1">` +
-        `<span class="stack">` +
-          `<span class="blade">` +
-            `<span class="tip"><span class="facet"></span></span>` +
-            `<span class="tab-label">${escapeHtml(def.title)}</span>` +
-          `</span>` +
-        `</span>` +
-      `</button>`
+  function buildLabels() {
+    stackEl.innerHTML = TAB_DEFS.map((def, i) => (
+      `<button type="button" class="label" data-index="${i}" role="option" aria-selected="false">${escapeHtml(def.title)}</button>`
     )).join("");
     tabs.length = 0;
-    tabRowEl.querySelectorAll(".tab").forEach((el) => {
+    stackEl.querySelectorAll(".label").forEach((el) => {
       tabs.push(el);
       el.addEventListener("click", () => {
         const idx = Number(el.getAttribute("data-index"));
         if (state.overlay) return;
         if (idx === state.tab) {
-          previewOpen("top");
+          if (!hosted) previewOpen("top");
           send({ v: 1, type: "activate" });
         } else {
           if (!hosted) setTab(idx, !state.motion);
@@ -190,15 +113,14 @@
       const focused = i === state.tab;
       tabs[i].classList.toggle("is-focus", focused);
       tabs[i].setAttribute("aria-selected", focused ? "true" : "false");
+      tabs[i].style.setProperty("--d", String(Math.abs(i - state.tab)));
     }
     if (!skipEase) syncMotionClass();
-    else if (state.motion) {
-      requestAnimationFrame(() => syncMotionClass());
-    }
+    else if (state.motion) requestAnimationFrame(() => syncMotionClass());
     const cap = document.getElementById("previewTitle");
     const hint = document.getElementById("previewHint");
     if (cap) cap.textContent = on.title;
-    if (hint) hint.textContent = "Left/Right move tabs · Up/Down open this list";
+    if (hint) hint.textContent = "Up/Down move labels · Enter opens this group";
   }
 
   function send(msg) {
@@ -209,10 +131,7 @@
     if (Array.isArray(data.faces) && data.faces.length) state.faces = data.faces;
     if (data.motion === false) state.motion = false;
     if (data.motion === true) state.motion = true;
-    if (data.hud === false) state.hud = false;
-    if (data.hud === true) state.hud = true;
     syncMotionClass();
-    syncHudClass();
     if (state.overlay) return;
     if (isOptionsFront(data.front, data.node)) setTab(tabIndexOf("Settings"), !state.motion);
     else if (data.front) setTab(tabIndexOf(data.front), !state.motion);
@@ -239,7 +158,9 @@
       return [
         { id: "obs", title: "OBS", meta: "KIT" },
         { id: "discord", title: "Discord", meta: "KIT" },
-        { id: "vortex", title: "Vortex", meta: "KIT" }
+        { id: "vortex", title: "Vortex", meta: "KIT" },
+        { id: "store", title: "Microsoft Store", meta: "URI" },
+        { id: "xbox", title: "Xbox", meta: "URI" }
       ];
     }
     if (id === "Settings") return OPTIONS_ITEMS;
@@ -273,8 +194,7 @@
     const pane = document.getElementById("listPane");
     const mid = (pane?.clientHeight || 400) * 0.42;
     const y = mid - (on.offsetTop + on.offsetHeight * 0.5);
-    if (!state.motion) trackEl.style.transition = "none";
-    else trackEl.style.transition = "";
+    trackEl.style.transition = state.motion ? "" : "none";
     trackEl.style.setProperty("--track-y", `${y}px`);
   }
 
@@ -283,7 +203,6 @@
     state.items = items;
     state.focus = focus;
     state.origin = origin;
-    studioEl.classList.add("is-overlay");
     document.body.classList.add("is-overlay");
     if (listHeadEl) listHeadEl.textContent = state.overlayTitle || TAB_DEFS[state.tab].title;
     overlayEl.classList.remove("show", "ready", "motion");
@@ -297,17 +216,8 @@
 
   function hideOverlay(instant) {
     state.overlay = false;
-    studioEl.classList.remove("is-overlay");
     document.body.classList.remove("is-overlay");
-    const fade = !instant && state.motion && overlayEl.classList.contains("ready");
-    overlayEl.classList.remove("show");
-    if (!fade) {
-      overlayEl.classList.remove("ready", "motion");
-    } else {
-      overlayEl.classList.add("motion");
-      overlayEl.classList.remove("ready");
-      window.setTimeout(() => overlayEl.classList.remove("motion"), 720);
-    }
+    overlayEl.classList.remove("show", "ready", "motion");
     state.items = [];
     if (trackEl) trackEl.innerHTML = "";
     if (listHeadEl) listHeadEl.textContent = "";
@@ -376,6 +286,11 @@
     });
   }
 
+  function shiftTab(delta) {
+    if (!hosted) setTab(state.tab + delta, !state.motion);
+    send({ v: 1, type: "turn", turn: delta < 0 ? "Up" : "Down" });
+  }
+
   function onKey(ev) {
     if (state.overlay) {
       if (ev.key === "Escape") {
@@ -396,24 +311,12 @@
       }
       return;
     }
-    if (ev.key === "ArrowLeft") {
-      if (!hosted) setTab(state.tab - 1, !state.motion);
-      send({ v: 1, type: "turn", turn: "Left" });
+    if (ev.key === "ArrowUp" || ev.key === "ArrowLeft") {
+      shiftTab(-1);
       ev.preventDefault();
     }
-    if (ev.key === "ArrowRight") {
-      if (!hosted) setTab(state.tab + 1, !state.motion);
-      send({ v: 1, type: "turn", turn: "Right" });
-      ev.preventDefault();
-    }
-    if (ev.key === "ArrowUp") {
-      if (!hosted) previewOpen("bottom");
-      send({ v: 1, type: "turn", turn: "Up" });
-      ev.preventDefault();
-    }
-    if (ev.key === "ArrowDown") {
-      if (!hosted) previewOpen("top");
-      send({ v: 1, type: "turn", turn: "Down" });
+    if (ev.key === "ArrowDown" || ev.key === "ArrowRight") {
+      shiftTab(1);
       ev.preventDefault();
     }
     if (ev.key === "Enter") {
@@ -427,35 +330,17 @@
     }
   }
 
-  function onPointerDown(ev) {
-    drag = { x: ev.clientX, y: ev.clientY, t: performance.now() };
-  }
-
-  function onPointerUp(ev) {
-    if (!drag) return;
-    const dx = ev.clientX - drag.x;
-    const dy = ev.clientY - drag.y;
-    drag = null;
+  function onWheel(ev) {
     if (state.overlay) return;
-    if (Math.abs(dx) > 64 && Math.abs(dx) > Math.abs(dy)) {
-      if (!hosted) setTab(state.tab + (dx < 0 ? 1 : -1), !state.motion);
-      send({ v: 1, type: "turn", turn: dx < 0 ? "Right" : "Left" });
-    }
+    if (Math.abs(ev.deltaY) < 8) return;
+    shiftTab(ev.deltaY > 0 ? 1 : -1);
+    ev.preventDefault();
   }
 
-  buildTabs();
-  buildViz();
-  buildCalendar();
-  tickClock();
-  window.setInterval(tickClock, 1000);
-  document.getElementById("hudLaunch")?.querySelectorAll("button").forEach((btn) => {
-    btn.addEventListener("click", () => launchCategory(btn.getAttribute("data-launch") || "Session"));
-  });
+  buildLabels();
   syncMotionClass();
-  syncHudClass();
-  window.addEventListener("pointerdown", onPointerDown);
-  window.addEventListener("pointerup", onPointerUp);
   window.addEventListener("keydown", onKey);
+  window.addEventListener("wheel", onWheel, { passive: false });
 
   if (hosted) {
     window.chrome.webview.addEventListener("message", (ev) => {
@@ -473,7 +358,7 @@
     });
   }
 
-  setTab(3, true);
+  setTab(0, true);
   const startTabParam = (params.get("tab") || "").toLowerCase();
   if (!hosted && startTabParam) {
     const def = TAB_DEFS.find((t) => t.id.toLowerCase() === startTabParam || t.title.toLowerCase() === startTabParam);
@@ -487,9 +372,9 @@
       setTab(tabIndexOf("Session"), true);
       previewOpen("top");
     }, 60);
-  } else if (!hosted && TAB_DEFS.some((t) => t.id.toLowerCase() === startOpenParam)) {
+  } else if (!hosted && TAB_DEFS.some((t) => t.id.toLowerCase() === startOpenParam || t.title.toLowerCase() === startOpenParam)) {
     window.setTimeout(() => {
-      const def = TAB_DEFS.find((t) => t.id.toLowerCase() === startOpenParam);
+      const def = TAB_DEFS.find((t) => t.id.toLowerCase() === startOpenParam || t.title.toLowerCase() === startOpenParam);
       setTab(tabIndexOf(def.id), true);
       previewOpen("top");
     }, 60);

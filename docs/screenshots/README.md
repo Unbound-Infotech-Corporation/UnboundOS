@@ -17,15 +17,14 @@ Visual check:
   or START row. Settings / Profiles are discreet corner glyphs.
   Inner pages restore HOME / SESSION / NETWORK / TOOLS / FILES /
   HARDWARE / MODS / PROFILES / SETTINGS.
-- Home hero is a **row of narrow vertical tabs** on Obsidian `#05070A`:
-  dark metal blades, cyan-teal `#00F0FF` tips, soft drop shadows on a
-  dark floor. No galaxy, nebula, or sun. Only the focused tab shows a
-  Diavlo name above. Opening a list keeps that field; titles-only
-  Diavlo rows sit on the left over translucent black. SET opens Options.
-  Escape returns.
-- **Left/Right** move tabs. **Up** opens that tab’s list from the
-  bottom; **Down** opens it from the top. The black field stays visible
-  so Rainmeter overlays still read.
-- Interface motion On: quiet tab lift and silky list ease.
+- Home hero is a **left stack of category labels** on Obsidian `#05070A`.
+  Unfocused names stay small and quiet. The focused name enlarges in
+  Diavlo and pushes neighbors, with a cyan `#00F0FF` hairline. No
+  galaxy, nebula, sun, teal-tip tabs, or Rainmeter HUD. Opening a
+  group replaces Home with an all-black titles-only list. SET opens
+  Options. Escape returns.
+- **Up/Down** (D-pad, stick, arrows, wheel) move labels. **Enter**
+  opens that group. Left/Right also move the label list.
+- Interface motion On: shared enlarge/push and silky list ease.
   Off (or a live session): instant focus; lists still open.
 - Inner-page chrome keeps obsidian `#05070A` and cyan pulse `#00F0FF`.

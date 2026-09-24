@@ -711,7 +711,7 @@ public sealed partial class NavigationCubeView : UserControl
                 AllowMotion,
                 burst,
                 _optionsTab,
-                _hudSettings?.HudEnabled ?? true));
+                _hudSettings?.HudEnabled ?? false));
         CubeWeb.CoreWebView2.PostWebMessageAsJson(json);
     }
 

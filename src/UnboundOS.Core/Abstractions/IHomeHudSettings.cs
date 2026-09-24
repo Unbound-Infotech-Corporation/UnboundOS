@@ -2,7 +2,7 @@ using UnboundOS.Core.Home;
 
 namespace UnboundOS.Core.Abstractions;
 
-/// <summary>Persisted Home HUD: master strip, clock/temps, widget look and positions.</summary>
+/// <summary>Persisted Home extras: leftover plaques, clock/temps, widget look and positions. Off by default.</summary>
 public interface IHomeHudSettings
 {
     bool HudEnabled { get; }

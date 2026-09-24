@@ -8,19 +8,20 @@ images.
 
 | Player | Edge | Gap Unbound fills |
 |--------|------|-------------------|
-| **AtlasOS** | Auditable playbook, optional security toggles | No living-room console HUD; not a session engine |
+| **AtlasOS** | Auditable playbook, optional security toggles | No living-room Super Clean Home; not a session engine |
 | **ReviOS** | Aggressive gaming strip | Higher breakage; overlays/anticheat risk |
 | **Tiny11** | Small footprint | Not a gaming tuner; Wi-Fi often missing on fresh boxes |
 | **Ghost Spectre / random ISOs** | “FPS packs” | Supply-chain and ToS risk. We will not follow |
 | **SteamOS / Gamescope** | Boot-to-games UX | Kernel anticheat (Valorant/Fortnite) fails. We stay Windows-native |
-| **Xbox full-screen** | Living-room dashboard | Still a full desktop; Unbound is branded (HUD, Tools, Mods, Hardware) |
+| **Xbox full-screen** | Living-room dashboard | Still a full desktop; Unbound is branded (Home, Tools, Mods, Hardware) |
 
 ## What we ship that they do not
 
-1. **Console shell on genuine Windows** — first-party Gik0n-like HUD
-   (clock, date, weather stub, viz, media, launcher) plus teal-tip
-   tabs. No Rainmeter required. Theme tokens in
-   [theme-tokens.md](theme-tokens.md).
+1. **Console shell on genuine Windows** — Super Clean left-label Home
+   on black (Games, Tools, Options, Mods, Network, Files, Hardware).
+   Focus enlarges in Diavlo and pushes neighbors. Enter opens an
+   all-black options surface. Rainmeter is not required and is off
+   by default. Theme tokens in [theme-tokens.md](theme-tokens.md).
 2. **Anticheat-safe Competitive session** — strip overlays (Rainmeter
    etc.); **never** replace Explorer or set `Shell=` for EAC/Vanguard.
 3. **Reversible session profiles** — Living Room / Streamer /

@@ -29,8 +29,8 @@ public partial class OverlayViewModel : ObservableObject
         Widgets = host.Widgets;
         Headline = host.IsEnabled ? "Rainmeter overlay" : "Rainmeter overlay is off";
         Detail = host.IsEnabled
-            ? "Rainmeter is optional. Default Home already ships a first-party HUD (clock, date, viz). Open launches Rainmeter if you installed it. UnboundOS does not rewrite rainmeter.ini."
-            : "Rainmeter overlay is disabled. The packaged first-party Home HUD remains the default theme.";
+            ? "Rainmeter is an optional addon. Super Clean Home does not need it. Open launches Rainmeter if you installed it. UnboundOS does not rewrite rainmeter.ini."
+            : "Rainmeter overlay is off. Default Home is the first-party Super Clean label stack. This addon is not required.";
         Status = host.IsEnabled
             ? (CanOpenRainmeter
                 ? "Rainmeter found. Open to show skins over Home."

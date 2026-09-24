@@ -45,9 +45,8 @@ Options → **Session skinny** → Hardware-accelerated GPU scheduling.
 
 ## Motion-off
 
-Settings → Interface motion Off freezes tab lift, tip breath, metal
-sweep, and the HUD visualizer. No WebGL on Home. Three.js stays vendored
-and unused.
+Settings → Interface motion Off freezes Home label enlarge/push and
+list ease. No WebGL on Home. Three.js stays vendored and unused.
 
 ## Startup / debloat
 

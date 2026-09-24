@@ -147,8 +147,8 @@ public sealed class NavigationCubeTests
         Assert.DoesNotContain("Night City", files.Hint, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("PlayStation", CubeCatalog.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Home", CubeCatalog.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("this list from the bottom", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("this list from the top", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("label list", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Enter opens", CubeCatalog.Announce(CubeDestination.Files), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("corner glyphs", CubeCatalog.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("top bar", CubeCatalog.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
         Assert.InRange(CubeLayout.FaceOpacity(1), 0.95f, 1.01f);
@@ -224,7 +224,7 @@ public sealed class NavigationCubeTests
         Assert.Contains("\"node\":0", json, StringComparison.Ordinal);
         Assert.Contains("\"overlay\":\"none\"", json, StringComparison.Ordinal);
         Assert.Contains("\"burst\":true", json, StringComparison.Ordinal);
-        Assert.Contains("\"hud\":true", json, StringComparison.Ordinal);
+        Assert.Contains("\"hud\":false", json, StringComparison.Ordinal);
         Assert.Contains("\"accent\":\"#6FA896\"", json, StringComparison.Ordinal);
         Assert.Contains("\"id\":\"Tools\"", json, StringComparison.Ordinal);
         Assert.DoesNotContain("PlayStation", json, StringComparison.OrdinalIgnoreCase);
@@ -315,8 +315,8 @@ public sealed class HomeGalaxyTests
     {
         Assert.Equal(HomeIdleAction.PanLeft, HomeGalaxy.FromTurn(CubeTurn.Left));
         Assert.Equal(HomeIdleAction.PanRight, HomeGalaxy.FromTurn(CubeTurn.Right));
-        Assert.Equal(HomeIdleAction.OpenListFromBottom, HomeGalaxy.FromTurn(CubeTurn.Up));
-        Assert.Equal(HomeIdleAction.OpenListFromTop, HomeGalaxy.FromTurn(CubeTurn.Down));
+        Assert.Equal(HomeIdleAction.PanLeft, HomeGalaxy.FromTurn(CubeTurn.Up));
+        Assert.Equal(HomeIdleAction.PanRight, HomeGalaxy.FromTurn(CubeTurn.Down));
         Assert.Equal(CubeDestination.Network, HomeGalaxy.Neighbor(CubeDestination.Session, -1));
         Assert.Equal(CubeDestination.Tools, HomeGalaxy.Neighbor(CubeDestination.Session, 1));
         Assert.Equal(CubeDestination.Mods, HomeGalaxy.Neighbor(CubeDestination.Hardware, -1));
@@ -329,11 +329,11 @@ public sealed class HomeGalaxyTests
     [Fact]
     public void Announce_NamesTheHomeAndOverlay()
     {
-        Assert.Contains("Games tab", HomeGalaxy.Announce(CubeDestination.Session), StringComparison.Ordinal);
-        Assert.Contains("from the bottom", HomeGalaxy.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("from the top", HomeGalaxy.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Games", HomeGalaxy.Announce(CubeDestination.Session), StringComparison.Ordinal);
+        Assert.Contains("label list", HomeGalaxy.Announce(CubeDestination.Session), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Enter opens", HomeGalaxy.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("corner glyphs", HomeGalaxy.Announce(CubeDestination.Tools), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Options tab", HomeGalaxy.AnnounceOptions(), StringComparison.Ordinal);
+        Assert.Contains("Options", HomeGalaxy.AnnounceOptions(), StringComparison.Ordinal);
         var overlay = HomeGalaxy.AnnounceOverlay(new CubeBrowseItem("570", "Dota 2", "STEAM", "game", "D"), 0, 3);
         Assert.Contains("Dota 2", overlay, StringComparison.Ordinal);
         Assert.Contains("1 of 3", overlay, StringComparison.Ordinal);
@@ -342,17 +342,20 @@ public sealed class HomeGalaxyTests
     }
 
     [Fact]
-    public void Tabs_IncludeOptionsBetweenGamesAndTools()
+    public void Tabs_IncludeOptionsAfterTools()
     {
+        Assert.Equal(
+            ["Session", "Tools", "Settings", "Mods", "Network", "Files", "Hardware"],
+            HomeGalaxy.TabIds);
         Assert.Equal(7, HomeGalaxy.TabIds.Count);
         Assert.Equal("Settings", HomeGalaxy.TabIds[HomeGalaxy.OptionsTabIndex]);
-        Assert.Equal(3, HomeGalaxy.TabIndexOf(CubeDestination.Session));
-        Assert.Equal(4, HomeGalaxy.TabIndexOf(CubeDestination.Session, optionsTab: true));
-        Assert.Equal("Settings", HomeGalaxy.ShiftTab(CubeDestination.Session, false, 1).Id);
-        Assert.Null(HomeGalaxy.ShiftTab(CubeDestination.Session, false, 1).Destination);
-        Assert.Equal(CubeDestination.Tools, HomeGalaxy.ShiftTab(CubeDestination.Session, true, 1).Destination);
-        Assert.Equal(CubeDestination.Session, HomeGalaxy.ShiftTab(CubeDestination.Session, true, -1).Destination);
-        Assert.Equal(CubeDestination.Mods, HomeGalaxy.ShiftTab(CubeDestination.Hardware, false, -1).Destination);
+        Assert.Equal(0, HomeGalaxy.TabIndexOf(CubeDestination.Session));
+        Assert.Equal(2, HomeGalaxy.TabIndexOf(CubeDestination.Session, optionsTab: true));
+        Assert.Equal("Tools", HomeGalaxy.ShiftTab(CubeDestination.Session, false, 1).Id);
+        Assert.Equal(CubeDestination.Tools, HomeGalaxy.ShiftTab(CubeDestination.Session, false, 1).Destination);
+        Assert.Equal(CubeDestination.Mods, HomeGalaxy.ShiftTab(CubeDestination.Session, true, 1).Destination);
+        Assert.Equal(CubeDestination.Tools, HomeGalaxy.ShiftTab(CubeDestination.Session, true, -1).Destination);
+        Assert.Equal(CubeDestination.Files, HomeGalaxy.ShiftTab(CubeDestination.Hardware, false, -1).Destination);
     }
 
     [Fact]
@@ -375,6 +378,7 @@ public sealed class HomeGalaxyTests
         Assert.Equal(8, options.Count);
         Assert.All(options, item => Assert.Equal("settings", item.Kind));
         Assert.Contains(options, item => item.Id == "motion" && item.Title == "Interface motion");
+        Assert.Contains(options, item => item.Id == "hud" && item.Title == "Home extras");
         Assert.Contains(options, item => item.Id == "skinny" && item.Title == "Session skinny");
         Assert.Contains(options, item => item.Id == "updates" && item.Title == "Updates");
         Assert.Contains(options, item => item.Id == "cleanup" && item.Title == "Finish setup");

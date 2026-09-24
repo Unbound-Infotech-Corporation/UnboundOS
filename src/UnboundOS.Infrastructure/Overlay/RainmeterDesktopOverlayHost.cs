@@ -4,8 +4,8 @@ using UnboundOS.Infrastructure.Tools;
 namespace UnboundOS.Infrastructure.Overlay;
 
 /// <summary>
-/// Rainmeter is the customizable overlay path over Home.
-/// On unless <see cref="OverlayHostOptions.Enabled"/> is set false.
+/// Rainmeter is an optional overlay path over Home.
+/// Off unless <see cref="OverlayHostOptions.Enabled"/> is set true.
 /// Opens Rainmeter.exe with empty args. Does not rewrite configs.
 /// First-party Home widgets stay as the built-in fallback.
 /// </summary>

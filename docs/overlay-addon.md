@@ -1,18 +1,18 @@
 # Desktop overlay / skins addon (optional)
 
 UnboundOS is a **session shell**, not a desktop replacement. Home is a
-**black full-bleed studio field** with vertical tabs **and a packaged
-first-party HUD** (clock, date, viz, media strip, launcher, calendar).
-That HUD is the default theme. It does **not** require Rainmeter.
+**black full-bleed Super Clean label stack**. That first-party theme
+does **not** require Rainmeter and is not a Rainmeter recreation.
 
-**Rainmeter** remains an **optional** overlay path for users who want
-their own skins on top of Home. First-party movable temp plaques
-(`IHomeWidgetCatalog`) stay as extras.
+**Rainmeter** remains an **optional** overlay addon for users who want
+their own skins on top of Home. It is **off by default**
+(`OverlayHostOptions.Enabled = false`) and is not part of Super Clean
+Home. First-party movable temp plaques (`IHomeWidgetCatalog`) stay as
+opt-in extras (Settings → Home extras).
 
-This host is **on by default** (`OverlayHostOptions.Enabled = true`).
-The Overlay nav item is the Rainmeter surface: Open Rainmeter, Get Phenix.
-Set `Enabled = false` to hide it. The app window starts/stops the host;
-`SessionEngine` never does.
+The Overlay nav item appears only when the host is enabled: Open
+Rainmeter, Get Phenix. Set `Enabled = true` to show it. The app window
+starts/stops the host; `SessionEngine` never does.
 
 Home must stay a transparent / black WebView shell so skins remain
 visible. Do not paint opaque WinUI chrome across Home.
@@ -72,8 +72,9 @@ clearly allows redistribution. None are bundled today.
 
 ## Starter Rainmeter skin (optional)
 
-The default Home theme is the **packaged Unbound HUD**. Rainmeter is
-not required. If you still want third-party skins on top:
+The default Home theme is the **Super Clean left-label stack**.
+Rainmeter is not required and is off unless you enable the addon.
+If you still want third-party skins on top:
 
 - Rainmeter (host): [https://www.rainmeter.net/](https://www.rainmeter.net/)
 - Phenix theme: [https://visualskins.com/skin/phenix](https://visualskins.com/skin/phenix)
@@ -103,7 +104,16 @@ Do not pirate paid visualizer packs. UnboundOS does not ship them.
 - Tools → **Xbox** — Open `xbox:`. Get is the official Store product
   page (`ms-windows-store://pdp/?ProductId=9MV0B5HZVK9Z`).
 
-## Disabling the Rainmeter host
+## Enabling the Rainmeter host
+
+The host is **off by default**. Super Clean Home does not start it.
+
+```csharp
+services.AddSingleton(new OverlayHostOptions { Enabled = true });
+services.AddUnboundOs();
+```
+
+To keep it off (the default):
 
 ```csharp
 services.AddSingleton(OverlayHostOptions.Disabled);
@@ -122,4 +132,4 @@ enter/exit internals.
 - Do not rewrite `rainmeter.ini` or skin configs.
 - Do not scrape Steam credentials or edit Workshop payload folders.
 - Do not lower monitor resolution from overlay tools.
-- Do not replace Home with skins. Skins sit **over** the black tab field.
+- Do not replace Home with skins. Skins sit **over** the black Super Clean field.

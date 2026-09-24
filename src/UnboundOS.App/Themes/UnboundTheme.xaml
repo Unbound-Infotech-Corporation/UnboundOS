@@ -7,9 +7,9 @@
     <!--
         UnboundOS — Unbound Infotech brand tokens (unboundinfotech.com).
         Inner pages keep obsidian + cyan pulse + cobalt. Home is a separate
-        bay: first-party HUD on an Obsidian field with teal-tipped tabs.
+        bay: Super Clean left-label stack on an Obsidian field.
         Inner-page tiles still use a 1px cyan hairline.
-        Motion-off freezes tab lift, tip breath, and the visualizer. No carnival neon,
+        Motion-off freezes label enlarge/push and list ease. No carnival neon,
         sheen, or squash.
     -->
     <Color x:Key="Obsidian">#05070A</Color>

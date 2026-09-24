@@ -12,17 +12,19 @@ slice** only (called out per section). Image/OOBE owners pick up the rest.
 
 Brand stays Unbound Infotech first: obsidian, cyan pulse, cobalt, spare
 circuit amber on **inner pages**. Home is a separate bay — a black
-studio field with vertical teal-tipped tabs. Restrained professional
+studio field with Super Clean left-stack labels. Restrained professional
 buttons. No ads. No silent overclock. Treat **x64** as the WinUI
 platform.
 
-Home navigation is a **tab bar** plus a **packaged first-party HUD**
-(WebView2 hosting HTML, not Unreal). Tabs: Hardware, Files, Network,
-Games, Options, Tools, Mods. Left/right move focus. **Up** opens that
-tab’s list from the bottom; **Down** opens it from the top. The list
-is titles-only in the center over the same Obsidian field and HUD. Quiet
-**movable** light-grey temp plaques can sit on the right. Architecture:
-[docs/home-nav.md](home-nav.md). Offline NIC pack: [docs/offline-nic-pack.md](offline-nic-pack.md).
+Home navigation is a **left-label stack** on black (WebView2 hosting
+HTML, not Unreal). Labels top to bottom: Games, Tools, Options, Mods,
+Network, Files, Hardware. **Up/Down** (D-pad, stick, arrows, wheel)
+move the focused label; the focus name enlarges in Diavlo and pushes
+neighbors. **Enter** opens an all-black titles-only list of that
+group’s real destinations. Escape returns to the labels. Quiet
+**movable** leftover plaques stay opt-in (Settings → Home extras, off
+by default). Architecture: [docs/home-nav.md](home-nav.md). Offline
+NIC pack: [docs/offline-nic-pack.md](offline-nic-pack.md).
 
 ## 1. OOBE / initial setup last step
 
@@ -122,9 +124,9 @@ clocks, RAM, disks, GPU — as much as we can read via **WMI**,
 (registry CPU/GPU/BIOS, DriveInfo disks, GC memory). Live sensor graphs,
 WMI depth, and LibreHardwareMonitor are **later**. Tools catalog:
 optional **Open HWiNFO** if installed (official Get otherwise).
-Rainmeter is the overlay-widget path over Home (discover / Open /
-protect; no config rewrite). MusicBee + official free visualizer
-pack, plus Microsoft Store and Xbox URI tiles.
+Rainmeter is an optional overlay addon (off by default; discover /
+Open / protect; no config rewrite). MusicBee + official free
+visualizer pack, plus Microsoft Store and Xbox URI tiles.
 
 ## What this UnboundOS PR must keep
 

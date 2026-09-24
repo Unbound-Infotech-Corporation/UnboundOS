@@ -99,10 +99,10 @@ public sealed class BrandingAndOverlayTests
     }
 
     [Fact]
-    public void RainmeterOverlayHost_IsOnByDefault()
+    public void RainmeterOverlayHost_IsOffByDefault()
     {
         var host = new RainmeterDesktopOverlayHost();
-        Assert.True(host.IsEnabled);
+        Assert.False(host.IsEnabled);
         Assert.Equal("phenix", host.Widgets[0].Id);
         Assert.Contains(host.Widgets, widget => widget.Title == "Phenix");
     }
@@ -153,7 +153,7 @@ public sealed class BrandingAndOverlayTests
     }
 
     [Fact]
-    public void AddUnboundOs_RegistersRainmeterOverlayOnByDefault()
+    public void AddUnboundOs_RegistersRainmeterOverlayOffByDefault()
     {
         var services = new ServiceCollection();
         services.AddUnboundOs();
@@ -161,7 +161,7 @@ public sealed class BrandingAndOverlayTests
 
         var host = provider.GetRequiredService<IDesktopOverlayHost>();
         Assert.IsType<RainmeterDesktopOverlayHost>(host);
-        Assert.True(host.IsEnabled);
+        Assert.False(host.IsEnabled);
         Assert.Contains(host.Widgets, widget => widget.Id == "phenix");
         Assert.Contains(host.Widgets, widget => widget.Id == "minimalistic-clock");
         Assert.Contains(host.Widgets, widget => widget.Id == "monstercat");

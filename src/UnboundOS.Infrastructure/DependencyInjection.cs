@@ -72,7 +72,7 @@ public static class DependencyInjection
         services.AddSingleton<IModProfileManager, ModProfileManager>();
         services.AddSingleton<SteamExternalModHandoff>();
         services.AddSingleton<IExternalModHandoff, CompositeExternalModHandoff>();
-        // Rainmeter is the overlay path over Home (on by default).
+        // Rainmeter is an optional addon (off by default).
         // Register IDesktopOverlayHost before AddUnboundOs() to replace this.
         services.TryAddSingleton<OverlayHostOptions>();
         services.TryAddSingleton<IDesktopOverlayHost, RainmeterDesktopOverlayHost>();

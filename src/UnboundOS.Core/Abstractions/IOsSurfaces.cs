@@ -15,7 +15,7 @@ public interface IHardwareInventory
 }
 
 /// <summary>
-/// Optional live thermal readout for the Home HUD. Empty when sensors are absent.
+/// Optional live thermal readout for leftover Home extras. Empty when sensors are absent.
 /// Must not invent temperatures.
 /// </summary>
 public interface IThermalProbe

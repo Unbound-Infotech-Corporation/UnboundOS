@@ -1,30 +1,29 @@
 # Theme tokens (tweak these)
 
-First-party Gik0n-like HUD. No Rainmeter. No galaxy.
+Super Clean first-party Home. No Rainmeter. No galaxy. No Gik0n HUD.
 
 Keep these three in sync:
 
 | Place | What |
 |-------|------|
 | `src/UnboundOS.Core/Brand/UnboundTokens.cs` | C# constants |
-| `src/UnboundOS.App/Assets/Cube/index.html` `:root` | Home HUD / tabs |
+| `src/UnboundOS.App/Assets/Cube/index.html` `:root` | Super Clean Home labels |
 | `src/UnboundOS.App/Themes/UnboundTheme.xaml` | Inner pages |
 
 | Token | Hex | Use |
 |-------|-----|-----|
-| Obsidian | `#05070A` | Field |
-| Cyan | `#00F0FF` | Tab tips, viz, focus, inner pulse |
-| Paper | `#F7FAFC` | Clock / light glyphs |
-| Star | `#F4EFE2` | List titles |
+| Obsidian / void | `#05070A` | Field + detail surface |
+| Cyan | `#00F0FF` | Focus hairline, list focus, inner pulse |
+| Paper | `#F7FAFC` | Focused label |
+| Quiet | `#5C646C` | Unfocused labels |
+| Star | `#F4EFE2` | Inner-page list titles |
 | Muted | `#8A8A96` | Kickers |
-| Date ink | `#C8D0D8` | Date line |
-| Weather ink | `#8A96A2` | Weather stub |
 
-HUD pieces live in `#hud` (clock, date, weather, viz, media, launcher,
-calendar). `body.hud-off` or Settings → Home HUD hides them.
-`body.reduce-motion` freezes viz/tab breath. `body.is-overlay` shrinks
-the clock, hides the launcher, keeps chrome while a category list is
-open.
+Home labels live in `#labelStack`. Focus uses Diavlo Medium plus a cyan
+hairline. `--d` (distance from focus) drives neighbor size, padding,
+and opacity so the stack pushes as one. `body.reduce-motion` freezes
+enlarge/push and list ease. `body.is-overlay` hides the stack while
+the all-black category surface is open.
 
 Session presets: `JsonProfileStore.CreateDefaults()` and
 `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\profiles.json`.

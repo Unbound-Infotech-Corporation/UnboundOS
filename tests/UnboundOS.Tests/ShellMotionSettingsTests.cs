@@ -24,27 +24,27 @@ public sealed class ShellMotionSettingsTests
     }
 
     [Fact]
-    public async Task SettingsStore_HomeHudDefaultsOnWhenKeysMissing_AndPersistsOff()
+    public async Task SettingsStore_HomeHudDefaultsOffWhenKeysMissing_AndPersistsOn()
     {
         using var temp = new TempFolder();
         var store = new JsonShellSettingsStore(temp.Path);
         await File.WriteAllTextAsync(store.FilePath, """{ "interfaceMotionEnabled": true }""");
 
         var loaded = await store.LoadAsync();
-        Assert.True(loaded.ShowHomeHud);
+        Assert.False(loaded.ShowHomeHud);
         Assert.True(loaded.ShowHomeClock);
         Assert.True(loaded.ShowHomeTemps);
         Assert.DoesNotContain("homeHudEnabled", await File.ReadAllTextAsync(store.FilePath), StringComparison.Ordinal);
 
         var hud = new HomeHudSettings(store);
         await hud.InitializeAsync();
-        Assert.True(hud.HudEnabled);
-        await hud.SetHudEnabledAsync(false);
+        Assert.False(hud.HudEnabled);
+        await hud.SetHudEnabledAsync(true);
         await hud.SetClockEnabledAsync(false);
         await hud.SetTempsEnabledAsync(true);
 
         var saved = await store.LoadAsync();
-        Assert.False(saved.ShowHomeHud);
+        Assert.True(saved.ShowHomeHud);
         Assert.False(saved.ShowHomeClock);
         Assert.True(saved.ShowHomeTemps);
         var json = await File.ReadAllTextAsync(store.FilePath);
@@ -72,7 +72,7 @@ public sealed class ShellMotionSettingsTests
         var loaded = await store.LoadAsync();
         Assert.False(loaded.InterfaceMotionEnabled);
         Assert.False(loaded.ShowHomeClock);
-        Assert.True(loaded.ShowHomeHud);
+        Assert.False(loaded.ShowHomeHud);
         Assert.True(loaded.ShowHomeTemps);
     }
 

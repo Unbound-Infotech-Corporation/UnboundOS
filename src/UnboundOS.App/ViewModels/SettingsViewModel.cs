@@ -51,7 +51,7 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     [ObservableProperty] private bool _interfaceMotionEnabled = true;
-    [ObservableProperty] private bool _homeHudEnabled = true;
+    [ObservableProperty] private bool _homeHudEnabled;
     [ObservableProperty] private bool _hagsEnabled;
     [ObservableProperty] private string _hagsStatus =
         "HAGS is hardware/game dependent. Test frametimes. Not forced on session enter.";
@@ -76,8 +76,8 @@ public partial class SettingsViewModel : ObservableObject
     /// <summary>Keep titles aligned with <c>CubeBrowse.Options()</c>.</summary>
     public ObservableCollection<SettingsGroup> Groups { get; } =
     [
-        new("motion", "Interface motion", "Home tab lift, list ease, and tile focus motion."),
-        new("hud", "Home HUD", "Packaged clock, date, viz, and calendar on Home. Off hides that chrome."),
+        new("motion", "Interface motion", "Home label enlarge/push, list ease, and tile focus motion."),
+        new("hud", "Home extras", "Optional leftover plaques. Super Clean Home is labels on black. Off is the default."),
         new("skinny", "Session skinny", "Game Mode, Game DVR, visual effects, HAGS. Reversible. Defender stays on."),
         new("updates", "Updates", "Quality/LCU from Microsoft; feature updates deferred. UnboundOS does not host Windows patches."),
         new("display", "Display", "Launch the GPU vendor app. UnboundOS does not write display settings."),

@@ -67,8 +67,8 @@ public sealed record CubeSceneState
 
     public string Overlay { get; init; } = "none";
 
-    /// <summary>First-party Home HUD (clock / date / viz). Default on.</summary>
-    public bool Hud { get; init; } = true;
+    /// <summary>Optional leftover Home extras. Super Clean Home defaults off.</summary>
+    public bool Hud { get; init; }
 
     public IReadOnlyList<CubeFacePayload> Faces { get; init; } = [];
 
@@ -172,7 +172,7 @@ public static class CubeBridge
         bool motion,
         bool burst,
         bool optionsTab = false,
-        bool hud = true)
+        bool hud = false)
     {
         var info = CubeCatalog.Info(pose.Front);
         var accent = CubeAtmosphere.Palette(pose.Front);

@@ -64,7 +64,7 @@ public static class CubeBrowse
     public static IReadOnlyList<CubeBrowseItem> Options() =>
     [
         new("motion", "Interface motion", "SET", "settings", "M"),
-        new("hud", "Home HUD", "SET", "settings", "H"),
+        new("hud", "Home extras", "SET", "settings", "H"),
         new("skinny", "Session skinny", "SET", "settings", "K"),
         new("updates", "Updates", "SET", "settings", "U"),
         new("display", "Display", "SET", "settings", "D"),

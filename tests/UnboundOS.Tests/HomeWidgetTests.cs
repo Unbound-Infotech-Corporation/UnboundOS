@@ -115,7 +115,7 @@ public sealed class HomeWidgetTests
         var clock = HomeWidgets.Place(HomeWidgets.Merge(loaded.HomeWidgetPlacements), HomeWidgets.Clock);
         Assert.Equal(0.4, clock.X, 3);
         Assert.Equal(0.55, clock.Y, 3);
-        Assert.True(loaded.ShowHomeHud);
+        Assert.False(loaded.ShowHomeHud);
         var json = await File.ReadAllTextAsync(store.FilePath);
         Assert.Contains("homeWidgetAppearance", json, StringComparison.Ordinal);
         Assert.Contains("homeWidgetPlacements", json, StringComparison.Ordinal);

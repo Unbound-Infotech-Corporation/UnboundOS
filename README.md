@@ -6,21 +6,21 @@ A public Windows 11 **console-style shell** by **[Unbound Infotech Corporation](
 
 UnboundOS does **not** replace Windows. It applies a focused gaming / streaming posture — snapshot NICs, clear denylist junk, protect games and anticheat — then restores the desktop when you exit.
 
-The shell is a living-room home: on Home a **black studio field** holds a row of **narrow vertical tabs** plus a **packaged first-party HUD** (clock, date, viz, calendar — no Rainmeter required). **Left/Right** move focus. The focused tab lifts slightly and shows its **Diavlo** name above. **Up** opens that tab’s list from the bottom; **Down** opens it from the top — titles sit in the center over the same themed field. Games uses the Steam library when present. **SET** opens Options on the same field. Profiles stays a discreet corner glyph. Settings → Home HUD hides the chrome. The old Settings tile that showed the letter “I” is gone.
+The shell is a living-room home: on Home a **black studio field** holds a **left stack of category labels** (Games, Tools, Options, Mods, Network, Files, Hardware). **Up/Down** (D-pad, stick, arrows, wheel) move the focused name. The focused label **enlarges in Diavlo** and pushes neighbors; unfocused names stay small. **Enter** opens an all-black options surface for that group — real destinations, not stubs. Games uses the Steam library when present. **SET** opens Options. Profiles stays a discreet corner glyph. Rainmeter is not required and is off by default. The old Settings tile that showed the letter “I” is gone.
 
 OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). How we beat Windows-lite ISOs: [docs/competitive-landscape.md](docs/competitive-landscape.md). Session skinny toggles: [docs/gaming-skinny.md](docs/gaming-skinny.md). Theme hex: [docs/theme-tokens.md](docs/theme-tokens.md). Offline NIC pack: [docs/offline-nic-pack.md](docs/offline-nic-pack.md). Update Guard: [docs/update-guard.md](docs/update-guard.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup, reversible session skinny). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
 
-**Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (black Home, vertical tabs, quiet HUD). Company cyan `#00F0FF` is the tab tip and inner-page token. See [docs/screenshots/README.md](docs/screenshots/README.md).
+**Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (black Home, left-label stack). Company cyan `#00F0FF` is the focus hairline and inner-page token. See [docs/screenshots/README.md](docs/screenshots/README.md).
 
 ## What it is
 
-A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic stay in the existing engines. **Rainmeter** is the overlay-widget path over the black Home field (discover / Open / protect — Rainmeter keeps its configs). First-party Home widgets stay as the fallback. See [docs/overlay-addon.md](docs/overlay-addon.md). The Overlay page Opens Rainmeter and Gets Phenix.
+A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic stay in the existing engines. Default Home is the first-party Super Clean label stack — **Rainmeter is an optional addon, off by default** (discover / Open / protect — Rainmeter keeps its configs). See [docs/overlay-addon.md](docs/overlay-addon.md). The Overlay page is hidden unless that host is enabled.
 
 ## What it does
 
 | Module | Purpose |
 |--------|---------|
-| **Home** | Obsidian field with vertical studio tabs and a packaged HUD (clock / date / viz / calendar). Left/right move tabs. Only the focused tab is labeled in Diavlo. Up/Down open that list on the same theme — no sun zoom. SET opens Options. Games launches via `steam://rungameid`. Settings → Home HUD toggles the chrome. Rainmeter is optional. See [docs/home-nav.md](docs/home-nav.md) |
+| **Home** | Obsidian field with a left-label stack (Games → Hardware). Up/Down move labels; the focused name enlarges in Diavlo and pushes neighbors. Enter opens an all-black list of that group. SET opens Options. Games launches via `steam://rungameid`. Settings → Home extras is opt-in leftover plaques. Rainmeter is off by default. See [docs/home-nav.md](docs/home-nav.md) |
 | **Session Engine** | Enter a profile: snapshot NIC metrics, terminate denylist background apps, protect games/anticheat, apply reversible Game Mode / Game DVR / visual-effects posture |
 | **Network Director** | Prefer a game NIC (low metric) and park stream/bulk traffic on a second NIC |
 | **Tools** | Local kit (OBS, Vortex, Discord, Playnite, Steam, Rainmeter, MusicBee, visualizer pack, Store, Xbox) plus utilities (Notepad++, 7-Zip). Launch, Windows URI, or official Get. Recommended Rainmeter theme is [Phenix](https://visualskins.com/skin/phenix); clock skin is [Minimalistic Clock](https://visualskins.com/skin/minimalistic-clock) (link only — no .rmskin in tree). Ultrawide crop recipe lives on the OBS tile |
@@ -29,7 +29,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
 | **Files** | Daily folder UI (Home, Desktop, Downloads, drives). Explorer stays for EAC / BattlEye / Vanguard |
 | **Hardware** | CPU, GPU, disks, RAM from this PC. Live sensors later; optional Open HWiNFO in Tools |
-| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Home HUD, Session skinny (HAGS + Game DVR copy), Update Guard (quality from Microsoft, feature deferred), Interface motion On / Off |
+| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Home extras (opt-in plaques), Session skinny (HAGS + Game DVR copy), Update Guard (quality from Microsoft, feature deferred), Interface motion On / Off |
 
 ## Solution layout
 
@@ -152,9 +152,9 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 
 ## Design notes
 
-- Console-style shell: **Home tabs** (WebView2 + HTML studio blades, not Unreal/Unity in-process) plus inner-page tile rows. Home hides top chrome so the black field and tabs are the only focal point
-- Home motion: quiet tab lift and silky category lists on Up/Down. Instant when Settings, Windows animations, or a live session say off
-- Keyboard: Left/Right move tabs, Up/Down open that list from bottom/top, Enter opens, Escape returns. Mouse: drag / flick / click a tab. Gamepad D-pad / A is mapped in Core for a later stub
+- Console-style shell: **Super Clean Home labels** (WebView2 + HTML, not Unreal/Unity in-process) plus inner-page tile rows. Home hides top chrome so the black field and left stack are the only focal point
+- Home motion: focused label enlarges and pushes neighbors; category lists ease after Enter. Instant when Settings, Windows animations, or a live session say off
+- Keyboard: Up/Down (and Left/Right) move labels, Enter opens the all-black group, Escape returns. Mouse: wheel / click a label. Gamepad D-pad / A is mapped in Core
 - Atmosphere: Home is an Obsidian studio field. Inner pages keep Unbound cyan / cobalt chrome. Circuit amber remains a seasoning on tiles
 - Settings → Interface motion Off (or Windows animations off, or a live session) snaps back to instant states
 - Preferences live at `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\settings.json`
@@ -164,7 +164,7 @@ Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a fil
 - Tools marketplace does not sell apps, bundle installers, or scrape accounts
 - Unbound Files is the daily file UI; Explorer remains for compatibility (no `Shell=`)
 - Settings Display / Overclocking only **launch** vendor tools — UnboundOS never writes clocks
-- No ads. Rainmeter is the Home overlay path (Open / Get Phenix); first-party Home widgets remain the fallback
+- No ads. Super Clean Home is first-party. Rainmeter is an optional overlay addon (off by default; Open / Get Phenix)
 
 ## Files, hardware, and image follow-ups
 
