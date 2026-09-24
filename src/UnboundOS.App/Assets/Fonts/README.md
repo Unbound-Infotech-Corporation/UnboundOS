@@ -16,7 +16,8 @@ without a machine-wide install, plus **Diavlo** for Home category lists.
 
 ## Diavlo (exljbris / Jos Buivenga)
 
-Home category lists and the focused node label use **Diavlo**.
+Home labels, clock, date, category lists, headers, and empty states
+use **Diavlo**.
 
 - Official page: [https://www.exljbris.com/diavlo.html](https://www.exljbris.com/diavlo.html)
 - Free for personal and commercial use. Embedding in programs and PDFs

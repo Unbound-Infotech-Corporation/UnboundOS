@@ -17,11 +17,16 @@ stays vendored, unused):
 - Background is Obsidian `#05070A`. Empty studio floor. Calm.
 - Seven labels sit in a left stack. Unfocused names stay small and
   quiet (`#5C646C`).
-- Unfocused names stay on Segoe UI Variable. The **focused** label
-  enlarges in **Diavlo Medium** (`#F7FAFC`) with a 2px cyan `#00F0FF`
+- **All Home and category-detail type is Diavlo** (Book for quiet copy,
+  Medium for the focused name, clock, and focused list row). The
+  focused label enlarges (`#F7FAFC`) with a 2px cyan `#00F0FF`
   hairline. Neighbors push apart on the same stack so the larger type
   has room — shared motion, not floating chips.
-- Motion-off freezes enlarge/push; focus still snaps.
+- A first-party **digital clock** sits on the right, date below, in
+  Diavlo. It stays up on the all-black detail surface. This is not
+  Rainmeter and is not the leftover Home extras plaques.
+- Motion-off freezes enlarge/push; focus still snaps. The clock still
+  ticks.
 
 Labels, top to bottom: Games, Tools, Options, Mods, Network, Files,
 Hardware. Games is the default. Options is a first-class label (also
@@ -99,7 +104,7 @@ The Super Clean label stack is the default theme. Light-grey **movable**
 temp/load plaques remain as opt-in extras (`X = 0.84`). Master
 visibility is Settings → Home extras (off unless the user turns it on).
 
-List type is **Diavlo** (Jos Buivenga / exljbris), bundled under
-`Assets/Fonts`. See `src/UnboundOS.App/Assets/Fonts/README.md` and
-`LICENSE-Diavlo.txt`. Do not redistribute the font files as a
-standalone download.
+All Home and category-detail type is **Diavlo** (Jos Buivenga /
+exljbris), bundled under `Assets/Fonts`. See
+`src/UnboundOS.App/Assets/Fonts/README.md` and `LICENSE-Diavlo.txt`.
+Do not redistribute the font files as a standalone download.

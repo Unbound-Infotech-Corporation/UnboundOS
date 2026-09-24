@@ -19,12 +19,13 @@ Keep these three in sync:
 | Star | `#F4EFE2` | Inner-page list titles |
 | Muted | `#8A8A96` | Kickers |
 
-Home labels live in `#labelStack`. Unfocused names use Segoe UI Variable.
-Focus uses Diavlo Medium plus a cyan hairline. `--d` (distance from
-focus) drives neighbor size, padding, and opacity so the stack pushes
-as one. `body.reduce-motion` freezes enlarge/push and list ease.
+Home type is Diavlo throughout (`--home-font`: Book / Medium / Bold).
+Labels live in `#labelStack`. Focus uses Diavlo Medium plus a cyan
+hairline. `--d` (distance from focus) drives neighbor size, padding,
+and opacity so the stack pushes as one. `#clock` is the right-side
+time + date. `body.reduce-motion` freezes enlarge/push and list ease.
 `body.is-overlay` hides the stack while the all-black category surface
-is open.
+is open; the clock stays.
 
 Session presets: `JsonProfileStore.CreateDefaults()` and
 `%LocalAppData%\Unbound Infotech Corporation\UnboundOS\profiles.json`.

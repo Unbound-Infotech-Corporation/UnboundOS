@@ -19,10 +19,11 @@ Visual check:
   HARDWARE / MODS / PROFILES / SETTINGS.
 - Home hero is a **left stack of category labels** on Obsidian `#05070A`.
   Unfocused names stay small and quiet. The focused name enlarges in
-  Diavlo and pushes neighbors, with a cyan `#00F0FF` hairline. No
-  galaxy, nebula, sun, teal-tip tabs, or Rainmeter HUD. Opening a
-  group replaces Home with an all-black titles-only list. SET opens
-  Options. Escape returns.
+  Diavlo and pushes neighbors, with a cyan `#00F0FF` hairline. A
+  Diavlo digital clock and date sit on the right. All Home and
+  category-detail type is Diavlo. No galaxy, nebula, sun, teal-tip
+  tabs, or Rainmeter HUD. Opening a group replaces Home with an
+  all-black titles-only list. SET opens Options. Escape returns.
 - **Up/Down** (D-pad, stick, arrows, wheel) move labels. **Enter**
   opens that group. Left/Right also move the label list.
 - Interface motion On: shared enlarge/push and silky list ease.

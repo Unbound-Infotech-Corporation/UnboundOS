@@ -39,6 +39,8 @@
   const overlayEl = document.getElementById("overlay");
   const trackEl = document.getElementById("track");
   const listHeadEl = document.getElementById("listHead");
+  const clockTimeEl = document.getElementById("clockTime");
+  const clockDateEl = document.getElementById("clockDate");
   const hosted = Boolean(window.chrome?.webview);
   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
@@ -81,6 +83,26 @@
 
   function syncMotionClass() {
     document.body.classList.toggle("reduce-motion", !state.motion);
+  }
+
+  function pad2(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function tickClock() {
+    const now = new Date();
+    if (clockTimeEl) clockTimeEl.textContent = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+    if (clockDateEl) {
+      clockDateEl.textContent = new Intl.DateTimeFormat(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      }).format(now);
+    }
+    if (clockTimeEl && clockDateEl) {
+      const clock = document.getElementById("clock");
+      if (clock) clock.setAttribute("aria-label", `${clockTimeEl.textContent}, ${clockDateEl.textContent}`);
+    }
   }
 
   function buildLabels() {
@@ -208,7 +230,11 @@
     overlayEl.classList.remove("show", "ready", "motion");
     if (!instant && state.motion) overlayEl.classList.add("motion");
     overlayEl.classList.add("show");
-    renderTrack();
+    if (!items.length) {
+      if (trackEl) trackEl.innerHTML = `<p class="empty">Nothing in this group yet.</p>`;
+    } else {
+      renderTrack();
+    }
     const arm = () => overlayEl.classList.add("ready");
     if (instant || !state.motion) arm();
     else requestAnimationFrame(() => requestAnimationFrame(arm));
@@ -245,7 +271,7 @@
       : previewItems(options ? "Settings" : TAB_DEFS[state.tab].id);
     const origin = String(msg.origin || "top").toLowerCase();
     const focus = typeof msg.focus === "number" ? msg.focus : (origin === "bottom" ? items.length - 1 : 0);
-    if (items.length) showOverlay(items, focus, origin, !state.motion);
+    showOverlay(items, focus, origin, !state.motion);
     send({ v: 1, type: "opened", face: state.overlayFront, stay: true });
   }
 
@@ -339,6 +365,8 @@
 
   buildLabels();
   syncMotionClass();
+  tickClock();
+  window.setInterval(tickClock, 1000);
   window.addEventListener("keydown", onKey);
   window.addEventListener("wheel", onWheel, { passive: false });
 
