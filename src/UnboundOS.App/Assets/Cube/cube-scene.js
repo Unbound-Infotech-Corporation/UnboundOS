@@ -303,10 +303,17 @@
     }
   }
 
+  function previewNode(id) {
+    if (id === "Settings") return -1;
+    const ids = ["Session", "Tools", "Mods", "Network", "Files", "Hardware"];
+    const i = ids.indexOf(id);
+    return i >= 0 ? i : 0;
+  }
+
   function previewOpen(origin) {
     startOpen({
       front: TAB_DEFS[state.tab].id,
-      node: TAB_DEFS[state.tab].id === "Settings" ? -1 : 0,
+      node: previewNode(TAB_DEFS[state.tab].id),
       origin,
       motion: state.motion,
       items: previewItems(TAB_DEFS[state.tab].id)
