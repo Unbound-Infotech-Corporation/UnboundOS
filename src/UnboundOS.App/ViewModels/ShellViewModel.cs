@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using UnboundOS.Core;
 using UnboundOS.Core.Abstractions;
 using UnboundOS.Core.Models;
+using UnboundOS.Core.Overlay;
 
 namespace UnboundOS.App.ViewModels;
 
@@ -12,13 +13,23 @@ public partial class ShellViewModel : ObservableObject
     private readonly ISessionEngine _session;
     private readonly ITelemetryService _telemetry;
     private readonly IProfileStore _profiles;
+    private readonly IDesktopOverlayHost _overlay;
+    private readonly IUiMotionPolicy _motion;
     private readonly DispatcherTimer _timer;
+    private readonly DispatcherTimer _clockTimer;
 
-    public ShellViewModel(ISessionEngine session, ITelemetryService telemetry, IProfileStore profiles)
+    public ShellViewModel(
+        ISessionEngine session,
+        ITelemetryService telemetry,
+        IProfileStore profiles,
+        IDesktopOverlayHost overlay,
+        IUiMotionPolicy motion)
     {
         _session = session;
         _telemetry = telemetry;
         _profiles = profiles;
+        _overlay = overlay;
+        _motion = motion;
         _session.StateChanged += (_, state) =>
         {
             SessionStateText = state.ToString();
@@ -27,6 +38,9 @@ public partial class ShellViewModel : ObservableObject
 
         _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _timer.Tick += async (_, _) => await RefreshTelemetryAsync();
+        _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _clockTimer.Tick += (_, _) => TickClock();
+        TickClock();
     }
 
     public string ProductName => Branding.ProductName;
@@ -37,18 +51,37 @@ public partial class ShellViewModel : ObservableObject
     [ObservableProperty] private string _sessionStateText = SessionState.Idle.ToString();
     [ObservableProperty] private bool _isSessionActive;
     [ObservableProperty] private string _activeProfileName = "None";
-    [ObservableProperty] private string _statusLine = "Ready to unbound.";
+    [ObservableProperty] private string _statusLine = "Home. Up/Down: labels. Enter opens this group.";
     [ObservableProperty] private double _cpuUsage;
     [ObservableProperty] private string _memoryText = "—";
     [ObservableProperty] private int _processCount;
     [ObservableProperty] private int _suspectCount;
     [ObservableProperty] private string _selectedNav = "Home";
+    [ObservableProperty] private string _clockText = "--:--";
+    [ObservableProperty] private string _dateText = "";
+
+    public string CpuUsageText => $"{CpuUsage:0}%";
+
+    /// <summary>Overlay nav shows only when the optional Rainmeter host is enabled (off by default).</summary>
+    public bool OverlayNavVisible => _overlay.IsEnabled;
+
+    partial void OnCpuUsageChanged(double value) => OnPropertyChanged(nameof(CpuUsageText));
 
     public async Task InitializeAsync()
     {
         await _profiles.EnsureDefaultsAsync();
+        await _motion.InitializeAsync();
         await RefreshTelemetryAsync();
+        TickClock();
         _timer.Start();
+        _clockTimer.Start();
+    }
+
+    private void TickClock()
+    {
+        var now = DateTime.Now;
+        ClockText = now.ToString("HH:mm");
+        DateText = now.ToString("dddd, MMMM d");
     }
 
     [RelayCommand]

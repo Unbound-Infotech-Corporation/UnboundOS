@@ -20,7 +20,7 @@ public partial class ModsViewModel(
     [ObservableProperty] private InstalledMod? _selectedMod;
     [ObservableProperty] private ModProfile? _selectedProfile;
     [ObservableProperty] private bool _isBusy;
-    [ObservableProperty] private string _status = "Scanning Steam libraries…";
+    [ObservableProperty] private string _status = "Scanning Steam libraries and Vortex…";
     [ObservableProperty] private string _capabilitySummary = string.Empty;
     [ObservableProperty] private string _modDetails = "Select a mod to inspect dependencies and conflicts.";
     [ObservableProperty] private string _profileName = "My Mod Set";
@@ -30,6 +30,10 @@ public partial class ModsViewModel(
 
     public bool CanOpenWorkshop =>
         SelectedGame?.SteamAppId is not null;
+
+    public bool CanOpenVortex =>
+        SelectedGame?.Provider == ModProvider.NexusMods ||
+        !string.IsNullOrWhiteSpace(SelectedGame?.VortexGameId);
 
     public bool CanEditLoadOrder =>
         SelectedGame?.Capabilities.CanReorder == true;
@@ -53,13 +57,11 @@ public partial class ModsViewModel(
             }
 
             SelectedGame ??= Games.FirstOrDefault();
-            Status = SelectedGame?.Provider == ModProvider.BuiltIn
-                ? "No local Workshop content found. Showing a safe, read-only preview."
-                : $"Found {Games.Count} game(s) with local Workshop content.";
+            Status = SummarizeCatalog();
         }
         catch (Exception error)
         {
-            Status = $"Workshop discovery could not complete: {error.Message}";
+            Status = $"Mod discovery could not complete: {error.Message}";
         }
         finally
         {
@@ -82,6 +84,7 @@ public partial class ModsViewModel(
         SelectedProfile = Profiles.FirstOrDefault(profile => profile.GameId == value?.GameId);
         OnPropertyChanged(nameof(CanApplyProfile));
         OnPropertyChanged(nameof(CanOpenWorkshop));
+        OnPropertyChanged(nameof(CanOpenVortex));
         OnPropertyChanged(nameof(CanEditLoadOrder));
     }
 
@@ -207,6 +210,18 @@ public partial class ModsViewModel(
     }
 
     [RelayCommand]
+    private async Task OpenVortexAsync()
+    {
+        if (SelectedGame is null || !CanOpenVortex)
+        {
+            return;
+        }
+
+        var result = await handoff.OpenVortexAsync(SelectedGame.VortexGameId, SelectedGame.VortexProfileId);
+        Status = result.Message;
+    }
+
+    [RelayCommand]
     private async Task OpenSelectedItemAsync()
     {
         if (SelectedMod is { Provider: ModProvider.SteamWorkshop })
@@ -234,6 +249,28 @@ public partial class ModsViewModel(
         Status = CanEditLoadOrder
             ? "Load-order draft changed. Save the profile to keep it."
             : "Draft reordered for planning only. This game has no load-order adapter.";
+    }
+
+    private string SummarizeCatalog()
+    {
+        if (SelectedGame?.Provider == ModProvider.BuiltIn)
+        {
+            return "No local Workshop or Vortex content found. Showing a safe, read-only preview.";
+        }
+
+        var workshop = Games.Count(game => game.Provider == ModProvider.SteamWorkshop);
+        var vortex = Games.Count(game => game.Provider == ModProvider.NexusMods);
+        if (vortex == 0)
+        {
+            return $"Found {workshop} game(s) with local Workshop content.";
+        }
+
+        if (workshop == 0)
+        {
+            return $"Found {vortex} Vortex-managed game(s). Vortex remains the source of truth.";
+        }
+
+        return $"Found {workshop} Workshop game(s) and {vortex} Vortex-managed game(s).";
     }
 
     private static string JoinOrNone(IReadOnlyList<string> values) =>

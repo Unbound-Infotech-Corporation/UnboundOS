@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UnboundOS Super Clean</title>
+  <style>
+    /* A font by Jos Buivenga (exljbris) -> www.exljbris.com */
+    @font-face { font-family: "Diavlo Book"; src: url("../Fonts/Diavlo_BOOK_II_37.otf") format("opentype"); }
+    @font-face { font-family: "Diavlo Medium"; src: url("../Fonts/Diavlo_MEDIUM_II_37.otf") format("opentype"); }
+    :root { --void:#05070A; --paper:#F7FAFC; --quiet:#5C646C; --cyan:#00F0FF; --font:"Diavlo Book","Diavlo Medium"; }
+    html,body { margin:0; height:100%; background:var(--void); color:var(--paper); font-family:var(--font); }
+    .chrome { display:flex; align-items:center; justify-content:space-between; padding:16px 40px; }
+    .nav { display:flex; gap:22px; color:var(--quiet); letter-spacing:.16em; font-size:13px; }
+    .nav .on { color:var(--cyan); }
+    .clock { text-align:right; }
+    .clock strong { display:block; font-family:"Diavlo Medium",var(--font); font-size:28px; font-weight:500; }
+    .clock span { color:var(--quiet); font-size:13px; letter-spacing:.12em; }
+    main { padding:28px 40px 48px; max-width:920px; }
+    .kicker { color:var(--quiet); letter-spacing:.28em; font-size:12px; margin:0 0 8px; }
+    h1 { font-family:"Diavlo Medium",var(--font); font-size:40px; font-weight:500; margin:0 0 12px; }
+    .lead { color:var(--quiet); font-size:16px; line-height:1.45; margin:0 0 28px; }
+    .row { display:block; padding:10px 0 10px 18px; color:var(--quiet); font-size:20px; background:transparent; border:0; text-align:left; width:100%; position:relative; }
+    .row.focus { color:var(--cyan); font-family:"Diavlo Medium",var(--font); font-size:28px; padding:18px 0 18px 18px; }
+    .row.focus::before { content:""; position:absolute; left:0; top:22%; bottom:22%; width:2px; background:var(--cyan); }
+    .hint { color:var(--quiet); font-size:14px; margin:4px 0 0; }
+    .panel { margin-top:36px; }
+    .panel h2 { color:var(--quiet); letter-spacing:.2em; font-size:13px; font-weight:400; }
+    .toggle { color:var(--paper); font-size:18px; margin:12px 0; }
+    .toggle em { color:var(--cyan); font-style:normal; }
+    .tiles { display:flex; gap:28px; margin-top:20px; }
+    .tile { min-width:180px; padding:18px 8px; color:var(--quiet); }
+    .tile.focus { color:var(--cyan); }
+    .tile b { display:block; font-family:"Diavlo Medium",var(--font); font-size:56px; font-weight:500; color:var(--paper); }
+    .tile.focus b { color:var(--cyan); }
+    .actions { display:flex; gap:28px; margin-top:28px; color:var(--quiet); }
+    .actions .on { color:var(--cyan); border-bottom:2px solid var(--cyan); padding-bottom:4px; }
+  </style>
+</head>
+<body>
+  <header class="chrome">
+    <div class="brand">UnboundOS</div>
+    <nav class="nav" id="nav"></nav>
+    <div class="clock"><strong id="t">00:00</strong><span id="d"></span></div>
+  </header>
+  <main id="main"></main>
+  <script>
+    const now = new Date();
+    document.getElementById("t").textContent = String(now.getHours()).padStart(2,"0") + ":" + String(now.getMinutes()).padStart(2,"0");
+    document.getElementById("d").textContent = new Intl.DateTimeFormat(undefined,{weekday:"long",month:"long",day:"numeric"}).format(now);
+    const page = (new URLSearchParams(location.search).get("page") || "settings").toLowerCase();
+    const nav = { settings:["HOME","SESSION","TOOLS","SETTINGS"], updates:["HOME","SESSION","TOOLS","SETTINGS"], games:["HOME","SESSION","TOOLS","SETTINGS"], tools:["HOME","SESSION","TOOLS","SETTINGS"] };
+    document.getElementById("nav").innerHTML = (nav[page]||nav.settings).map(n => `<span class="${(page==="tools"&&n==="TOOLS")||(page!=="tools"&&n==="SETTINGS")?"on":""}">${n}</span>`).join("");
+    const pages = {
+      settings: `<p class="kicker">OPTIONS</p><h1>Settings</h1><p class="lead">Pick a group. Focus enlarges in Diavlo. Cyan is focus only.</p>
+        <button class="row focus">Interface motion<p class="hint">Home label enlarge/push, list ease, and tile focus motion.</p></button>
+        <button class="row">Home extras</button><button class="row">Session skinny</button><button class="row">Updates</button>
+        <button class="row">Display</button><button class="row">Overclocking</button><button class="row">Startup audit</button><button class="row">Finish setup</button>`,
+      updates: `<p class="kicker">OPTIONS</p><h1>Updates</h1><p class="lead">Quality from Microsoft. Feature updates deferred. UnboundOS does not host patches.</p>
+        <div class="panel"><h2>UPDATE GUARD</h2><p class="toggle">Hardware-accelerated policy is off by default. <em>On</em> writes quality-yes / feature-deferred.</p>
+        <p class="lead">Patches download from Microsoft. UnboundOS does not redistribute Windows updates.</p>
+        <div class="actions"><span class="on">APPLY</span><span>RESTORE</span><span>CHECK FOR QUALITY UPDATES</span></div></div>`,
+      games: `<p class="kicker">PLAY</p><h1>Games</h1><p class="lead">Steam library when present. Empty pads with Session engine, Steam, Playnite.</p>
+        <button class="row focus">Session engine</button><button class="row">Steam</button><button class="row">Playnite</button>`,
+      tools: `<p class="kicker">LOCAL KIT</p><h1>Tools</h1><p class="lead">Open the real app. Get is the official page. Store and Xbox stay here.</p>
+        <div class="tiles"><div class="tile focus"><b>O</b>OBS</div><div class="tile"><b>D</b>Discord</div><div class="tile"><b>V</b>Vortex</div><div class="tile"><b>S</b>Store</div><div class="tile"><b>X</b>Xbox</div></div>
+        <div class="actions"><span class="on">OPEN</span><span>GET</span></div>`
+    };
+    document.getElementById("main").innerHTML = pages[page] || pages.settings;
+    document.title = "UnboundOS " + page;
+  </script>
+</body>
+</html>

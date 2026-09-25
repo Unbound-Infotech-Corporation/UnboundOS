@@ -1,0 +1,302 @@
+<Page
+    x:Class="UnboundOS.App.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:UnboundOS.App.ViewModels"
+    Background="Transparent">
+
+    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Settings">
+        <StackPanel Spacing="22" MaxWidth="820">
+            <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource KickerText}" Text="OPTIONS" />
+                <TextBlock Style="{StaticResource SectionTitleText}" Text="Settings" />
+                <TextBlock
+                    Style="{StaticResource BodyMutedText}"
+                    Text="A list of option groups. Pick one. The SET glyph on Home opens Options on the same black field; Enter a group to land here. Up/Down move the Home labels; Enter opens that group. Interface motion off freezes label enlarge/push and list ease." />
+            </StackPanel>
+
+            <ListView
+                x:Name="GroupList"
+                MinHeight="220"
+                ItemsSource="{x:Bind ViewModel.Groups, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedGroup, Mode=TwoWay}"
+                SelectionMode="Single"
+                Style="{StaticResource SuperCleanListViewStyle}"
+                ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                AutomationProperties.Name="Settings groups">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:SettingsGroup">
+                        <StackPanel Spacing="4">
+                            <TextBlock
+                                FontFamily="{StaticResource UiFontSemiboldFamily}"
+                                FontSize="22"
+                                Foreground="{StaticResource PaperBrush}"
+                                Text="{x:Bind Title}" />
+                            <TextBlock
+                                Style="{StaticResource BodyMutedText}"
+                                FontSize="14"
+                                Text="{x:Bind Hint}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock
+                Style="{StaticResource BodyMutedText}"
+                Foreground="{StaticResource CyanPulseBrush}"
+                Text="{x:Bind ViewModel.GroupHint, Mode=OneWay}" />
+
+            <Border x:Name="MotionPanel" Style="{StaticResource PanelBorderStyle}">
+                <StackPanel Spacing="16">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="INTERFACE MOTION" />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.InterfaceMotionEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="A few-percent scale and a 1px cyan hairline on the focused row. Home labels enlarge and push neighbors; lists and hubs ease on one curve. Press is a short opacity change."
+                        AutomationProperties.Name="Interface motion"
+                        AutomationProperties.HelpText="When off, tiles, buttons, and Home use instant visual states only. Label enlarge/push and list ease freeze. Keyboard focus and narrator stay available either way." />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.MotionStatus, Mode=OneWay}"
+                        AutomationProperties.LiveSetting="Polite" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="{x:Bind ViewModel.SessionNote}" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="Tile motion runs on the compositor. Home is the Super Clean left-label stack on an Obsidian field. Unfocused tiles stay still. Off is instant states with no animation." />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="HudPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="16">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="HOME EXTRAS" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="Super Clean Home is the left label stack on black. These leftover plaques are optional and off by default. This does not restore Rainmeter or a desktop HUD." />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.HomeHudEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Home extras"
+                        AutomationProperties.Name="Home extras"
+                        AutomationProperties.HelpText="Optional leftover Home plaques. Off is the Super Clean default." />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.HomeClockEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Clock widget"
+                        AutomationProperties.Name="Home clock"
+                        AutomationProperties.HelpText="Local time widget. Drag it on Home. Independent of system temps." />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.HomeTempsEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Temperature widgets"
+                        AutomationProperties.Name="Home system temps"
+                        AutomationProperties.HelpText="CPU and GPU temperature widgets when sensors are available. Shows a dash until then." />
+                    <ComboBox
+                        Header="Appearance"
+                        MinWidth="220"
+                        ItemsSource="{x:Bind ViewModel.WidgetLooks}"
+                        SelectedItem="{x:Bind ViewModel.HomeWidgetLook, Mode=TwoWay}"
+                        AutomationProperties.Name="Home widget appearance"
+                        AutomationProperties.HelpText="Glass is light grey. Dim is quieter. Compact is denser. Not skins." />
+                    <Button
+                        Content="Reset widget positions"
+                        Command="{x:Bind ViewModel.ResetWidgetPositionsCommand}"
+                        AutomationProperties.Name="Reset widget positions"
+                        AutomationProperties.HelpText="Return widgets to the default right-hand stack, clear of the category list." />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="SkinnyPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="16">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="SESSION SKINNY" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="Living Room, Streamer, and Competitive apply Game Mode, visual effects, and Game DVR as reversible session posture. Exit / Restore puts the desktop back. Defender, Windows Update, and VBS stay on — they are not default-disabled. No HPET or timer BCDEdit hacks." />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.HagsEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Hardware-accelerated GPU scheduling (HAGS)"
+                        AutomationProperties.Name="Hardware-accelerated GPU scheduling"
+                        AutomationProperties.HelpText="Informed toggle. Test frametimes. Not forced when a session starts. May need elevation and a reboot." />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="{x:Bind ViewModel.HagsStatus, Mode=OneWay}"
+                        AutomationProperties.LiveSetting="Polite" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="Competitive turns Game DVR off while live so capture does not sit on the frame. Streamer leaves capture on. See docs/gaming-skinny.md." />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="UpdatesPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="16">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="UPDATES" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.UpdateGuardHonesty}" />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.UpdateGuardEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Update Guard (quality yes / feature deferred)"
+                        AutomationProperties.Name="Update Guard"
+                        AutomationProperties.HelpText="Monthly security quality from Microsoft. Feature and optional preview updates deferred. Elevation may be required. Session enter does not flip this." />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="{x:Bind ViewModel.UpdateGuardStatus, Mode=OneWay}"
+                        AutomationProperties.LiveSetting="Polite" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.WindowsQualityStatus, Mode=OneWay}" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.ShellVersionStatus, Mode=OneWay}" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="Patches download from Microsoft. UnboundOS does not redistribute Windows updates." />
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Button
+                            Style="{StaticResource SignalButtonStyle}"
+                            Content="APPLY"
+                            Command="{x:Bind ViewModel.ApplyUpdateGuardCommand}"
+                            AutomationProperties.Name="Apply Update Guard"
+                            AutomationProperties.HelpText="Write quality-yes / feature-deferred policy. Needs elevation for HKLM." />
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="RESTORE"
+                            Command="{x:Bind ViewModel.RestoreUpdateGuardCommand}"
+                            AutomationProperties.Name="Restore Update Guard"
+                            AutomationProperties.HelpText="Remove Update Guard policy values. Windows Update stays on." />
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="CHECK FOR QUALITY UPDATES"
+                            Command="{x:Bind ViewModel.CheckQualityUpdatesCommand}"
+                            AutomationProperties.Name="Check for quality updates"
+                            AutomationProperties.HelpText="Open Microsoft Windows Update on this PC." />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="DisplayPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="DISPLAY" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.DisplayHonesty}" />
+                    <ListView
+                        MaxHeight="220"
+                        ItemsSource="{x:Bind ViewModel.DisplayApps, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedDisplayApp, Mode=TwoWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                        AutomationProperties.Name="GPU vendor display apps">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:VendorApp">
+                                <Grid ColumnSpacing="12" Padding="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{StaticResource PaperBrush}" Text="{x:Bind DisplayName}" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MicroLabelText}" Text="{x:Bind StatusLabel}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Style="{StaticResource SignalButtonStyle}" Content="OPEN / GET DISPLAY APP" Command="{x:Bind ViewModel.OpenDisplayCommand}" AutomationProperties.Name="Open or get GPU display app" />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="OverclockPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="OVERCLOCKING" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.OverclockHonesty}" />
+                    <ListView
+                        MaxHeight="220"
+                        ItemsSource="{x:Bind ViewModel.OverclockApps, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedOcApp, Mode=TwoWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                        AutomationProperties.Name="Manufacturer overclocking tools">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:VendorApp">
+                                <Grid ColumnSpacing="12" Padding="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{StaticResource PaperBrush}" Text="{x:Bind DisplayName}" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MicroLabelText}" Text="{x:Bind StatusLabel}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="OPEN / GET OC TOOL" Command="{x:Bind ViewModel.OpenOverclockCommand}" AutomationProperties.Name="Open or get overclocking tool" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.VendorStatus, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="StartupPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="STARTUP AUDIT" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.StartupHonesty}" />
+                    <ListView
+                        MaxHeight="280"
+                        ItemsSource="{x:Bind ViewModel.StartupEntries, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedStartup, Mode=TwoWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                        AutomationProperties.Name="Startup audit entries">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:StartupEntry">
+                                <Grid ColumnSpacing="12" Padding="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="100" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource MicroLabelText}" Text="{x:Bind DispositionLabel}" />
+                                    <TextBlock Grid.Column="1" Foreground="{StaticResource PaperBrush}" Text="{x:Bind Name}" />
+                                    <TextBlock Grid.Column="2" FontFamily="{StaticResource MonoFontFamily}" FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{x:Bind SourceLabel}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="SCAN NOW" Command="{x:Bind ViewModel.RefreshStartupCommand}" AutomationProperties.Name="Scan startup" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="PIN / UNPIN" Command="{x:Bind ViewModel.PinSelectedCommand}" AutomationProperties.Name="Pin or unpin selected startup item" />
+                        <Button Style="{StaticResource SignalButtonStyle}" Content="APPLY RECOMMENDED" Command="{x:Bind ViewModel.ApplyStartupCommand}" AutomationProperties.Name="Disable review startup items" />
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.StartupSummary, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="Daily cadence on the Windows image: docs/startup-audit-task.xml. HKLM and Scheduled Tasks stay report-only in this slice." />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="CleanupPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="FINISH SETUP" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.CleanupHonesty}" />
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="CLEAN LEFTOVER INSTALL FILES" Command="{x:Bind ViewModel.CleanLeftoversCommand}" AutomationProperties.Name="Finish setup and clean leftover install files" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.CleanupStatus, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.HardwareHonesty}" />
+            <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.FilesHonesty}" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

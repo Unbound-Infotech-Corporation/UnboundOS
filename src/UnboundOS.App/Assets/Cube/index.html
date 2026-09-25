@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UnboundOS Home</title>
+  <style>
+    /* A font by Jos Buivenga (exljbris) -> www.exljbris.com */
+    @font-face {
+      font-family: "Diavlo Book";
+      src: url("../Fonts/Diavlo_BOOK_II_37.otf") format("opentype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Diavlo Medium";
+      src: url("../Fonts/Diavlo_MEDIUM_II_37.otf") format("opentype");
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Diavlo Bold";
+      src: url("../Fonts/Diavlo_BOLD_II_37.otf") format("opentype");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    /* Theme tokens — Super Clean Home. Keep UnboundTokens.cs in sync. */
+    :root {
+      --void: #05070A;
+      --paper: #F7FAFC;
+      --quiet: #5C646C;
+      --cyan: #00F0FF;
+      --home-font: "Diavlo Book", "Diavlo Medium", "Diavlo Bold";
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --t-focus: 0.32s;
+      --t-enter: 0.38s;
+      --t-exit: 0.26s;
+    }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--void);
+      color: var(--paper);
+      font-family: var(--home-font);
+      user-select: none;
+      -webkit-user-select: none;
+      color-scheme: dark;
+    }
+    #stage {
+      position: absolute;
+      inset: 0;
+      background: #05070A;
+    }
+    #labelStack {
+      position: absolute;
+      left: clamp(40px, 7vw, 110px);
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-height: 86vh;
+      z-index: 3;
+      opacity: 1;
+    }
+    .label {
+      --d: 3;
+      position: relative;
+      display: block;
+      margin: 0;
+      padding: calc(4px + (2.2 - min(var(--d), 2.2)) * 14px) 0 calc(4px + (2.2 - min(var(--d), 2.2)) * 14px) 18px;
+      border: 0;
+      background: transparent;
+      color: var(--quiet);
+      font-family: "Diavlo Book", var(--home-font);
+      font-size: clamp(16px, 1.35vw + (2 - min(var(--d), 2)) * 0.28vw, 22px);
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      line-height: 1.05;
+      text-align: left;
+      cursor: pointer;
+      opacity: calc(0.34 + (1 - min(var(--d), 3) / 3) * 0.4);
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0, "calt" 0, "swsh" 0;
+    }
+    .label.is-focus {
+      color: var(--paper);
+      font-family: "Diavlo Medium", var(--home-font);
+      font-size: clamp(52px, 6.6vw, 96px);
+      letter-spacing: 0.05em;
+      opacity: 1;
+      padding-top: 18px;
+      padding-bottom: 18px;
+    }
+    .label::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 22%;
+      bottom: 22%;
+      width: 2px;
+      background: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+      opacity: 0;
+    }
+    .label.is-focus::before { opacity: 1; }
+    body:not(.reduce-motion) .label {
+      transition:
+        font-size var(--t-focus) var(--ease),
+        padding var(--t-focus) var(--ease),
+        color var(--t-focus) var(--ease),
+        opacity var(--t-focus) var(--ease),
+        letter-spacing var(--t-focus) var(--ease);
+    }
+    body:not(.reduce-motion) .label::before {
+      transition: opacity var(--t-focus) var(--ease);
+    }
+    body:not(.reduce-motion) #labelStack {
+      transition:
+        opacity var(--t-enter) var(--ease),
+        transform var(--t-enter) var(--ease);
+    }
+    body.is-overlay #labelStack {
+      opacity: 0;
+      transform: translateY(-50%) translateX(-16px);
+      pointer-events: none;
+    }
+    body:not(.reduce-motion).is-overlay #labelStack {
+      transition-duration: var(--t-exit);
+    }
+
+    #clock {
+      position: absolute;
+      right: clamp(40px, 7vw, 110px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 5;
+      text-align: right;
+      pointer-events: none;
+    }
+    #clockTime {
+      margin: 0;
+      color: var(--paper);
+      font-family: "Diavlo Medium", var(--home-font);
+      font-size: clamp(44px, 5.4vw, 80px);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      line-height: 0.95;
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0, "calt" 0, "swsh" 0;
+    }
+    #clockDate {
+      margin: 10px 0 0;
+      color: var(--quiet);
+      font-family: "Diavlo Book", var(--home-font);
+      font-size: clamp(16px, 1.45vw, 24px);
+      letter-spacing: 0.14em;
+      line-height: 1.2;
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0, "calt" 0, "swsh" 0;
+    }
+
+    #overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: block;
+      pointer-events: none;
+      background: #05070A;
+      opacity: 0;
+    }
+    #overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    body:not(.reduce-motion) #overlay {
+      transition: opacity var(--t-enter) var(--ease);
+    }
+    body:not(.reduce-motion) #overlay:not(.show) {
+      transition-duration: var(--t-exit);
+    }
+    #listPane {
+      position: absolute;
+      left: clamp(40px, 7vw, 110px);
+      top: 0;
+      bottom: 0;
+      width: min(720px, 78vw);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8vh 0;
+      box-sizing: border-box;
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+    }
+    #overlay.show #listPane {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+    body:not(.reduce-motion) #listPane {
+      transition:
+        opacity var(--t-enter) var(--ease),
+        transform var(--t-enter) var(--ease);
+    }
+    body:not(.reduce-motion) #overlay:not(.show) #listPane {
+      transition-duration: var(--t-exit);
+    }
+    #listHead {
+      margin: 0 0 28px;
+      font-family: "Diavlo Book", var(--home-font);
+      font-size: 13px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: #7A828A;
+    }
+    #track {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      will-change: transform;
+      transform: translate3d(0, var(--track-y, 0px), 0);
+    }
+    #overlay.motion #track {
+      transition: transform var(--t-focus) var(--ease);
+    }
+    .row {
+      display: block;
+      width: 100%;
+      padding: 14px 0;
+      border: 0;
+      background: transparent;
+      color: var(--paper);
+      font-family: "Diavlo Book", var(--home-font);
+      font-size: clamp(26px, 2.4vw, 36px);
+      line-height: 1.15;
+      letter-spacing: 0.02em;
+      text-align: left;
+      cursor: pointer;
+      opacity: 0.38;
+    }
+    .row.motion {
+      transition:
+        opacity var(--t-focus) var(--ease),
+        color var(--t-focus) var(--ease),
+        font-size var(--t-focus) var(--ease),
+        padding var(--t-focus) var(--ease);
+    }
+    .row.focus {
+      opacity: 1;
+      font-family: "Diavlo Medium", var(--home-font);
+      color: var(--cyan);
+      font-size: clamp(30px, 2.8vw, 42px);
+      padding: 16px 0;
+    }
+    .empty {
+      margin: 0;
+      color: var(--quiet);
+      font-family: "Diavlo Book", var(--home-font);
+      font-size: clamp(22px, 2vw, 30px);
+      letter-spacing: 0.06em;
+    }
+    .preview-caption { display: none; }
+    .preview-caption h1,
+    .preview-caption p {
+      font-family: var(--home-font);
+    }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <div id="studio">
+      <div id="labelStack" role="listbox" aria-label="Home"></div>
+    </div>
+    <div id="overlay">
+      <div id="listPane">
+        <p id="listHead"></p>
+        <div id="track"></div>
+      </div>
+    </div>
+    <div id="clock" aria-live="off">
+      <p id="clockTime">00:00</p>
+      <p id="clockDate"></p>
+    </div>
+  </div>
+  <div class="preview-caption">
+    <h1 id="previewTitle">Games</h1>
+    <p id="previewHint">Up/Down move labels · Enter opens this group</p>
+  </div>
+  <script src="cube-scene.js"></script>
+</body>
+</html>

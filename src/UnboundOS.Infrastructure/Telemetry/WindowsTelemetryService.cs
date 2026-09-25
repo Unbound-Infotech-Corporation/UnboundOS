@@ -48,7 +48,8 @@ public sealed class WindowsTelemetryService : ITelemetryService
 
         return Task.FromResult(new SystemTelemetry
         {
-            CpuUsagePercent = Math.Clamp(cpu, 0, 100),
+            CpuUsagePercent = _cpu is null ? 0 : Math.Clamp(cpu, 0, 100),
+            CpuUsageAvailable = _cpu is not null,
             MemoryUsedGb = Math.Round(used, 2),
             MemoryTotalGb = Math.Round(total, 2),
             ProcessCount = processCount,
