@@ -53,10 +53,10 @@ public sealed class UiMotionPolicy : IUiMotionPolicy
 
     public string StatusText => Suppression switch
     {
-        MotionSuppression.UserDisabled => "Interface motion is off. Tiles, buttons, and Home tabs use instant states. Tab lift is frozen.",
+        MotionSuppression.UserDisabled => "Interface motion is off. Lists, buttons, and Home labels use instant states.",
         MotionSuppression.SystemDisabled => "Interface motion is paused because Windows animations are off.",
-        MotionSuppression.SessionLive => "Interface motion is paused while a session is live. The toggle stays available. Home tabs will not lift or ease.",
-        _ => "Interface motion is on. A few-percent scale, a 1px cyan hairline on the focused tile, and a quiet tab lift on Home."
+        MotionSuppression.SessionLive => "Interface motion is paused while a session is live. The toggle stays available. Home labels and lists will not ease.",
+        _ => "Interface motion is on. A few-percent scale, a 1px cyan hairline on the focused row, and a quiet enlarge-push on Home."
     };
 
     public event EventHandler? Changed;

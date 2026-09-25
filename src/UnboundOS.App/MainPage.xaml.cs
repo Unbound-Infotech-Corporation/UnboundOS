@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using UnboundOS.App.Motion;
 using UnboundOS.App.Services;
 using UnboundOS.App.ViewModels;
 using UnboundOS.App.Views;
@@ -111,11 +112,10 @@ public sealed partial class MainPage : Page
             _ => ViewModel.StatusLine
         };
 
-        ApplyNavState(tag);
-        ApplyHomeChrome(home: tag == "Home");
-
         if (tag == "Home")
         {
+            ApplyNavState(tag);
+            ApplyHomeChrome(home: true);
             HomeCube.ResetScene();
             HomeCube.Focus(FocusState.Programmatic);
             return;
@@ -136,16 +136,26 @@ public sealed partial class MainPage : Page
         };
 
         ContentFrame.Navigate(pageType);
+        ApplyNavState(tag);
+        ApplyHomeChrome(home: false);
     }
 
     private void ApplyHomeChrome(bool home)
     {
-        ChromeBar.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
+        var allow = AppServices.Get<IUiMotionPolicy>().AllowMotion;
         HeroTicks.Visibility = Visibility.Collapsed;
         HeroScan.Visibility = Visibility.Collapsed;
         HeroGrid.Visibility = Visibility.Collapsed;
-        HomeView.Visibility = home ? Visibility.Visible : Visibility.Collapsed;
-        ContentFrame.Visibility = home ? Visibility.Collapsed : Visibility.Visible;
+        ConsoleMotion.SetVisible(ChromeBar, !home, allow);
+        ConsoleMotion.SetVisible(HomeView, home, allow);
+        if (home)
+        {
+            ConsoleMotion.SetVisible(ContentFrame, visible: false, allow);
+        }
+        else
+        {
+            ContentFrame.Visibility = Visibility.Visible;
+        }
     }
 
     private void ApplyNavState(string tag)

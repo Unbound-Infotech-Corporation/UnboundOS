@@ -54,7 +54,7 @@
                         IsOn="{x:Bind ViewModel.InterfaceMotionEnabled, Mode=TwoWay}"
                         OnContent="On"
                         OffContent="Off"
-                        Header="A few-percent scale and a 1px cyan hairline on the focused tile. Home labels enlarge and push neighbors; category lists ease in after Enter. Press is a short opacity change."
+                        Header="A few-percent scale and a 1px cyan hairline on the focused row. Home labels enlarge and push neighbors; lists and hubs ease on one curve. Press is a short opacity change."
                         AutomationProperties.Name="Interface motion"
                         AutomationProperties.HelpText="When off, tiles, buttons, and Home use instant visual states only. Label enlarge/push and list ease freeze. Keyboard focus and narrator stay available either way." />
                     <TextBlock

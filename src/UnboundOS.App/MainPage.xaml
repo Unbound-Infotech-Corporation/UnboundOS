@@ -10,9 +10,9 @@
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="NavStates">
                 <VisualStateGroup.Transitions>
-                    <VisualTransition GeneratedDuration="0:0:0.18">
+                    <VisualTransition GeneratedDuration="0:0:0.32">
                         <VisualTransition.GeneratedEasingFunction>
-                            <CubicEase EasingMode="EaseOut" />
+                            <QuinticEase EasingMode="EaseOut" />
                         </VisualTransition.GeneratedEasingFunction>
                     </VisualTransition>
                 </VisualStateGroup.Transitions>

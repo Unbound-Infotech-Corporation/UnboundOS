@@ -56,7 +56,8 @@
     origin: "top",
     overlayTitle: "",
     overlayFront: "",
-    hud: false
+    hud: false,
+    hideGen: 0
   };
 
   const tabs = [];
@@ -221,13 +222,14 @@
   }
 
   function showOverlay(items, focus, origin, instant) {
+    state.hideGen += 1;
     state.overlay = true;
     state.items = items;
     state.focus = focus;
     state.origin = origin;
     document.body.classList.add("is-overlay");
     if (listHeadEl) listHeadEl.textContent = state.overlayTitle || TAB_DEFS[state.tab].title;
-    overlayEl.classList.remove("show", "ready", "motion");
+    overlayEl.classList.remove("show", "ready", "motion", "leaving");
     if (!instant && state.motion) overlayEl.classList.add("motion");
     overlayEl.classList.add("show");
     if (!items.length) {
@@ -241,13 +243,22 @@
   }
 
   function hideOverlay(instant) {
+    const gen = state.hideGen + 1;
+    state.hideGen = gen;
     state.overlay = false;
     document.body.classList.remove("is-overlay");
-    overlayEl.classList.remove("show", "ready", "motion");
-    state.items = [];
-    if (trackEl) trackEl.innerHTML = "";
-    if (listHeadEl) listHeadEl.textContent = "";
-    setTab(state.tab, instant || !state.motion);
+    overlayEl.classList.remove("show", "ready");
+    overlayEl.classList.add("leaving");
+    const clear = () => {
+      if (gen !== state.hideGen) return;
+      overlayEl.classList.remove("motion", "leaving");
+      state.items = [];
+      if (trackEl) trackEl.innerHTML = "";
+      if (listHeadEl) listHeadEl.textContent = "";
+    };
+    if (instant || !state.motion) clear();
+    else window.setTimeout(clear, 260);
+    setTab(state.tab, true);
   }
 
   function startOpen(msg) {

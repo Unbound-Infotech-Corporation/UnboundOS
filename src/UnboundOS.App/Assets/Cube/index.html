@@ -34,6 +34,10 @@
       --quiet: #5C646C;
       --cyan: #00F0FF;
       --home-font: "Diavlo Book", "Diavlo Medium", "Diavlo Bold";
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --t-focus: 0.32s;
+      --t-enter: 0.38s;
+      --t-exit: 0.26s;
     }
     html, body {
       margin: 0;
@@ -62,6 +66,7 @@
       align-items: flex-start;
       max-height: 86vh;
       z-index: 3;
+      opacity: 1;
     }
     .label {
       --d: 3;
@@ -92,7 +97,7 @@
       padding-top: 18px;
       padding-bottom: 18px;
     }
-    .label.is-focus::before {
+    .label::before {
       content: "";
       position: absolute;
       left: 0;
@@ -101,16 +106,33 @@
       width: 2px;
       background: var(--cyan);
       box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+      opacity: 0;
     }
+    .label.is-focus::before { opacity: 1; }
     body:not(.reduce-motion) .label {
       transition:
-        font-size 0.48s cubic-bezier(0.16, 1, 0.3, 1),
-        padding 0.48s cubic-bezier(0.16, 1, 0.3, 1),
-        color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-        letter-spacing 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+        font-size var(--t-focus) var(--ease),
+        padding var(--t-focus) var(--ease),
+        color var(--t-focus) var(--ease),
+        opacity var(--t-focus) var(--ease),
+        letter-spacing var(--t-focus) var(--ease);
     }
-    body.is-overlay #labelStack { visibility: hidden; pointer-events: none; }
+    body:not(.reduce-motion) .label::before {
+      transition: opacity var(--t-focus) var(--ease);
+    }
+    body:not(.reduce-motion) #labelStack {
+      transition:
+        opacity var(--t-enter) var(--ease),
+        transform var(--t-enter) var(--ease);
+    }
+    body.is-overlay #labelStack {
+      opacity: 0;
+      transform: translateY(-50%) translateX(-16px);
+      pointer-events: none;
+    }
+    body:not(.reduce-motion).is-overlay #labelStack {
+      transition-duration: var(--t-exit);
+    }
 
     #clock {
       position: absolute;
@@ -157,7 +179,10 @@
       pointer-events: auto;
     }
     body:not(.reduce-motion) #overlay {
-      transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity var(--t-enter) var(--ease);
+    }
+    body:not(.reduce-motion) #overlay:not(.show) {
+      transition-duration: var(--t-exit);
     }
     #listPane {
       position: absolute;
@@ -170,6 +195,20 @@
       justify-content: center;
       padding: 8vh 0;
       box-sizing: border-box;
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+    }
+    #overlay.show #listPane {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+    body:not(.reduce-motion) #listPane {
+      transition:
+        opacity var(--t-enter) var(--ease),
+        transform var(--t-enter) var(--ease);
+    }
+    body:not(.reduce-motion) #overlay:not(.show) #listPane {
+      transition-duration: var(--t-exit);
     }
     #listHead {
       margin: 0 0 28px;
@@ -187,7 +226,7 @@
       transform: translate3d(0, var(--track-y, 0px), 0);
     }
     #overlay.motion #track {
-      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform var(--t-focus) var(--ease);
     }
     .row {
       display: block;
@@ -205,12 +244,18 @@
       opacity: 0.38;
     }
     .row.motion {
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transition:
+        opacity var(--t-focus) var(--ease),
+        color var(--t-focus) var(--ease),
+        font-size var(--t-focus) var(--ease),
+        padding var(--t-focus) var(--ease);
     }
     .row.focus {
       opacity: 1;
       font-family: "Diavlo Medium", var(--home-font);
       color: var(--cyan);
+      font-size: clamp(30px, 2.8vw, 42px);
+      padding: 16px 0;
     }
     .empty {
       margin: 0;

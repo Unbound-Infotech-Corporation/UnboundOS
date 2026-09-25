@@ -22,8 +22,9 @@ Keep these three in sync:
 `UiFontFamily`, `UiFontSemiboldFamily`, `DisplayFontFamily`, and
 `MonoFontFamily` all resolve to packaged Diavlo. Vertical lists use
 `SuperCleanListViewStyle` / `SuperCleanListItemStyle` (enlarge + pad
-neighbors). Tile rows keep cyan hairline on focus. Motion-off snaps
-scale with no compositor animation.
+neighbors). Tile rows keep cyan hairline on focus. Shared console
+motion is `cubic-bezier(0.16, 1, 0.3, 1)` at 320ms focus, 380ms
+enter, 260ms exit. Motion-off snaps with no compositor animation.
 
 Home clock is `#clock` in the WebView. Inner top-level pages show the
 same Diavlo clock/date in chrome (`ShellViewModel.ClockText`).

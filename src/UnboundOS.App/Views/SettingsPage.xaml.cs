@@ -1,8 +1,10 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using UnboundOS.App.Motion;
 using UnboundOS.App.Services;
 using UnboundOS.App.ViewModels;
+using UnboundOS.Core.Abstractions;
 
 namespace UnboundOS.App.Views;
 
@@ -31,13 +33,14 @@ public sealed partial class SettingsPage : Page
 
     private void SyncPanels()
     {
-        MotionPanel.Visibility = ViewModel.ShowMotion ? Visibility.Visible : Visibility.Collapsed;
-        HudPanel.Visibility = ViewModel.ShowHud ? Visibility.Visible : Visibility.Collapsed;
-        SkinnyPanel.Visibility = ViewModel.ShowSkinny ? Visibility.Visible : Visibility.Collapsed;
-        UpdatesPanel.Visibility = ViewModel.ShowUpdates ? Visibility.Visible : Visibility.Collapsed;
-        DisplayPanel.Visibility = ViewModel.ShowDisplay ? Visibility.Visible : Visibility.Collapsed;
-        OverclockPanel.Visibility = ViewModel.ShowOverclock ? Visibility.Visible : Visibility.Collapsed;
-        StartupPanel.Visibility = ViewModel.ShowStartup ? Visibility.Visible : Visibility.Collapsed;
-        CleanupPanel.Visibility = ViewModel.ShowCleanup ? Visibility.Visible : Visibility.Collapsed;
+        var allow = AppServices.Get<IUiMotionPolicy>().AllowMotion;
+        ConsoleMotion.SetVisible(MotionPanel, ViewModel.ShowMotion, allow);
+        ConsoleMotion.SetVisible(HudPanel, ViewModel.ShowHud, allow);
+        ConsoleMotion.SetVisible(SkinnyPanel, ViewModel.ShowSkinny, allow);
+        ConsoleMotion.SetVisible(UpdatesPanel, ViewModel.ShowUpdates, allow);
+        ConsoleMotion.SetVisible(DisplayPanel, ViewModel.ShowDisplay, allow);
+        ConsoleMotion.SetVisible(OverclockPanel, ViewModel.ShowOverclock, allow);
+        ConsoleMotion.SetVisible(StartupPanel, ViewModel.ShowStartup, allow);
+        ConsoleMotion.SetVisible(CleanupPanel, ViewModel.ShowCleanup, allow);
     }
 }

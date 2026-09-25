@@ -25,8 +25,9 @@ stays vendored, unused):
 - A first-party **digital clock** sits on the right, date below, in
   Diavlo. It stays up on the all-black detail surface. This is not
   Rainmeter and is not the leftover Home extras plaques.
-- Motion-off freezes enlarge/push; focus still snaps. The clock still
-  ticks.
+- Shared ease is `cubic-bezier(0.16, 1, 0.3, 1)`: 320ms focus
+  enlarge-push, 380ms detail enter, 260ms return. Motion-off freezes
+  enlarge/push; focus still snaps. The clock still ticks.
 
 Labels, top to bottom: Games, Tools, Options, Mods, Network, Files,
 Hardware. Games is the default. Options is a first-class label (also
