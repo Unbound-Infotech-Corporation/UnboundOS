@@ -71,6 +71,7 @@ public static class ConsoleMotion
             var compositor = visual.Compositor;
             StartScalar(compositor, visual, "Opacity", 1, EnterDuration);
             StartVector3(compositor, visual, "Offset", Vector3.Zero, EnterDuration);
+            UnboundOS.Core.Diagnostics.PerfLog.Event("motion.enter", (long)EnterDuration.TotalMilliseconds);
         }
         catch (Exception)
         {

@@ -6,6 +6,7 @@ using UnboundOS.App.Services;
 using UnboundOS.App.ViewModels;
 using UnboundOS.App.Views;
 using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Diagnostics;
 using UnboundOS.Core.Home;
 using UnboundOS.Core.Navigation;
 
@@ -21,6 +22,8 @@ public sealed partial class MainPage : Page
     private double _dragStartY;
     private double _widgetStartLeft;
     private double _widgetStartTop;
+    private bool _hubsWarmed;
+    private bool _homeVisible = true;
 
     public MainPage()
     {
@@ -38,6 +41,13 @@ public sealed partial class MainPage : Page
                 ApplyWidgetPositions();
             }
         };
+        ViewModel.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName is nameof(ViewModel.IsSessionActive) or null)
+            {
+                ApplyIdlePolicy();
+            }
+        };
     }
 
     private async void OnLoaded(object sender, RoutedEventArgs e)
@@ -49,7 +59,9 @@ public sealed partial class MainPage : Page
         ApplyWidgetListDim(HomeCube.OverlayOpen);
         ApplyHomeChrome(home: true);
         ApplyNavState("Home");
+        ApplyIdlePolicy();
         HomeCube.Focus(FocusState.Programmatic);
+        _ = DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, WarmHubsIfIdle);
     }
 
     private void Nav_Click(object sender, RoutedEventArgs e)
@@ -96,6 +108,7 @@ public sealed partial class MainPage : Page
 
     private void Navigate(string tag)
     {
+        using var _ = PerfLog.Measure($"nav.{tag}");
         ViewModel.SelectedNav = tag;
         ViewModel.StatusLine = tag switch
         {
@@ -148,6 +161,7 @@ public sealed partial class MainPage : Page
         HeroGrid.Visibility = Visibility.Collapsed;
         ConsoleMotion.SetVisible(ChromeBar, !home, allow);
         ConsoleMotion.SetVisible(HomeView, home, allow);
+        _homeVisible = home;
         if (home)
         {
             ConsoleMotion.SetVisible(ContentFrame, visible: false, allow);
@@ -155,6 +169,32 @@ public sealed partial class MainPage : Page
         else
         {
             ContentFrame.Visibility = Visibility.Visible;
+        }
+
+        ApplyIdlePolicy();
+    }
+
+    private void ApplyIdlePolicy()
+    {
+        var sessionLive = ViewModel.IsSessionActive;
+        var homeLive = _homeVisible && !sessionLive;
+        HomeCube.SetSceneActive(homeLive);
+        ViewModel.SetIdlePolling(!_homeVisible && !sessionLive);
+        Hud.SetActive(homeLive);
+    }
+
+    private void WarmHubsIfIdle()
+    {
+        if (_hubsWarmed || !_homeVisible || ViewModel.IsSessionActive || ViewModel.SelectedNav != "Home")
+        {
+            return;
+        }
+
+        _hubsWarmed = true;
+        using var _ = PerfLog.Measure("nav.warm-hubs");
+        foreach (var pageType in new[] { typeof(SettingsPage), typeof(FilesPage), typeof(ToolsPage), typeof(SessionPage) })
+        {
+            ContentFrame.Navigate(pageType);
         }
     }
 

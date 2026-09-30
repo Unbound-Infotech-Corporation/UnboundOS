@@ -275,6 +275,8 @@ public sealed class NavigationCubeTests
         Assert.Contains("Interface motion", optionsOpen, StringComparison.Ordinal);
         var close = CubeBridge.ToJson(CubeBridge.Close(true));
         Assert.Contains("\"type\":\"close\"", close, StringComparison.Ordinal);
+        Assert.Contains("\"type\":\"pause\"", CubeBridge.ToJson(CubeBridge.Pause()), StringComparison.Ordinal);
+        Assert.Contains("\"type\":\"resume\"", CubeBridge.ToJson(CubeBridge.Resume()), StringComparison.Ordinal);
         var reset = CubeBridge.ToJson(CubeBridge.Reset(CubeDestination.Session, false));
         Assert.Contains("\"type\":\"reset\"", reset, StringComparison.Ordinal);
         Assert.Contains("\"motion\":false", reset, StringComparison.Ordinal);
@@ -375,12 +377,13 @@ public sealed class HomeGalaxyTests
         Assert.Equal(2, HomeGalaxy.ListStartIndex(network.Count, true));
 
         var options = CubeBrowse.Options();
-        Assert.Equal(8, options.Count);
+        Assert.Equal(9, options.Count);
         Assert.All(options, item => Assert.Equal("settings", item.Kind));
         Assert.Contains(options, item => item.Id == "motion" && item.Title == "Interface motion");
         Assert.Contains(options, item => item.Id == "hud" && item.Title == "Home extras");
         Assert.Contains(options, item => item.Id == "skinny" && item.Title == "Session skinny");
         Assert.Contains(options, item => item.Id == "updates" && item.Title == "Updates");
+        Assert.Contains(options, item => item.Id == "health" && item.Title == "Health check");
         Assert.Contains(options, item => item.Id == "cleanup" && item.Title == "Finish setup");
     }
 }

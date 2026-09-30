@@ -14,6 +14,7 @@ public partial class HomeHudViewModel : ObservableObject
     private readonly DispatcherTimer _tempTimer;
     private bool _tempsBusy;
     private bool _packageHasReading;
+    private bool _homeActive;
 
     public HomeHudViewModel(IHomeHudSettings hud, IThermalProbe thermal, ITelemetryService telemetry)
     {
@@ -21,7 +22,7 @@ public partial class HomeHudViewModel : ObservableObject
         _thermal = thermal;
         _telemetry = telemetry;
         _hud.Changed += OnHudChanged;
-        _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(15) };
         _clockTimer.Tick += (_, _) => TickClock();
         _tempTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
         _tempTimer.Tick += async (_, _) => await RefreshTempsAsync();
@@ -53,9 +54,40 @@ public partial class HomeHudViewModel : ObservableObject
         await _hud.InitializeAsync();
         ApplyVisibility();
         TickClock();
-        _clockTimer.Start();
-        _tempTimer.Start();
-        await RefreshTempsAsync();
+        SyncTimers();
+        if (_homeActive && _hud.HudEnabled)
+        {
+            await RefreshTempsAsync();
+        }
+    }
+
+    public void SetActive(bool active)
+    {
+        _homeActive = active;
+        SyncTimers();
+    }
+
+    private void SyncTimers()
+    {
+        var tick = _homeActive && _hud.HudEnabled;
+        if (tick)
+        {
+            if (!_clockTimer.IsEnabled)
+            {
+                TickClock();
+                _clockTimer.Start();
+            }
+
+            if (!_tempTimer.IsEnabled)
+            {
+                _tempTimer.Start();
+            }
+
+            return;
+        }
+
+        _clockTimer.Stop();
+        _tempTimer.Stop();
     }
 
     public Task MoveAsync(string id, double x, double y) => _hud.SetPlacementAsync(id, x, y);
@@ -90,6 +122,7 @@ public partial class HomeHudViewModel : ObservableObject
         Appearance = _hud.Appearance;
         AppearanceToken = HomeWidgets.AppearanceToken(_hud.Appearance);
         LayoutRevision++;
+        SyncTimers();
     }
 
     private void TickClock() =>
@@ -97,7 +130,7 @@ public partial class HomeHudViewModel : ObservableObject
 
     private async Task RefreshTempsAsync()
     {
-        if (_tempsBusy || _hud is { HudEnabled: false })
+        if (_tempsBusy || !_homeActive || _hud is { HudEnabled: false })
         {
             return;
         }

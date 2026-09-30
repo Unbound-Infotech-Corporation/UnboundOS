@@ -24,7 +24,9 @@ neighbors. **Enter** opens an all-black titles-only list of that
 group’s real destinations. Escape returns to the labels. Quiet
 **movable** leftover plaques stay opt-in (Settings → Home extras, off
 by default). Architecture: [docs/home-nav.md](home-nav.md). Offline
-NIC pack: [docs/offline-nic-pack.md](offline-nic-pack.md).
+NIC pack: [docs/offline-nic-pack.md](offline-nic-pack.md). Main-OS
+install on a blank NVMe: [docs/install-main-os.md](install-main-os.md).
+QA loop: [docs/test-checklist.md](test-checklist.md).
 
 ## 1. OOBE / initial setup last step
 

@@ -668,7 +668,7 @@
                     AutomationProperties.HelpText="Open Options on the Super Clean Home. Enter a group for the Settings page." />
             </Grid>
 
-            <Frame x:Name="ContentFrame" Visibility="Collapsed" />
+            <Frame x:Name="ContentFrame" Visibility="Collapsed" CacheSize="8" />
         </Grid>
     </Grid>
 </Page>

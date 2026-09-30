@@ -3,6 +3,7 @@ using UnboundOS.App.Services;
 using UnboundOS.Core;
 using UnboundOS.Core.Abstractions;
 using UnboundOS.Core.Overlay;
+using UnboundOS.Infrastructure.Diagnostics;
 using UnboundOS.Infrastructure.Startup;
 
 namespace UnboundOS.App;
@@ -23,7 +24,8 @@ public partial class App : Application
 
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
-        if (StartupAuditCommand.IsRequested(Environment.GetCommandLineArgs()))
+        var commandLine = Environment.GetCommandLineArgs();
+        if (StartupAuditCommand.IsRequested(commandLine))
         {
             try
             {
@@ -32,6 +34,21 @@ public partial class App : Application
             catch
             {
                 // Headless scheduled-task path must not throw into the shell.
+            }
+
+            Exit();
+            return;
+        }
+
+        if (HealthCheckCommand.IsRequested(commandLine))
+        {
+            try
+            {
+                await AppServices.Get<IHealthCheckService>().RunAsync();
+            }
+            catch
+            {
+                // Headless health export must not throw into the shell.
             }
 
             Exit();

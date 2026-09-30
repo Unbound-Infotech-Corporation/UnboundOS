@@ -28,6 +28,9 @@ public sealed class OsSpecSliceTests
         Assert.Contains("registry, DriveInfo", OsProductCopy.HardwareHonesty, StringComparison.Ordinal);
         Assert.Contains("does not redistribute Windows", OsProductCopy.UpdateGuardHonesty, StringComparison.Ordinal);
         Assert.Contains("not CVE-only", OsProductCopy.UpdateGuardHonesty, StringComparison.Ordinal);
+        Assert.Contains("does not replace Explorer or set Shell=", OsProductCopy.AutostartHonesty, StringComparison.Ordinal);
+        Assert.Contains("HKCU Run", OsProductCopy.AutostartHonesty, StringComparison.Ordinal);
+        Assert.Contains("does not change Windows Update, Defender, or Explorer", OsProductCopy.HealthHonesty, StringComparison.Ordinal);
         Assert.DoesNotContain("Night City", OsProductCopy.OverclockHonesty, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -38,6 +41,15 @@ public sealed class OsSpecSliceTests
         Assert.True(StartupAuditCommand.IsRequested(["/audit-startup"]));
         Assert.False(StartupAuditCommand.IsRequested(["UnboundOS.App.exe"]));
         Assert.False(StartupAuditCommand.IsRequested(null));
+    }
+
+    [Fact]
+    public void HealthCheckCommand_RecognizesHeadlessFlag()
+    {
+        Assert.True(UnboundOS.Infrastructure.Diagnostics.HealthCheckCommand.IsRequested(["UnboundOS.App.exe", "--health"]));
+        Assert.True(UnboundOS.Infrastructure.Diagnostics.HealthCheckCommand.IsRequested(["/health"]));
+        Assert.False(UnboundOS.Infrastructure.Diagnostics.HealthCheckCommand.IsRequested(["UnboundOS.App.exe"]));
+        Assert.False(UnboundOS.Infrastructure.Diagnostics.HealthCheckCommand.IsRequested(null));
     }
 
     [Fact]
@@ -367,6 +379,9 @@ public sealed class OsSpecSliceTests
         Assert.IsType<SetupCleanupService>(provider.GetRequiredService<ISetupCleanup>());
         Assert.IsType<UnboundOS.Infrastructure.Updates.WindowsUpdateGuardPolicy>(
             provider.GetRequiredService<IUpdateGuardPolicy>());
+        Assert.IsType<WindowsShellAutostart>(provider.GetRequiredService<IShellAutostart>());
+        Assert.IsType<UnboundOS.Infrastructure.Diagnostics.OsHealthCheckService>(
+            provider.GetRequiredService<IHealthCheckService>());
     }
 
     private sealed class FakeInventory(params StartupCandidate[] items) : IStartupInventory

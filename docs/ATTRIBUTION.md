@@ -2,8 +2,8 @@
 
 ## Diavlo
 
-Home category lists and the focused Home node label use **Diavlo** by
-Jos Buivenga (exljbris).
+All UnboundOS shell text (Home, category lists, Settings, hubs) uses
+**Diavlo** by Jos Buivenga (exljbris).
 
 - Official page: https://www.exljbris.com/diavlo.html
 - Free for personal and commercial use. Embedding in programs is
@@ -12,7 +12,7 @@ Jos Buivenga (exljbris).
 - Packaged files: `src/UnboundOS.App/Assets/Fonts/Diavlo_*_II_37.otf`
 - Vendor license: `src/UnboundOS.App/Assets/Fonts/LICENSE-Diavlo.txt`
 
-Inter and JetBrains Mono licenses live next to those files.
+Inter and JetBrains Mono are no longer packaged.
 
 ## NASA SDO look-dev (not shipped)
 

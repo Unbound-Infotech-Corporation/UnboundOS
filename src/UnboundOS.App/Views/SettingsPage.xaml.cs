@@ -17,7 +17,7 @@ public sealed partial class SettingsPage : Page
         InitializeComponent();
         ViewModel.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName is nameof(ViewModel.SelectedGroup) or nameof(ViewModel.ShowMotion) or nameof(ViewModel.ShowHud) or nameof(ViewModel.ShowSkinny) or nameof(ViewModel.ShowUpdates) or null)
+            if (e.PropertyName is nameof(ViewModel.SelectedGroup) or nameof(ViewModel.ShowMotion) or nameof(ViewModel.ShowHud) or nameof(ViewModel.ShowSkinny) or nameof(ViewModel.ShowUpdates) or nameof(ViewModel.ShowHealth) or null)
             {
                 SyncPanels();
             }
@@ -41,6 +41,7 @@ public sealed partial class SettingsPage : Page
         ConsoleMotion.SetVisible(DisplayPanel, ViewModel.ShowDisplay, allow);
         ConsoleMotion.SetVisible(OverclockPanel, ViewModel.ShowOverclock, allow);
         ConsoleMotion.SetVisible(StartupPanel, ViewModel.ShowStartup, allow);
+        ConsoleMotion.SetVisible(HealthPanel, ViewModel.ShowHealth, allow);
         ConsoleMotion.SetVisible(CleanupPanel, ViewModel.ShowCleanup, allow);
     }
 }

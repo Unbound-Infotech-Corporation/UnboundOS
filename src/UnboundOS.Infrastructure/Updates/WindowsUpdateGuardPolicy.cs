@@ -30,15 +30,15 @@ public sealed class WindowsUpdateGuardPolicy : IUpdateGuardPolicy
 
         try
         {
-            WriteDword(Registry.LocalMachine, WuPolicyPath, "TargetReleaseVersion", 1);
-            WriteString(Registry.LocalMachine, WuPolicyPath, "TargetReleaseVersionInfo", target.DisplayVersion);
-            WriteString(Registry.LocalMachine, WuPolicyPath, "ProductVersion", target.ProductVersion);
-            WriteDword(Registry.LocalMachine, WuPolicyPath, "DeferFeatureUpdates", 1);
-            WriteDword(Registry.LocalMachine, WuPolicyPath, "DeferFeatureUpdatesPeriodInDays", 365);
-            WriteDword(Registry.LocalMachine, WuPolicyPath, "ManagePreviewBuilds", 1);
-            WriteDword(Registry.LocalMachine, WuPolicyPath, "ManagePreviewBuildsPolicyValue", 0);
-            DeleteValue(Registry.LocalMachine, WuPolicyPath, "DeferQualityUpdates");
-            DeleteValue(Registry.LocalMachine, WuPolicyPath, "DeferQualityUpdatesPeriodInDays");
+            WriteDword(Registry.LocalMachine, WuPolicyKey, "TargetReleaseVersion", 1);
+            WriteString(Registry.LocalMachine, WuPolicyKey, "TargetReleaseVersionInfo", target.DisplayVersion);
+            WriteString(Registry.LocalMachine, WuPolicyKey, "ProductVersion", target.ProductVersion);
+            WriteDword(Registry.LocalMachine, WuPolicyKey, "DeferFeatureUpdates", 1);
+            WriteDword(Registry.LocalMachine, WuPolicyKey, "DeferFeatureUpdatesPeriodInDays", 365);
+            WriteDword(Registry.LocalMachine, WuPolicyKey, "ManagePreviewBuilds", 1);
+            WriteDword(Registry.LocalMachine, WuPolicyKey, "ManagePreviewBuildsPolicyValue", 0);
+            DeleteValue(Registry.LocalMachine, WuPolicyKey, "DeferQualityUpdates");
+            DeleteValue(Registry.LocalMachine, WuPolicyKey, "DeferQualityUpdatesPeriodInDays");
 
             WriteDword(Registry.LocalMachine, AuPath, "NoAutoUpdate", 0);
             WriteDword(Registry.LocalMachine, AuPath, "AUOptions", 4);
@@ -74,13 +74,13 @@ public sealed class WindowsUpdateGuardPolicy : IUpdateGuardPolicy
 
         try
         {
-            DeleteValue(Registry.LocalMachine, WuPolicyPath, "TargetReleaseVersion");
-            DeleteValue(Registry.LocalMachine, WuPolicyPath, "TargetReleaseVersionInfo");
-            DeleteValue(Registry.LocalMachine, WuPolicyPath, "ProductVersion");
-            DeleteValue(Registry.LocalMachine, WuPolicyPath, "DeferFeatureUpdates");
-            DeleteValue(Registry.LocalMachine, WuPolicyPath, "DeferFeatureUpdatesPeriodInDays");
-            DeleteValue(Registry.LocalMachine, WuPolicyPath, "ManagePreviewBuilds");
-            DeleteValue(Registry.LocalMachine, WuPolicyPath, "ManagePreviewBuildsPolicyValue");
+            DeleteValue(Registry.LocalMachine, WuPolicyKey, "TargetReleaseVersion");
+            DeleteValue(Registry.LocalMachine, WuPolicyKey, "TargetReleaseVersionInfo");
+            DeleteValue(Registry.LocalMachine, WuPolicyKey, "ProductVersion");
+            DeleteValue(Registry.LocalMachine, WuPolicyKey, "DeferFeatureUpdates");
+            DeleteValue(Registry.LocalMachine, WuPolicyKey, "DeferFeatureUpdatesPeriodInDays");
+            DeleteValue(Registry.LocalMachine, WuPolicyKey, "ManagePreviewBuilds");
+            DeleteValue(Registry.LocalMachine, WuPolicyKey, "ManagePreviewBuildsPolicyValue");
             DeleteValue(Registry.LocalMachine, AuPath, "NoAutoRebootWithLoggedOnUsers");
             DeleteValue(Registry.LocalMachine, UxSettingsPath, "IsContinuousInnovationOptedIn");
             WriteDword(Registry.LocalMachine, AuPath, "NoAutoUpdate", 0);
@@ -228,7 +228,7 @@ public sealed class WindowsUpdateGuardPolicy : IUpdateGuardPolicy
     }
 
     private const string NtCurrent = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion";
-    private const string WuPolicyPath = @"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate";
+    public const string WuPolicyKey = @"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate";
     private const string AuPath = @"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU";
     private const string UxSettingsPath = @"SOFTWARE\Microsoft\WindowsUpdate\UX\Settings";
 }

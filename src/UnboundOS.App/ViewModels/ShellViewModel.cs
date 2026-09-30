@@ -38,7 +38,7 @@ public partial class ShellViewModel : ObservableObject
 
         _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _timer.Tick += async (_, _) => await RefreshTelemetryAsync();
-        _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(15) };
         _clockTimer.Tick += (_, _) => TickClock();
         TickClock();
     }
@@ -73,8 +73,28 @@ public partial class ShellViewModel : ObservableObject
         await _motion.InitializeAsync();
         await RefreshTelemetryAsync();
         TickClock();
-        _timer.Start();
-        _clockTimer.Start();
+    }
+
+    public void SetIdlePolling(bool enabled)
+    {
+        if (enabled)
+        {
+            if (!_timer.IsEnabled)
+            {
+                _timer.Start();
+            }
+
+            if (!_clockTimer.IsEnabled)
+            {
+                TickClock();
+                _clockTimer.Start();
+            }
+
+            return;
+        }
+
+        _timer.Stop();
+        _clockTimer.Stop();
     }
 
     private void TickClock()

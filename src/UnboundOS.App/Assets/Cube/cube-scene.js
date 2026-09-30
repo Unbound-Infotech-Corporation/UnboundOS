@@ -19,6 +19,7 @@
     { id: "display", title: "Display", meta: "SET" },
     { id: "overclock", title: "Overclocking", meta: "SET" },
     { id: "startup", title: "Startup audit", meta: "SET" },
+    { id: "health", title: "Health check", meta: "SET" },
     { id: "cleanup", title: "Finish setup", meta: "SET" }
   ];
   const DEFAULT_FACES = [
@@ -57,10 +58,12 @@
     overlayTitle: "",
     overlayFront: "",
     hud: false,
-    hideGen: 0
+    hideGen: 0,
+    paused: false
   };
 
   const tabs = [];
+  let clockTimer = 0;
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, (ch) => ({
@@ -91,6 +94,7 @@
   }
 
   function tickClock() {
+    if (state.paused) return;
     const now = new Date();
     if (clockTimeEl) clockTimeEl.textContent = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
     if (clockDateEl) {
@@ -104,6 +108,24 @@
       const clock = document.getElementById("clock");
       if (clock) clock.setAttribute("aria-label", `${clockTimeEl.textContent}, ${clockDateEl.textContent}`);
     }
+  }
+
+  function startClock() {
+    if (clockTimer) return;
+    tickClock();
+    clockTimer = window.setInterval(tickClock, 15000);
+  }
+
+  function stopClock() {
+    if (!clockTimer) return;
+    window.clearInterval(clockTimer);
+    clockTimer = 0;
+  }
+
+  function setPaused(paused) {
+    state.paused = paused;
+    if (paused) stopClock();
+    else startClock();
   }
 
   function buildLabels() {
@@ -201,10 +223,23 @@
     trackEl.querySelectorAll(".row").forEach((row) => {
       row.addEventListener("click", () => {
         const i = Number(row.getAttribute("data-index"));
-        state.focus = i;
-        renderTrack();
+        applyFocus(i);
         send({ v: 1, type: "select", index: i, item: state.items[i]?.id });
       });
+    });
+    syncTrack();
+  }
+
+  function applyFocus(index) {
+    state.focus = index;
+    if (!trackEl) return;
+    const rows = trackEl.querySelectorAll(".row");
+    if (!rows.length) {
+      renderTrack();
+      return;
+    }
+    rows.forEach((row, i) => {
+      row.classList.toggle("focus", i === state.focus);
     });
     syncTrack();
   }
@@ -292,10 +327,11 @@
     if (data.type === "open") startOpen(data);
     if (data.type === "focus") {
       if (typeof data.focus === "number") {
-        state.focus = data.focus;
-        renderTrack();
+        applyFocus(data.focus);
       }
     }
+    if (data.type === "pause") setPaused(true);
+    if (data.type === "resume") setPaused(false);
     if (data.type === "close") hideOverlay(!data.motion);
     if (data.type === "reset") {
       hideOverlay(true);
@@ -344,8 +380,7 @@
       }
       if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
         const dir = ev.key === "ArrowUp" ? -1 : 1;
-        state.focus = (state.focus + dir + state.items.length) % state.items.length;
-        renderTrack();
+        applyFocus((state.focus + dir + state.items.length) % state.items.length);
         send({ v: 1, type: "cycle", index: state.focus });
         ev.preventDefault();
       }
@@ -383,8 +418,7 @@
 
   buildLabels();
   syncMotionClass();
-  tickClock();
-  window.setInterval(tickClock, 1000);
+  startClock();
   window.addEventListener("keydown", onKey);
   window.addEventListener("wheel", onWheel, { passive: false });
 

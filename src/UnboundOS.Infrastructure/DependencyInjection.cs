@@ -11,6 +11,7 @@ using UnboundOS.Infrastructure.Profiles;
 using UnboundOS.Infrastructure.Session;
 using UnboundOS.Infrastructure.Settings;
 using UnboundOS.Infrastructure.Files;
+using UnboundOS.Infrastructure.Diagnostics;
 using UnboundOS.Infrastructure.Hardware;
 using UnboundOS.Infrastructure.Home;
 using UnboundOS.Infrastructure.Setup;
@@ -47,6 +48,8 @@ public static class DependencyInjection
         services.AddSingleton<IStartupAllowlistStore, JsonStartupAllowlistStore>();
         services.AddSingleton<IStartupMutator, WindowsStartupMutator>();
         services.AddSingleton<IStartupAuditService, StartupAuditService>();
+        services.AddSingleton<IShellAutostart, WindowsShellAutostart>();
+        services.AddSingleton<IHealthCheckService, OsHealthCheckService>();
         services.AddSingleton<IVendorAppCatalog, VendorAppCatalog>();
         services.AddSingleton<IVendorAppLauncher, VendorAppLauncher>();
         services.AddSingleton<IFileBrowser, LocalFileBrowser>();

@@ -11,8 +11,7 @@ Home is a full-bleed Obsidian / black shell — not opaque WinUI chrome.
 
 ## Art direction
 
-**Super Clean.** Runtime Home is HTML/CSS in the WebView (Three.js
-stays vendored, unused):
+**Super Clean.** Runtime Home is HTML/CSS in the WebView (no Three.js):
 
 - Background is Obsidian `#05070A`. Empty studio floor. Calm.
 - Seven labels sit in a left stack. Unfocused names stay small and
@@ -58,7 +57,7 @@ an Options row still lands on the native Settings page.
 | Games | Steam library (`steam://rungameid`) via `IGameLibraryCatalog` / `ILibraryLaunchService`. Empty library pads with Session engine + Steam/Playnite. |
 | Tools | Desktop kit catalog (including optional Rainmeter, MusicBee, Store, Xbox). |
 | Mods | Workshop / Vortex discovery. |
-| Options | Eight settings rows (`kind: settings`), including Updates / Update Guard. Enter → Settings page. |
+| Options | Nine settings rows (`kind: settings`), including Updates / Update Guard and Health check. Enter → Settings page. |
 | Network, Files, Hardware | Honest page rows over Home; Enter lands on the native WinUI list. |
 
 SessionEngine is not rewritten. The overlay is HTML inside the WebView
@@ -74,15 +73,16 @@ MainPage  →  NavigationCubeView (WinUI host, a11y, keyboard, launch)
                  │      owns label focus (incl. Options), list origin, page nav
                  │
                  └─ WebView2  →  packaged HTML Super Clean Home (Assets/Cube)
-                        JSON: state / open / focus / close / reset
+                        JSON: state / open / focus / close / reset / pause / resume
                               ready / turn / pick / activate /
                               opened / cycle / select / back
                         open.front = "Settings" + node = -1 → Options
 ```
 
 - **Not Unreal.** UE is not a runtime dependency.
-- **WebView2 + HTML Super Clean Home.** `three.min.js` and leftover
-  look-dev plates remain unused. No WebGL required for Home.
+- **WebView2 + HTML Super Clean Home.** No WebGL. `three.min.js` and
+  leftover look-dev plates are not packaged. Home pauses the clock and
+  can suspend the WebView when hidden or a game session is live.
 - If WebView2 is missing, Enter still opens the WinUI page.
 - SET / PRFL glyphs stay discreet. Leftover movable plaques are **off**
   by default (Settings → Home extras).

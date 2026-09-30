@@ -8,7 +8,7 @@ UnboundOS does **not** replace Windows. It applies a focused gaming / streaming 
 
 The shell is a living-room home: on Home a **black studio field** holds a **left stack of category labels** (Games, Tools, Options, Mods, Network, Files, Hardware) and a **Diavlo digital clock** with the date under it on the right. **Up/Down** (D-pad, stick, arrows, wheel) move the focused name. The focused label **enlarges in Diavlo** and pushes neighbors; unfocused names stay small. **All Home and category-detail type is Diavlo.** **Enter** opens an all-black options surface for that group — real destinations, not stubs. Games uses the Steam library when present. **SET** opens Options. Profiles stays a discreet corner glyph. Rainmeter is not required and is off by default. The old Settings tile that showed the letter “I” is gone.
 
-OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). How we beat Windows-lite ISOs: [docs/competitive-landscape.md](docs/competitive-landscape.md). Session skinny toggles: [docs/gaming-skinny.md](docs/gaming-skinny.md). Theme hex: [docs/theme-tokens.md](docs/theme-tokens.md). Offline NIC pack: [docs/offline-nic-pack.md](docs/offline-nic-pack.md). Update Guard: [docs/update-guard.md](docs/update-guard.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup, reversible session skinny). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
+OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). How we beat Windows-lite ISOs: [docs/competitive-landscape.md](docs/competitive-landscape.md). Session skinny toggles: [docs/gaming-skinny.md](docs/gaming-skinny.md). Theme hex: [docs/theme-tokens.md](docs/theme-tokens.md). Offline NIC pack: [docs/offline-nic-pack.md](docs/offline-nic-pack.md). Update Guard: [docs/update-guard.md](docs/update-guard.md). **Blank NVMe → daily driver:** [docs/install-main-os.md](docs/install-main-os.md). QA loop: [docs/test-checklist.md](docs/test-checklist.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup, reversible session skinny, health check). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
 
 **Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (black Home, left-label stack). Company cyan `#00F0FF` is the focus hairline and inner-page token. See [docs/screenshots/README.md](docs/screenshots/README.md).
 
@@ -29,7 +29,7 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
 | **Files** | Daily folder UI (Home, Desktop, Downloads, drives). Explorer stays for EAC / BattlEye / Vanguard |
 | **Hardware** | CPU, GPU, disks, RAM from this PC. Live sensors later; optional Open HWiNFO in Tools |
-| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist, leftover cleanup, Home extras (opt-in plaques), Session skinny (HAGS + Game DVR copy), Update Guard (quality from Microsoft, feature deferred), Interface motion On / Off |
+| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist + optional HKCU Run autostart, leftover cleanup, health check, Home extras (opt-in plaques), Session skinny (HAGS + Game DVR copy), Update Guard (quality from Microsoft, feature deferred), Interface motion On / Off |
 
 ## Solution layout
 
@@ -52,8 +52,16 @@ UnboundOS.sln
 
 ```powershell
 dotnet build UnboundOS.sln -c Debug -p:Platform=x64
-dotnet test UnboundOS.sln
+dotnet test UnboundOS.sln --filter "FullyQualifiedName!~NetworkDirectorMetric"
 dotnet run --project src\UnboundOS.App\UnboundOS.App.csproj -c Debug -p:Platform=x64
+```
+
+Release package on a Windows x64 box (BIGDEAL):
+
+```powershell
+pwsh -File scripts\Publish-UnboundOS.ps1
+pwsh -File scripts\Install-UnboundOS.ps1
+& "$env:LOCALAPPDATA\Unbound Infotech Corporation\UnboundOS\app\UnboundOS.App.exe" --health
 ```
 
 > NIC metric changes via `netsh` work best when UnboundOS is run elevated. Process cleanup works without elevation for most user-level apps.
@@ -145,10 +153,10 @@ Shell UI matches [unboundinfotech.com](https://unboundinfotech.com):
 | Cyan pulse (primary) | `#00F0FF` |
 | Cobalt | `#1E40AF` |
 | Circuit amber (seasoning) | `#E4B53C` |
-| UI type | Inter (bundled Latin subset) |
-| Telemetry type | JetBrains Mono (bundled Latin subset) |
+| UI type | Diavlo (bundled; Book / Medium / Bold) |
+| Telemetry type | Diavlo Book |
 
-Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts` (SIL OFL). If a file fails to load, Windows falls back to Segoe UI Variable / Cascadia Mono. See `Assets/Fonts/README.md`.
+Fonts ship as Content under `src/UnboundOS.App/Assets/Fonts`. If a file fails to load, Windows falls back to Segoe UI Variable. See `Assets/Fonts/README.md`. Do not redistribute Diavlo as a standalone download.
 
 ## Design notes
 
@@ -172,7 +180,8 @@ See [docs/os-spec.md](docs/os-spec.md) for the full OS-level spec. This slice:
 
 - **Files** — browse user folders with Unbound styling. Show in Explorer is one click.
 - **Settings → Display / Overclocking** — discover NVIDIA / AMD / Intel vendor apps and Get if missing.
-- **Settings → Startup audit** — report Run keys, Startup folder, tasks; persist pin allowlist; never silently drop anticheat, GPU vendor, Vortex, OBS, or HardProtect. Daily cadence stub: [docs/startup-audit-task.xml](docs/startup-audit-task.xml).
+- **Settings → Startup audit** — report Run keys, Startup folder, tasks; persist pin allowlist; optional HKCU Run autostart (never `Shell=`). Daily cadence stub: [docs/startup-audit-task.xml](docs/startup-audit-task.xml).
+- **Settings → Health check** — network, GPU, autostart, Update Guard, disk; `--health` writes a log.
 - **Settings → Finish setup** — delete known Unbound leftover folders after an online-ok marker. The image owns the full OOBE wipe.
 - **Hardware** — inventory from this PC. Not a HWiNFO clone.
 

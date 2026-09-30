@@ -21,10 +21,13 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IGamingSkinnyPolicy _skinny;
     private readonly IUpdateGuardPolicy _updates;
     private readonly IShellSettingsStore _shell;
+    private readonly IShellAutostart _autostart;
+    private readonly IHealthCheckService _health;
     private bool _suppressToggle;
     private bool _suppressHudToggle;
     private bool _suppressHagsToggle;
     private bool _suppressUpdateGuardToggle;
+    private bool _suppressAutostartToggle;
 
     public SettingsViewModel(
         IUiMotionPolicy motion,
@@ -35,7 +38,9 @@ public partial class SettingsViewModel : ObservableObject
         ISetupCleanup cleanup,
         IGamingSkinnyPolicy skinny,
         IUpdateGuardPolicy updates,
-        IShellSettingsStore shell)
+        IShellSettingsStore shell,
+        IShellAutostart autostart,
+        IHealthCheckService health)
     {
         _motion = motion;
         _hud = hud;
@@ -46,6 +51,8 @@ public partial class SettingsViewModel : ObservableObject
         _skinny = skinny;
         _updates = updates;
         _shell = shell;
+        _autostart = autostart;
+        _health = health;
         _motion.Changed += OnMotionChanged;
         _hud.Changed += OnHudChanged;
     }
@@ -68,6 +75,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string _startupSummary = OsProductCopy.StartupHonesty;
     [ObservableProperty] private string _vendorStatus = OsProductCopy.DisplayHonesty;
     [ObservableProperty] private string _cleanupStatus = OsProductCopy.CleanupHonesty;
+    [ObservableProperty] private bool _shellAutostartEnabled;
+    [ObservableProperty] private string _autostartStatus = OsProductCopy.AutostartHonesty;
+    [ObservableProperty] private string _healthStatus = OsProductCopy.HealthHonesty;
+    [ObservableProperty] private string _healthLogPath = "";
     [ObservableProperty] private StartupEntry? _selectedStartup;
     [ObservableProperty] private VendorApp? _selectedDisplayApp;
     [ObservableProperty] private VendorApp? _selectedOcApp;
@@ -83,6 +94,7 @@ public partial class SettingsViewModel : ObservableObject
         new("display", "Display", "Launch the GPU vendor app. UnboundOS does not write display settings."),
         new("overclock", "Overclocking", "Launch-only vendor OC hubs. No silent clocks."),
         new("startup", "Startup audit", "Pin allowlist. Never silently kill anticheat or GPU vendor."),
+        new("health", "Health check", "Network, GPU driver, autostart, Update Guard, free disk. Export a log."),
         new("cleanup", "Finish setup", "Known leftover folders. The image owns the full wipe.")
     ];
 
@@ -98,6 +110,8 @@ public partial class SettingsViewModel : ObservableObject
     public string HardwareHonesty => OsProductCopy.HardwareHonesty;
     public string FilesHonesty => OsProductCopy.FilesHonesty;
     public string UpdateGuardHonesty => OsProductCopy.UpdateGuardHonesty;
+    public string AutostartHonesty => OsProductCopy.AutostartHonesty;
+    public string HealthHonesty => OsProductCopy.HealthHonesty;
 
     public bool CanPinSelected => SelectedStartup is { Disposition: not StartupDisposition.Protected };
     public bool SelectedIsPinned => SelectedStartup?.IsPinned == true;
@@ -112,6 +126,7 @@ public partial class SettingsViewModel : ObservableObject
         await SyncFromUpdateGuardAsync();
         await RefreshVendorsAsync();
         await RefreshStartupAsync();
+        SyncAutostart();
         SelectedGroup ??= Groups[0];
     }
 
@@ -139,6 +154,7 @@ public partial class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(ShowDisplay));
         OnPropertyChanged(nameof(ShowOverclock));
         OnPropertyChanged(nameof(ShowStartup));
+        OnPropertyChanged(nameof(ShowHealth));
         OnPropertyChanged(nameof(ShowCleanup));
         OnPropertyChanged(nameof(GroupHint));
     }
@@ -150,6 +166,7 @@ public partial class SettingsViewModel : ObservableObject
     public bool ShowDisplay => SelectedGroup?.Id == "display";
     public bool ShowOverclock => SelectedGroup?.Id == "overclock";
     public bool ShowStartup => SelectedGroup?.Id == "startup";
+    public bool ShowHealth => SelectedGroup?.Id == "health";
     public bool ShowCleanup => SelectedGroup?.Id == "cleanup";
     public string GroupHint => SelectedGroup?.Hint ?? "Pick a group.";
 
@@ -439,6 +456,53 @@ public partial class SettingsViewModel : ObservableObject
             ? await _vendorLauncher.LaunchAsync(SelectedOcApp)
             : await _vendorLauncher.OpenGetPathAsync(SelectedOcApp);
         VendorStatus = result.Message;
+    }
+
+    partial void OnShellAutostartEnabledChanged(bool value)
+    {
+        if (_suppressAutostartToggle)
+        {
+            return;
+        }
+
+        _ = PersistAutostartAsync(value);
+    }
+
+    private async Task PersistAutostartAsync(bool enabled)
+    {
+        try
+        {
+            var result = await _autostart.SetEnabledAsync(enabled);
+            AutostartStatus = result.Message + " " + OsProductCopy.AutostartHonesty;
+            SyncAutostart();
+        }
+        catch (Exception error)
+        {
+            AutostartStatus = error.Message;
+            SyncAutostart();
+        }
+    }
+
+    private void SyncAutostart()
+    {
+        _suppressAutostartToggle = true;
+        ShellAutostartEnabled = _autostart.IsEnabled;
+        _suppressAutostartToggle = false;
+    }
+
+    [RelayCommand]
+    private async Task RunHealthAsync()
+    {
+        try
+        {
+            var report = await _health.RunAsync();
+            HealthLogPath = report.LogPath;
+            HealthStatus = report.ToLogText();
+        }
+        catch (Exception error)
+        {
+            HealthStatus = error.Message;
+        }
     }
 
     [RelayCommand]

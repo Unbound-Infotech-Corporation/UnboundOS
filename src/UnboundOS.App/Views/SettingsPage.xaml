@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:UnboundOS.App.ViewModels"
+    NavigationCacheMode="Required"
     Background="Transparent">
 
     <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Settings">
@@ -254,6 +255,20 @@
                 <StackPanel Spacing="12">
                     <TextBlock Style="{StaticResource PanelLabelText}" Text="STARTUP AUDIT" />
                     <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.StartupHonesty}" />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.ShellAutostartEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Start UnboundOS at sign-in (HKCU Run). Off by default. Explorer stays the Windows shell. Never Shell=."
+                        AutomationProperties.Name="UnboundOS autostart"
+                        AutomationProperties.HelpText="Optional HKCU Run value. UnboundOS launches as a normal app. Does not replace Explorer. Easy Anti-Cheat and Vanguard keep the NT shell." />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="{x:Bind ViewModel.AutostartStatus, Mode=OneWay}"
+                        AutomationProperties.LiveSetting="Polite" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.AutostartHonesty}" />
                     <ListView
                         MaxHeight="280"
                         ItemsSource="{x:Bind ViewModel.StartupEntries, Mode=OneWay}"
@@ -292,6 +307,30 @@
                     <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.CleanupHonesty}" />
                     <Button Style="{StaticResource GhostButtonStyle}" Content="CLEAN LEFTOVER INSTALL FILES" Command="{x:Bind ViewModel.CleanLeftoversCommand}" AutomationProperties.Name="Finish setup and clean leftover install files" />
                     <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.CleanupStatus, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="HealthPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="HEALTH CHECK" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.HealthHonesty}" />
+                    <Button
+                        Style="{StaticResource SignalButtonStyle}"
+                        Content="RUN HEALTH CHECK"
+                        Command="{x:Bind ViewModel.RunHealthCommand}"
+                        AutomationProperties.Name="Run health check"
+                        AutomationProperties.HelpText="Probe network, GPU driver, autostart, Update Guard, and free disk. Writes a log you can send back." />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Foreground="{StaticResource CyanPulseBrush}"
+                        Text="{x:Bind ViewModel.HealthLogPath, Mode=OneWay}" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="{x:Bind ViewModel.HealthStatus, Mode=OneWay}"
+                        AutomationProperties.LiveSetting="Polite" />
+                    <TextBlock
+                        Style="{StaticResource BodyMutedText}"
+                        Text="Headless: UnboundOS.App.exe --health. Same log under LocalAppData. Alt+F4 exits the shell to a normal Windows desktop." />
                 </StackPanel>
             </Border>
 

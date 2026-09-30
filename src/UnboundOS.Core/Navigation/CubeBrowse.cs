@@ -70,6 +70,7 @@ public static class CubeBrowse
         new("display", "Display", "SET", "settings", "D"),
         new("overclock", "Overclocking", "SET", "settings", "O"),
         new("startup", "Startup audit", "SET", "settings", "S"),
+        new("health", "Health check", "SET", "settings", "L"),
         new("cleanup", "Finish setup", "SET", "settings", "C")
     ];
 
@@ -122,30 +123,6 @@ public static class CubeBrowse
         }
 
         return ((index % count) + count) % count;
-    }
-
-    /// <summary>
-    /// Stagger before a neighbor brick springs to its new packed pose.
-    /// Focused brick starts immediately. Keep in sync with cube-scene.js.
-    /// </summary>
-    public static double RearrangeDelaySeconds(double distanceFromFocus, bool isFocus)
-    {
-        if (isFocus)
-        {
-            return 0;
-        }
-
-        return 0.022 + Math.Clamp(distanceFromFocus, 0, 1.8) * 0.048;
-    }
-
-    /// <summary>
-    /// How far a neighbor yields aside as the focused brick takes mass.
-    /// Carousel (Games) pushes more than mosaic. Keep in sync with cube-scene.js.
-    /// </summary>
-    public static double RearrangePush(double distanceFromFocus, bool carousel)
-    {
-        var mag = carousel ? 0.12 : 0.07;
-        return mag * (0.35 + Math.Exp(-(distanceFromFocus * distanceFromFocus) / 0.55));
     }
 
     private static CubeBrowseItem GameItem(LibraryGame game) =>

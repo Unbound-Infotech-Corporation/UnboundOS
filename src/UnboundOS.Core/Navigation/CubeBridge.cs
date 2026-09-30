@@ -260,6 +260,12 @@ public static class CubeBridge
     public static CubeHostCommand Close(bool motion) =>
         new() { Type = "close", Motion = motion };
 
+    public static CubeHostCommand Pause() =>
+        new() { Type = "pause" };
+
+    public static CubeHostCommand Resume() =>
+        new() { Type = "resume" };
+
     public static CubeHostCommand Reset(CubeDestination front, bool motion) =>
         new()
         {

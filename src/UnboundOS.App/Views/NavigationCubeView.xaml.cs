@@ -6,6 +6,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Automation;
 using UnboundOS.App.Services;
 using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Diagnostics;
 using UnboundOS.Core.Models;
 using UnboundOS.Core.Navigation;
 
@@ -17,13 +18,14 @@ public sealed partial class NavigationCubeView : UserControl
     private IHomeHudSettings? _hudSettings;
     private CubePose _pose = CubePose.Home;
     private CubeDestination _announced = CubeDestination.Session;
-    private CubeDestination? _pendingOpen;
     private bool _sceneReady;
     private bool _wired;
     private bool _opening;
     private bool _browsing;
+    private bool _sceneActive = true;
     private int _openToken;
     private int _focus;
+    private Task? _catalogsTask;
     private IReadOnlyList<LibraryGame> _games = [];
     private IReadOnlyList<DesktopTool> _tools = [];
     private IReadOnlyList<ModGame> _mods = [];
@@ -78,8 +80,8 @@ public sealed partial class NavigationCubeView : UserControl
         }
 
         AnnounceCurrent();
-        await LoadCatalogsAsync();
         await StartSceneAsync();
+        _ = EnsureCatalogsAsync();
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -105,11 +107,11 @@ public sealed partial class NavigationCubeView : UserControl
         _wired = false;
         _opening = false;
         SetBrowsing(false);
-        _pendingOpen = null;
     }
 
     private async Task StartSceneAsync()
     {
+        using var _ = PerfLog.Measure("home.scene.start");
         try
         {
             CubeWeb.DefaultBackgroundColor = Windows.UI.Color.FromArgb(255, 0, 0, 0);
@@ -373,7 +375,10 @@ public sealed partial class NavigationCubeView : UserControl
         FocusOptionsTab();
     }
 
-    public void OpenCategoryList(bool fromBottom)
+    public void OpenCategoryList(bool fromBottom) =>
+        _ = OpenCategoryListAsync(fromBottom);
+
+    private async Task OpenCategoryListAsync(bool fromBottom)
     {
         if (_opening || _browsing)
         {
@@ -387,6 +392,16 @@ public sealed partial class NavigationCubeView : UserControl
         }
 
         var destination = _pose.Front;
+        if (NeedsCatalog(destination))
+        {
+            using var wait = PerfLog.Measure("home.catalogs.wait");
+            await EnsureCatalogsAsync();
+            if (_opening || _browsing)
+            {
+                return;
+            }
+        }
+
         _items = ItemsFor(destination);
         if (_items.Count == 0)
         {
@@ -441,7 +456,6 @@ public sealed partial class NavigationCubeView : UserControl
     {
         _opening = false;
         SetBrowsing(false);
-        _pendingOpen = null;
         _items = [];
         _focus = 0;
         _openToken++;
@@ -457,7 +471,6 @@ public sealed partial class NavigationCubeView : UserControl
     {
         _opening = false;
         SetBrowsing(false);
-        _pendingOpen = null;
         _items = [];
         _focus = 0;
         _optionsTab = false;
@@ -482,40 +495,48 @@ public sealed partial class NavigationCubeView : UserControl
         OverlayChanged?.Invoke(this, value);
     }
 
-    private async Task CompleteActivationAfterAsync(int token)
+    public void SetSceneActive(bool active)
     {
-        await Task.Delay(CubeAtmosphere.OpenDurationMs + 220);
-        if (token != _openToken)
+        if (_sceneActive == active)
         {
             return;
         }
 
-        _ = DispatcherQueue.TryEnqueue(CompleteActivation);
+        _sceneActive = active;
+        _ = ApplySceneActiveAsync(active);
     }
 
-    private void CompleteActivation()
+    private async Task ApplySceneActiveAsync(bool active)
     {
-        if (_pendingOpen is not { } destination)
+        using var _ = PerfLog.Measure(active ? "home.resume" : "home.pause");
+        if (!_sceneReady || CubeWeb.CoreWebView2 is null)
         {
             return;
         }
 
-        _pendingOpen = null;
-        _opening = false;
-        if (CubeCatalog.StaysInCube(destination) && _items.Count > 0)
+        CubeWeb.CoreWebView2.PostWebMessageAsJson(
+            CubeBridge.ToJson(active ? CubeBridge.Resume() : CubeBridge.Pause()));
+        try
         {
-            EnterBrowse(destination);
-            return;
+            if (active)
+            {
+                CubeWeb.CoreWebView2.Resume();
+            }
+            else
+            {
+                _ = await CubeWeb.CoreWebView2.TrySuspendAsync();
+            }
         }
-
-        FaceActivated?.Invoke(this, destination);
+        catch (Exception)
+        {
+            // Suspend/resume is best-effort. Home still paints when shown.
+        }
     }
 
     private void EnterBrowse(CubeDestination destination)
     {
         _opening = false;
         SetBrowsing(true);
-        _pendingOpen = null;
         if (_items.Count == 0)
         {
             FaceActivated?.Invoke(this, destination);
@@ -634,8 +655,14 @@ public sealed partial class NavigationCubeView : UserControl
         Notice?.Invoke(this, result.Message);
     }
 
+    private Task EnsureCatalogsAsync() => _catalogsTask ??= LoadCatalogsAsync();
+
+    private static bool NeedsCatalog(CubeDestination destination) =>
+        destination is CubeDestination.Session or CubeDestination.Tools or CubeDestination.Mods;
+
     private async Task LoadCatalogsAsync()
     {
+        using var _ = PerfLog.Measure("home.catalogs");
         try
         {
             var games = TryGet<IGameLibraryCatalog>();

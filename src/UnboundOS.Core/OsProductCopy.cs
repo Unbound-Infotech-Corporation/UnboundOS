@@ -23,4 +23,10 @@ public static class OsProductCopy
 
     public const string UpdateGuardHonesty =
         "Monthly security quality from Microsoft; feature/optional churn blocked. LCUs include security plus some nonsecurity content by Microsoft design — not CVE-only patches. UnboundOS does not redistribute Windows .msu/.cab. Each PC downloads from Microsoft. Home edition is best-effort. Session enter does not flip Update Guard.";
+
+    public const string AutostartHonesty =
+        "UnboundOS can start with Windows through a HKCU Run value. It launches as a normal app. It does not replace Explorer or set Shell=. Exit with Alt+F4 or disable autostart in Options → Startup audit. Easy Anti-Cheat, BattlEye, and Vanguard keep the NT shell.";
+
+    public const string HealthHonesty =
+        "Health check reports network, GPU driver, shell autostart, Update Guard, and free disk, then writes a log you can send back. It does not change Windows Update, Defender, or Explorer.";
 }
