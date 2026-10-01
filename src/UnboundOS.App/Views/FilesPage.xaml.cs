@@ -27,6 +27,14 @@ public sealed partial class FilesPage : Page
         }
     }
 
+    private void Key_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: OnScreenKey key })
+        {
+            ViewModel.TypeKeyCommand.Execute(key);
+        }
+    }
+
     private void Entries_ItemClick(object sender, ItemClickEventArgs e)
     {
         if (e.ClickedItem is FileBrowseEntry entry)

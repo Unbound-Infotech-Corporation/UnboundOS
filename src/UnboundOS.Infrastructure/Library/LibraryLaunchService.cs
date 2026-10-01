@@ -10,16 +10,23 @@ public sealed class LibraryLaunchService : ILibraryLaunchService
 {
     private readonly Func<string, bool> _openUri;
     private readonly Func<string, string, bool> _start;
+    private readonly ILastSessionResume? _resume;
 
     public LibraryLaunchService()
         : this(DefaultOpenUri, DefaultStart)
     {
     }
 
-    public LibraryLaunchService(Func<string, bool> openUri, Func<string, string, bool> start)
+    public LibraryLaunchService(ILastSessionResume resume)
+        : this(DefaultOpenUri, DefaultStart, resume)
+    {
+    }
+
+    public LibraryLaunchService(Func<string, bool> openUri, Func<string, string, bool> start, ILastSessionResume? resume = null)
     {
         _openUri = openUri;
         _start = start;
+        _resume = resume;
     }
 
     public Task<SessionMutationResult> LaunchAsync(
@@ -45,6 +52,7 @@ public sealed class LibraryLaunchService : ILibraryLaunchService
                 return Task.FromResult(Fail($"{game.DisplayName} did not start: {error.Message}"));
             }
 
+            Remember(game);
             return Task.FromResult(Ok($"Launched {game.DisplayName} through the {game.Store} library."));
         }
 
@@ -62,6 +70,7 @@ public sealed class LibraryLaunchService : ILibraryLaunchService
                 return Task.FromResult(Fail($"{game.DisplayName} did not start: {error.Message}"));
             }
 
+            Remember(game);
             return Task.FromResult(Ok($"Opened {game.DisplayName}."));
         }
 
@@ -80,7 +89,27 @@ public sealed class LibraryLaunchService : ILibraryLaunchService
 
         return parsed.Scheme.Equals("steam", StringComparison.OrdinalIgnoreCase) ||
                parsed.Scheme.Equals("com.epicgames.launcher", StringComparison.OrdinalIgnoreCase) ||
+               parsed.Scheme.Equals("goggalaxy", StringComparison.OrdinalIgnoreCase) ||
+               parsed.Scheme.Equals("xbox", StringComparison.OrdinalIgnoreCase) ||
+               parsed.Scheme.Equals("ms-windows-store", StringComparison.OrdinalIgnoreCase) ||
+               parsed.Scheme.Equals("unboundos", StringComparison.OrdinalIgnoreCase) ||
                parsed.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void Remember(LibraryGame game)
+    {
+        if (_resume is null)
+        {
+            return;
+        }
+
+        _ = _resume.SaveAsync(new LastSessionRecord(
+            game.Id,
+            game.DisplayName,
+            game.LaunchUri,
+            game.ExecutablePath,
+            DateTimeOffset.UtcNow,
+            ResumeAfterSleep: true));
     }
 
     private static SessionMutationResult Ok(string message) =>

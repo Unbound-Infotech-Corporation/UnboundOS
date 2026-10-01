@@ -1,6 +1,7 @@
 using Microsoft.Win32;
 using UnboundOS.Core;
 using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Shell;
 
 namespace UnboundOS.Infrastructure.Startup;
 
@@ -69,8 +70,8 @@ public sealed class WindowsShellAutostart : IShellAutostart
                 return Task.FromResult((false, "UnboundOS.App.exe was not found. Publish a Release build first."));
             }
 
-            key.SetValue(ValueName, Quote(path), RegistryValueKind.String);
-            return Task.FromResult((true, "Autostart on via HKCU Run. UnboundOS launches as a normal app. Explorer is not replaced. No Shell=."));
+            key.SetValue(ValueName, $"{Quote(path)} {XboxModePolicy.FullscreenFlag}", RegistryValueKind.String);
+            return Task.FromResult((true, "Autostart on via HKCU Run + fullscreen (Stage 0). UnboundOS launches as a normal app. Explorer is not replaced. No Shell=."));
         }
         catch (Exception ex)
         {

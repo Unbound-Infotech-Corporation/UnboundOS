@@ -2,11 +2,11 @@
 
 C L direction: UnboundOS is the **primary UI** on the daily-driver PC.
 Genuine Windows stays underneath (NT, drivers, DirectX, Store, Steam,
-Easy Anti-Cheat / BattlEye / Vanguard binaries). UnboundOS becomes
-**the shell** — not an app that sits on an Explorer desktop.
+anticheat binaries). UnboundOS becomes **the session UI** — not an app
+that sits on an Explorer desktop.
 
-This is **opt-in**, **per-user**, and **reversible**. Default install
-is still a normal app (Explorer remains `Shell=`).
+**Lead path is Windows 11 Xbox mode / Full Screen Experience (FSE).**
+HKCU `Shell=` is a **fallback**. Default install is still a normal app.
 
 Locked:
 
@@ -17,99 +17,96 @@ Locked:
 - No redistributed Microsoft `.msu` / `.cab`
 - No custom bootloader
 - Update Guard stays: quality from Microsoft, Defender on
-- Genuine Windows only
+- Genuine Windows only — **no debloat ISO, no IoT LTSC**
+- No game inject, no D3D/Vulkan hooks, no drivers
 
-## Anticheat (read this before Shell=)
+## Anticheat (read this first)
 
-Setting `HKCU\...\Winlogon\Shell` to the UnboundOS watchdog **does**:
-
-- Change what this **user** gets after sign-in instead of `explorer.exe`
-- Remove the Explorer desktop, taskbar, and Start by default
-- Leave NT, Win32, Win32k, CSRSS, DWM, and the game’s own processes alone
-
-It **does not**:
-
-- Replace, rename, or hook `explorer.exe`
-- Change HKLM Winlogon (other users still get Explorer)
-- Disable Windows Update, Defender, VBS, or anticheat services
-- Install a custom bootloader
-- Claim EAC / BattlEye / Vanguard are verified in this mode
+Xbox mode / FSE and HKCU `Shell=` both **leave** NT, Win32, DWM,
+drivers, and the game’s own processes alone. They **do not** rename
+`explorer.exe`, disable WU/Defender/VBS, or install a bootloader.
 
 Some anticheat stacks **look for Explorer / the NT desktop**. That is
-**unverified** until C L runs a title in shell-replacement mode. If a
-game fails, use **Desktop mode** (starts `explorer.exe` on demand) or
-**-RestoreExplorer**. Manual checklist: [test-checklist.md](test-checklist.md)
-section H.
+**unverified** until C L runs the matrix in [test-checklist.md](test-checklist.md)
+section H (Valorant/Vanguard, EAC, BattlEye, EA Javelin, FACEIT).
 
-## Stage 1 — Boot-to-shell (this PR)
+If a title fails: **Desktop mode**, or turn Xbox mode / Shell= off.
+
+## Stage 0 — now (this PR)
+
+Works on Home/Pro. Explorer stays the Windows shell.
 
 | Piece | Design |
 |-------|--------|
-| Replacement | **HKCU only** `Software\Microsoft\Windows NT\CurrentVersion\Winlogon` `Shell` = `"UnboundOS.App.exe" --watchdog`. Never HKLM. Never rewrite `explorer.exe`. |
-| Opt-in | `Install-UnboundOS.ps1 -ReplaceShell` or Options → Desktop / shell |
-| Reverse | `Install-UnboundOS.ps1 -RestoreExplorer`, Uninstall, or `--restore-explorer` |
-| Watchdog | Same exe, `--watchdog`. Restarts the UI. **3 exits in 2 minutes** → `explorer.exe` and a log. |
-| Shift bypass | Hold **Shift** at sign-in; watchdog starts Explorer instead |
-| Recovery | Logon task + `scripts/Restore-ExplorerShell.ps1 -IfMissing` if the exe is gone |
-| Desktop mode | Options → Desktop mode starts `explorer.exe`. Close/return focuses UnboundOS. |
-| Power | Lock / sleep / restart / shutdown / sign out / switch user from Options |
-| Switcher | Running windows list (no taskbar). Activate / close. |
-| Volume | Hardware volume keys (Windows OSD when the OS still hosts it) |
-| Brightness | Deep-link `ms-settings:display` (no invented display stack) |
-| Wallpaper | Shell field is Obsidian; not the Explorer desktop bitmap |
-| Toasts / tray | Windows notification services stay; Action Center UI is Explorer. Tray page lists known background apps. |
-| Win+keys | App registers Win+E (Files), Win+I (Settings), Win+Tab (Switcher), Win+D (Desktop). **Win+L** stays OS. **Alt+Tab** is DWM. |
-| Manual recovery | Ctrl+Shift+Esc → File → Run `explorer.exe`. Safe Mode. `-RestoreExplorer`. |
+| Auto sign-in | Windows only (`netplwiz` / Settings → Accounts). Documented. No custom credential provider. |
+| Startup | Existing **HKCU Run** launches `UnboundOS.App.exe --fullscreen` |
+| Settings | Own Options pages (system catalog, Xbox toggle, power, Desktop mode) |
+| Files | Own gamepad file picker + on-screen QWERTY |
 
-Default install **does not** set Shell=. Autostart via HKCU Run is the
-app-on-desktop path.
+## Stage 1 — main bet (this PR)
 
-## Stage 2 — First-party core UI (this PR)
+Register UnboundOS as the **Xbox mode home app**. Microsoft rolled FSE
+out to PCs (2026-04-30; KB5070297). FSE defers taskbar/Start/desktop
+and suppresses startup apps. Kernel / drivers / anticheat stay Windows.
 
-| Surface | First-party now | Fallback |
-|---------|-----------------|----------|
-| Files | Browse, copy, move, delete, open, open-with, USB eject | Desktop mode / Explorer |
-| Wi-Fi / Ethernet | Adapter up/down list | `ms-settings:network` |
-| Bluetooth | Status | `ms-settings:bluetooth` |
-| Audio | Volume up/down/mute | `ms-settings:sound` |
-| Display | Vendor app launch (existing) | `ms-settings:display` |
-| Controllers | — | `ms-settings:gaming-gamebar` / devices |
-| Power plans | `powercfg` list + set | `ms-settings:powersleep` |
-| Storage | Drive free space | `ms-settings:storagesense` |
-| Apps | Installed list + uninstall string | `ms-settings:appsfeatures` |
-| Time / language | — | `ms-settings:dateandtime` / `regionlanguage` |
-| Windows Update | Update Guard (existing) | `ms-settings:windowsupdate` |
-| Accounts | — | `ms-settings:accounts` |
-| Launcher | Start Menu `.lnk`, Steam, Epic, GOG, Xbox/Store links | Store URI |
-| Switcher | EnumWindows | Alt+Tab |
-| Tray stand-in | Discord / Steam / OBS / Vortex process list | Desktop mode |
+Microsoft does **not** document third-party home-app registration.
+Community apps (OmniConsole, AnyFSE, Playnite FSE,
+FullScreenExperienceShell) all use the same **packaged** pattern. Exact
+XML: [xbox-mode-home.md](xbox-mode-home.md) and `packaging/fse/`.
 
-Lock screen / sign-in stay **Windows**. Auto sign-in is a Windows
-setting (`netplwiz` / Settings → Accounts). Documented, not shipped
-as a custom credential provider.
+| Piece | Design |
+|-------|--------|
+| Package | MSIX identity `UnboundInfotech.UnboundOS.FseHome` |
+| Extension | `uap3:AppExtension` `Name="windows.gamingApp"` |
+| Capability | `uap4:CustomCapability` `Microsoft.appCategory.gamingHome_8wekyb3d8bbwe` |
+| SCCD | `AllowAny`, Catalog `FFFF` (sideload in Developer Mode) |
+| Opt-in | `Install-UnboundOS.ps1 -XboxModeHome` or Options → Desktop / shell |
+| Reverse | Same toggle Off, or Uninstall (removes package + preference) |
+| Failure | Health `xbox` = FallbackRun. Stage 0 Run + fullscreen stays |
+| Limited PC | Picker may be missing. We do **not** ship XFSET or write unofficial HKLM edition switches |
 
-## Stage 3 — Image / OOBE (scaffold + docs only)
+`--health` line `xbox`: Unavailable / PackageMissing /
+RegisteredNotSelected / Selected / FallbackRun. Never fails the rest of
+the report.
 
-- Offline NIC pack (already: [offline-nic-pack.md](offline-nic-pack.md))
-- Post-install cleanup (Settings → Finish setup)
-- 24h startup audit task ([startup-audit-task.xml](startup-audit-task.xml))
-- DISM customize **genuine** Windows media only — [dism-image.md](dism-image.md)
-- No slim ISOs, no unpaid Microsoft binaries in git
+## Stage 2 — optional fallback (this PR + later)
+
+| Piece | Design |
+|-------|--------|
+| HKCU Shell= | Already implemented. Watchdog, Shift bypass, 3 crashes / 2 min → Explorer |
+| Shell Launcher v2 | Enterprise/Education only, **not Pro**. Separate “console” user. Crash fallback to Explorer. Helper for Switch to Desktop. Scaffold/docs only on Pro. |
+| Assigned Access | Too locked for Steam/anticheat. Do not use. |
+
+Default install **does not** set Shell= or Xbox mode.
+
+## First-party surfaces (priority order)
+
+1. Boots straight in (Stage 0/1) and **resume last game after sleep**
+2. Unified library (Steam + Epic/GOG scans + Xbox/Store links + custom apps)
+3. Guide-button quick menu (volume, network, Bluetooth, HDR, overlay, power)
+4. System settings inside the shell (`ms-settings:` when we do not have a page)
+5. Controller-first: on-screen keyboard, gamepad file picker, stick-as-mouse (UI only)
+6. One-game-at-a-time switcher with close
+7. Seamless switch to desktop (existing Desktop mode)
+8. Recovery (watchdog, Shift, `-RestoreExplorer`)
+9. Shader pre-cache **plan** / background notes / per-game profiles (no inject)
+10. Themes leftover / widgets leftover / diagnostics export
 
 ## Safety rules (code)
 
 - HKCU Winlogon Shell only. Hygiene tests fail HKLM Shell writes.
+- No unofficial HKLM FSE edition switches.
 - Watchdog never deletes the Explorer file.
-- Missing exe → Explorer.
-- Shift at launch → Explorer.
-- 3 crashes / 2 min → Explorer + `watchdog.log`.
-- Uninstall always restores Explorer.
+- Xbox mode failure → FallbackRun, not a failed install.
+- Uninstall restores Explorer and removes the FSE package if we added it.
 - No `using var _` (CS1656).
+- No D3D/Vulkan hooks. No game inject. No drivers.
 
 ## What this PR does **not** claim
 
-- Pixel-perfect Explorer parity (Jump Lists, full Action Center, all
-  Win+ chords, Explorer namespace extensions)
-- Verified anticheat in Shell= mode
+- Pixel-perfect Explorer parity
+- Verified anticheat in FSE or Shell= mode
 - A custom logon UI
 - HKLM / all-users replacement
+- That Limited PC edition exposes “Choose home app”
+- Debloated Windows or IoT LTSC as a path

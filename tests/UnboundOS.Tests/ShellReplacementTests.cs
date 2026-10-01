@@ -83,7 +83,7 @@ public sealed class ShellReplacementTests
     [Fact]
     public void OsSettingsCatalog_EveryEntryHasMsSettingsFallback()
     {
-        Assert.Equal(12, OsSettingsCatalog.All.Count);
+        Assert.Equal(14, OsSettingsCatalog.All.Count);
         Assert.All(OsSettingsCatalog.All, entry =>
         {
             Assert.StartsWith("ms-settings:", entry.Uri, StringComparison.Ordinal);
@@ -91,6 +91,8 @@ public sealed class ShellReplacementTests
         });
         Assert.NotNull(OsSettingsCatalog.Find("updates"));
         Assert.NotNull(OsSettingsCatalog.Find("accounts"));
+        Assert.NotNull(OsSettingsCatalog.Find("xboxmode"));
+        Assert.NotNull(OsSettingsCatalog.Find("signin"));
     }
 
     [Fact]

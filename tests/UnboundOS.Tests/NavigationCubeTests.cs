@@ -59,6 +59,8 @@ public sealed class NavigationCubeTests
         Assert.True(CubeInput.IsActivateKey("GamepadA"));
         Assert.True(CubeInput.IsBackKey("Escape"));
         Assert.True(CubeInput.IsBackKey("GamepadB"));
+        Assert.True(CubeInput.IsGuideKey("GamepadView"));
+        Assert.True(CubeInput.IsGuideKey("F1"));
         Assert.False(CubeInput.IsActivateKey("Escape"));
     }
 

@@ -43,14 +43,16 @@ public sealed class HealthAndAutostartTests
     public async Task HealthCheck_WritesLog_WithRequiredProbes()
     {
         var report = await new OsHealthCheckService().RunAsync();
-        Assert.Equal(6, report.Checks.Count);
+        Assert.Equal(7, report.Checks.Count);
         Assert.NotNull(report.Find("network"));
         Assert.NotNull(report.Find("gpu"));
         Assert.NotNull(report.Find("autostart"));
+        Assert.NotNull(report.Find("xbox"));
         Assert.NotNull(report.Find("shell"));
         Assert.NotNull(report.Find("updates"));
         Assert.NotNull(report.Find("disk"));
         Assert.True(report.Find("autostart")!.Ok);
+        Assert.True(report.Find("xbox")!.Ok);
         Assert.True(report.Find("shell")!.Ok);
         Assert.True(File.Exists(report.LogPath));
         Assert.True(File.Exists(Path.Combine(UnboundPaths.Root, "health-latest.txt")));
@@ -59,6 +61,7 @@ public sealed class HealthAndAutostartTests
         Assert.Contains("does not change Windows Update or Defender", text, StringComparison.Ordinal);
         Assert.Contains("does not redistribute Windows", text, StringComparison.Ordinal);
         Assert.Contains("unverified", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("windows.gamingApp", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Night City", text, StringComparison.OrdinalIgnoreCase);
     }
 }

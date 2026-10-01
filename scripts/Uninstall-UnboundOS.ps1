@@ -20,7 +20,14 @@ if (Test-Path $winlogon) {
     Remove-ItemProperty -Path $winlogon -Name "Shell" -ErrorAction SilentlyContinue
 }
 schtasks /Delete /TN "UnboundOS Shell Recovery" /F 2>$null | Out-Null
-Write-Host "Removed HKCU Run and HKCU Winlogon Shell (if they existed). Explorer is this user's shell."
+try {
+    Get-AppxPackage -Name "UnboundInfotech.UnboundOS.FseHome" -ErrorAction SilentlyContinue | Remove-AppxPackage -ErrorAction SilentlyContinue
+} catch { }
+$pref = Join-Path $env:LOCALAPPDATA "Unbound Infotech Corporation\UnboundOS\xbox-mode-home.json"
+if (Test-Path $pref) {
+    Remove-Item $pref -Force
+}
+Write-Host "Removed HKCU Run, HKCU Winlogon Shell, and Xbox mode home preference (if they existed). Explorer is this user's shell."
 
 $shortcutPath = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Unbound Infotech Corporation\UnboundOS.lnk"
 if (Test-Path $shortcutPath) {

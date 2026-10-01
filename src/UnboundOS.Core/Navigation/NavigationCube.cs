@@ -182,6 +182,9 @@ public static class CubeInput
     public static bool IsBackKey(string? key) =>
         key is "Escape" or "Back" or "GamepadB";
 
+    public static bool IsGuideKey(string? key) =>
+        key is "GamepadView" or "GamepadMenu" or "F1";
+
     public static CubeHit HitFromNormalizedPoint(float nx, float ny, float edge = DefaultEdge)
     {
         if (float.IsNaN(nx) || float.IsNaN(ny))

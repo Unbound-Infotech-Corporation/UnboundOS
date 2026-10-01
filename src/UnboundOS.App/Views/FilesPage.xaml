@@ -15,6 +15,7 @@
                     Style="{StaticResource BodyMutedText}"
                     MaxWidth="820"
                     Text="{x:Bind ViewModel.Honesty}" />
+                <TextBlock Style="{StaticResource BodyMutedText}" MaxWidth="820" Text="{x:Bind ViewModel.ControllerHonesty}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -27,7 +28,33 @@
                 <Button Style="{StaticResource GhostButtonStyle}" Content="EJECT" Command="{x:Bind ViewModel.EjectSelectedCommand}" AutomationProperties.Name="Eject volume" />
                 <Button Style="{StaticResource GhostButtonStyle}" Content="OPEN WITH" Command="{x:Bind ViewModel.OpenWithSelectedCommand}" AutomationProperties.Name="Open with" />
                 <Button Style="{StaticResource SignalButtonStyle}" Content="DESKTOP MODE" Command="{x:Bind ViewModel.RevealInExplorerCommand}" AutomationProperties.Name="Show in Windows Explorer" />
+                <Button Style="{StaticResource GhostButtonStyle}" Content="KEYBOARD" Command="{x:Bind ViewModel.ToggleKeyboardCommand}" AutomationProperties.Name="On-screen gamepad keyboard" />
+                <Button Style="{StaticResource GhostButtonStyle}" Content="▲" Command="{x:Bind ViewModel.MoveGamepadCursorCommand}" CommandParameter="up" AutomationProperties.Name="Gamepad picker up" />
+                <Button Style="{StaticResource GhostButtonStyle}" Content="▼" Command="{x:Bind ViewModel.MoveGamepadCursorCommand}" CommandParameter="down" AutomationProperties.Name="Gamepad picker down" />
             </StackPanel>
+
+            <TextBox
+                Header="Filter"
+                Text="{x:Bind ViewModel.Filter, Mode=TwoWay}"
+                AutomationProperties.Name="Filter files" />
+
+            <ItemsControl ItemsSource="{x:Bind ViewModel.KeyboardKeys}" Visibility="{x:Bind ViewModel.KeyboardVisible, Mode=OneWay}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="4" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate xmlns:shell="using:UnboundOS.Core.Models" x:DataType="shell:OnScreenKey">
+                        <Button
+                            Style="{StaticResource GhostButtonStyle}"
+                            Content="{x:Bind Label}"
+                            Tag="{x:Bind}"
+                            Click="Key_Click"
+                            AutomationProperties.Name="{x:Bind Label}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
             <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{StaticResource CyanPulseBrush}" Text="{x:Bind ViewModel.CurrentPath, Mode=OneWay}" />
 

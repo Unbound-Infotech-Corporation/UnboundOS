@@ -4,7 +4,7 @@
 
 A public Windows 11 **console-style shell** by **[Unbound Infotech Corporation](https://unboundinfotech.com)**.
 
-Genuine Windows stays underneath. Default install is an app on Explorer. Opt-in per-user `HKCU` `Shell=` (watchdog) can make UnboundOS the sign-in UI. See [docs/os-replacement-plan.md](docs/os-replacement-plan.md). Anticheat in that mode is unverified.
+Genuine Windows stays underneath. Default install is an app on Explorer. Lead opt-in is Windows 11 Xbox mode / FSE home (`-XboxModeHome`); HKCU `Shell=` is the fallback. See [docs/os-replacement-plan.md](docs/os-replacement-plan.md) and [docs/xbox-mode-home.md](docs/xbox-mode-home.md). Anticheat in those modes is unverified.
 
 The shell is a living-room home: on Home a **black studio field** holds a **left stack of category labels** (Games, Tools, Options, Mods, Network, Files, Hardware) and a **Diavlo digital clock** with the date under it on the right. **Up/Down** (D-pad, stick, arrows, wheel) move the focused name. The focused label **enlarges in Diavlo** and pushes neighbors; unfocused names stay small. **All Home and category-detail type is Diavlo.** **Enter** opens an all-black options surface for that group — real destinations, not stubs. Games uses the Steam library when present. **SET** opens Options. Profiles stays a discreet corner glyph. Rainmeter is not required and is off by default. The old Settings tile that showed the letter “I” is gone.
 
@@ -30,7 +30,8 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Files** | Browse, copy, move, delete, open-with, eject. Desktop mode starts Explorer |
 | **Switcher / Apps** | Running windows + Start Menu / Steam / Epic / GOG / Store launcher |
 | **Hardware** | CPU, GPU, disks, RAM from this PC. Live sensors later; optional Open HWiNFO in Tools |
-| **Settings** | Desktop / shell (HKCU Shell= + power + Desktop mode), system settings (ms-settings: fallbacks), Display / OC launch, startup audit, leftover cleanup, health check, Home extras, Session skinny, Update Guard, Interface motion |
+| **Settings** | Desktop / shell (Xbox mode home + HKCU Run fullscreen + Shell= fallback + power + Desktop mode), system settings (ms-settings: fallbacks), Display / OC launch, startup audit, leftover cleanup, health check, Home extras, Session skinny, Update Guard, Interface motion |
+| **Guide** | Volume, network, Bluetooth, HDR, in-shell performance overlay, power. Guide button / F1. Not a D3D hook. |
 
 ## Solution layout
 

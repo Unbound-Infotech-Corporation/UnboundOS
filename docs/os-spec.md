@@ -5,10 +5,11 @@ WinUnbound **Windows image / OOBE** work that sits under it.
 
 UnboundOS is a **console-style session shell on Windows**. NT, drivers,
 DirectX, Store, and Steam stay Microsoft. **Opt-in** per-user
-`HKCU` `Shell=` (watchdog) can make UnboundOS the sign-in UI. Default
-install still leaves Explorer as the shell. See
-[os-replacement-plan.md](os-replacement-plan.md). Anticheat in
-replacement mode is **unverified**.
+`HKCU` `Shell=` (watchdog) can make UnboundOS the sign-in UI. The
+**lead** path is Windows 11 Xbox mode / FSE home
+([xbox-mode-home.md](xbox-mode-home.md)). Default install still leaves
+Explorer as the shell. See [os-replacement-plan.md](os-replacement-plan.md).
+Anticheat in FSE or Shell= mode is **unverified**.
 
 This document is the full spec. The current UnboundOS PR ships a **first
 slice** only (called out per section). Image/OOBE owners pick up the rest.

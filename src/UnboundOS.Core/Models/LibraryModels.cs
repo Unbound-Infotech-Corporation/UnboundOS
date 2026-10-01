@@ -5,7 +5,8 @@ public enum GameStore
     Steam = 0,
     Epic = 1,
     Gog = 2,
-    Xbox = 3
+    Xbox = 3,
+    Custom = 4
 }
 
 public sealed record LibraryGame(

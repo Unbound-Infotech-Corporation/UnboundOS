@@ -39,6 +39,7 @@ public sealed record HealthReport(
 
         lines.Add(string.Empty);
         lines.Add(OsProductCopy.AutostartHonesty);
+        lines.Add(OsProductCopy.XboxModeHonesty);
         lines.Add(OsProductCopy.ShellReplacementHonesty);
         lines.Add(OsProductCopy.AnticheatHonesty);
         lines.Add(OsProductCopy.FilesHonesty);

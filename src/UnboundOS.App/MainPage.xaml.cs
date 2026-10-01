@@ -32,6 +32,7 @@ public sealed partial class MainPage : Page
             ? Visibility.Visible
             : Visibility.Collapsed;
         Loaded += OnLoaded;
+        KeyDown += OnShellKeyDown;
         HomeCube.OverlayChanged += OnHomeOverlayChanged;
         Hud.PropertyChanged += (_, e) =>
         {
@@ -121,6 +122,7 @@ public sealed partial class MainPage : Page
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
             "Settings" => "Display, overclocking launch, startup audit, Desktop / shell, system settings.",
+            "Guide" => "Guide. Volume, network, Bluetooth, HDR, overlay, power.",
             "Switcher" => "Running windows. Alt+Tab still works.",
             "Launcher" => "Start Menu, Steam, Epic, GOG, Store.",
             "Overlay" => "Optional Rainmeter addon. Super Clean Home does not need it.",
@@ -146,6 +148,7 @@ public sealed partial class MainPage : Page
             "Mods" => typeof(ModsPage),
             "Profiles" => typeof(ProfilesPage),
             "Settings" => typeof(SettingsPage),
+            "Guide" => typeof(GuidePage),
             "Switcher" => typeof(SwitcherPage),
             "Launcher" => typeof(LauncherPage),
             "Overlay" => typeof(OverlayPage),
@@ -199,6 +202,15 @@ public sealed partial class MainPage : Page
         foreach (var pageType in new[] { typeof(SettingsPage), typeof(FilesPage), typeof(ToolsPage), typeof(SessionPage), typeof(SwitcherPage), typeof(LauncherPage) })
         {
             ContentFrame.Navigate(pageType);
+        }
+    }
+
+    private void OnShellKeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (CubeInput.IsGuideKey(e.Key.ToString()) || e.Key is Windows.System.VirtualKey.GamepadView)
+        {
+            Navigate("Guide");
+            e.Handled = true;
         }
     }
 

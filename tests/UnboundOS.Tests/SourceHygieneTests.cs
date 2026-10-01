@@ -50,8 +50,12 @@ public sealed class SourceHygieneTests
         Assert.Contains("$env:LOCALAPPDATA", install, StringComparison.Ordinal);
         Assert.Contains("$env:APPDATA", install, StringComparison.Ordinal);
         Assert.Contains("Unbound Infotech Corporation", install, StringComparison.Ordinal);
+        Assert.Contains("-XboxModeHome", install, StringComparison.Ordinal);
         Assert.Contains("-ReplaceShell", install, StringComparison.Ordinal);
         Assert.Contains("-RestoreExplorer", install, StringComparison.Ordinal);
+        Assert.Contains("windows.gamingApp", File.ReadAllText(Path.Combine(RepoRoot(), "packaging", "fse", "Package.appxmanifest")), StringComparison.Ordinal);
+        Assert.Contains("Microsoft.appCategory.gamingHome_8wekyb3d8bbwe", File.ReadAllText(Path.Combine(RepoRoot(), "packaging", "fse", "CustomCapability.SCCD")), StringComparison.Ordinal);
+        Assert.DoesNotContain("XFSET", install, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("HKCU:\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", install, StringComparison.Ordinal);
 
         var publish = File.ReadAllText(Path.Combine(scripts, "Publish-UnboundOS.ps1"));

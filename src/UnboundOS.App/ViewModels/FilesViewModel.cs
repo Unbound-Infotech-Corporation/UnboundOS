@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using UnboundOS.Core;
 using UnboundOS.Core.Abstractions;
 using UnboundOS.Core.Models;
+using UnboundOS.Core.Shell;
 
 namespace UnboundOS.App.ViewModels;
 
@@ -17,8 +18,13 @@ public partial class FilesViewModel(IFileBrowser browser) : ObservableObject
     [ObservableProperty] private string _status = OsProductCopy.FilesHonesty;
     [ObservableProperty] private FileBrowseEntry? _selectedEntry;
     [ObservableProperty] private string _clipboardPath = "";
+    [ObservableProperty] private string _filter = "";
+    [ObservableProperty] private bool _keyboardVisible;
+    [ObservableProperty] private OnScreenKey? _selectedKey;
 
     public string Honesty => OsProductCopy.FilesHonesty;
+    public string ControllerHonesty => OsProductCopy.ControllerHonesty;
+    public IReadOnlyList<OnScreenKey> KeyboardKeys => OnScreenKeyboardLayout.Qwerty;
 
     public async Task InitializeAsync()
     {
@@ -130,6 +136,65 @@ public partial class FilesViewModel(IFileBrowser browser) : ObservableObject
     {
         var root = SelectedEntry?.FullPath ?? CurrentPath;
         Apply(browser.Eject(root));
+    }
+
+    [RelayCommand]
+    private void ToggleKeyboard() => KeyboardVisible = !KeyboardVisible;
+
+    [RelayCommand]
+    private void TypeKey(OnScreenKey? key)
+    {
+        if (key is null)
+        {
+            return;
+        }
+
+        Filter = OnScreenKeyboardLayout.Apply(Filter, key);
+        ApplyFilter();
+    }
+
+    [RelayCommand]
+    private void MoveGamepadCursor(string? direction)
+    {
+        var picker = new GamepadFilePicker(Entries.ToArray(), Math.Max(0, Entries.ToList().IndexOf(SelectedEntry!)), Filter);
+        picker = direction?.ToLowerInvariant() switch
+        {
+            "up" => picker.Move(-1),
+            "down" => picker.Move(1),
+            _ => picker
+        };
+        SelectedEntry = picker.Selected;
+        Status = picker.Selected is null
+            ? "No files match the filter."
+            : $"{picker.Selected.Name} · gamepad picker. A opens, B goes up.";
+    }
+
+    partial void OnFilterChanged(string value) => ApplyFilter();
+
+    private void ApplyFilter()
+    {
+        if (string.IsNullOrWhiteSpace(CurrentPath))
+        {
+            return;
+        }
+
+        try
+        {
+            var page = browser.OpenPath(CurrentPath);
+            var picker = new GamepadFilePicker(page.Entries, 0, Filter);
+            Entries.Clear();
+            foreach (var entry in picker.Visible)
+            {
+                Entries.Add(entry);
+            }
+
+            SelectedEntry = picker.Selected;
+            Status = $"{picker.Visible.Count} items · {OsProductCopy.ControllerHonesty}";
+        }
+        catch (Exception error)
+        {
+            Status = error.Message;
+        }
     }
 
     [RelayCommand]

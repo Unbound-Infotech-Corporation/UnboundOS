@@ -20,6 +20,22 @@
                 <Button Style="{StaticResource GhostButtonStyle}" Content="REFRESH" Command="{x:Bind ViewModel.RefreshCommand}" AutomationProperties.Name="Refresh running apps" />
             </StackPanel>
 
+            <TextBlock Style="{StaticResource TileRowLabelText}" Text="GAMES (ONE AT A TIME)" />
+            <ListView
+                MinHeight="160"
+                ItemsSource="{x:Bind ViewModel.Games, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedApp, Mode=TwoWay}"
+                Style="{StaticResource SuperCleanListViewStyle}"
+                ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                AutomationProperties.Name="Running games">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:RunningApp">
+                        <TextBlock FontFamily="{StaticResource UiFontSemiboldFamily}" Foreground="{StaticResource PaperBrush}" Text="{x:Bind Title}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource TileRowLabelText}" Text="WINDOWS" />
             <ListView
                 MinHeight="280"
                 ItemsSource="{x:Bind ViewModel.Apps, Mode=OneWay}"

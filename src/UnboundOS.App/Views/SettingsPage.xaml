@@ -304,6 +304,20 @@
             <Border x:Name="DesktopPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
                 <StackPanel Spacing="12">
                     <TextBlock Style="{StaticResource PanelLabelText}" Text="DESKTOP / SHELL" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.XboxModeHonesty}" />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.XboxModeHomeEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Xbox mode home (lead). Sideload FSE package when possible; otherwise HKCU Run + fullscreen. Fully reversible."
+                        AutomationProperties.Name="Xbox mode home"
+                        AutomationProperties.HelpText="Register UnboundOS as the Windows 11 Xbox mode home app. Failure falls back to Run + fullscreen. Never writes unofficial HKLM FSE switches." />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Foreground="{StaticResource CyanPulseBrush}" Text="{x:Bind ViewModel.XboxModeStatus, Mode=OneWay}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="OPEN XBOX MODE SETTINGS" Command="{x:Bind ViewModel.OpenXboxModeSettingsCommand}" AutomationProperties.Name="Open Xbox mode settings" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="I PICKED UNBOUNDOS" Command="{x:Bind ViewModel.ConfirmXboxSelectedCommand}" AutomationProperties.Name="Confirm UnboundOS is the Xbox mode home app" />
+                    </StackPanel>
                     <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.ShellReplacementHonesty}" />
                     <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.AnticheatHonesty}" />
                     <ToggleSwitch
@@ -452,7 +466,13 @@
                         Content="RUN HEALTH CHECK"
                         Command="{x:Bind ViewModel.RunHealthCommand}"
                         AutomationProperties.Name="Run health check"
-                        AutomationProperties.HelpText="Probe network, GPU driver, autostart, shell replacement, Update Guard, and free disk. Writes a log you can send back." />
+                        AutomationProperties.HelpText="Probe network, GPU driver, autostart, Xbox mode, shell replacement, Update Guard, and free disk. Writes a log you can send back." />
+                    <Button
+                        Style="{StaticResource GhostButtonStyle}"
+                        Content="EXPORT DIAGNOSTICS"
+                        Command="{x:Bind ViewModel.ExportDiagnosticsCommand}"
+                        AutomationProperties.Name="Export diagnostics"
+                        AutomationProperties.HelpText="Copy health, Xbox preference, last session, and watchdog logs into a folder. No secrets." />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
                         Foreground="{StaticResource CyanPulseBrush}"

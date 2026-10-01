@@ -381,6 +381,10 @@ public sealed class OsSpecSliceTests
             provider.GetRequiredService<IUpdateGuardPolicy>());
         Assert.IsType<WindowsShellAutostart>(provider.GetRequiredService<IShellAutostart>());
         Assert.IsType<WindowsShellReplacement>(provider.GetRequiredService<IShellReplacement>());
+        Assert.IsType<UnboundOS.Infrastructure.Startup.WindowsXboxModeHome>(
+            provider.GetRequiredService<IXboxModeHome>());
+        Assert.IsType<UnboundOS.Infrastructure.Library.UnifiedGameLibraryCatalog>(
+            provider.GetRequiredService<IGameLibraryCatalog>());
         Assert.IsType<UnboundOS.Infrastructure.Diagnostics.OsHealthCheckService>(
             provider.GetRequiredService<IHealthCheckService>());
     }

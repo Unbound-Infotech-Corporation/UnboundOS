@@ -28,12 +28,15 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IVolumeKeys _volume;
     private readonly IOsSettingsHub _system;
     private readonly IHealthCheckService _health;
+    private readonly IXboxModeHome _xbox;
+    private readonly IDiagnosticsExport _diagnostics;
     private bool _suppressToggle;
     private bool _suppressHudToggle;
     private bool _suppressHagsToggle;
     private bool _suppressUpdateGuardToggle;
     private bool _suppressAutostartToggle;
     private bool _suppressReplacementToggle;
+    private bool _suppressXboxToggle;
 
     public SettingsViewModel(
         IUiMotionPolicy motion,
@@ -51,7 +54,9 @@ public partial class SettingsViewModel : ObservableObject
         ISessionPower power,
         IVolumeKeys volume,
         IOsSettingsHub system,
-        IHealthCheckService health)
+        IHealthCheckService health,
+        IXboxModeHome xbox,
+        IDiagnosticsExport diagnostics)
     {
         _motion = motion;
         _hud = hud;
@@ -69,6 +74,8 @@ public partial class SettingsViewModel : ObservableObject
         _volume = volume;
         _system = system;
         _health = health;
+        _xbox = xbox;
+        _diagnostics = diagnostics;
         _motion.Changed += OnMotionChanged;
         _hud.Changed += OnHudChanged;
     }
@@ -93,8 +100,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string _cleanupStatus = OsProductCopy.CleanupHonesty;
     [ObservableProperty] private bool _shellAutostartEnabled;
     [ObservableProperty] private bool _shellReplacementEnabled;
+    [ObservableProperty] private bool _xboxModeHomeEnabled;
     [ObservableProperty] private string _autostartStatus = OsProductCopy.AutostartHonesty;
     [ObservableProperty] private string _shellReplacementStatus = OsProductCopy.ShellReplacementHonesty;
+    [ObservableProperty] private string _xboxModeStatus = OsProductCopy.XboxModeHonesty;
     [ObservableProperty] private string _desktopStatus = OsProductCopy.DesktopModeHonesty;
     [ObservableProperty] private string _powerStatus = "Lock, sleep, restart, shutdown, sign out, switch user.";
     [ObservableProperty] private string _systemStatus = "First-party where we can. Otherwise a live ms-settings: link.";
@@ -119,9 +128,9 @@ public partial class SettingsViewModel : ObservableObject
         new("display", "Display", "Launch the GPU vendor app. UnboundOS does not write display settings."),
         new("overclock", "Overclocking", "Launch-only vendor OC hubs. No silent clocks."),
         new("startup", "Startup audit", "Pin allowlist. Never silently kill anticheat or GPU vendor."),
-        new("desktop", "Desktop / shell", "HKCU Shell= watchdog (opt-in) or start Explorer on demand."),
+        new("desktop", "Desktop / shell", "Xbox mode home (lead), HKCU Run + fullscreen (Stage 0), Shell= fallback."),
         new("system", "System settings", "Wi-Fi, Bluetooth, audio, power, storage, apps. ms-settings: if we do not have a page."),
-        new("health", "Health check", "Network, GPU driver, autostart, shell replacement, Update Guard, free disk."),
+        new("health", "Health check", "Network, GPU, autostart, Xbox mode, shell replacement, Update Guard, free disk."),
         new("cleanup", "Finish setup", "Known leftover folders. The image owns the full wipe.")
     ];
 
@@ -147,6 +156,9 @@ public partial class SettingsViewModel : ObservableObject
     public string DesktopModeHonesty => OsProductCopy.DesktopModeHonesty;
     public string AnticheatHonesty => OsProductCopy.AnticheatHonesty;
     public string HealthHonesty => OsProductCopy.HealthHonesty;
+    public string XboxModeHonesty => OsProductCopy.XboxModeHonesty;
+    public string GuideHonesty => OsProductCopy.GuideHonesty;
+    public string ControllerHonesty => OsProductCopy.ControllerHonesty;
 
     public bool CanPinSelected => SelectedStartup is { Disposition: not StartupDisposition.Protected };
     public bool SelectedIsPinned => SelectedStartup?.IsPinned == true;
@@ -163,6 +175,7 @@ public partial class SettingsViewModel : ObservableObject
         await RefreshStartupAsync();
         SyncAutostart();
         SyncReplacement();
+        SyncXbox();
         await RefreshSystemAsync();
         SelectedGroup ??= Groups[0];
     }
@@ -561,6 +574,62 @@ public partial class SettingsViewModel : ObservableObject
         _suppressReplacementToggle = true;
         ShellReplacementEnabled = _replacement.IsEnabled;
         _suppressReplacementToggle = false;
+    }
+
+    partial void OnXboxModeHomeEnabledChanged(bool value)
+    {
+        if (_suppressXboxToggle)
+        {
+            return;
+        }
+
+        _ = PersistXboxAsync(value);
+    }
+
+    private async Task PersistXboxAsync(bool enabled)
+    {
+        try
+        {
+            var result = await _xbox.SetWantedAsync(enabled);
+            XboxModeStatus = result.Message;
+            SyncXbox();
+        }
+        catch (Exception error)
+        {
+            XboxModeStatus = error.Message;
+            SyncXbox();
+        }
+    }
+
+    private void SyncXbox()
+    {
+        _suppressXboxToggle = true;
+        XboxModeHomeEnabled = _xbox.IsWanted;
+        _suppressXboxToggle = false;
+        var snap = _xbox.Probe();
+        XboxModeStatus = $"{snap.State}: {snap.Detail}";
+    }
+
+    [RelayCommand]
+    private async Task OpenXboxModeSettingsAsync()
+    {
+        var result = await _xbox.OpenXboxModeSettingsAsync();
+        XboxModeStatus = result.Message;
+    }
+
+    [RelayCommand]
+    private async Task ConfirmXboxSelectedAsync()
+    {
+        var result = await _xbox.ConfirmSelectedAsync();
+        XboxModeStatus = result.Message;
+        SyncXbox();
+    }
+
+    [RelayCommand]
+    private async Task ExportDiagnosticsAsync()
+    {
+        var result = await _diagnostics.ExportAsync();
+        HealthStatus = result.Message + " " + result.Path;
     }
 
     [RelayCommand]

@@ -24,6 +24,7 @@ public static class AppServices
         services.AddTransient<ToolsViewModel>();
         services.AddTransient<FilesViewModel>();
         services.AddTransient<SwitcherViewModel>();
+        services.AddTransient<GuideViewModel>();
         services.AddTransient<LauncherViewModel>();
         services.AddTransient<HardwareViewModel>();
         services.AddTransient<ProfilesViewModel>();

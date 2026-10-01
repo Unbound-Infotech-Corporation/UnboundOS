@@ -33,7 +33,11 @@ public static class OsSettingsCatalog
         new("updates", "Windows Update", "Update Guard: quality on, feature deferred.",
             "ms-settings:windowsupdate", true),
         new("accounts", "User accounts", "Sign-in and auto sign-in stay Windows (netplwiz).",
-            "ms-settings:accounts", false)
+            "ms-settings:accounts", false),
+        new("xboxmode", "Xbox mode / FSE", "Choose home app if the picker exists. Failure stays on Run + fullscreen.",
+            "ms-settings:gaming-fullscreen", true),
+        new("signin", "Auto sign-in", "Windows netplwiz / Sign-in options. UnboundOS does not ship a credential provider.",
+            "ms-settings:signinoptions", false)
     ];
 
     public static OsSettingsEntry? Find(string id) =>

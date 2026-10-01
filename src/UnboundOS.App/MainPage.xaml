@@ -465,6 +465,12 @@
                             <Rectangle x:Name="OverlayAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
                         </Grid>
                     </Button>
+                    <Button x:Name="GuideNav" Tag="Guide" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Guide quick menu">
+                        <Grid>
+                            <TextBlock Text="GUIDE" Margin="0,0,0,4" />
+                            <Rectangle x:Name="GuideAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
+                        </Grid>
+                    </Button>
                     <Button x:Name="SwitcherNav" Tag="Switcher" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Running apps">
                         <Grid>
                             <TextBlock Text="SWITCH" Margin="0,0,0,4" />

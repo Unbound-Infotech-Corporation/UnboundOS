@@ -27,6 +27,7 @@ public sealed class OsHealthCheckService : IHealthCheckService
             ProbeNetwork(),
             ProbeGpu(),
             ProbeAutostart(),
+            ProbeXboxMode(),
             ProbeShellReplacement(),
             ProbeUpdateGuard(),
             ProbeDisk()
@@ -116,9 +117,24 @@ public sealed class OsHealthCheckService : IHealthCheckService
         var autostart = new WindowsShellAutostart();
         var on = autostart.IsEnabled;
         var detail = on
-            ? "HKCU Run UnboundOS is set. Explorer remains the Windows shell. Never Shell=."
+            ? "HKCU Run UnboundOS is set (--fullscreen Stage 0). Explorer remains the Windows shell. Never Shell=."
             : "Off (default). Enable in Options → Startup audit for sign-in. Never Shell=. Explorer stays the Windows shell.";
         return new("autostart", "Shell autostart", true, detail);
+    }
+
+    private static HealthCheck ProbeXboxMode()
+    {
+        try
+        {
+            var snap = new WindowsXboxModeHome().Probe();
+            var detail = $"{snap.State}: {snap.Detail}";
+            return new("xbox", "Xbox mode home", true, detail);
+        }
+        catch (Exception ex)
+        {
+            return new("xbox", "Xbox mode home", true,
+                $"FallbackRun: probe failed ({ex.Message}). Stage 0 Run + fullscreen still applies.");
+        }
     }
 
     private static HealthCheck ProbeShellReplacement()
