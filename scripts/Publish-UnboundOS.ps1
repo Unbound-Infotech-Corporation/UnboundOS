@@ -15,7 +15,7 @@ $project = Join-Path $root "src\UnboundOS.App\UnboundOS.App.csproj"
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
 Write-Host "Publishing UnboundOS ($Configuration $Runtime) -> $OutDir"
-dotnet publish $project `
+dotnet publish "$project" `
     -c $Configuration `
     -p:Platform=x64 `
     -r $Runtime `
@@ -23,7 +23,7 @@ dotnet publish $project `
     -p:PublishTrimmed=false `
     -p:PublishReadyToRun=true `
     -p:WindowsPackageType=None `
-    -o $OutDir
+    -o "$OutDir"
 
 Write-Host "Published. Next: pwsh -File scripts/Install-UnboundOS.ps1"
 Write-Host "Health: & `"$OutDir\UnboundOS.App.exe`" --health"

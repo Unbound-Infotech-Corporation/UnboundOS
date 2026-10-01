@@ -108,7 +108,7 @@ public sealed partial class MainPage : Page
 
     private void Navigate(string tag)
     {
-        using var _ = PerfLog.Measure($"nav.{tag}");
+        using var measure = PerfLog.Measure($"nav.{tag}");
         ViewModel.SelectedNav = tag;
         ViewModel.StatusLine = tag switch
         {
@@ -191,7 +191,7 @@ public sealed partial class MainPage : Page
         }
 
         _hubsWarmed = true;
-        using var _ = PerfLog.Measure("nav.warm-hubs");
+        using var measure = PerfLog.Measure("nav.warm-hubs");
         foreach (var pageType in new[] { typeof(SettingsPage), typeof(FilesPage), typeof(ToolsPage), typeof(SessionPage) })
         {
             ContentFrame.Navigate(pageType);

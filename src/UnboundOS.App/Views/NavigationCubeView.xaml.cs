@@ -111,7 +111,7 @@ public sealed partial class NavigationCubeView : UserControl
 
     private async Task StartSceneAsync()
     {
-        using var _ = PerfLog.Measure("home.scene.start");
+        using var measure = PerfLog.Measure("home.scene.start");
         try
         {
             CubeWeb.DefaultBackgroundColor = Windows.UI.Color.FromArgb(255, 0, 0, 0);
@@ -508,7 +508,7 @@ public sealed partial class NavigationCubeView : UserControl
 
     private async Task ApplySceneActiveAsync(bool active)
     {
-        using var _ = PerfLog.Measure(active ? "home.resume" : "home.pause");
+        using var measure = PerfLog.Measure(active ? "home.resume" : "home.pause");
         if (!_sceneReady || CubeWeb.CoreWebView2 is null)
         {
             return;
@@ -524,7 +524,7 @@ public sealed partial class NavigationCubeView : UserControl
             }
             else
             {
-                _ = await CubeWeb.CoreWebView2.TrySuspendAsync();
+                await CubeWeb.CoreWebView2.TrySuspendAsync();
             }
         }
         catch (Exception)
@@ -662,7 +662,7 @@ public sealed partial class NavigationCubeView : UserControl
 
     private async Task LoadCatalogsAsync()
     {
-        using var _ = PerfLog.Measure("home.catalogs");
+        using var measure = PerfLog.Measure("home.catalogs");
         try
         {
             var games = TryGet<IGameLibraryCatalog>();

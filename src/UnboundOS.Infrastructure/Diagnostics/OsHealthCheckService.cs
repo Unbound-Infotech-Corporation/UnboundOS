@@ -15,7 +15,7 @@ public sealed class OsHealthCheckService : IHealthCheckService
     public async Task<HealthReport> RunAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        using var _ = PerfLog.Measure("health.run");
+        using var measure = PerfLog.Measure("health.run");
 
         var stamp = DateTimeOffset.UtcNow;
         var logPath = Path.Combine(
