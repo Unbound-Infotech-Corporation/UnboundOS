@@ -6,19 +6,23 @@
     xmlns:models="using:UnboundOS.Core.Models"
     Background="Transparent">
 
-    <ScrollViewer Padding="8">
-        <StackPanel Spacing="20" MaxWidth="1100">
-            <StackPanel Spacing="6">
+    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="Network director">
+        <StackPanel Spacing="22">
+                <StackPanel Spacing="6">
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                        <TextBlock Style="{StaticResource KickerText}" Text="TRAFFIC SPLIT" />
+                        <TextBlock Style="{StaticResource MicroLabelText}" Text="LINK" />
+                    </StackPanel>
                 <TextBlock Style="{StaticResource SectionTitleText}" Text="Network Director" />
                 <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.PlanSummary, Mode=OneWay}" />
             </StackPanel>
 
             <Border Style="{StaticResource PanelBorderStyle}">
                 <StackPanel Spacing="12">
-                    <TextBlock Text="{x:Bind ViewModel.StreamerTip, Mode=OneWay}" Style="{StaticResource BodyMutedText}" Foreground="{StaticResource IceTelemetryBrush}" />
+                    <TextBlock Text="{x:Bind ViewModel.StreamerTip, Mode=OneWay}" Style="{StaticResource BodyMutedText}" Foreground="{StaticResource CyanPulseBrush}" />
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <Button Style="{StaticResource SignalButtonStyle}" Content="APPLY SPLIT" Command="{x:Bind ViewModel.ApplySeparationCommand}" />
-                        <Button Style="{StaticResource GhostButtonStyle}" Content="REFRESH" Command="{x:Bind ViewModel.RefreshCommand}" />
+                        <Button Style="{StaticResource SignalButtonStyle}" Content="APPLY SPLIT" Command="{x:Bind ViewModel.ApplySeparationCommand}" AutomationProperties.Name="Apply NIC traffic split" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="REFRESH" Command="{x:Bind ViewModel.RefreshCommand}" AutomationProperties.Name="Refresh network adapters" />
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -31,17 +35,17 @@
                     <DataTemplate x:DataType="models:NetworkAdapterInfo">
                         <Border Style="{StaticResource PanelBorderStyle}" MinHeight="160">
                             <StackPanel Spacing="6">
-                                <TextBlock Text="{x:Bind RoleHint}" FontFamily="Bahnschrift" Foreground="{StaticResource SignalLimeBrush}" FontSize="12" CharacterSpacing="60" />
-                                <TextBlock Text="{x:Bind Name}" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WarmPaperBrush}" />
+                                <TextBlock Text="{x:Bind RoleHint}" Style="{StaticResource PanelLabelText}" />
+                                <TextBlock Text="{x:Bind Name}" FontSize="18" FontFamily="{StaticResource UiFontSemiboldFamily}" Foreground="{StaticResource PaperBrush}" />
                                 <TextBlock Text="{x:Bind Description}" Style="{StaticResource BodyMutedText}" />
-                                <TextBlock FontFamily="Cascadia Mono" FontSize="12" Foreground="{StaticResource MutedSteelBrush}">
+                                <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{StaticResource MutedTextBrush}">
                                     <Run Text="{x:Bind IPv4Address}" />
                                     <Run Text=" · " />
                                     <Run Text="{x:Bind SpeedMbps}" />
                                     <Run Text=" Mbps · metric " />
                                     <Run Text="{x:Bind InterfaceMetric}" />
                                 </TextBlock>
-                                <TextBlock FontSize="12" Foreground="{StaticResource AlertAmberBrush}">
+                                <TextBlock FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{StaticResource AlertAmberBrush}">
                                     <Run Text="Link: " />
                                     <Run Text="{x:Bind IsUp}" />
                                     <Run Text=" · Wireless: " />

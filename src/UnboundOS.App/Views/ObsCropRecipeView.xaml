@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="UnboundOS.App.Views.ObsCropRecipeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <StackPanel Spacing="20">
+        <StackPanel Spacing="6">
+            <TextBlock Style="{StaticResource KickerText}" Text="PLAY NATIVE" />
+            <TextBlock Style="{StaticResource SectionTitleText}" Text="OBS ultrawide crop" />
+            <TextBlock Style="{StaticResource BodyMutedText}" Text="Play native. Crop center 16:9 in OBS. Downscale once. Never lower your monitor resolution for Twitch." />
+        </StackPanel>
+
+        <Border Style="{StaticResource PanelBorderStyle}" Padding="24">
+            <StackPanel Spacing="12">
+                <TextBlock Style="{StaticResource PanelLabelText}" Text="VIEWER SAFE ZONE" />
+                <Grid Height="120">
+                    <Border Background="{StaticResource CardSurfaceBrush}" BorderBrush="{StaticResource LineSubtleBrush}" BorderThickness="1" CornerRadius="4">
+                        <Grid>
+                            <Rectangle Fill="#1400F0FF" HorizontalAlignment="Stretch" />
+                            <Border
+                                Background="#33050A0C"
+                                BorderBrush="{StaticResource CyanPulseBrush}"
+                                BorderThickness="2"
+                                HorizontalAlignment="Center"
+                                Width="{x:Bind ViewModel.PreviewBarCropWidth, Mode=OneWay}"
+                                CornerRadius="2"
+                                AutomationProperties.Name="Sixteen by nine Twitch crop preview">
+                                <TextBlock
+                                    Text="16:9 TWITCH"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{StaticResource MonoFontFamily}"
+                                    Foreground="{StaticResource CyanPulseBrush}" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+                <TextBlock Text="{x:Bind ViewModel.Summary, Mode=OneWay}" FontFamily="{StaticResource MonoFontFamily}" Foreground="{StaticResource CyanPulseBrush}" />
+                <TextBlock Text="{x:Bind ViewModel.DiscardText, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
+                <TextBlock Text="{x:Bind ViewModel.Guidance, Mode=OneWay}" Style="{StaticResource BodyMutedText}" />
+            </StackPanel>
+        </Border>
+
+        <Grid ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="1.2*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="0">
+                <StackPanel Spacing="10">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Foreground="{StaticResource PaperBrush}" Text="SOURCE / OUTPUT" />
+                    <NumberBox Header="Source width" Value="{x:Bind ViewModel.SourceWidth, Mode=TwoWay}" Minimum="640" Maximum="7680" SpinButtonPlacementMode="Compact" AutomationProperties.Name="Source width" />
+                    <NumberBox Header="Source height" Value="{x:Bind ViewModel.SourceHeight, Mode=TwoWay}" Minimum="480" Maximum="4320" SpinButtonPlacementMode="Compact" AutomationProperties.Name="Source height" />
+                    <NumberBox Header="Output width" Value="{x:Bind ViewModel.OutputWidth, Mode=TwoWay}" Minimum="640" Maximum="3840" SpinButtonPlacementMode="Compact" AutomationProperties.Name="Output width" />
+                    <NumberBox Header="Output height" Value="{x:Bind ViewModel.OutputHeight, Mode=TwoWay}" Minimum="360" Maximum="2160" SpinButtonPlacementMode="Compact" AutomationProperties.Name="Output height" />
+                    <NumberBox Header="Bitrate Kbps" Value="{x:Bind ViewModel.BitrateKbps, Mode=TwoWay}" Minimum="2500" Maximum="12000" SpinButtonPlacementMode="Compact" AutomationProperties.Name="Bitrate in kilobits per second" />
+                    <Slider Header="Sharpen after downscale" Minimum="0" Maximum="1" StepFrequency="0.05" Value="{x:Bind ViewModel.Sharpen, Mode=TwoWay}" AutomationProperties.Name="Sharpen after downscale" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Style="{StaticResource SignalButtonStyle}" Content="REBUILD" Command="{x:Bind ViewModel.RebuildCommand}" AutomationProperties.Name="Rebuild crop plan" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="COPY OBS JSON" Command="{x:Bind ViewModel.CopyObsJsonCommand}" AutomationProperties.Name="Copy OBS JSON" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="COPY GUIDE" Command="{x:Bind ViewModel.CopyInstructionsCommand}" AutomationProperties.Name="Copy OBS filter guide" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource PanelBorderStyle}" Grid.Column="1">
+                <ScrollViewer MaxHeight="520">
+                    <TextBlock
+                        Text="{x:Bind ViewModel.Instructions, Mode=OneWay}"
+                        FontFamily="{StaticResource MonoFontFamily}"
+                        FontSize="12"
+                        Foreground="{StaticResource MutedTextBrush}"
+                        TextWrapping="Wrap" />
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </StackPanel>
+</UserControl>

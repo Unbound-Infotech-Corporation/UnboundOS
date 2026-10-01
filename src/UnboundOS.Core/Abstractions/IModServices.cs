@@ -59,4 +59,8 @@ public interface IExternalModHandoff
 {
     Task OpenWorkshopAsync(string steamAppId, CancellationToken cancellationToken = default);
     Task OpenWorkshopItemAsync(string workshopItemId, CancellationToken cancellationToken = default);
+    Task<ModOperationResult> OpenVortexAsync(
+        string? vortexGameId,
+        string? vortexProfileId,
+        CancellationToken cancellationToken = default);
 }

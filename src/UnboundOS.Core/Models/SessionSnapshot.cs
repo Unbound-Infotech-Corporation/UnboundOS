@@ -8,6 +8,7 @@ public sealed class SessionSnapshot
     public IReadOnlyDictionary<string, int> OriginalAdapterMetrics { get; init; } =
         new Dictionary<string, int>();
     public string? OriginalPowerSchemeGuid { get; init; }
+    public GamingSkinnySnapshot? Skinny { get; init; }
     public string Notes { get; init; } = string.Empty;
 }
 

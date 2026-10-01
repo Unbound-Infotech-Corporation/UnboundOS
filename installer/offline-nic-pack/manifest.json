@@ -1,0 +1,15 @@
+{
+  "name": "UnboundOS offline NIC pack",
+  "maxBytes": 5368709120,
+  "years": "approx 2023-2026 chipsets",
+  "approach": "image-build fetch, not git binaries",
+  "runtimePath": "setup-leftovers/OfflineNicDrivers",
+  "cleanup": "SetupCleanupService deletes after online-ok.flag",
+  "priority": ["intel", "realtek", "mediatek", "qualcomm", "killer", "broadcom"],
+  "estimateGb": { "min": 2.0, "typical": 3.2, "cap": 5.0 },
+  "excluded": [
+    "scraped driver dumps",
+    "modified INF bundles",
+    "packs without a public vendor license"
+  ]
+}

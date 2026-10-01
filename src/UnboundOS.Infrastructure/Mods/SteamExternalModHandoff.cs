@@ -1,8 +1,6 @@
-using UnboundOS.Core.Abstractions;
-
 namespace UnboundOS.Infrastructure.Mods;
 
-public sealed class SteamExternalModHandoff : IExternalModHandoff
+public sealed class SteamExternalModHandoff
 {
     public Task OpenWorkshopAsync(string steamAppId, CancellationToken cancellationToken = default)
     {

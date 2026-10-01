@@ -1,6 +1,11 @@
 using Microsoft.UI.Xaml;
 using UnboundOS.App.Services;
 using UnboundOS.Core;
+using UnboundOS.Core.Abstractions;
+using UnboundOS.Core.Overlay;
+using UnboundOS.Core.Shell;
+using UnboundOS.Infrastructure.Diagnostics;
+using UnboundOS.Infrastructure.Startup;
 
 namespace UnboundOS.App;
 
@@ -18,11 +23,109 @@ public partial class App : Application
         AppServices.Initialize();
     }
 
-    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
+        var commandLine = Environment.GetCommandLineArgs();
+        if (StartupAuditCommand.IsRequested(commandLine))
+        {
+            try
+            {
+                await AppServices.Get<IStartupAuditService>().AuditAsync();
+            }
+            catch
+            {
+                // Headless scheduled-task path must not throw into the shell.
+            }
+
+            Exit();
+            return;
+        }
+
+        if (HealthCheckCommand.IsRequested(commandLine))
+        {
+            try
+            {
+                await AppServices.Get<IHealthCheckService>().RunAsync();
+            }
+            catch
+            {
+                // Headless health export must not throw into the shell.
+            }
+
+            Exit();
+            return;
+        }
+
+        if (WatchdogCommand.IsRestore(commandLine))
+        {
+            try
+            {
+                await WatchdogHost.RestoreExplorerAsync();
+            }
+            catch
+            {
+                // Headless restore must not throw into the shell.
+            }
+
+            Exit();
+            return;
+        }
+
+        if (WatchdogCommand.IsWatchdog(commandLine))
+        {
+            WatchdogHost.Run();
+            Exit();
+            return;
+        }
+
         Window = new MainWindow();
         DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         Window.Title = $"{Branding.ProductName} — {Branding.CompanyName}";
+        TryFullscreen(commandLine);
+
+        var overlay = AppServices.Get<IDesktopOverlayHost>();
+        if (overlay.IsEnabled)
+        {
+            _ = overlay.StartAsync();
+        }
+
+        var sleepResume = AppServices.Get<WindowsSleepResumeBinder>();
+        sleepResume.Start();
+
+        Window.Closed += (_, _) =>
+        {
+            sleepResume.Stop();
+            if (!overlay.IsEnabled)
+            {
+                return;
+            }
+
+            _ = overlay.StopAsync();
+        };
+
         Window.Activate();
+    }
+
+    private static void TryFullscreen(string[] commandLine)
+    {
+        try
+        {
+            var xbox = AppServices.Get<IXboxModeHome>().Probe();
+            var replacement = AppServices.Get<IShellReplacement>().IsEnabled;
+            if (XboxModePolicy.IsFullscreenRequested(commandLine) ||
+                xbox.FullscreenAtStartup ||
+                xbox.Wanted ||
+                replacement)
+            {
+                if (Window is MainWindow main)
+                {
+                    main.TryEnterFullscreen();
+                }
+            }
+        }
+        catch (Exception)
+        {
+            // Fullscreen is best-effort. Stage 0 still launched.
+        }
     }
 }
