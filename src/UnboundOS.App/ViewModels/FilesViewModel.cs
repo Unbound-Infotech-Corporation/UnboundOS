@@ -16,6 +16,7 @@ public partial class FilesViewModel(IFileBrowser browser) : ObservableObject
     [ObservableProperty] private string _parentPath = string.Empty;
     [ObservableProperty] private string _status = OsProductCopy.FilesHonesty;
     [ObservableProperty] private FileBrowseEntry? _selectedEntry;
+    [ObservableProperty] private string _clipboardPath = "";
 
     public string Honesty => OsProductCopy.FilesHonesty;
 
@@ -68,6 +69,82 @@ public partial class FilesViewModel(IFileBrowser browser) : ObservableObject
         var path = SelectedEntry?.FullPath ?? CurrentPath;
         Reveal(path);
     }
+
+    [RelayCommand]
+    private void CopySelected()
+    {
+        if (SelectedEntry is null)
+        {
+            return;
+        }
+
+        ClipboardPath = SelectedEntry.FullPath;
+        Status = $"Ready to paste {SelectedEntry.Name} into another folder.";
+    }
+
+    [RelayCommand]
+    private void PasteHere()
+    {
+        if (string.IsNullOrWhiteSpace(ClipboardPath))
+        {
+            Status = "Copy a file or folder first.";
+            return;
+        }
+
+        Apply(browser.Copy(ClipboardPath, CurrentPath));
+        TryOpen(CurrentPath);
+    }
+
+    [RelayCommand]
+    private void MoveSelected()
+    {
+        if (string.IsNullOrWhiteSpace(ClipboardPath))
+        {
+            if (SelectedEntry is null)
+            {
+                return;
+            }
+
+            ClipboardPath = SelectedEntry.FullPath;
+        }
+
+        Apply(browser.Move(ClipboardPath, CurrentPath));
+        ClipboardPath = "";
+        TryOpen(CurrentPath);
+    }
+
+    [RelayCommand]
+    private void DeleteSelected()
+    {
+        if (SelectedEntry is null)
+        {
+            return;
+        }
+
+        Apply(browser.Delete(SelectedEntry.FullPath));
+        TryOpen(CurrentPath);
+    }
+
+    [RelayCommand]
+    private void EjectSelected()
+    {
+        var root = SelectedEntry?.FullPath ?? CurrentPath;
+        Apply(browser.Eject(root));
+    }
+
+    [RelayCommand]
+    private void OpenWithSelected()
+    {
+        if (SelectedEntry is null)
+        {
+            return;
+        }
+
+        Apply(browser.OpenWith(SelectedEntry.FullPath));
+    }
+
+    private void Apply(FileOpResult result) =>
+        Status = result.Ok ? result.Message : result.Message;
 
     private void TryOpen(string path)
     {

@@ -120,7 +120,9 @@ public sealed partial class MainPage : Page
             "Hardware" => "CPU, GPU, disks, RAM from this PC. Sensors wait on the image.",
             "Mods" => "Workshop catalog and mod profiles ready.",
             "Profiles" => "Profile bay open.",
-            "Settings" => "Display, overclocking launch, startup audit, Home widgets, motion.",
+            "Settings" => "Display, overclocking launch, startup audit, Desktop / shell, system settings.",
+            "Switcher" => "Running windows. Alt+Tab still works.",
+            "Launcher" => "Start Menu, Steam, Epic, GOG, Store.",
             "Overlay" => "Optional Rainmeter addon. Super Clean Home does not need it.",
             _ => ViewModel.StatusLine
         };
@@ -144,6 +146,8 @@ public sealed partial class MainPage : Page
             "Mods" => typeof(ModsPage),
             "Profiles" => typeof(ProfilesPage),
             "Settings" => typeof(SettingsPage),
+            "Switcher" => typeof(SwitcherPage),
+            "Launcher" => typeof(LauncherPage),
             "Overlay" => typeof(OverlayPage),
             _ => typeof(SessionPage)
         };
@@ -192,7 +196,7 @@ public sealed partial class MainPage : Page
 
         _hubsWarmed = true;
         using var measure = PerfLog.Measure("nav.warm-hubs");
-        foreach (var pageType in new[] { typeof(SettingsPage), typeof(FilesPage), typeof(ToolsPage), typeof(SessionPage) })
+        foreach (var pageType in new[] { typeof(SettingsPage), typeof(FilesPage), typeof(ToolsPage), typeof(SessionPage), typeof(SwitcherPage), typeof(LauncherPage) })
         {
             ContentFrame.Navigate(pageType);
         }

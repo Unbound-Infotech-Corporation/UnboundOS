@@ -19,6 +19,8 @@
     { id: "display", title: "Display", meta: "SET" },
     { id: "overclock", title: "Overclocking", meta: "SET" },
     { id: "startup", title: "Startup audit", meta: "SET" },
+    { id: "desktop", title: "Desktop / shell", meta: "SET" },
+    { id: "system", title: "System settings", meta: "SET" },
     { id: "health", title: "Health check", meta: "SET" },
     { id: "cleanup", title: "Finish setup", meta: "SET" }
   ];

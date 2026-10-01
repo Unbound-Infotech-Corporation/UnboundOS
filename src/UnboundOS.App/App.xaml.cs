@@ -55,6 +55,28 @@ public partial class App : Application
             return;
         }
 
+        if (WatchdogCommand.IsRestore(commandLine))
+        {
+            try
+            {
+                await WatchdogHost.RestoreExplorerAsync();
+            }
+            catch
+            {
+                // Headless restore must not throw into the shell.
+            }
+
+            Exit();
+            return;
+        }
+
+        if (WatchdogCommand.IsWatchdog(commandLine))
+        {
+            WatchdogHost.Run();
+            Exit();
+            return;
+        }
+
         Window = new MainWindow();
         DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         Window.Title = $"{Branding.ProductName} — {Branding.CompanyName}";

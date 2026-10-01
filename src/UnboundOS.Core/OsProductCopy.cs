@@ -4,7 +4,7 @@ namespace UnboundOS.Core;
 public static class OsProductCopy
 {
     public const string FilesHonesty =
-        "Unbound Files is the daily file UI. Windows Explorer stays installed for games, Easy Anti-Cheat, BattlEye, Vanguard, and anything that expects the NT shell. UnboundOS does not replace Explorer or set Shell=.";
+        "Unbound Files is the daily file UI (browse, copy, move, delete, open-with, eject). Explorer.exe stays on disk. Desktop mode can start it. HKCU Shell= is opt-in only — never HKLM, never a renamed explorer.exe.";
 
     public const string DisplayHonesty =
         "UnboundOS does not invent a display stack. Settings → Display opens the GPU vendor app when it is installed.";
@@ -25,8 +25,17 @@ public static class OsProductCopy
         "Monthly security quality from Microsoft; feature/optional churn blocked. LCUs include security plus some nonsecurity content by Microsoft design — not CVE-only patches. UnboundOS does not redistribute Windows .msu/.cab. Each PC downloads from Microsoft. Home edition is best-effort. Session enter does not flip Update Guard.";
 
     public const string AutostartHonesty =
-        "UnboundOS can start with Windows through a HKCU Run value. It launches as a normal app. It does not replace Explorer or set Shell=. Exit with Alt+F4 or disable autostart in Options → Startup audit. Easy Anti-Cheat, BattlEye, and Vanguard keep the NT shell.";
+        "HKCU Run launches UnboundOS as a normal app with Explorer still the shell. That is the default. Opt-in replacement is a separate HKCU Winlogon Shell= to the watchdog — never HKLM.";
 
     public const string HealthHonesty =
-        "Health check reports network, GPU driver, shell autostart, Update Guard, and free disk, then writes a log you can send back. It does not change Windows Update, Defender, or Explorer.";
+        "Health check reports network, GPU driver, autostart, shell replacement, Update Guard, and free disk, then writes a log you can send back. It does not change Windows Update or Defender.";
+
+    public const string ShellReplacementHonesty =
+        "Shell replacement is per-user HKCU Winlogon Shell= pointing at UnboundOS.App.exe --watchdog. Hold Shift at sign-in, 3 crashes in 2 minutes, a missing exe, -RestoreExplorer, or Uninstall returns Explorer. Never HKLM. Never rewrite explorer.exe.";
+
+    public const string AnticheatHonesty =
+        "HKCU Shell= changes this user's desktop host only. NT, drivers, DirectX, Store, Steam, and anticheat services stay Windows. UnboundOS does not rename explorer.exe. Easy Anti-Cheat, BattlEye, and Vanguard in shell-replacement mode are unverified — run the checklist before calling this a daily driver.";
+
+    public const string DesktopModeHonesty =
+        "Desktop mode starts explorer.exe on demand so the Windows desktop, taskbar, and tray return. Close Explorer or focus UnboundOS to come back. Win+L, Alt+Tab, and lock/sign-in stay Windows.";
 }

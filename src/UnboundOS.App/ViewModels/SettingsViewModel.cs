@@ -22,12 +22,18 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IUpdateGuardPolicy _updates;
     private readonly IShellSettingsStore _shell;
     private readonly IShellAutostart _autostart;
+    private readonly IShellReplacement _replacement;
+    private readonly IDesktopMode _desktop;
+    private readonly ISessionPower _power;
+    private readonly IVolumeKeys _volume;
+    private readonly IOsSettingsHub _system;
     private readonly IHealthCheckService _health;
     private bool _suppressToggle;
     private bool _suppressHudToggle;
     private bool _suppressHagsToggle;
     private bool _suppressUpdateGuardToggle;
     private bool _suppressAutostartToggle;
+    private bool _suppressReplacementToggle;
 
     public SettingsViewModel(
         IUiMotionPolicy motion,
@@ -40,6 +46,11 @@ public partial class SettingsViewModel : ObservableObject
         IUpdateGuardPolicy updates,
         IShellSettingsStore shell,
         IShellAutostart autostart,
+        IShellReplacement replacement,
+        IDesktopMode desktop,
+        ISessionPower power,
+        IVolumeKeys volume,
+        IOsSettingsHub system,
         IHealthCheckService health)
     {
         _motion = motion;
@@ -52,6 +63,11 @@ public partial class SettingsViewModel : ObservableObject
         _updates = updates;
         _shell = shell;
         _autostart = autostart;
+        _replacement = replacement;
+        _desktop = desktop;
+        _power = power;
+        _volume = volume;
+        _system = system;
         _health = health;
         _motion.Changed += OnMotionChanged;
         _hud.Changed += OnHudChanged;
@@ -76,7 +92,16 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string _vendorStatus = OsProductCopy.DisplayHonesty;
     [ObservableProperty] private string _cleanupStatus = OsProductCopy.CleanupHonesty;
     [ObservableProperty] private bool _shellAutostartEnabled;
+    [ObservableProperty] private bool _shellReplacementEnabled;
     [ObservableProperty] private string _autostartStatus = OsProductCopy.AutostartHonesty;
+    [ObservableProperty] private string _shellReplacementStatus = OsProductCopy.ShellReplacementHonesty;
+    [ObservableProperty] private string _desktopStatus = OsProductCopy.DesktopModeHonesty;
+    [ObservableProperty] private string _powerStatus = "Lock, sleep, restart, shutdown, sign out, switch user.";
+    [ObservableProperty] private string _systemStatus = "First-party where we can. Otherwise a live ms-settings: link.";
+    [ObservableProperty] private OsSettingsEntry? _selectedSystemEntry;
+    [ObservableProperty] private OsAdapterStatus? _selectedAdapter;
+    [ObservableProperty] private PowerPlanInfo? _selectedPowerPlan;
+    [ObservableProperty] private InstalledAppInfo? _selectedInstalledApp;
     [ObservableProperty] private string _healthStatus = OsProductCopy.HealthHonesty;
     [ObservableProperty] private string _healthLogPath = "";
     [ObservableProperty] private StartupEntry? _selectedStartup;
@@ -94,13 +119,20 @@ public partial class SettingsViewModel : ObservableObject
         new("display", "Display", "Launch the GPU vendor app. UnboundOS does not write display settings."),
         new("overclock", "Overclocking", "Launch-only vendor OC hubs. No silent clocks."),
         new("startup", "Startup audit", "Pin allowlist. Never silently kill anticheat or GPU vendor."),
-        new("health", "Health check", "Network, GPU driver, autostart, Update Guard, free disk. Export a log."),
+        new("desktop", "Desktop / shell", "HKCU Shell= watchdog (opt-in) or start Explorer on demand."),
+        new("system", "System settings", "Wi-Fi, Bluetooth, audio, power, storage, apps. ms-settings: if we do not have a page."),
+        new("health", "Health check", "Network, GPU driver, autostart, shell replacement, Update Guard, free disk."),
         new("cleanup", "Finish setup", "Known leftover folders. The image owns the full wipe.")
     ];
 
     public ObservableCollection<StartupEntry> StartupEntries { get; } = [];
     public ObservableCollection<VendorApp> DisplayApps { get; } = [];
     public ObservableCollection<VendorApp> OverclockApps { get; } = [];
+    public ObservableCollection<OsSettingsEntry> SystemEntries { get; } = [];
+    public ObservableCollection<OsAdapterStatus> Adapters { get; } = [];
+    public ObservableCollection<PowerPlanInfo> PowerPlans { get; } = [];
+    public ObservableCollection<StorageVolumeInfo> Volumes { get; } = [];
+    public ObservableCollection<InstalledAppInfo> InstalledApps { get; } = [];
     public IReadOnlyList<string> WidgetLooks { get; } = ["Glass", "Dim", "Compact"];
 
     public string DisplayHonesty => OsProductCopy.DisplayHonesty;
@@ -111,6 +143,9 @@ public partial class SettingsViewModel : ObservableObject
     public string FilesHonesty => OsProductCopy.FilesHonesty;
     public string UpdateGuardHonesty => OsProductCopy.UpdateGuardHonesty;
     public string AutostartHonesty => OsProductCopy.AutostartHonesty;
+    public string ShellReplacementHonesty => OsProductCopy.ShellReplacementHonesty;
+    public string DesktopModeHonesty => OsProductCopy.DesktopModeHonesty;
+    public string AnticheatHonesty => OsProductCopy.AnticheatHonesty;
     public string HealthHonesty => OsProductCopy.HealthHonesty;
 
     public bool CanPinSelected => SelectedStartup is { Disposition: not StartupDisposition.Protected };
@@ -127,6 +162,8 @@ public partial class SettingsViewModel : ObservableObject
         await RefreshVendorsAsync();
         await RefreshStartupAsync();
         SyncAutostart();
+        SyncReplacement();
+        await RefreshSystemAsync();
         SelectedGroup ??= Groups[0];
     }
 
@@ -154,6 +191,8 @@ public partial class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(ShowDisplay));
         OnPropertyChanged(nameof(ShowOverclock));
         OnPropertyChanged(nameof(ShowStartup));
+        OnPropertyChanged(nameof(ShowDesktop));
+        OnPropertyChanged(nameof(ShowSystem));
         OnPropertyChanged(nameof(ShowHealth));
         OnPropertyChanged(nameof(ShowCleanup));
         OnPropertyChanged(nameof(GroupHint));
@@ -166,6 +205,8 @@ public partial class SettingsViewModel : ObservableObject
     public bool ShowDisplay => SelectedGroup?.Id == "display";
     public bool ShowOverclock => SelectedGroup?.Id == "overclock";
     public bool ShowStartup => SelectedGroup?.Id == "startup";
+    public bool ShowDesktop => SelectedGroup?.Id == "desktop";
+    public bool ShowSystem => SelectedGroup?.Id == "system";
     public bool ShowHealth => SelectedGroup?.Id == "health";
     public bool ShowCleanup => SelectedGroup?.Id == "cleanup";
     public string GroupHint => SelectedGroup?.Hint ?? "Pick a group.";
@@ -488,6 +529,160 @@ public partial class SettingsViewModel : ObservableObject
         _suppressAutostartToggle = true;
         ShellAutostartEnabled = _autostart.IsEnabled;
         _suppressAutostartToggle = false;
+    }
+
+    partial void OnShellReplacementEnabledChanged(bool value)
+    {
+        if (_suppressReplacementToggle)
+        {
+            return;
+        }
+
+        _ = PersistReplacementAsync(value);
+    }
+
+    private async Task PersistReplacementAsync(bool enabled)
+    {
+        try
+        {
+            var result = await _replacement.SetEnabledAsync(enabled);
+            ShellReplacementStatus = result.Message + " " + OsProductCopy.AnticheatHonesty;
+            SyncReplacement();
+        }
+        catch (Exception error)
+        {
+            ShellReplacementStatus = error.Message;
+            SyncReplacement();
+        }
+    }
+
+    private void SyncReplacement()
+    {
+        _suppressReplacementToggle = true;
+        ShellReplacementEnabled = _replacement.IsEnabled;
+        _suppressReplacementToggle = false;
+    }
+
+    [RelayCommand]
+    private async Task StartDesktopAsync()
+    {
+        var result = await _desktop.StartDesktopAsync();
+        DesktopStatus = result.Message;
+    }
+
+    [RelayCommand]
+    private async Task ReturnToShellAsync()
+    {
+        var result = await _desktop.ReturnToShellAsync();
+        DesktopStatus = result.Message;
+    }
+
+    [RelayCommand]
+    private async Task LockSessionAsync() =>
+        PowerStatus = (await _power.LockAsync()).Message;
+
+    [RelayCommand]
+    private async Task SleepSessionAsync() =>
+        PowerStatus = (await _power.SleepAsync()).Message;
+
+    [RelayCommand]
+    private async Task RestartSessionAsync() =>
+        PowerStatus = (await _power.RestartAsync()).Message;
+
+    [RelayCommand]
+    private async Task ShutdownSessionAsync() =>
+        PowerStatus = (await _power.ShutdownAsync()).Message;
+
+    [RelayCommand]
+    private async Task SignOutSessionAsync() =>
+        PowerStatus = (await _power.SignOutAsync()).Message;
+
+    [RelayCommand]
+    private async Task SwitchUserAsync() =>
+        PowerStatus = (await _power.SwitchUserAsync()).Message;
+
+    [RelayCommand]
+    private async Task VolumeUpAsync() =>
+        SystemStatus = (await _volume.VolumeUpAsync()).Message;
+
+    [RelayCommand]
+    private async Task VolumeDownAsync() =>
+        SystemStatus = (await _volume.VolumeDownAsync()).Message;
+
+    [RelayCommand]
+    private async Task MuteAsync() =>
+        SystemStatus = (await _volume.MuteAsync()).Message;
+
+    [RelayCommand]
+    private async Task RefreshSystemAsync()
+    {
+        SystemEntries.Clear();
+        foreach (var entry in _system.Entries)
+        {
+            SystemEntries.Add(entry);
+        }
+
+        SelectedSystemEntry ??= SystemEntries.FirstOrDefault();
+        Adapters.Clear();
+        foreach (var adapter in await _system.ListAdaptersAsync())
+        {
+            Adapters.Add(adapter);
+        }
+
+        PowerPlans.Clear();
+        foreach (var plan in await _system.ListPowerPlansAsync())
+        {
+            PowerPlans.Add(plan);
+        }
+
+        Volumes.Clear();
+        foreach (var volume in await _system.ListVolumesAsync())
+        {
+            Volumes.Add(volume);
+        }
+
+        InstalledApps.Clear();
+        foreach (var app in await _system.ListInstalledAppsAsync())
+        {
+            InstalledApps.Add(app);
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenSystemEntryAsync()
+    {
+        if (SelectedSystemEntry is null)
+        {
+            return;
+        }
+
+        var result = await _system.OpenUriAsync(SelectedSystemEntry.Uri);
+        SystemStatus = result.Message;
+    }
+
+    [RelayCommand]
+    private async Task ApplyPowerPlanAsync()
+    {
+        if (SelectedPowerPlan is null)
+        {
+            return;
+        }
+
+        var result = await _system.SetPowerPlanAsync(SelectedPowerPlan.Guid);
+        SystemStatus = result.Message;
+        await RefreshSystemAsync();
+    }
+
+    [RelayCommand]
+    private async Task UninstallAppAsync()
+    {
+        if (SelectedInstalledApp is null)
+        {
+            return;
+        }
+
+        var result = await _system.UninstallAsync(SelectedInstalledApp);
+        SystemStatus = result.Message;
     }
 
     [RelayCommand]

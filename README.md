@@ -4,11 +4,11 @@
 
 A public Windows 11 **console-style shell** by **[Unbound Infotech Corporation](https://unboundinfotech.com)**.
 
-UnboundOS does **not** replace Windows. It applies a focused gaming / streaming posture — snapshot NICs, clear denylist junk, protect games and anticheat — then restores the desktop when you exit.
+Genuine Windows stays underneath. Default install is an app on Explorer. Opt-in per-user `HKCU` `Shell=` (watchdog) can make UnboundOS the sign-in UI. See [docs/os-replacement-plan.md](docs/os-replacement-plan.md). Anticheat in that mode is unverified.
 
 The shell is a living-room home: on Home a **black studio field** holds a **left stack of category labels** (Games, Tools, Options, Mods, Network, Files, Hardware) and a **Diavlo digital clock** with the date under it on the right. **Up/Down** (D-pad, stick, arrows, wheel) move the focused name. The focused label **enlarges in Diavlo** and pushes neighbors; unfocused names stay small. **All Home and category-detail type is Diavlo.** **Enter** opens an all-black options surface for that group — real destinations, not stubs. Games uses the Steam library when present. **SET** opens Options. Profiles stays a discreet corner glyph. Rainmeter is not required and is off by default. The old Settings tile that showed the letter “I” is gone.
 
-OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). How we beat Windows-lite ISOs: [docs/competitive-landscape.md](docs/competitive-landscape.md). Session skinny toggles: [docs/gaming-skinny.md](docs/gaming-skinny.md). Theme hex: [docs/theme-tokens.md](docs/theme-tokens.md). Offline NIC pack: [docs/offline-nic-pack.md](docs/offline-nic-pack.md). Update Guard: [docs/update-guard.md](docs/update-guard.md). **Blank NVMe → daily driver:** [docs/install-main-os.md](docs/install-main-os.md). QA loop: [docs/test-checklist.md](docs/test-checklist.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup, reversible session skinny, health check). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files does **not** replace Explorer.
+OS-level product requirements for the shell **and** the WinUnbound image live in [docs/os-spec.md](docs/os-spec.md). How we beat Windows-lite ISOs: [docs/competitive-landscape.md](docs/competitive-landscape.md). Session skinny toggles: [docs/gaming-skinny.md](docs/gaming-skinny.md). Theme hex: [docs/theme-tokens.md](docs/theme-tokens.md). Offline NIC pack: [docs/offline-nic-pack.md](docs/offline-nic-pack.md). Update Guard: [docs/update-guard.md](docs/update-guard.md). **Blank NVMe → daily driver:** [docs/install-main-os.md](docs/install-main-os.md). QA loop: [docs/test-checklist.md](docs/test-checklist.md). This repo ships a first slice (Files, Display/OC launch, startup audit, hardware inventory, leftover cleanup, reversible session skinny, health check). The image owns OOBE wipe, the daily scheduled task, and later sensor depth. Unbound Files is the daily file UI; Explorer stays on disk for Desktop mode.
 
 **Screenshot placeholder:** add `docs/screenshots/shell.png` after a local Windows run (black Home, left-label stack). Company cyan `#00F0FF` is the focus hairline and inner-page token. See [docs/screenshots/README.md](docs/screenshots/README.md).
 
@@ -27,9 +27,10 @@ A WinUI 3 + MVVM shell on top of Windows. Session, network, and process logic st
 | **Profiles** | JSON profiles in LocalAppData (`Competitive`, `Streamer`, `Living Room`) |
 | **Mods + Workshop** | Local Steam Workshop discovery, per-game mod profiles, safe adapter-based apply/restore |
 | **Telemetry** | Live CPU / memory / process / suspect counts in the shell header |
-| **Files** | Daily folder UI (Home, Desktop, Downloads, drives). Explorer stays for EAC / BattlEye / Vanguard |
+| **Files** | Browse, copy, move, delete, open-with, eject. Desktop mode starts Explorer |
+| **Switcher / Apps** | Running windows + Start Menu / Steam / Epic / GOG / Store launcher |
 | **Hardware** | CPU, GPU, disks, RAM from this PC. Live sensors later; optional Open HWiNFO in Tools |
-| **Settings** | Display / OC launch (vendor apps only), startup audit + pin allowlist + optional HKCU Run autostart, leftover cleanup, health check, Home extras (opt-in plaques), Session skinny (HAGS + Game DVR copy), Update Guard (quality from Microsoft, feature deferred), Interface motion On / Off |
+| **Settings** | Desktop / shell (HKCU Shell= + power + Desktop mode), system settings (ms-settings: fallbacks), Display / OC launch, startup audit, leftover cleanup, health check, Home extras, Session skinny, Update Guard, Interface motion |
 
 ## Solution layout
 

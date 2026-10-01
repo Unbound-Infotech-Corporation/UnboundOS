@@ -3,7 +3,9 @@ namespace UnboundOS.Core.Models;
 public enum GameStore
 {
     Steam = 0,
-    Epic = 1
+    Epic = 1,
+    Gog = 2,
+    Xbox = 3
 }
 
 public sealed record LibraryGame(

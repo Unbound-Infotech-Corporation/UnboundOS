@@ -14,8 +14,8 @@ public sealed class HealthAndAutostartTests
         Assert.Equal(@"Software\Microsoft\Windows\CurrentVersion\Run", WindowsShellAutostart.RunKeyPath);
         Assert.DoesNotContain("Winlogon", WindowsShellAutostart.RunKeyPath, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Shell", WindowsShellAutostart.RunKeyPath, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("does not replace Explorer", OsProductCopy.AutostartHonesty, StringComparison.Ordinal);
-        Assert.Contains("set Shell=", OsProductCopy.AutostartHonesty, StringComparison.Ordinal);
+        Assert.Contains("HKCU Run", OsProductCopy.AutostartHonesty, StringComparison.Ordinal);
+        Assert.Contains("Explorer still the shell", OsProductCopy.AutostartHonesty, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -26,8 +26,8 @@ public sealed class HealthAndAutostartTests
         Assert.False(autostart.IsEnabled);
         var result = await autostart.SetEnabledAsync(true);
         Assert.False(result.Succeeded);
-        Assert.DoesNotContain("Winlogon", result.Message, StringComparison.OrdinalIgnoreCase);
         Assert.False(string.IsNullOrWhiteSpace(result.Message));
+        Assert.DoesNotContain("Winlogon", WindowsShellAutostart.RunKeyPath, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -43,19 +43,22 @@ public sealed class HealthAndAutostartTests
     public async Task HealthCheck_WritesLog_WithRequiredProbes()
     {
         var report = await new OsHealthCheckService().RunAsync();
-        Assert.Equal(5, report.Checks.Count);
+        Assert.Equal(6, report.Checks.Count);
         Assert.NotNull(report.Find("network"));
         Assert.NotNull(report.Find("gpu"));
         Assert.NotNull(report.Find("autostart"));
+        Assert.NotNull(report.Find("shell"));
         Assert.NotNull(report.Find("updates"));
         Assert.NotNull(report.Find("disk"));
         Assert.True(report.Find("autostart")!.Ok);
+        Assert.True(report.Find("shell")!.Ok);
         Assert.True(File.Exists(report.LogPath));
         Assert.True(File.Exists(Path.Combine(UnboundPaths.Root, "health-latest.txt")));
         var text = report.ToLogText();
-        Assert.Contains("does not replace Explorer", text, StringComparison.Ordinal);
-        Assert.Contains("does not change Windows Update, Defender, or Explorer", text, StringComparison.Ordinal);
+        Assert.Contains("does not rename explorer.exe", text, StringComparison.Ordinal);
+        Assert.Contains("does not change Windows Update or Defender", text, StringComparison.Ordinal);
         Assert.Contains("does not redistribute Windows", text, StringComparison.Ordinal);
+        Assert.Contains("unverified", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Night City", text, StringComparison.OrdinalIgnoreCase);
     }
 }

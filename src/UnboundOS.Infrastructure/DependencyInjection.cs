@@ -49,6 +49,14 @@ public static class DependencyInjection
         services.AddSingleton<IStartupMutator, WindowsStartupMutator>();
         services.AddSingleton<IStartupAuditService, StartupAuditService>();
         services.AddSingleton<IShellAutostart, WindowsShellAutostart>();
+        services.AddSingleton<IShellReplacement, WindowsShellReplacement>();
+        services.AddSingleton<IDesktopMode, WindowsDesktopMode>();
+        services.AddSingleton<ISessionPower, WindowsSessionPower>();
+        services.AddSingleton<IVolumeKeys, WindowsVolumeKeys>();
+        services.AddSingleton<IRunningAppSwitcher, WindowsRunningAppSwitcher>();
+        services.AddSingleton<IAppLauncherCatalog, WindowsAppLauncherCatalog>();
+        services.AddSingleton<ITrayStandIn, WindowsTrayStandIn>();
+        services.AddSingleton<IOsSettingsHub, WindowsOsSettingsHub>();
         services.AddSingleton<IHealthCheckService, OsHealthCheckService>();
         services.AddSingleton<IVendorAppCatalog, VendorAppCatalog>();
         services.AddSingleton<IVendorAppLauncher, VendorAppLauncher>();

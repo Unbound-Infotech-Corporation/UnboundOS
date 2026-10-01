@@ -13,8 +13,8 @@ public sealed record FileBrowserSettings
 }
 
 /// <summary>
-/// Browse user places and drives. Does not replace Explorer.
-/// Spec: docs/os-spec.md §3.
+/// First-party file manager. Explorer.exe stays on disk for Desktop mode.
+/// Spec: docs/os-replacement-plan.md Stage 2.
 /// </summary>
 public sealed class LocalFileBrowser : IFileBrowser
 {
@@ -59,6 +59,174 @@ public sealed class LocalFileBrowser : IFileBrowser
             .ToList();
 
         return new FileBrowsePage(full, parent, BuildPlaces(), ordered);
+    }
+
+    public FileOpResult Copy(string source, string destDir)
+    {
+        try
+        {
+            var dest = PrepareDest(source, destDir);
+            if (Directory.Exists(source))
+            {
+                CopyDirectory(source, dest);
+            }
+            else
+            {
+                File.Copy(source, dest, overwrite: false);
+            }
+
+            return new FileOpResult(true, $"Copied to {dest}");
+        }
+        catch (Exception ex)
+        {
+            return new FileOpResult(false, ex.Message);
+        }
+    }
+
+    public FileOpResult Move(string source, string destDir)
+    {
+        try
+        {
+            var dest = PrepareDest(source, destDir);
+            if (Directory.Exists(source))
+            {
+                Directory.Move(source, dest);
+            }
+            else
+            {
+                File.Move(source, dest);
+            }
+
+            return new FileOpResult(true, $"Moved to {dest}");
+        }
+        catch (Exception ex)
+        {
+            return new FileOpResult(false, ex.Message);
+        }
+    }
+
+    public FileOpResult Delete(string path)
+    {
+        try
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+            }
+            else
+            {
+                File.Delete(path);
+            }
+
+            return new FileOpResult(true, $"Deleted {path}");
+        }
+        catch (Exception ex)
+        {
+            return new FileOpResult(false, ex.Message);
+        }
+    }
+
+    public FileOpResult Eject(string root)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return new FileOpResult(false, "Eject runs on Windows (removable volume).");
+        }
+
+        try
+        {
+            var letter = Path.GetPathRoot(root)?.TrimEnd('\\', '/');
+            if (string.IsNullOrWhiteSpace(letter))
+            {
+                return new FileOpResult(false, "No drive letter.");
+            }
+
+            var start = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "powershell",
+                Arguments = $"-NoProfile -Command \"(New-Object -ComObject Shell.Application).Namespace(17).ParseName('{letter}').InvokeVerb('Eject')\"",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using var process = System.Diagnostics.Process.Start(start);
+            process?.WaitForExit(8000);
+            return new FileOpResult(true, $"Eject requested for {letter}.");
+        }
+        catch (Exception ex)
+        {
+            return new FileOpResult(false, ex.Message);
+        }
+    }
+
+    public FileOpResult OpenItem(string path)
+    {
+        try
+        {
+            if (Directory.Exists(path))
+            {
+                OpenPath(path);
+                return new FileOpResult(true, path);
+            }
+
+            var start = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true
+            };
+            using var process = System.Diagnostics.Process.Start(start);
+            return new FileOpResult(process is not null, process is null ? "Open failed." : $"Opened {path}");
+        }
+        catch (Exception ex)
+        {
+            return new FileOpResult(false, ex.Message);
+        }
+    }
+
+    public FileOpResult OpenWith(string path)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return OpenItem(path);
+        }
+
+        try
+        {
+            var start = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "rundll32.exe",
+                Arguments = $"shell32.dll,OpenAs_RunDLL {path}",
+                UseShellExecute = true
+            };
+            using var process = System.Diagnostics.Process.Start(start);
+            return new FileOpResult(process is not null, "Open with…");
+        }
+        catch (Exception ex)
+        {
+            return new FileOpResult(false, ex.Message);
+        }
+    }
+
+    private static string PrepareDest(string source, string destDir)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(source);
+        ArgumentException.ThrowIfNullOrWhiteSpace(destDir);
+        Directory.CreateDirectory(destDir);
+        var name = Path.GetFileName(source.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+        return Path.Combine(destDir, name);
+    }
+
+    private static void CopyDirectory(string source, string dest)
+    {
+        Directory.CreateDirectory(dest);
+        foreach (var file in Directory.EnumerateFiles(source))
+        {
+            File.Copy(file, Path.Combine(dest, Path.GetFileName(file)), overwrite: false);
+        }
+
+        foreach (var child in Directory.EnumerateDirectories(source))
+        {
+            CopyDirectory(child, Path.Combine(dest, Path.GetFileName(child)));
+        }
     }
 
     private IReadOnlyList<FilePlace> BuildPlaces()

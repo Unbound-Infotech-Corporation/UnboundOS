@@ -377,12 +377,14 @@ public sealed class HomeGalaxyTests
         Assert.Equal(2, HomeGalaxy.ListStartIndex(network.Count, true));
 
         var options = CubeBrowse.Options();
-        Assert.Equal(9, options.Count);
+        Assert.Equal(11, options.Count);
         Assert.All(options, item => Assert.Equal("settings", item.Kind));
         Assert.Contains(options, item => item.Id == "motion" && item.Title == "Interface motion");
         Assert.Contains(options, item => item.Id == "hud" && item.Title == "Home extras");
         Assert.Contains(options, item => item.Id == "skinny" && item.Title == "Session skinny");
         Assert.Contains(options, item => item.Id == "updates" && item.Title == "Updates");
+        Assert.Contains(options, item => item.Id == "desktop" && item.Title == "Desktop / shell");
+        Assert.Contains(options, item => item.Id == "system" && item.Title == "System settings");
         Assert.Contains(options, item => item.Id == "health" && item.Title == "Health check");
         Assert.Contains(options, item => item.Id == "cleanup" && item.Title == "Finish setup");
     }

@@ -3,9 +3,12 @@
 Source of truth for the Unbound Infotech **UnboundOS** shell and the
 WinUnbound **Windows image / OOBE** work that sits under it.
 
-UnboundOS is a **console-style session shell on Windows**. It does **not**
-replace NT, Explorer, or the Win32 world that Easy Anti-Cheat, BattlEye,
-and Vanguard expect.
+UnboundOS is a **console-style session shell on Windows**. NT, drivers,
+DirectX, Store, and Steam stay Microsoft. **Opt-in** per-user
+`HKCU` `Shell=` (watchdog) can make UnboundOS the sign-in UI. Default
+install still leaves Explorer as the shell. See
+[os-replacement-plan.md](os-replacement-plan.md). Anticheat in
+replacement mode is **unverified**.
 
 This document is the full spec. The current UnboundOS PR ships a **first
 slice** only (called out per section). Image/OOBE owners pick up the rest.
@@ -77,18 +80,17 @@ We **will** ship our own clean, intuitive explorer.
 Downloads, and the drive list, with Unbound styling. Open a folder
 inside Unbound Files; **Show in Explorer** stays one click away.
 
-**Do not (this pass or any pass that ships games):**
+**This pass:** Files can copy, move, delete, open-with, and eject.
+Desktop mode still starts `explorer.exe`. `Shell=` is opt-in HKCU only.
 
-- Replace Windows Explorer
-- Set `Shell=`
+**Do not:**
+
+- Write HKLM Winlogon Shell
+- Rename or replace `explorer.exe`
 - Hook File Explorer for game launches
+- Claim EAC / Vanguard work in replacement mode without the checklist
 
-**Honest copy:** Unbound Files is the daily file UI. Explorer remains
-for compatibility (EAC / BE / Vanguard / anything that expects the NT
-shell).
-
-**Image / later:** richer columns, copy/move, archive tools, search.
-Still not a Shell replacement.
+**Honest copy:** [os-replacement-plan.md](os-replacement-plan.md).
 
 ## 4. Display settings
 

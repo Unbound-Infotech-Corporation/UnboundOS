@@ -1,0 +1,53 @@
+<Page
+    x:Class="UnboundOS.App.Views.LauncherPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:UnboundOS.Core.Models"
+    NavigationCacheMode="Required"
+    Background="Transparent">
+
+    <ScrollViewer Style="{StaticResource ConsolePageScrollStyle}" AutomationProperties.Name="App launcher">
+        <StackPanel Spacing="22">
+            <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource KickerText}" Text="APPS" />
+                <TextBlock Style="{StaticResource SectionTitleText}" Text="Launcher" />
+                <TextBlock Style="{StaticResource BodyMutedText}" MaxWidth="820" Text="{x:Bind ViewModel.Honesty}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Style="{StaticResource SignalButtonStyle}" Content="LAUNCH" Command="{x:Bind ViewModel.LaunchCommand}" AutomationProperties.Name="Launch selected app" />
+                <Button Style="{StaticResource GhostButtonStyle}" Content="REFRESH" Command="{x:Bind ViewModel.RefreshCommand}" AutomationProperties.Name="Refresh launcher list" />
+            </StackPanel>
+
+            <TextBox
+                Header="Filter"
+                Text="{x:Bind ViewModel.Filter, Mode=TwoWay}"
+                AutomationProperties.Name="Filter launcher" />
+
+            <ListView
+                MinHeight="320"
+                ItemsSource="{x:Bind ViewModel.Apps, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedApp, Mode=TwoWay}"
+                Style="{StaticResource SuperCleanListViewStyle}"
+                ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                AutomationProperties.Name="Start Menu and stores">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:LauncherApp">
+                        <Grid ColumnSpacing="16" Padding="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource MicroLabelText}" Text="{x:Bind Source}" />
+                            <TextBlock Grid.Column="1" FontFamily="{StaticResource UiFontSemiboldFamily}" Foreground="{StaticResource PaperBrush}" Text="{x:Bind Title}" />
+                            <TextBlock Grid.Column="2" Style="{StaticResource MicroLabelText}" Text="{x:Bind Kind}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.Status, Mode=OneWay}" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

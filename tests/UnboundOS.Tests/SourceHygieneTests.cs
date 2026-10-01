@@ -38,17 +38,21 @@ public sealed class SourceHygieneTests
     public void InstallScripts_UseProfileEnvironment_NotHardcodedUsers()
     {
         var scripts = Path.Combine(RepoRoot(), "scripts");
-        foreach (var name in new[] { "Install-UnboundOS.ps1", "Uninstall-UnboundOS.ps1", "Publish-UnboundOS.ps1" })
+        foreach (var name in new[] { "Install-UnboundOS.ps1", "Uninstall-UnboundOS.ps1", "Publish-UnboundOS.ps1", "Restore-ExplorerShell.ps1" })
         {
             var text = File.ReadAllText(Path.Combine(scripts, name));
             Assert.DoesNotContain("akind", text, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain(@"C:\Users\", text, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(@"HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon", text, StringComparison.OrdinalIgnoreCase);
         }
 
         var install = File.ReadAllText(Path.Combine(scripts, "Install-UnboundOS.ps1"));
         Assert.Contains("$env:LOCALAPPDATA", install, StringComparison.Ordinal);
         Assert.Contains("$env:APPDATA", install, StringComparison.Ordinal);
         Assert.Contains("Unbound Infotech Corporation", install, StringComparison.Ordinal);
+        Assert.Contains("-ReplaceShell", install, StringComparison.Ordinal);
+        Assert.Contains("-RestoreExplorer", install, StringComparison.Ordinal);
+        Assert.Contains("HKCU:\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", install, StringComparison.Ordinal);
 
         var publish = File.ReadAllText(Path.Combine(scripts, "Publish-UnboundOS.ps1"));
         Assert.Contains("PublishTrimmed=false", publish, StringComparison.Ordinal);
@@ -64,6 +68,24 @@ public sealed class SourceHygieneTests
         Assert.DoesNotContain("akind", root, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Unbound Infotech Corporation", root, StringComparison.Ordinal);
         Assert.Contains("UnboundOS", root, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Sources_DoNotWriteMachineWinlogonShell()
+    {
+        var hits = new List<string>();
+        foreach (var file in Directory.GetFiles(Path.Combine(RepoRoot(), "src"), "*.cs", SearchOption.AllDirectories))
+        {
+            var text = File.ReadAllText(file);
+            if (text.Contains("Registry.LocalMachine", StringComparison.Ordinal) &&
+                text.Contains("Winlogon", StringComparison.Ordinal) &&
+                text.Contains("SetValue", StringComparison.Ordinal))
+            {
+                hits.Add(Relative(file));
+            }
+        }
+
+        Assert.True(hits.Count == 0, "HKLM Winlogon Shell writes are forbidden. " + string.Join(", ", hits));
     }
 
     private static string RepoRoot()

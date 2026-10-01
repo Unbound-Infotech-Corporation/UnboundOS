@@ -7,6 +7,18 @@ public interface IFileBrowser
     FileBrowsePage OpenPlaces();
 
     FileBrowsePage OpenPath(string path);
+
+    FileOpResult Copy(string source, string destDir);
+
+    FileOpResult Move(string source, string destDir);
+
+    FileOpResult Delete(string path);
+
+    FileOpResult Eject(string root);
+
+    FileOpResult OpenItem(string path);
+
+    FileOpResult OpenWith(string path);
 }
 
 public interface IHardwareInventory

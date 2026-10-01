@@ -301,6 +301,139 @@
                 </StackPanel>
             </Border>
 
+            <Border x:Name="DesktopPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="DESKTOP / SHELL" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.ShellReplacementHonesty}" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.AnticheatHonesty}" />
+                    <ToggleSwitch
+                        MinHeight="48"
+                        IsOn="{x:Bind ViewModel.ShellReplacementEnabled, Mode=TwoWay}"
+                        OnContent="On"
+                        OffContent="Off"
+                        Header="Replace this user's shell (HKCU Winlogon Shell= watchdog). Off by default. Never HKLM. Sign out to apply."
+                        AutomationProperties.Name="Shell replacement"
+                        AutomationProperties.HelpText="Per-user Shell=. Hold Shift at sign-in for Explorer. 3 crashes in 2 minutes fall back to Explorer." />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Foreground="{StaticResource CyanPulseBrush}" Text="{x:Bind ViewModel.ShellReplacementStatus, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.DesktopModeHonesty}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Style="{StaticResource SignalButtonStyle}" Content="DESKTOP MODE" Command="{x:Bind ViewModel.StartDesktopCommand}" AutomationProperties.Name="Start Explorer desktop" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="RETURN" Command="{x:Bind ViewModel.ReturnToShellCommand}" AutomationProperties.Name="Return to UnboundOS" />
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.DesktopStatus, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="POWER" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="LOCK" Command="{x:Bind ViewModel.LockSessionCommand}" AutomationProperties.Name="Lock" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="SLEEP" Command="{x:Bind ViewModel.SleepSessionCommand}" AutomationProperties.Name="Sleep" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="SIGN OUT" Command="{x:Bind ViewModel.SignOutSessionCommand}" AutomationProperties.Name="Sign out" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="SWITCH USER" Command="{x:Bind ViewModel.SwitchUserCommand}" AutomationProperties.Name="Switch user" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="RESTART" Command="{x:Bind ViewModel.RestartSessionCommand}" AutomationProperties.Name="Restart" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="SHUT DOWN" Command="{x:Bind ViewModel.ShutdownSessionCommand}" AutomationProperties.Name="Shut down" />
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="{x:Bind ViewModel.PowerStatus, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="Manual recovery: Ctrl+Shift+Esc → File → Run explorer.exe. Safe Mode. pwsh -File scripts\Install-UnboundOS.ps1 -RestoreExplorer." />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="SystemPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource PanelLabelText}" Text="SYSTEM SETTINGS" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Text="First-party where we have a page. Otherwise a live ms-settings: URI. Auto sign-in stays Windows (netplwiz / Settings → Accounts)." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="VOL −" Command="{x:Bind ViewModel.VolumeDownCommand}" AutomationProperties.Name="Volume down" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="MUTE" Command="{x:Bind ViewModel.MuteCommand}" AutomationProperties.Name="Mute" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="VOL +" Command="{x:Bind ViewModel.VolumeUpCommand}" AutomationProperties.Name="Volume up" />
+                        <Button Style="{StaticResource SignalButtonStyle}" Content="OPEN" Command="{x:Bind ViewModel.OpenSystemEntryCommand}" AutomationProperties.Name="Open selected settings" />
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="REFRESH" Command="{x:Bind ViewModel.RefreshSystemCommand}" AutomationProperties.Name="Refresh system lists" />
+                    </StackPanel>
+                    <ListView
+                        MaxHeight="220"
+                        ItemsSource="{x:Bind ViewModel.SystemEntries, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedSystemEntry, Mode=TwoWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                        AutomationProperties.Name="System settings catalog">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:OsSettingsEntry">
+                                <Grid ColumnSpacing="12" Padding="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="220" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{StaticResource PaperBrush}" Text="{x:Bind Title}" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MicroLabelText}" Text="{x:Bind Uri}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <TextBlock Style="{StaticResource TileRowLabelText}" Text="NETWORK" />
+                    <ListView
+                        MaxHeight="140"
+                        ItemsSource="{x:Bind ViewModel.Adapters, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedAdapter, Mode=TwoWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                        AutomationProperties.Name="Network adapters">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:OsAdapterStatus">
+                                <Grid ColumnSpacing="12" Padding="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{StaticResource PaperBrush}" Text="{x:Bind Name}" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MicroLabelText}" Text="{x:Bind Detail}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <TextBlock Style="{StaticResource TileRowLabelText}" Text="POWER PLANS" />
+                    <ListView
+                        MaxHeight="140"
+                        ItemsSource="{x:Bind ViewModel.PowerPlans, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedPowerPlan, Mode=TwoWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                        AutomationProperties.Name="Power plans">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:PowerPlanInfo">
+                                <TextBlock Foreground="{StaticResource PaperBrush}" Text="{x:Bind Name}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="SET ACTIVE PLAN" Command="{x:Bind ViewModel.ApplyPowerPlanCommand}" AutomationProperties.Name="Set power plan" />
+                    <TextBlock Style="{StaticResource TileRowLabelText}" Text="STORAGE" />
+                    <ListView
+                        MaxHeight="140"
+                        ItemsSource="{x:Bind ViewModel.Volumes, Mode=OneWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                        AutomationProperties.Name="Storage volumes">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:StorageVolumeInfo">
+                                <TextBlock Foreground="{StaticResource PaperBrush}" Text="{x:Bind Name}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <TextBlock Style="{StaticResource TileRowLabelText}" Text="APPS" />
+                    <ListView
+                        MaxHeight="180"
+                        ItemsSource="{x:Bind ViewModel.InstalledApps, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedInstalledApp, Mode=TwoWay}"
+                        Style="{StaticResource SuperCleanListViewStyle}"
+                        ItemContainerStyle="{StaticResource SuperCleanListItemStyle}"
+                        AutomationProperties.Name="Installed apps">
+                        <ListView.ItemTemplate>
+                            <DataTemplate xmlns:models="using:UnboundOS.Core.Models" x:DataType="models:InstalledAppInfo">
+                                <TextBlock Foreground="{StaticResource PaperBrush}" Text="{x:Bind DisplayName}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="UNINSTALL" Command="{x:Bind ViewModel.UninstallAppCommand}" AutomationProperties.Name="Uninstall selected app" />
+                    <TextBlock Style="{StaticResource BodyMutedText}" Foreground="{StaticResource CyanPulseBrush}" Text="{x:Bind ViewModel.SystemStatus, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
             <Border x:Name="CleanupPanel" Style="{StaticResource PanelBorderStyle}" Visibility="Collapsed">
                 <StackPanel Spacing="12">
                     <TextBlock Style="{StaticResource PanelLabelText}" Text="FINISH SETUP" />
@@ -319,7 +452,7 @@
                         Content="RUN HEALTH CHECK"
                         Command="{x:Bind ViewModel.RunHealthCommand}"
                         AutomationProperties.Name="Run health check"
-                        AutomationProperties.HelpText="Probe network, GPU driver, autostart, Update Guard, and free disk. Writes a log you can send back." />
+                        AutomationProperties.HelpText="Probe network, GPU driver, autostart, shell replacement, Update Guard, and free disk. Writes a log you can send back." />
                     <TextBlock
                         Style="{StaticResource BodyMutedText}"
                         Foreground="{StaticResource CyanPulseBrush}"

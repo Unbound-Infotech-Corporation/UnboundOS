@@ -17,9 +17,8 @@ public sealed class OsSpecSliceTests
     [Fact]
     public void ProductCopy_StaysHonestAboutExplorerAndOverclock()
     {
-        Assert.Contains("does not replace Explorer", OsProductCopy.FilesHonesty, StringComparison.Ordinal);
-        Assert.DoesNotContain("Shell=", OsProductCopy.FilesHonesty.Replace("set Shell=", string.Empty, StringComparison.Ordinal));
-        Assert.Contains("does not replace Explorer or set Shell=", OsProductCopy.FilesHonesty, StringComparison.Ordinal);
+        Assert.Contains("opt-in", OsProductCopy.FilesHonesty, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("never HKLM", OsProductCopy.FilesHonesty, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Night City", OsProductCopy.FilesHonesty, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("never writes GPU or CPU clocks", OsProductCopy.OverclockHonesty, StringComparison.Ordinal);
         Assert.Contains("Windows image owns the full OOBE wipe", OsProductCopy.CleanupHonesty, StringComparison.Ordinal);
@@ -28,9 +27,10 @@ public sealed class OsSpecSliceTests
         Assert.Contains("registry, DriveInfo", OsProductCopy.HardwareHonesty, StringComparison.Ordinal);
         Assert.Contains("does not redistribute Windows", OsProductCopy.UpdateGuardHonesty, StringComparison.Ordinal);
         Assert.Contains("not CVE-only", OsProductCopy.UpdateGuardHonesty, StringComparison.Ordinal);
-        Assert.Contains("does not replace Explorer or set Shell=", OsProductCopy.AutostartHonesty, StringComparison.Ordinal);
         Assert.Contains("HKCU Run", OsProductCopy.AutostartHonesty, StringComparison.Ordinal);
-        Assert.Contains("does not change Windows Update, Defender, or Explorer", OsProductCopy.HealthHonesty, StringComparison.Ordinal);
+        Assert.Contains("opt-in replacement", OsProductCopy.AutostartHonesty, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("does not change Windows Update or Defender", OsProductCopy.HealthHonesty, StringComparison.Ordinal);
+        Assert.Contains("unverified", OsProductCopy.AnticheatHonesty, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Night City", OsProductCopy.OverclockHonesty, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -380,6 +380,7 @@ public sealed class OsSpecSliceTests
         Assert.IsType<UnboundOS.Infrastructure.Updates.WindowsUpdateGuardPolicy>(
             provider.GetRequiredService<IUpdateGuardPolicy>());
         Assert.IsType<WindowsShellAutostart>(provider.GetRequiredService<IShellAutostart>());
+        Assert.IsType<WindowsShellReplacement>(provider.GetRequiredService<IShellReplacement>());
         Assert.IsType<UnboundOS.Infrastructure.Diagnostics.OsHealthCheckService>(
             provider.GetRequiredService<IHealthCheckService>());
     }

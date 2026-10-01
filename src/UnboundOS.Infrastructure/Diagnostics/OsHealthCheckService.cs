@@ -27,6 +27,7 @@ public sealed class OsHealthCheckService : IHealthCheckService
             ProbeNetwork(),
             ProbeGpu(),
             ProbeAutostart(),
+            ProbeShellReplacement(),
             ProbeUpdateGuard(),
             ProbeDisk()
         };
@@ -118,6 +119,16 @@ public sealed class OsHealthCheckService : IHealthCheckService
             ? "HKCU Run UnboundOS is set. Explorer remains the Windows shell. Never Shell=."
             : "Off (default). Enable in Options → Startup audit for sign-in. Never Shell=. Explorer stays the Windows shell.";
         return new("autostart", "Shell autostart", true, detail);
+    }
+
+    private static HealthCheck ProbeShellReplacement()
+    {
+        var replacement = new WindowsShellReplacement();
+        var on = replacement.IsEnabled;
+        var detail = on
+            ? "HKCU Winlogon Shell= UnboundOS watchdog. Hold Shift at sign-in for Explorer. Never HKLM."
+            : "Off (default). Explorer is this user's shell. Options → Desktop / shell can opt in.";
+        return new("shell", "Shell replacement", true, detail);
     }
 
     private static HealthCheck ProbeUpdateGuard()

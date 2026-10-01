@@ -1,5 +1,4 @@
-# Remove UnboundOS autostart, Start Menu shortcut, and the installed app folder.
-# Does not touch Explorer, Shell=, Windows Update, or Defender.
+# Remove UnboundOS, HKCU Run, and HKCU Shell=. Never touches HKLM, WU, or Defender.
 # Usage:
 #   pwsh -File scripts/Uninstall-UnboundOS.ps1
 #   pwsh -File scripts/Uninstall-UnboundOS.ps1 -RemoveData
@@ -15,7 +14,13 @@ Get-Process -Name "UnboundOS.App" -ErrorAction SilentlyContinue | Stop-Process -
 
 $runPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
 Remove-ItemProperty -Path $runPath -Name "UnboundOS" -ErrorAction SilentlyContinue
-Write-Host "Removed HKCU Run UnboundOS (if it existed). Explorer was never replaced."
+
+$winlogon = "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon"
+if (Test-Path $winlogon) {
+    Remove-ItemProperty -Path $winlogon -Name "Shell" -ErrorAction SilentlyContinue
+}
+schtasks /Delete /TN "UnboundOS Shell Recovery" /F 2>$null | Out-Null
+Write-Host "Removed HKCU Run and HKCU Winlogon Shell (if they existed). Explorer is this user's shell."
 
 $shortcutPath = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Unbound Infotech Corporation\UnboundOS.lnk"
 if (Test-Path $shortcutPath) {
@@ -37,4 +42,5 @@ if ($RemoveData) {
     Write-Host "Kept LocalAppData settings/logs. Pass -RemoveData to wipe them."
 }
 
-Write-Host "UnboundOS uninstalled. Sign out or reboot if a leftover window is stuck. Windows desktop is unchanged."
+try { Start-Process explorer.exe } catch { }
+Write-Host "UnboundOS uninstalled. Sign out if the desktop is blank. Windows Update and Defender were not touched."

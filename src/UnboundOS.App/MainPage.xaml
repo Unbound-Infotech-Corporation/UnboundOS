@@ -465,6 +465,18 @@
                             <Rectangle x:Name="OverlayAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
                         </Grid>
                     </Button>
+                    <Button x:Name="SwitcherNav" Tag="Switcher" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" AutomationProperties.Name="Running apps">
+                        <Grid>
+                            <TextBlock Text="SWITCH" Margin="0,0,0,4" />
+                            <Rectangle x:Name="SwitcherAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
+                        </Grid>
+                    </Button>
+                    <Button x:Name="LauncherNav" Tag="Launcher" Style="{StaticResource TopNavButtonStyle}" Click="Nav_Click" AutomationProperties.Name="App launcher">
+                        <Grid>
+                            <TextBlock Text="APPS" Margin="0,0,0,4" />
+                            <Rectangle x:Name="LauncherAccent" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource CyanPulseBrush}" Opacity="0" />
+                        </Grid>
+                    </Button>
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="18" VerticalAlignment="Center" AutomationProperties.Name="Live telemetry">

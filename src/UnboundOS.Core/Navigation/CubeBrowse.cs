@@ -70,6 +70,8 @@ public static class CubeBrowse
         new("display", "Display", "SET", "settings", "D"),
         new("overclock", "Overclocking", "SET", "settings", "O"),
         new("startup", "Startup audit", "SET", "settings", "S"),
+        new("desktop", "Desktop / shell", "SET", "settings", "X"),
+        new("system", "System settings", "SET", "settings", "Y"),
         new("health", "Health check", "SET", "settings", "L"),
         new("cleanup", "Finish setup", "SET", "settings", "C")
     ];
